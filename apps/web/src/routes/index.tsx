@@ -76,12 +76,14 @@ function RouteComponent() {
         </TestButton>
       )}
       {session.data && <p>User: {session.data.user.email}</p>}
-      <div className="flex gap-2">
-        <TestButton onClick={() => addNumber.mutate()}>Add number</TestButton>
-        <TestButton onClick={() => deleteNumbers.mutate()}>
-          Delete all numbers
-        </TestButton>
-      </div>
+      {session.data && (
+        <div className="flex gap-2">
+          <TestButton onClick={() => addNumber.mutate()}>Add number</TestButton>
+          <TestButton onClick={() => deleteNumbers.mutate()}>
+            Delete all numbers
+          </TestButton>
+        </div>
+      )}
       {numbers.isSuccess && (
         <p className="text-xl font-bold">{JSON.stringify(numbers.data)}</p>
       )}
