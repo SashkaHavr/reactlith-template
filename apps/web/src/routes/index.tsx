@@ -74,7 +74,7 @@ function RouteComponent() {
         <TestButton
           onClick={() => {
             void authClient.signOut();
-            void queryClient.invalidateQueries();
+            void queryClient.clear();
           }}
         >
           Logout
