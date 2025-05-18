@@ -26,7 +26,9 @@ Stack:
 >
 > This startup guide is for demonstration/testing purposes and local usage only. Do NOT use in production environments due to lack of security/stability guarantees.
 
-1. Run ``docker-compose up --build -d``
+1. Create PostgreSQL docker container with `docker run -d --name pg-reactlith -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith:/var/lib/postgresql/data -p 5432:5432 postgres`
+2. Copy [.env.example](./.env.example) content int [.env](./.env)
+3. Run `docker-compose up --build -d`
 
 ## Development setup
 
