@@ -7,9 +7,6 @@ import { trpcHandler } from '@reactlith-template/trpc';
 
 const app = new Hono();
 
-console.log(envServer.AUTH_BASE_URL);
-console.log(envServer.CORS_ORIGINS);
-
 app.use(
   '/auth/*',
   cors({

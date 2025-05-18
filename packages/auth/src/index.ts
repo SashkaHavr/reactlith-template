@@ -18,10 +18,10 @@ const devMagicLink = envServer.AUTH_DEV_MAGIC_LINK
 export const auth = betterAuth({
   basePath: '/auth',
   trustedOrigins: envServer.CORS_ORIGINS,
+  baseURL: envServer.AUTH_BASE_URL,
   advanced: {
     crossSubDomainCookies: {
       enabled: envServer.AUTH_BASE_URL != undefined,
-      baseUrl: envServer.AUTH_BASE_URL,
     },
   },
   session: {
