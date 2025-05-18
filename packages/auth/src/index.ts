@@ -15,8 +15,6 @@ const devMagicLink = envServer.AUTH_DEV_MAGIC_LINK
     ]
   : [];
 
-console.log(envServer.CORS_ORIGINS);
-
 export const auth = betterAuth({
   basePath: '/auth',
   trustedOrigins: envServer.CORS_ORIGINS,
