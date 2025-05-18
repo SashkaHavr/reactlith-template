@@ -18,6 +18,9 @@ catalogs:
     drizzle-orm:
       specifier: beta
       version: 1.0.0-beta.1-c0277c0
+    hono:
+      specifier: ^4.7.7
+      version: 4.7.10
     superjson:
       specifier: ^2.2.2
       version: 2.2.2
@@ -74,6 +77,37 @@ importers:
       turbo:
         specifier: ^2.5.0
         version: 2.5.0
+
+  apps/api:
+    dependencies:
+      '@reactlith-template/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@reactlith-template/env':
+        specifier: workspace:*
+        version: link:../../packages/env
+      '@reactlith-template/trpc':
+        specifier: workspace:*
+        version: link:../../packages/trpc
+      hono:
+        specifier: 'catalog:'
+        version: 4.7.10
+    devDependencies:
+      '@reactlith-template/eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@reactlith-template/prettier-config':
+        specifier: workspace:*
+        version: link:../../tools/prettier-config
+      '@reactlith-template/typescript-config':
+        specifier: workspace:*
+        version: link:../../tools/typescript-config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.2.10
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
 
   apps/web:
     dependencies:
@@ -2018,6 +2052,10 @@ packages:
 
   hermes-parser@0.25.1:
     resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
+
+  hono@4.7.10:
+    resolution: {integrity: sha512-QkACju9MiN59CKSY5JsGZCYmPZkA6sIW6OFCUp7qDjZu6S6KHtJHhAc9Uy9mV9F8PJ1/HQ3ybZF2yjCa/73fvQ==}
+    engines: {node: '>=16.9.0'}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -4413,6 +4451,8 @@ snapshots:
   hermes-parser@0.25.1:
     dependencies:
       hermes-estree: 0.25.1
+
+  hono@4.7.10: {}
 
   ignore@5.3.2: {}
 

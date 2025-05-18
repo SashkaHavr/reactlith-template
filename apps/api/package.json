@@ -1,0 +1,28 @@
+{
+  "name": "@reactlith-template/api",
+  "type": "module",
+  "scripts": {
+    "build": "bun build --entrypoints ./src/index.ts --outdir ./dist --target bun",
+    "clean": "git clean -xdf .turbo node_modules",
+    "dev": "cd ../../ && bun exec \"NODE_ENV=development bun run --hot --env-file apps/api/.env apps/api/src/index.ts\"",
+    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
+    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "lint": "eslint",
+    "start": "bun exec \"NODE_ENV=production bun run dist/index.js\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@reactlith-template/prettier-config",
+  "dependencies": {
+    "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/trpc": "workspace:*",
+    "hono": "catalog:"
+  },
+  "devDependencies": {
+    "@reactlith-template/eslint-config": "workspace:*",
+    "@reactlith-template/prettier-config": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}
