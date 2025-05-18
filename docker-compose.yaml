@@ -3,10 +3,14 @@ services:
     build:
       context: .
       dockerfile: ./packages/db/Dockerfile
+    env_file:
+      - .env
   api:
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
+    env_file:
+      - .env
   web:
     build:
       context: .
