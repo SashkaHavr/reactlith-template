@@ -2,9 +2,15 @@ import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
 import { createContext } from '#context.ts';
-import { router } from '#init.ts';
+import { publicProcedure, router } from '#init.ts';
+import { configRouter } from '#routers/config.ts';
+import { numbersRouter } from '#routers/numbers.ts';
 
-const appRouter = router({});
+const appRouter = router({
+  health: publicProcedure.query(() => 'Healthy'),
+  numbers: numbersRouter,
+  config: configRouter,
+});
 
 export function trpcHandler({ request }: { request: Request }) {
   return fetchRequestHandler({

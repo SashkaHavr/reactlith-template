@@ -22,6 +22,9 @@ export const envServer = createEnv({
           : s.split(' '),
       )
       .refine((a) => z.array(urlSchema).safeParse(a)),
+
+    AUTH_BASE_URL: z.string().optional(),
+    AUTH_DEV_MAGIC_LINK: z.stringbool().default(false),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
