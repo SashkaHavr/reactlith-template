@@ -1,0 +1,27 @@
+{
+  "name": "@reactlith-template/env",
+  "type": "module",
+  "exports": {
+    "./server": "./src/server.ts",
+    "./db": "./src/db.ts",
+    "./vite": "./src/vite.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
+    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@reactlith-template/prettier-config",
+  "dependencies": {
+    "@t3-oss/env-core": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@reactlith-template/eslint-config": "workspace:*",
+    "@reactlith-template/prettier-config": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

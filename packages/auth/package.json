@@ -1,0 +1,30 @@
+{
+  "name": "@reactlith-template/auth",
+  "type": "module",
+  "imports": {
+    "#*": "./src/*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
+    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@reactlith-template/prettier-config",
+  "dependencies": {
+    "@reactlith-template/db": "workspace:*",
+    "@reactlith-template/env": "workspace:*",
+    "better-auth": "catalog:"
+  },
+  "devDependencies": {
+    "@reactlith-template/eslint-config": "workspace:*",
+    "@reactlith-template/prettier-config": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,15 @@
+services:
+  db-update:
+    build:
+      context: .
+      dockerfile: ./packages/db/Dockerfile
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}

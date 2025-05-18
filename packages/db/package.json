@@ -1,0 +1,35 @@
+{
+  "name": "@reactlith-template/db",
+  "type": "module",
+  "imports": {
+    "#*": "./src/*"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
+    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "lint": "eslint",
+    "push": "drizzle-kit push",
+    "studio": "drizzle-kit studio",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@reactlith-template/prettier-config",
+  "dependencies": {
+    "@reactlith-template/env": "workspace:*",
+    "drizzle-orm": "catalog:",
+    "pg": "^8.14.1"
+  },
+  "devDependencies": {
+    "@reactlith-template/eslint-config": "workspace:*",
+    "@reactlith-template/prettier-config": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
+    "@types/pg": "^8.11.13",
+    "drizzle-kit": "beta",
+    "typescript": "catalog:"
+  }
+}
