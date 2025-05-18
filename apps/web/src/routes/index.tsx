@@ -71,7 +71,12 @@ function RouteComponent() {
         </TestButton>
       )}
       {session.data && (
-        <TestButton onClick={() => void authClient.signOut()}>
+        <TestButton
+          onClick={() => {
+            void authClient.signOut();
+            void queryClient.invalidateQueries();
+          }}
+        >
           Logout
         </TestButton>
       )}
