@@ -20,16 +20,16 @@
   "prettier": "@reactlith-template/prettier-config",
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
-    "drizzle-orm": "catalog:",
-    "pg": "^8.14.1"
+    "drizzle-orm": "catalog:drizzle",
+    "pg": "^8.16.0"
   },
   "devDependencies": {
     "@reactlith-template/eslint-config": "workspace:*",
     "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
-    "@types/pg": "^8.11.13",
-    "drizzle-kit": "beta",
+    "@types/pg": "^8.15.2",
+    "drizzle-kit": "catalog:drizzle",
     "typescript": "catalog:"
   }
 }
