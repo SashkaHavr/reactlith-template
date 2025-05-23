@@ -21,7 +21,6 @@
     "@reactlith-template/env": "workspace:*",
     "@trpc/server": "catalog:trpc",
     "drizzle-orm": "catalog:drizzle",
-    "hono": "catalog:",
     "superjson": "catalog:",
     "zod": "catalog:"
   },
