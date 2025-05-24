@@ -1,15 +1,17 @@
+import { expo } from '@better-auth/expo';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { magicLink } from 'better-auth/plugins';
+import { emailOTP } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
 import { envServer } from '@reactlith-template/env/server';
 
-const devMagicLink = envServer.AUTH_DEV_MAGIC_LINK
+const devMagicLink = envServer.AUTH_DEV_OTP
   ? [
-      magicLink({
-        sendMagicLink: ({ url }) => {
-          console.log(url);
+      emailOTP({
+        sendVerificationOTP: async ({ email, otp }) => {
+          await Promise.resolve();
+          console.log(`${email} - ${otp}`);
         },
       }),
     ]
@@ -17,7 +19,7 @@ const devMagicLink = envServer.AUTH_DEV_MAGIC_LINK
 
 export const auth = betterAuth({
   basePath: '/auth',
-  trustedOrigins: envServer.CORS_ORIGINS,
+  trustedOrigins: [...envServer.CORS_ORIGINS, 'reactlith://', 'reactlith://*'],
   baseURL: envServer.AUTH_BASE_URL,
   advanced: {
     crossSubDomainCookies: {
@@ -33,5 +35,5 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
-  plugins: [...devMagicLink],
+  plugins: [...devMagicLink, expo()],
 });

@@ -25,8 +25,8 @@ catalogs:
       specifier: 5.8.2
       version: 5.8.2
     zod:
-      specifier: next
-      version: 3.25.0-beta.20250519T094321
+      specifier: ^3.25.24
+      version: 3.25.28
   drizzle:
     drizzle-kit:
       specifier: beta
@@ -143,6 +143,9 @@ importers:
 
   apps/mobile:
     dependencies:
+      '@better-auth/expo':
+        specifier: ^1.2.8
+        version: 1.2.8(better-auth@1.2.8)
       '@expo/vector-icons':
         specifier: ^14.1.0
         version: 14.1.0(expo-font@13.3.1(expo@53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -155,6 +158,21 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.6
         version: 7.1.9(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      '@reactlith-template/env':
+        specifier: workspace:*
+        version: link:../../packages/env
+      '@tanstack/react-query':
+        specifier: catalog:trpc
+        version: 5.76.1(react@19.0.0)
+      '@trpc/client':
+        specifier: catalog:trpc
+        version: 11.1.2(@trpc/server@11.1.2(typescript@5.8.2))(typescript@5.8.2)
+      '@trpc/tanstack-react-query':
+        specifier: catalog:trpc
+        version: 11.1.2(@tanstack/react-query@5.76.1(react@19.0.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.1.2(typescript@5.8.2))(react-dom@19.1.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)
+      better-auth:
+        specifier: 'catalog:'
+        version: 1.2.8
       expo:
         specifier: ~53.0.9
         version: 53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
@@ -179,6 +197,9 @@ importers:
       expo-router:
         specifier: ~5.0.6
         version: 5.0.7(c33c5f3ede545ce1f23560854cd304dc)
+      expo-secure-store:
+        specifier: ~14.2.3
+        version: 14.2.3(expo@53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
       expo-splash-screen:
         specifier: ~0.30.8
         version: 0.30.8(expo@53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
@@ -218,16 +239,25 @@ importers:
       react-native-webview:
         specifier: 13.13.5
         version: 13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      superjson:
+        specifier: 'catalog:'
+        version: 2.2.2
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
         version: 7.26.10
+      '@reactlith-template/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
       '@reactlith-template/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
       '@reactlith-template/prettier-config':
         specifier: workspace:*
         version: link:../../tools/prettier-config
+      '@reactlith-template/trpc':
+        specifier: workspace:*
+        version: link:../../packages/trpc
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../../tools/typescript-config
@@ -285,7 +315,7 @@ importers:
     devDependencies:
       '@julr/vite-plugin-validate-env':
         specifier: catalog:vite
-        version: 1.3.0(vite@6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4))(zod@3.25.0-beta.20250519T094321)
+        version: 1.3.0(vite@6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4))(zod@3.25.28)
       '@reactlith-template/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -303,7 +333,7 @@ importers:
         version: link:../../tools/typescript-config
       '@t3-oss/env-core':
         specifier: 'catalog:'
-        version: 0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.0-beta.20250519T094321)
+        version: 0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.28)
       '@tanstack/router-plugin':
         specifier: catalog:vite
         version: 1.120.5(@tanstack/react-router@1.120.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(vite@6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4))
@@ -339,10 +369,13 @@ importers:
         version: 5.1.4(typescript@5.8.2)(vite@6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4))
       zod:
         specifier: 'catalog:'
-        version: 3.25.0-beta.20250519T094321
+        version: 3.25.28
 
   packages/auth:
     dependencies:
+      '@better-auth/expo':
+        specifier: ^1.2.8
+        version: 1.2.8(better-auth@1.2.8)
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db
@@ -407,10 +440,10 @@ importers:
     dependencies:
       '@t3-oss/env-core':
         specifier: 'catalog:'
-        version: 0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.0-beta.20250519T094321)
+        version: 0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.28)
       zod:
         specifier: 'catalog:'
-        version: 3.25.0-beta.20250519T094321
+        version: 3.25.28
     devDependencies:
       '@reactlith-template/eslint-config':
         specifier: workspace:*
@@ -447,7 +480,7 @@ importers:
         version: 2.2.2
       zod:
         specifier: 'catalog:'
-        version: 3.25.0-beta.20250519T094321
+        version: 3.25.28
     devDependencies:
       '@reactlith-template/eslint-config':
         specifier: workspace:*
@@ -1130,6 +1163,11 @@ packages:
   '@babel/types@7.27.1':
     resolution: {integrity: sha512-+EzkxvLNfiUeKMgy/3luqfsCWFRXLb7U6wNQTk60tovuckwB15B191tJWvpp4HjiQWdJkCxO3Wbvc6jlk3Xb2Q==}
     engines: {node: '>=6.9.0'}
+
+  '@better-auth/expo@1.2.8':
+    resolution: {integrity: sha512-lbrSer954pv6PSDwzA7o6jVzbRO7Qv7npGgSifbC1oLwDTlsHFwU+Q0Rb8BvVleLi28tKtH7fN7sx/MMdeBOFw==}
+    peerDependencies:
+      better-auth: 1.2.8
 
   '@better-auth/utils@0.2.5':
     resolution: {integrity: sha512-uI2+/8h/zVsH8RrYdG8eUErbuGBk16rZKQfz8CjxQOyCE6v7BqFYEbFwvOkvl1KbUdxhqOnXp78+uE5h8qVEgQ==}
@@ -3295,6 +3333,11 @@ packages:
       react-native-reanimated:
         optional: true
 
+  expo-secure-store@14.2.3:
+    resolution: {integrity: sha512-hYBbaAD70asKTFd/eZBKVu+9RTo9OSTMMLqXtzDF8ndUGjpc6tmRCoZtrMHlUo7qLtwL5jm+vpYVBWI8hxh/1Q==}
+    peerDependencies:
+      expo: '*'
+
   expo-splash-screen@0.30.8:
     resolution: {integrity: sha512-2eh+uA543brfeG5HILXmtNKA7E2/pfywKzNumzy3Ef6OtDjYy6zJUGNSbhnZRbVEjUZo3/QNRs0JRBfY80okZg==}
     peerDependencies:
@@ -5450,8 +5493,8 @@ packages:
   zod@3.24.3:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
 
-  zod@3.25.0-beta.20250519T094321:
-    resolution: {integrity: sha512-FvDMTcBUhM/CZjeT0HJQ8M6KbSGRPHqEx2yLWx9kDU3ufoTiq7tQAI8UyBJ/82CBp1mv6tKVWp00ll6zV/WxmA==}
+  zod@3.25.28:
+    resolution: {integrity: sha512-/nt/67WYKnr5by3YS7LroZJbtcCBurDKKPBPWWzaxvVCGuG/NOsiKkrjoOhI8mJ+SQUXEbUzeB3S+6XDUEEj7Q==}
 
 snapshots:
 
@@ -6185,6 +6228,13 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
+  '@better-auth/expo@1.2.8(better-auth@1.2.8)':
+    dependencies:
+      '@better-fetch/fetch': 1.1.18
+      better-auth: 1.2.8
+      better-call: 1.0.8
+      zod: 3.24.3
+
   '@better-auth/utils@0.2.5':
     dependencies:
       typescript: 5.8.3
@@ -6784,14 +6834,14 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@julr/vite-plugin-validate-env@1.3.0(vite@6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4))(zod@3.25.0-beta.20250519T094321)':
+  '@julr/vite-plugin-validate-env@1.3.0(vite@6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4))(zod@3.25.28)':
     dependencies:
       '@poppinss/cliui': 6.4.3
       '@poppinss/validator-lite': 1.0.3
       unconfig: 0.6.1
       vite: 6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4)
     optionalDependencies:
-      zod: 3.25.0-beta.20250519T094321
+      zod: 3.25.28
     transitivePeerDependencies:
       - supports-color
 
@@ -7245,11 +7295,11 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@t3-oss/env-core@0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.0-beta.20250519T094321)':
+  '@t3-oss/env-core@0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.28)':
     optionalDependencies:
       typescript: 5.8.2
       valibot: 1.0.0-beta.15(typescript@5.8.2)
-      zod: 3.25.0-beta.20250519T094321
+      zod: 3.25.28
 
   '@tailwindcss/node@4.1.7':
     dependencies:
@@ -7368,7 +7418,7 @@ snapshots:
       '@tanstack/virtual-file-routes': 1.115.0
       prettier: 3.5.3
       tsx: 4.19.4
-      zod: 3.24.3
+      zod: 3.25.28
     optionalDependencies:
       '@tanstack/react-router': 1.120.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
@@ -7390,7 +7440,7 @@ snapshots:
       babel-dead-code-elimination: 1.0.10
       chokidar: 3.6.0
       unplugin: 2.3.4
-      zod: 3.24.3
+      zod: 3.25.28
     optionalDependencies:
       '@tanstack/react-router': 1.120.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       vite: 6.3.5(@types/node@22.13.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.2)(tsx@4.19.4)
@@ -7424,6 +7474,15 @@ snapshots:
       '@trpc/server': 11.1.2(typescript@5.8.2)
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+      typescript: 5.8.2
+
+  '@trpc/tanstack-react-query@11.1.2(@tanstack/react-query@5.76.1(react@19.0.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.1.2(typescript@5.8.2))(react-dom@19.1.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)':
+    dependencies:
+      '@tanstack/react-query': 5.76.1(react@19.0.0)
+      '@trpc/client': 11.1.2(@trpc/server@11.1.2(typescript@5.8.2))(typescript@5.8.2)
+      '@trpc/server': 11.1.2(typescript@5.8.2)
+      react: 19.0.0
+      react-dom: 19.1.0(react@19.0.0)
       typescript: 5.8.2
 
   '@types/babel__core@7.20.5':
@@ -8528,6 +8587,10 @@ snapshots:
       - react
       - react-native
       - supports-color
+
+  expo-secure-store@14.2.3(expo@53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)):
+    dependencies:
+      expo: 53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
 
   expo-splash-screen@0.30.8(expo@53.0.9(@babel/core@7.26.10)(@expo/metro-runtime@5.0.4(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)):
     dependencies:
@@ -10620,4 +10683,4 @@ snapshots:
 
   zod@3.24.3: {}
 
-  zod@3.25.0-beta.20250519T094321: {}
+  zod@3.25.28: {}
