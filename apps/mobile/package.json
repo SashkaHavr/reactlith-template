@@ -9,9 +9,6 @@
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
     "ios": "expo run:ios",
     "lint": "eslint",
-    "start": "expo run --variant release",
-    "start:android": "expo run:android --variant release",
-    "start:ios": "expo run:ios --configuration Release",
     "typecheck": "tsc --noEmit"
   },
   "prettier": "@reactlith-template/prettier-config",
