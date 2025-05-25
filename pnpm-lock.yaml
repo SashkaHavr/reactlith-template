@@ -291,6 +291,9 @@ importers:
       '@trpc/tanstack-react-query':
         specifier: catalog:trpc
         version: 11.1.2(@tanstack/react-query@5.76.1(react@19.0.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.1.2(typescript@5.8.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)
+      better-auth:
+        specifier: 'catalog:'
+        version: 1.2.8
       class-variance-authority:
         specifier: catalog:tailwind
         version: 0.7.1
@@ -454,6 +457,9 @@ importers:
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../../tools/typescript-config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.2.13
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
@@ -515,6 +521,9 @@ importers:
       '@tanstack/eslint-plugin-query':
         specifier: ^5.74.7
         version: 5.74.7(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.2)
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.2.13
       eslint:
         specifier: ^9.27.0
         version: 9.27.0(jiti@2.4.2)
@@ -7938,7 +7947,7 @@ snapshots:
       jose: 5.10.0
       kysely: 0.28.2
       nanostores: 0.11.4
-      zod: 3.24.3
+      zod: 3.25.28
 
   better-call@1.0.8:
     dependencies:

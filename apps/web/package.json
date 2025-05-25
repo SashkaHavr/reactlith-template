@@ -20,6 +20,7 @@
     "@tanstack/react-router": "catalog:vite",
     "@trpc/client": "catalog:trpc",
     "@trpc/tanstack-react-query": "catalog:trpc",
+    "better-auth": "catalog:",
     "class-variance-authority": "catalog:tailwind",
     "clsx": "catalog:tailwind",
     "lucide-react": "^0.488.0",

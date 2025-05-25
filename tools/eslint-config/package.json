@@ -18,6 +18,7 @@
     "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@tanstack/eslint-plugin-query": "^5.74.7",
+    "@types/bun": "catalog:",
     "eslint": "^9.27.0",
     "eslint-plugin-react-compiler": "latest",
     "eslint-plugin-react-hooks": "^5.2.0",

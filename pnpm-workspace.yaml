@@ -43,4 +43,7 @@ catalogs:
     "@tanstack/router-plugin": "^1.120.5"
     "@tanstack/react-router": "^1.120.5"
 
-nodeLinker: hoisted
+publicHoistPattern:
+  - '*expo*'
+  - '*prettier*'
+  - 'eslint'

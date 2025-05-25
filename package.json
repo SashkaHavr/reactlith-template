@@ -4,7 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "check": "turbo format:check lint typecheck",
-    "clean": "turbo clean:root clean",
+    "clean": "turbo clean clean:root",
     "clean:root": "git clean -xdf .turbo node_modules",
     "deps": "pnpx taze -r",
     "deps-major": "pnpx taze major -r",
