@@ -49,7 +49,9 @@ export default function Index() {
   return (
     <View style={styles.page}>
       <Text>Works!</Text>
-      {health.isSuccess && <Text>TRPC status: {health.data}</Text>}
+      <Text>
+        TRPC status: {health.isSuccess ? health.data : 'Not available'}
+      </Text>
       {devOTP &&
         !session.data &&
         (showOTPInput ? (
