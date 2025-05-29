@@ -7,10 +7,11 @@ import {
 import { createAuthClient } from 'better-auth/react';
 
 import type { auth } from '@reactlith-template/auth';
-import { envExpo } from '@reactlith-template/env/expo';
+
+import { env } from './env';
 
 export const authClient = createAuthClient({
-  baseURL: envExpo.EXPO_PUBLIC_API_URL,
+  baseURL: env.EXPO_PUBLIC_API_URL,
   basePath: '/auth',
   plugins: [
     inferAdditionalFields<typeof auth>(),

@@ -158,9 +158,9 @@ importers:
       '@react-navigation/native':
         specifier: ^7.1.6
         version: 7.1.9(react-native@0.79.2(@babel/core@7.26.10)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
-      '@reactlith-template/env':
-        specifier: workspace:*
-        version: link:../../packages/env
+      '@t3-oss/env-core':
+        specifier: 'catalog:'
+        version: 0.12.0(typescript@5.8.2)(valibot@1.0.0-beta.15(typescript@5.8.2))(zod@3.25.28)
       '@tanstack/react-query':
         specifier: catalog:trpc
         version: 5.76.1(react@19.0.0)
@@ -242,6 +242,9 @@ importers:
       superjson:
         specifier: 'catalog:'
         version: 2.2.2
+      zod:
+        specifier: 'catalog:'
+        version: 3.25.28
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
@@ -5499,9 +5502,6 @@ packages:
     peerDependencies:
       zod: ^3.18.0
 
-  zod@3.24.3:
-    resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
-
   zod@3.25.28:
     resolution: {integrity: sha512-/nt/67WYKnr5by3YS7LroZJbtcCBurDKKPBPWWzaxvVCGuG/NOsiKkrjoOhI8mJ+SQUXEbUzeB3S+6XDUEEj7Q==}
 
@@ -6242,7 +6242,7 @@ snapshots:
       '@better-fetch/fetch': 1.1.18
       better-auth: 1.2.8
       better-call: 1.0.8
-      zod: 3.24.3
+      zod: 3.25.28
 
   '@better-auth/utils@0.2.5':
     dependencies:
@@ -8400,8 +8400,8 @@ snapshots:
       '@babel/plugin-proposal-private-methods': 7.18.6(@babel/core@7.26.10)
       eslint: 9.27.0(jiti@2.4.2)
       hermes-parser: 0.25.1
-      zod: 3.24.3
-      zod-validation-error: 3.4.0(zod@3.24.3)
+      zod: 3.25.28
+      zod-validation-error: 3.4.0(zod@3.25.28)
     transitivePeerDependencies:
       - supports-color
 
@@ -10686,10 +10686,8 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-validation-error@3.4.0(zod@3.24.3):
+  zod-validation-error@3.4.0(zod@3.25.28):
     dependencies:
-      zod: 3.24.3
-
-  zod@3.24.3: {}
+      zod: 3.25.28
 
   zod@3.25.28: {}

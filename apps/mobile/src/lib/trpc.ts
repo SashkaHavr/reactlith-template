@@ -4,9 +4,9 @@ import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query';
 import superjson from 'superjson';
 
 import type { TRPCRouter } from '@reactlith-template/trpc';
-import { envExpo } from '@reactlith-template/env/expo';
 
 import { authClient } from './auth';
+import { env } from './env';
 
 export const queryClient = new QueryClient({});
 
@@ -14,7 +14,7 @@ export const trpcClient = createTRPCClient<TRPCRouter>({
   links: [
     httpBatchLink({
       transformer: superjson,
-      url: new URL('/trpc', envExpo.EXPO_PUBLIC_API_URL),
+      url: new URL('/trpc', env.EXPO_PUBLIC_API_URL),
       headers() {
         const headers = new Map<string, string>();
         const cookies = authClient.getCookie();
