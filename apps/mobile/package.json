@@ -2,10 +2,13 @@
   "name": "@reactlith/mobile",
   "main": "./src/index.ts",
   "scripts": {
+    "android": "expo run:android",
+    "build": "bun exec \"eas build --platform android --local --profile preview\"",
     "clean": "git clean -xdf .turbo node_modules .expo expo-env.d.ts android/.gradle android/.kotlin android/build",
     "dev": "expo start",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "ios": "expo run:ios",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
