@@ -1,7 +1,7 @@
 import { expo } from '@better-auth/expo';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { emailOTP } from 'better-auth/plugins';
+import { admin, emailOTP } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
 import { envServer } from '@reactlith-template/env/server';
@@ -35,5 +35,5 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
-  plugins: [...devMagicLink, expo()],
+  plugins: [...devMagicLink, expo(), admin()],
 });

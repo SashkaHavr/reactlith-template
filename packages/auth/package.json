@@ -11,6 +11,7 @@
     "clean": "git clean -xdf .turbo node_modules",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "generate-db-schema": "bun exec \"DATABASE_URL=url NODE_ENV=development npx @better-auth/cli@latest generate --config src/index.ts\"",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
