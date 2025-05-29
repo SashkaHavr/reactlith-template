@@ -13,6 +13,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 
+import { envExpo } from '@reactlith-template/env/expo';
+
 import { authClient } from '~/lib/auth';
 import { trpc } from '~/lib/trpc';
 
@@ -49,6 +51,7 @@ export default function Index() {
   return (
     <View style={styles.page}>
       <Text>Works!</Text>
+      <Text>API Endpoint: {envExpo.EXPO_PUBLIC_API_URL}</Text>
       <Text>
         TRPC status: {health.isSuccess ? health.data : 'Not available'}
       </Text>
