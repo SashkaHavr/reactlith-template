@@ -23,7 +23,6 @@ export const envServer = createEnv({
       )
       .refine((a) => z.array(urlSchema).safeParse(a)),
 
-    AUTH_BASE_URL: z.string().optional(),
     AUTH_DEV_OTP: z.stringbool().default(false),
   },
   runtimeEnv: process.env,

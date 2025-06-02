@@ -95,7 +95,7 @@ export default function Index() {
               onPress={() =>
                 void authClient.emailOtp
                   .sendVerificationOtp({
-                    email: 'test@example.com',
+                    email: email,
                     type: 'sign-in',
                   })
                   .then(() => setShowOTPInput(true))

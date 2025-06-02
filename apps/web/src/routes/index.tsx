@@ -120,7 +120,7 @@ function RouteComponent() {
             <TestButton
               onClick={() => {
                 void authClient.emailOtp.sendVerificationOtp({
-                  email: 'test@example.com',
+                  email: email,
                   type: 'sign-in',
                 });
                 setShowOTPInput(true);

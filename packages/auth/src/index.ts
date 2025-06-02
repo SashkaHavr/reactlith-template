@@ -6,7 +6,7 @@ import { admin, emailOTP } from 'better-auth/plugins';
 import { db } from '@reactlith-template/db';
 import { envServer } from '@reactlith-template/env/server';
 
-const devMagicLink = envServer.AUTH_DEV_OTP
+const devOTP = envServer.AUTH_DEV_OTP
   ? [
       emailOTP({
         sendVerificationOTP: async ({ email, otp }) => {
@@ -17,15 +17,11 @@ const devMagicLink = envServer.AUTH_DEV_OTP
     ]
   : [];
 
+const expoOrigins = ['reactlith://', 'reactlith://*'];
+
 export const auth = betterAuth({
   basePath: '/auth',
-  trustedOrigins: [...envServer.CORS_ORIGINS, 'reactlith://', 'reactlith://*'],
-  baseURL: envServer.AUTH_BASE_URL,
-  advanced: {
-    crossSubDomainCookies: {
-      enabled: envServer.AUTH_BASE_URL != undefined,
-    },
-  },
+  trustedOrigins: [...envServer.CORS_ORIGINS, ...expoOrigins],
   session: {
     cookieCache: {
       enabled: true,
@@ -35,5 +31,5 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
-  plugins: [...devMagicLink, expo(), admin()],
+  plugins: [...devOTP, expo(), admin()],
 });
