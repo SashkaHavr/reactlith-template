@@ -43,6 +43,10 @@ catalogs:
     "@tanstack/router-plugin": "^1.120.5"
     "@tanstack/react-router": "^1.120.5"
 
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
+
 publicHoistPattern:
   - '*expo*'
   - '*prettier*'
