@@ -29,7 +29,7 @@ RUN pnpm build
 FROM node:slim AS runner
 
 RUN apt-get -y update && apt-get -y install curl
-HEALTHCHECK CMD [ "curl", "http://localhost:3000/trpc/health" ]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD [ "curl", "http://localhost:3000" ]
 
 WORKDIR /app
 COPY --from=installer /app/apps/web/dist dist
