@@ -27,6 +27,10 @@ ENV VITE_API_URL=${VITE_API_URL}
 RUN pnpm build
 
 FROM node:slim AS runner
+
+RUN apt-get -y update && apt-get -y install curl
+HEALTHCHECK CMD [ "curl", "http://localhost:3000/trpc/health" ]
+
 WORKDIR /app
 COPY --from=installer /app/apps/web/dist dist
 

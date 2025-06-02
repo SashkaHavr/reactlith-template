@@ -1,4 +1,4 @@
-FROM oven/bun:1 AS base
+FROM oven/bun:slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV TURBO_TELEMETRY_DISABLED=1
@@ -22,7 +22,11 @@ RUN pnpm install --frozen-lockfile
 COPY --from=builder /app/out/full/ .
 RUN pnpm build
 
-FROM oven/bun:1 AS runner
+FROM oven/bun:slim AS runner
+
+RUN apt-get -y update && apt-get -y install curl
+HEALTHCHECK CMD [ "curl", "http://localhost:3000/trpc/health" ]
+
 WORKDIR /app
 COPY --from=installer /app/apps/api/dist/index.js .
 
