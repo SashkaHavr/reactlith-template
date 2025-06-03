@@ -4,7 +4,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mysecretpassword}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
     networks:
       - db-network
     healthcheck:
@@ -14,9 +14,10 @@ services:
       context: .
       dockerfile: ./packages/db/Dockerfile
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
     env_file:
-      - .env
+      - path: .env
+        required: false
     networks:
       - db-network
     depends_on:
@@ -27,9 +28,10 @@ services:
       context: .
       dockerfile: ./apps/api/Dockerfile
     environment:
-      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
     env_file:
-      - .env
+      - path: .env
+        required: false
     networks:
       - db-network
     depends_on:
@@ -42,7 +44,7 @@ services:
       context: .
       dockerfile: ./apps/web/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:5240}
+        VITE_API_URL: ${VITE_API_URL}
     depends_on:
       api:
         condition: service_healthy
