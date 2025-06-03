@@ -5,33 +5,29 @@ ENV TURBO_TELEMETRY_DISABLED=1
 RUN bun install -g pnpm
 RUN bun install -g turbo
 
-FROM base AS builder
-# Set working directory
+# Generate a partial monorepo with a pruned lockfile for a target workspace.
+FROM base AS turbo
 WORKDIR /app
 COPY . .
-# Generate a partial monorepo with a pruned lockfile for a target workspace.
 RUN turbo prune @reactlith-template/api --docker
- 
-# Add lockfile and package.json's of isolated subworkspace
-FROM base AS installer
+
+# Install and build
+FROM base AS builder
 WORKDIR /app
-# First install the dependencies (as they change less often)
-COPY --from=builder /app/out/json/ .
+COPY --from=turbo /app/out/json/ .
 RUN pnpm install --frozen-lockfile
-# Build
-COPY --from=builder /app/out/full/ .
+COPY --from=turbo /app/out/full/ .
 RUN pnpm build
 
+# Run
 FROM oven/bun:slim AS runner
+WORKDIR /app
+COPY --from=builder /app/apps/api/dist/index.js .
 
 RUN apt-get -y update && apt-get -y install curl
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD [ "curl", "http://localhost:3000/trpc/health" ]
 
-WORKDIR /app
-COPY --from=installer /app/apps/api/dist/index.js .
-
 USER bun
-EXPOSE 3000/tcp
-
+EXPOSE 3000
 ENV NODE_ENV=production
 CMD [ "bun", "run", "index.js" ]
