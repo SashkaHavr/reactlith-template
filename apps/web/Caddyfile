@@ -1,8 +1,8 @@
 :3000 {
 	encode
 
-	handle {$CADDY_API_REVERSE_PROXY_PATH} {
-		reverse_proxy {$CADDY_API_REVERSE_PROXY_URL}
+	handle /api/* {
+		reverse_proxy api:3000
 	}
 
 	handle {
