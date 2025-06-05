@@ -6,7 +6,9 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
     networks:
-      - db-network
+      db-network:
+        aliases:
+          - db-internal
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
   db-update:
@@ -14,7 +16,7 @@ services:
       context: .
       dockerfile: ./packages/db/Dockerfile
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db-internal:5432/postgres}
     env_file:
       - path: .env
         required: false
@@ -28,12 +30,15 @@ services:
       context: .
       dockerfile: ./apps/api/Dockerfile
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db-internal:5432/postgres}
     env_file:
       - path: .env
         required: false
     networks:
-      - db-network
+      db-network: {}
+      api-network:
+        aliases:
+          - api-internal
     depends_on:
       db:
         condition: service_healthy
@@ -45,12 +50,19 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL}
+        VITE_API_REVERSE_PROXY_PATH: "/api"
+    environment:
+        CADDY_API_REVERSE_PROXY_URL: api-internal:3000
+        CADDY_API_REVERSE_PROXY_PATH: "/api/*"
+    networks:
+      - api-network
     depends_on:
       api:
         condition: service_healthy
 
 networks:
   db-network:
+  api-network:
 
 volumes:
   db-data:

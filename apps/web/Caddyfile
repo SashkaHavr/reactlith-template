@@ -1,0 +1,13 @@
+http://:3000 {
+	encode
+
+	handle_path {$CADDY_API_REVERSE_PROXY_PATH} {
+		reverse_proxy {$CADDY_API_REVERSE_PROXY_URL}
+	}
+
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

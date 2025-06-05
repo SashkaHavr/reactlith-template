@@ -1,13 +1,7 @@
 services:
   api:
-    ports:
-      - 5261:3000
     environment:
-      CORS_ORIGINS: "http://localhost:5260"
       AUTH_DEV_OTP: true
   web:
-    build:
-      args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:5261}
     ports:
       - 5260:3000
