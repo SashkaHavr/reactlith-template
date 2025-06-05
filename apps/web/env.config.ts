@@ -5,5 +5,11 @@ export default defineConfig({
   validator: 'zod',
   schema: {
     VITE_API_URL: z.url().default('http://localhost:3000'),
+    VITE_API_REVERSE_PROXY_PATH: z
+      .string()
+      .optional()
+      .transform((path) =>
+        path == undefined ? '' : '/' + path.replaceAll('/', ''),
+      ),
   },
 });

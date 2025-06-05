@@ -20,19 +20,16 @@ COPY --from=turbo /app/out/full/ .
 
 ARG VITE_API_URL
 ENV VITE_API_URL=${VITE_API_URL}
+ARG VITE_API_REVERSE_PROXY_PATH
+ENV VITE_API_REVERSE_PROXY_PATH=${VITE_API_REVERSE_PROXY_PATH}
 
 RUN pnpm build
 
 # Run
-FROM oven/bun:slim AS runner
-WORKDIR /app
-COPY --from=builder /app/apps/web/dist dist
+FROM caddy AS runner
 
-RUN apt-get -y update && apt-get -y install curl
+RUN apk --no-cache add curl
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD [ "curl", "http://localhost:3000" ]
 
-
-USER bun
-EXPOSE 3000
-ENV NODE_ENV=production
-CMD [ "bunx", "serve", "-s", "dist" ]
+COPY  --from=builder /app/apps/web/Caddyfile /etc/caddy/Caddyfile
+COPY  --from=builder /app/apps/web/dist /srv

@@ -29,11 +29,13 @@ services:
       dockerfile: ./apps/api/Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
+      REVERSE_PROXY_PATH: "/api"
     env_file:
       - path: .env
         required: false
     networks:
       - db-network
+      - api-network
     depends_on:
       db:
         condition: service_healthy
@@ -45,12 +47,19 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL}
+        VITE_API_REVERSE_PROXY_PATH: "/api"
+    environment:
+        CADDY_API_REVERSE_PROXY_URL: http://api:3000
+        CADDY_API_REVERSE_PROXY_PATH: "/api/*"
+    networks:
+      - api-network
     depends_on:
       api:
         condition: service_healthy
 
 networks:
   db-network:
+  api-network:
 
 volumes:
   db-data:

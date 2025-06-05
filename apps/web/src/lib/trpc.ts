@@ -11,7 +11,10 @@ export const trpcClient = createTRPCClient<TRPCRouter>({
   links: [
     httpBatchLink({
       transformer: superjson,
-      url: new URL('/trpc', import.meta.env.VITE_API_URL),
+      url: new URL(
+        import.meta.env.VITE_API_REVERSE_PROXY_PATH + '/trpc',
+        import.meta.env.VITE_API_URL,
+      ),
       fetch: (url, options) =>
         fetch(url, {
           ...options,

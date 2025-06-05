@@ -8,6 +8,6 @@ import type { auth } from '@reactlith-template/auth';
 
 export const authClient = createAuthClient({
   baseURL: import.meta.env.VITE_API_URL,
-  basePath: '/auth',
+  basePath: import.meta.env.VITE_API_REVERSE_PROXY_PATH + '/auth',
   plugins: [inferAdditionalFields<typeof auth>(), emailOTPClient()],
 });

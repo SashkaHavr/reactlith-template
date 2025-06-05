@@ -5,7 +5,7 @@ import { auth } from '@reactlith-template/auth';
 import { envServer } from '@reactlith-template/env/server';
 import { trpcHandler } from '@reactlith-template/trpc';
 
-const app = new Hono();
+const app = new Hono().basePath(envServer.REVERSE_PROXY_PATH);
 
 app.use(
   '/auth/*',
