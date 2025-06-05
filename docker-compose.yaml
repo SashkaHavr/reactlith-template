@@ -49,7 +49,7 @@ services:
         VITE_API_URL: ${VITE_API_URL}
         VITE_API_REVERSE_PROXY_PATH: "/api"
     environment:
-        CADDY_API_REVERSE_PROXY_URL: http://api:3000
+        CADDY_API_REVERSE_PROXY_URL: api:3000
         CADDY_API_REVERSE_PROXY_PATH: "/api/*"
     networks:
       - api-network
