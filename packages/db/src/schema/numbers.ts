@@ -7,5 +7,5 @@ export const number = pgTable('number', {
   number: integer().notNull(),
   userId: text()
     .notNull()
-    .references(() => user.id),
+    .references(() => user.id, { onDelete: 'cascade' }),
 });
