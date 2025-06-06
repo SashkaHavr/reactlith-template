@@ -1,6 +1,11 @@
 http://:3000 {
 	encode
 
+	log {
+		output stdout
+		format console
+	}
+
 	handle_path /api/* {
 		reverse_proxy api:3000
 	}
