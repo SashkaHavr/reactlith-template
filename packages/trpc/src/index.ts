@@ -18,7 +18,7 @@ export function trpcHandler({ request }: { request: Request }) {
   return fetchRequestHandler({
     req: request,
     router: appRouter,
-    endpoint: envServer.REVERSE_PROXY_PATH + '/trpc',
+    endpoint: '/trpc',
     createContext: (opts) => createContext({ opts }),
   });
 }

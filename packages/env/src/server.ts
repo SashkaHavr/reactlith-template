@@ -22,12 +22,6 @@ export const envServer = createEnv({
           : s.split(' '),
       )
       .refine((a) => z.array(urlSchema).safeParse(a)),
-    REVERSE_PROXY_PATH: z
-      .string()
-      .optional()
-      .transform((path) =>
-        path == undefined ? '' : '/' + path.replaceAll('/', ''),
-      ),
 
     AUTH_DEV_OTP: z.stringbool().default(false),
   },

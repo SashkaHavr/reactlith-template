@@ -29,7 +29,6 @@ services:
       dockerfile: ./apps/api/Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
-      REVERSE_PROXY_PATH: "/api"
     env_file:
       - path: .env
         required: false
