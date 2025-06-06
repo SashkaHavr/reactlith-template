@@ -7,14 +7,16 @@ import type { TRPCRouter } from '@reactlith-template/trpc';
 
 export const queryClient = new QueryClient({});
 
+const trpcPath = '/trpc';
+
 export const trpcClient = createTRPCClient<TRPCRouter>({
   links: [
     httpBatchLink({
       transformer: superjson,
-      url: new URL(
-        import.meta.env.VITE_API_REVERSE_PROXY_PATH + '/trpc',
-        import.meta.env.VITE_API_URL,
-      ),
+      url:
+        import.meta.env.VITE_API_REVERSE_PROXY_PATH != undefined
+          ? import.meta.env.VITE_API_REVERSE_PROXY_PATH + trpcPath
+          : new URL(trpcPath, import.meta.env.VITE_API_URL),
       fetch: (url, options) =>
         fetch(url, {
           ...options,
