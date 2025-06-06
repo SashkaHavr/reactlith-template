@@ -1,9 +1,5 @@
-http://:3000 {
+:3000 {
 	encode
-
-	handle /api/* {
-		reverse_proxy api:3000
-	}
 
 	handle {
 		root * /srv
