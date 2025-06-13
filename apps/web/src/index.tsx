@@ -9,7 +9,10 @@ import { routeTree } from './routeTree.gen';
 
 const router = createRouter({
   routeTree,
-  scrollRestoration: true,
+  context: {
+    queryClient,
+  },
+  defaultPreloadStaleTime: 0,
   Wrap: (props) => {
     return (
       <QueryClientProvider client={queryClient}>

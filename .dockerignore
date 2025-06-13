@@ -171,6 +171,8 @@ yarn-error.*
 *.sqlite
 *.db
 
+.tanstack
+
 # .dockerignore specific
 *.md
 Dockerfile

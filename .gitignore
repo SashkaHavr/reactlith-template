@@ -170,3 +170,5 @@ yarn-error.*
 
 *.sqlite
 *.db
+
+.tanstack

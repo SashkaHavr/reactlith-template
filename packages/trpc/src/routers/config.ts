@@ -7,7 +7,8 @@ export const configRouter = router({
     return {
       devMagicLink: envServer.AUTH_DEV_MAGIC_LINK,
       githubOAuth:
-        envServer.AUTH_GITHUB_CLIENT_ID && envServer.AUTH_GITHUB_CLIENT_SECRET,
+        !!envServer.AUTH_GITHUB_CLIENT_ID &&
+        !!envServer.AUTH_GITHUB_CLIENT_SECRET,
     };
   }),
 });

@@ -1,13 +1,8 @@
 import { useState } from 'react';
-import {
-  skipToken,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 
-import { authClient } from '~/lib/auth';
+import { authClient, resetAuth } from '~/lib/auth';
 import { trpc } from '~/lib/trpc';
 
 export const Route = createFileRoute('/')({
@@ -65,12 +60,12 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 function RouteComponent() {
-  const queryClient = useQueryClient();
-  const session = authClient.useSession();
+  const router = useRouter();
+  const { auth, queryClient } = Route.useRouteContext();
   const trpcHealth = useQuery(trpc.health.queryOptions());
   const authConfig = useQuery(trpc.config.authConfig.queryOptions());
   const numbers = useQuery(
-    trpc.numbers.getAll.queryOptions(session.data ? void 0 : skipToken),
+    trpc.numbers.getAll.queryOptions(auth.isLoggedIn ? void 0 : skipToken),
   );
   const addNumber = useMutation(
     trpc.numbers.addNew.mutationOptions({
@@ -88,8 +83,29 @@ function RouteComponent() {
         }),
     }),
   );
+  const githubSignin = useMutation({
+    mutationFn: () =>
+      authClient.signIn.social({
+        provider: 'github',
+        callbackURL: window.origin,
+      }),
+  });
+  const magicLinkSignin = useMutation({
+    mutationFn: () =>
+      authClient.signIn.magicLink({
+        email: email,
+        callbackURL: window.location.href,
+      }),
+  });
+  const signout = useMutation({
+    mutationFn: () => authClient.signOut(),
+    onSuccess: async () => {
+      await resetAuth(queryClient);
+      await router.invalidate();
+    },
+  });
+
   const [email, setEmail] = useState('');
-  const authError = session.isPending || session.error != null;
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
@@ -105,22 +121,15 @@ function RouteComponent() {
         </p>
         <p>
           Auth status:{' '}
-          <span className={!authError ? 'text-green-500' : 'text-red-500'}>
-            {!authError ? 'Available' : 'Not available'}
+          <span className={auth.available ? 'text-green-500' : 'text-red-500'}>
+            {auth.available ? 'Available' : 'Not available'}
           </span>
         </p>
       </div>
-      {!session.data && authConfig.isSuccess && (
+      {!auth.isLoggedIn && authConfig.isSuccess && (
         <div className="flex flex-col gap-3">
           {authConfig.data.githubOAuth && (
-            <TestButton
-              onClick={() => {
-                void authClient.signIn.social({
-                  provider: 'github',
-                  callbackURL: window.location.href,
-                });
-              }}
-            >
+            <TestButton onClick={() => githubSignin.mutate()}>
               Login with GitHub
               <GitHubIcon className="size-5" />
             </TestButton>
@@ -140,31 +149,17 @@ function RouteComponent() {
                 value={email}
                 onValueChange={setEmail}
               />
-              <TestButton
-                onClick={() => {
-                  void authClient.signIn.magicLink({
-                    email: email,
-                    callbackURL: window.location.href,
-                  });
-                }}
-              >
+              <TestButton onClick={() => magicLinkSignin.mutate()}>
                 Login
               </TestButton>
             </div>
           )}
         </div>
       )}
-      {session.data && (
+      {auth.isLoggedIn && (
         <div className="flex flex-col items-center gap-2">
-          <TestButton
-            onClick={() => {
-              void authClient.signOut();
-              void queryClient.clear();
-            }}
-          >
-            Logout
-          </TestButton>
-          <p>User: {session.data.user.email}</p>
+          <TestButton onClick={() => signout.mutate()}>Logout</TestButton>
+          <p>User: {auth.user.email}</p>
           <div className="flex gap-2">
             <TestButton onClick={() => addNumber.mutate()}>
               Add number
