@@ -1,16 +1,15 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { admin, emailOTP } from 'better-auth/plugins';
+import { admin, magicLink } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
 import { envAuth } from '@reactlith-template/env/auth';
 
-const devOTP = envAuth.AUTH_DEV_OTP
+const devMagicLink = envAuth.AUTH_DEV_MAGIC_LINK
   ? [
-      emailOTP({
-        sendVerificationOTP: async ({ email, otp }) => {
-          await Promise.resolve();
-          console.log(`${email} - ${otp}`);
+      magicLink({
+        sendMagicLink: ({ url }) => {
+          console.log(url);
         },
       }),
     ]
@@ -28,5 +27,14 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
-  plugins: [...devOTP, admin()],
+  socialProviders: {
+    github:
+      envAuth.AUTH_GITHUB_CLIENT_ID && envAuth.AUTH_GITHUB_CLIENT_SECRET
+        ? {
+            clientId: envAuth.AUTH_GITHUB_CLIENT_ID,
+            clientSecret: envAuth.AUTH_GITHUB_CLIENT_SECRET,
+          }
+        : undefined,
+  },
+  plugins: [...devMagicLink, admin()],
 });

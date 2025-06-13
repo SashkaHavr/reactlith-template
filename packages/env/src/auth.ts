@@ -11,7 +11,11 @@ export const authConfig = {
         : s.split(' '),
     )
     .refine((a) => z.array(z.url()).safeParse(a)),
-  AUTH_DEV_OTP: z.stringbool().default(false),
+
+  AUTH_DEV_MAGIC_LINK: z.stringbool().default(false),
+
+  AUTH_GITHUB_CLIENT_ID: z.string().optional(),
+  AUTH_GITHUB_CLIENT_SECRET: z.string().optional(),
 };
 
 export const envAuth = createEnv({

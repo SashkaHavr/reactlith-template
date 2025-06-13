@@ -1,6 +1,6 @@
 import {
-  emailOTPClient,
   inferAdditionalFields,
+  magicLinkClient,
 } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
 
@@ -17,5 +17,5 @@ export const authClient = createAuthClient({
     import.meta.env.VITE_API_REVERSE_PROXY_PATH == undefined
       ? authPath
       : import.meta.env.VITE_API_REVERSE_PROXY_PATH + authPath,
-  plugins: [inferAdditionalFields<typeof auth>(), emailOTPClient()],
+  plugins: [inferAdditionalFields<typeof auth>(), magicLinkClient()],
 });

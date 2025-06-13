@@ -1,7 +1,7 @@
 services:
   api:
     environment:
-      AUTH_DEV_OTP: true
+      AUTH_DEV_MAGIC_LINK: true
   web:
     ports:
       - 5260:3000
