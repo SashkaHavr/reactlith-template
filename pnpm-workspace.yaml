@@ -48,6 +48,5 @@ onlyBuiltDependencies:
   - esbuild
 
 publicHoistPattern:
-  - '*expo*'
   - '*prettier*'
   - 'eslint'

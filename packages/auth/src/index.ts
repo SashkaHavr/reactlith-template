@@ -1,4 +1,3 @@
-import { expo } from '@better-auth/expo';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, emailOTP } from 'better-auth/plugins';
@@ -17,11 +16,9 @@ const devOTP = envServer.AUTH_DEV_OTP
     ]
   : [];
 
-const expoOrigins = ['reactlith://', 'reactlith://*'];
-
 export const auth = betterAuth({
   basePath: '/auth',
-  trustedOrigins: [...envServer.CORS_ORIGINS, ...expoOrigins],
+  trustedOrigins: envServer.CORS_ORIGINS,
   session: {
     cookieCache: {
       enabled: true,
@@ -31,5 +28,5 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
-  plugins: [...devOTP, expo(), admin()],
+  plugins: [...devOTP, admin()],
 });

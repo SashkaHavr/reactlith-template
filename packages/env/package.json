@@ -4,8 +4,7 @@
   "exports": {
     "./server": "./src/server.ts",
     "./db": "./src/db.ts",
-    "./vite": "./src/vite.ts",
-    "./expo": "./src/expo.ts"
+    "./vite": "./src/vite.ts"
   },
   "scripts": {
     "clean": "git clean -xdf .turbo node_modules",

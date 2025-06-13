@@ -16,7 +16,6 @@ export default {
   importOrder: [
     '<TYPES>',
     '^(react/(.*)$)|^(react$)|^(react-native(.*)$)',
-    '^(expo(.*)$)|^(expo$)',
     '<THIRD_PARTY_MODULES>',
     '',
     '<TYPES>^@reactlith-template',
