@@ -1,15 +1,13 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
-import { envServer } from '@reactlith-template/env/server';
-
 import { createContext } from '#context.ts';
 import { publicProcedure, router } from '#init.ts';
 import { configRouter } from '#routers/config.ts';
 import { numbersRouter } from '#routers/numbers.ts';
 
 const appRouter = router({
-  health: publicProcedure.query(() => 'Healthy'),
+  health: publicProcedure.query(() => 'tRPC healthy!'),
   numbers: numbersRouter,
   config: configRouter,
 });
