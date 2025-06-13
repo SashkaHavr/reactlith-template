@@ -23,7 +23,7 @@
     "better-auth": "catalog:",
     "class-variance-authority": "catalog:tailwind",
     "clsx": "catalog:tailwind",
-    "lucide-react": "^0.488.0",
+    "lucide-react": "^0.515.0",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "superjson": "catalog:",

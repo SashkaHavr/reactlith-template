@@ -28,7 +28,7 @@
     "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
-    "@types/pg": "^8.15.2",
+    "@types/pg": "^8.15.4",
     "drizzle-kit": "catalog:drizzle",
     "typescript": "catalog:"
   }
