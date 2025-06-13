@@ -7,7 +7,13 @@ import { globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  globalIgnores(['dist/**']),
+  globalIgnores([
+    'dist/**',
+    'android/**',
+    'ios/**',
+    '.expo/**',
+    'expo-plugins/**',
+  ]),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended],

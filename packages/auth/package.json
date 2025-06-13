@@ -17,6 +17,7 @@
   },
   "prettier": "@reactlith-template/prettier-config",
   "dependencies": {
+    "@better-auth/expo": "^1.2.8",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "better-auth": "catalog:"
