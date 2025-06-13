@@ -3,9 +3,9 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, emailOTP } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
-import { envServer } from '@reactlith-template/env/server';
+import { envAuth } from '@reactlith-template/env/auth';
 
-const devOTP = envServer.AUTH_DEV_OTP
+const devOTP = envAuth.AUTH_DEV_OTP
   ? [
       emailOTP({
         sendVerificationOTP: async ({ email, otp }) => {
@@ -18,7 +18,7 @@ const devOTP = envServer.AUTH_DEV_OTP
 
 export const auth = betterAuth({
   basePath: '/auth',
-  trustedOrigins: envServer.CORS_ORIGINS,
+  trustedOrigins: envAuth.AUTH_TRUSTED_ORIGINS,
   session: {
     cookieCache: {
       enabled: true,
