@@ -68,7 +68,7 @@ export default tseslint.config(
   pluginQuery.configs['flat/recommended'],
   {
     files: ['**/*.{ts,tsx}'],
-    ignores: ['*.config.ts', 'src/index.ts', 'src/app/**'],
+    ignores: ['*.config.ts', 'src/index.ts'],
     rules: {
       'no-restricted-exports': [
         'error',
