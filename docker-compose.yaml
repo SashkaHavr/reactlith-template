@@ -12,9 +12,9 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      timeout: 1s
+      retries: 1
+      start_period: 2s
   db-update:
     build:
       context: .

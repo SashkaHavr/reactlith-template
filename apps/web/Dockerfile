@@ -29,7 +29,7 @@ RUN pnpm build
 FROM caddy AS runner
 
 RUN apk --no-cache add curl
-HEALTHCHECK --interval=5s --timeout=5s --start-period=10s --retries=3 CMD [ "curl", "http://localhost:3000" ]
+HEALTHCHECK --interval=5s --timeout=1s --start-period=2s --retries=1 CMD [ "curl", "http://localhost:3000" ]
 
 COPY  --from=builder /app/apps/web/Caddyfile /etc/caddy/Caddyfile
 COPY  --from=builder /app/apps/web/dist /srv
