@@ -65,6 +65,7 @@ function RouteComponent() {
         email: email,
         callbackURL: window.location.href,
       }),
+    onSuccess: () => setShowHint(true),
   });
   const signout = useMutation({
     mutationFn: () => authClient.signOut(),
@@ -75,6 +76,7 @@ function RouteComponent() {
   });
 
   const [email, setEmail] = useState('');
+  const [showHint, setShowHint] = useState(false);
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
@@ -114,19 +116,22 @@ function RouteComponent() {
             </div>
           )}
           {authConfig.data.devMagicLink && (
-            <div className="flex gap-2">
-              <Input
-                placeholder="user@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Button
-                variant="outline"
-                onClick={() => magicLinkSignin.mutate()}
-              >
-                Login
-              </Button>
-            </div>
+            <>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="user@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => magicLinkSignin.mutate()}
+                >
+                  Login
+                </Button>
+              </div>
+              {showHint && <p>See your backend server terminal!</p>}
+            </>
           )}
         </div>
       )}

@@ -20,6 +20,7 @@ export const authClient = createAuthClient({
       ? authPath
       : import.meta.env.VITE_API_REVERSE_PROXY_PATH + authPath,
   plugins: [inferAdditionalFields<typeof auth>(), magicLinkClient()],
+  fetchOptions: { throw: true },
 });
 
 const authBaseKey = 'auth';
@@ -30,8 +31,23 @@ export const authGetSessionOptions = queryOptions({
 });
 
 export async function getAuthContext(queryClient: QueryClient) {
-  const session = await queryClient.ensureQueryData(authGetSessionOptions);
-  if (session.error != null) {
+  try {
+    const session = await queryClient.ensureQueryData(authGetSessionOptions);
+    const sessionData = session as typeof authClient.$Infer.Session | null;
+    return sessionData != null
+      ? {
+          available: true as const,
+          isLoggedIn: true as const,
+          session: sessionData.session,
+          user: sessionData.user,
+        }
+      : {
+          available: true as const,
+          isLoggedIn: false as const,
+          session: null,
+          user: null,
+        };
+  } catch {
     return {
       available: false as const,
       isLoggedIn: false as const,
@@ -39,20 +55,6 @@ export async function getAuthContext(queryClient: QueryClient) {
       user: null,
     };
   }
-  const sessionData = session.data as typeof authClient.$Infer.Session | null;
-  return sessionData != null
-    ? {
-        available: true as const,
-        isLoggedIn: true as const,
-        session: sessionData.session,
-        user: sessionData.user,
-      }
-    : {
-        available: true as const,
-        isLoggedIn: false as const,
-        session: null,
-        user: null,
-      };
 }
 
 export async function resetAuth(queryClient: QueryClient) {
