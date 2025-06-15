@@ -63,7 +63,7 @@ function RouteComponent() {
     mutationFn: () =>
       authClient.signIn.magicLink({
         email: email,
-        callbackURL: window.location.href,
+        callbackURL: window.origin,
       }),
     onSuccess: () => setShowHint(true),
   });
