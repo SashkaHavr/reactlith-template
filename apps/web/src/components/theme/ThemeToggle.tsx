@@ -3,7 +3,7 @@ import { MoonIcon, SunIcon } from 'lucide-react';
 
 import type { buttonVariants } from '../ui/button';
 import { Button } from '../ui/button';
-import { useTheme } from './useTheme';
+import { useRealTheme, useThemeStore } from './useTheme';
 
 export function ThemeToggle(
   props: React.ComponentProps<'button'> &
@@ -11,7 +11,8 @@ export function ThemeToggle(
       asChild?: boolean;
     },
 ) {
-  const { realTheme, setTheme } = useTheme();
+  const realTheme = useRealTheme();
+  const { setTheme } = useThemeStore();
 
   return (
     <Button

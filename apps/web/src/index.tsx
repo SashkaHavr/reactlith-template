@@ -16,7 +16,7 @@ const router = createRouter({
   Wrap: (props) => {
     return (
       <QueryClientProvider client={queryClient}>
-        {props.children}
+        <ThemeProvider>{props.children}</ThemeProvider>
       </QueryClientProvider>
     );
   },
@@ -35,9 +35,7 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <RouterProvider router={router} />
     </StrictMode>,
   );
 }

@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+
+import { ThemeToggle } from '~/components/theme/ThemeToggle';
 import { authClient, resetAuth } from '~/lib/auth';
 import { trpc } from '~/lib/trpc';
 
@@ -9,48 +13,13 @@ export const Route = createFileRoute('/')({
   component: RouteComponent,
 });
 
-function TestButton({
-  onClick,
-  children,
-}: {
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      className="flex items-center justify-center gap-4 border border-black px-4 py-2 transition-colors hover:bg-black/5"
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
-
-function EmailInput({
-  placeholder,
-  value,
-  onValueChange,
-}: {
-  placeholder: string;
-  value: string;
-  onValueChange: (value: string) => void;
-}) {
-  return (
-    <input
-      value={value}
-      onChange={(e) => onValueChange(e.target.value)}
-      placeholder={placeholder}
-      className="border border-black px-4 py-2 transition-colors"
-    />
-  );
-}
-
 function GitHubIcon({ className }: { className?: string }) {
   return (
     <svg
       className={className}
       role="img"
       viewBox="0 0 24 24"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
       <title>GitHub</title>
@@ -110,7 +79,10 @@ function RouteComponent() {
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
       <div className="flex w-70 flex-col gap-2">
-        <p className="self-center text-xl">Works!</p>
+        <div className="flex gap-4">
+          <p className="self-center text-xl">Works!</p>
+          <ThemeToggle />
+        </div>
         <p>
           tRPC health response:{' '}
           <span
@@ -129,44 +101,48 @@ function RouteComponent() {
       {!auth.isLoggedIn && authConfig.isSuccess && (
         <div className="flex flex-col gap-3">
           {authConfig.data.githubOAuth && (
-            <TestButton onClick={() => githubSignin.mutate()}>
+            <Button variant="outline" onClick={() => githubSignin.mutate()}>
               Login with GitHub
               <GitHubIcon className="size-5" />
-            </TestButton>
+            </Button>
           )}
           {authConfig.data.githubOAuth && authConfig.data.devMagicLink && (
-            <div className="grid items-center justify-items-center">
-              <div className="col-span-full row-span-full h-0.25 w-full bg-black/60"></div>
-              <span className="col-span-full row-span-full bg-white px-2 text-sm text-black/60">
+            <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+              <span className="relative z-10 bg-background px-2">
                 Or continue with dev magic link
               </span>
             </div>
           )}
           {authConfig.data.devMagicLink && (
             <div className="flex gap-2">
-              <EmailInput
+              <Input
                 placeholder="user@example.com"
                 value={email}
-                onValueChange={setEmail}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <TestButton onClick={() => magicLinkSignin.mutate()}>
+              <Button
+                variant="outline"
+                onClick={() => magicLinkSignin.mutate()}
+              >
                 Login
-              </TestButton>
+              </Button>
             </div>
           )}
         </div>
       )}
       {auth.isLoggedIn && (
         <div className="flex flex-col items-center gap-2">
-          <TestButton onClick={() => signout.mutate()}>Logout</TestButton>
+          <Button variant="outline" onClick={() => signout.mutate()}>
+            Logout
+          </Button>
           <p>User: {auth.user.email}</p>
           <div className="flex gap-2">
-            <TestButton onClick={() => addNumber.mutate()}>
+            <Button variant="outline" onClick={() => addNumber.mutate()}>
               Add number
-            </TestButton>
-            <TestButton onClick={() => deleteNumbers.mutate()}>
+            </Button>
+            <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
               Delete all numbers
-            </TestButton>
+            </Button>
           </div>
           {numbers.isSuccess && (
             <p className="text-xl font-bold">{JSON.stringify(numbers.data)}</p>

@@ -11,6 +11,7 @@ catalog:
   "zod": "^3.25.64"
   "@t3-oss/env-core": "^0.13.8"
   "hono": "^4.7.11"
+  "zustand": "^5.0.5"
 
 catalogs:
   react:
