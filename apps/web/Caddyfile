@@ -1,7 +1,11 @@
 http://:3000 {
 	encode
 
-	handle_path {$CADDY_API_REVERSE_PROXY_PATH} {
+	handle /auth/* {
+		reverse_proxy {$CADDY_API_REVERSE_PROXY_URL}
+	}
+
+	handle /trpc/* {
 		reverse_proxy {$CADDY_API_REVERSE_PROXY_URL}
 	}
 

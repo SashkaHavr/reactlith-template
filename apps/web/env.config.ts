@@ -8,11 +8,6 @@ export default defineConfig({
       .union([z.url(), z.literal('')])
       .optional()
       .default('http://localhost:3000'),
-    VITE_API_REVERSE_PROXY_PATH: z
-      .string()
-      .optional()
-      .transform((path) =>
-        path == undefined ? undefined : '/' + path.replaceAll('/', ''),
-      ),
+    VITE_API_UNDER_REVERSE_PROXY: z.stringbool().optional().default(false),
   },
 });

@@ -54,10 +54,9 @@ services:
       dockerfile: ./apps/web/Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL}
-        VITE_API_REVERSE_PROXY_PATH: "/api"
+        VITE_API_UNDER_REVERSE_PROXY: "true"
     environment:
         CADDY_API_REVERSE_PROXY_URL: api-internal:3000
-        CADDY_API_REVERSE_PROXY_PATH: "/api/*"
     networks:
       - api-network
     depends_on:

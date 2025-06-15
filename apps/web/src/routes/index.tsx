@@ -130,7 +130,11 @@ function RouteComponent() {
                   Login
                 </Button>
               </div>
-              {showHint && <p>See your backend server terminal!</p>}
+              {showHint && (
+                <p className="self-center text-sm text-foreground/70">
+                  See your backend server terminal!
+                </p>
+              )}
             </>
           )}
         </div>
