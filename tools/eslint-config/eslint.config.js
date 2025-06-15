@@ -62,7 +62,7 @@ export default tseslint.config(
   {
     files: ['**/*.{ts,tsx}'],
     ignores: ['src/components/ui/*.tsx'],
-    extends: [pluginReactRefresh.configs.recommended],
+    extends: [pluginReactRefresh.configs.vite],
   },
   pluginReactCompiler.configs.recommended,
   pluginQuery.configs['flat/recommended'],
