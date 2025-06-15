@@ -8,7 +8,6 @@ import * as schema from './schema';
 export const db = drizzle({
   connection: {
     connectionString: envDB.DATABASE_URL,
-    ssl: envDB.DATABASE_SSL,
   },
   schema: schema,
   relations: relations,
