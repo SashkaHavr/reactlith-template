@@ -18,6 +18,9 @@ catalogs:
     hono:
       specifier: ^4.7.11
       version: 4.7.11
+    lucide-react:
+      specifier: ^0.515.0
+      version: 0.515.0
     superjson:
       specifier: ^2.2.2
       version: 2.2.2
@@ -174,7 +177,7 @@ importers:
         specifier: catalog:tailwind
         version: 2.1.1
       lucide-react:
-        specifier: ^0.515.0
+        specifier: 'catalog:'
         version: 0.515.0(react@19.1.0)
       react:
         specifier: catalog:react
@@ -409,9 +412,6 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.20
         version: 0.4.20(eslint@9.28.0(jiti@2.4.2))
-      prettier:
-        specifier: ^3.5.3
-        version: 3.5.3
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
