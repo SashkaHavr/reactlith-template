@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
-import { createFileRoute, useRouter } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
 import { ThemeToggle } from '~/components/theme/ThemeToggle';
-import { authClient, resetAuth } from '~/lib/auth';
+import { authClient, useResetAuth } from '~/lib/auth';
 import { trpc } from '~/lib/trpc';
 
 export const Route = createFileRoute('/')({
@@ -29,7 +29,7 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 function RouteComponent() {
-  const router = useRouter();
+  const resetAuth = useResetAuth();
   const { auth, queryClient } = Route.useRouteContext();
   const trpcHealth = useQuery(trpc.health.queryOptions());
   const authConfig = useQuery(trpc.config.authConfig.queryOptions());
@@ -70,8 +70,7 @@ function RouteComponent() {
   const signout = useMutation({
     mutationFn: () => authClient.signOut(),
     onSuccess: async () => {
-      await resetAuth(queryClient);
-      await router.invalidate();
+      await resetAuth();
     },
   });
 

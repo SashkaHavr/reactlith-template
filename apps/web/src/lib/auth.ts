@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
 import {
   inferAdditionalFields,
   magicLinkClient,
@@ -51,6 +52,12 @@ export async function getAuthContext(queryClient: QueryClient) {
   }
 }
 
-export async function resetAuth(queryClient: QueryClient) {
-  await queryClient.resetQueries({ queryKey: [authBaseKey] });
+export function useResetAuth() {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  return async () => {
+    await queryClient.resetQueries({ queryKey: [authBaseKey] });
+    await router.invalidate();
+  };
 }
