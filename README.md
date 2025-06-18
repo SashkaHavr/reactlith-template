@@ -49,4 +49,5 @@ docker compose -f docker-compose.yaml up --build -d
 2. Set following env config:
 ```conf
 BETTER_AUTH_URL=<Your domain>
+BETTER_AUTH_SECRET=<Generated secret, e.g. with "openssl rand -base64 32">
 ```
