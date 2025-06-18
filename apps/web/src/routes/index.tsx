@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
-import { ThemeToggle } from '~/components/theme/ThemeToggle';
+import { ThemeToggle } from '~/components/theme/theme-toggle';
 import { authClient, useResetAuth } from '~/lib/auth';
 import { trpc } from '~/lib/trpc';
 

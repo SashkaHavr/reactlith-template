@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 
-import { useRealTheme } from './useTheme';
+import { useRealTheme } from './use-theme';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const realTheme = useRealTheme();
