@@ -52,3 +52,12 @@ docker compose -f docker-compose.yaml up --build -d
 BETTER_AUTH_URL=<Your domain>
 BETTER_AUTH_SECRET=<Generated secret, e.g. with "openssl rand -base64 32">
 ```
+
+## pgAdmin
+
+Docker compose includes pgadmin4 that is connected to the same docker network as database. To start it, set following variables in .env file:
+```conf
+PGADMIN_DEFAULT_EMAIL=<>
+PGADMIN_DEFAULT_PASSWORD=<something secure>
+```
+Credentials can be found in [docker-compose.yaml](docker-compose.yaml)
