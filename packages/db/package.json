@@ -21,7 +21,7 @@
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
     "drizzle-orm": "catalog:drizzle",
-    "pg": "^8.16.0"
+    "pg": "^8.16.1"
   },
   "devDependencies": {
     "@reactlith-template/eslint-config": "workspace:*",
