@@ -25,7 +25,7 @@ export const authGetSessionOptions = queryOptions({
   queryFn: async () => await authClient.getSession(),
 });
 
-export async function getAuthContext(queryClient: QueryClient) {
+export async function getAuthData(queryClient: QueryClient) {
   try {
     const session = await queryClient.ensureQueryData(authGetSessionOptions);
     const sessionData = session as typeof authClient.$Infer.Session | null;
@@ -39,15 +39,11 @@ export async function getAuthContext(queryClient: QueryClient) {
       : {
           available: true as const,
           isLoggedIn: false as const,
-          session: null,
-          user: null,
         };
   } catch {
     return {
       available: false as const,
       isLoggedIn: false as const,
-      session: null,
-      user: null,
     };
   }
 }

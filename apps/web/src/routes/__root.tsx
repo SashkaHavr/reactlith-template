@@ -5,7 +5,7 @@ import {
   Outlet,
 } from '@tanstack/react-router';
 
-import { getAuthContext } from '~/lib/auth';
+import { getAuthData } from '~/lib/auth';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -14,7 +14,7 @@ export const Route = createRootRouteWithContext<{
   notFoundComponent: () => <Navigate to="/" />,
   beforeLoad: async ({ context: { queryClient } }) => {
     return {
-      auth: await getAuthContext(queryClient),
+      auth: await getAuthData(queryClient),
     };
   },
 });
