@@ -37,6 +37,7 @@ AUTH_DEV_MAGIC_LINK=true
 1. Create .env file in root directory with:
 ```conf
 BETTER_AUTH_URL=<Your domain>
+BETTER_AUTH_SECRET=<Generated secret, e.g. with "openssl rand -base64 32">
 ```
 2. Run
 ```sh
