@@ -1,15 +1,16 @@
+import * as path from 'node:path';
+import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
 import pluginQuery from '@tanstack/eslint-plugin-query';
+import pluginRouter from '@tanstack/eslint-plugin-router';
 import pluginReactCompiler from 'eslint-plugin-react-compiler';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
 import pluginReactRefresh from 'eslint-plugin-react-refresh';
-import { globalIgnores } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  globalIgnores(['dist/**']),
+  includeIgnoreFile(path.join(import.meta.dirname, '../../.gitignore')),
   {
-    files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended],
     rules: {
       curly: ['error', 'multi-line'],
@@ -17,25 +18,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
     extends: [
       tseslint.configs.recommended,
       tseslint.configs.recommendedTypeChecked,
       tseslint.configs.stylistic,
       tseslint.configs.stylisticTypeChecked,
     ],
-    languageOptions: {
-      parserOptions: {
-        project: [
-          '../../packages/*/tsconfig.json',
-          '../../apps/*/tsconfig.json',
-          '../../apps/*/tsconfig.app.json',
-          '../../apps/*/tsconfig.node.json',
-          '../../tools/*/tsconfig.json',
-        ],
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
     rules: {
       '@typescript-eslint/no-unnecessary-condition': 'error',
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'error',
@@ -50,25 +38,26 @@ export default tseslint.config(
       ],
       '@typescript-eslint/only-throw-error': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        { checksVoidReturn: { attributes: false } },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
     },
   },
   pluginReactHooks.configs['recommended-latest'],
   {
-    files: ['**/*.{ts,tsx}'],
     ignores: ['src/components/ui/*.tsx'],
     extends: [pluginReactRefresh.configs.vite],
   },
   pluginReactCompiler.configs.recommended,
   pluginQuery.configs['flat/recommended'],
+  pluginRouter.configs['flat/recommended'],
   {
-    files: ['**/*.{ts,tsx}'],
-    ignores: ['*.config.ts', 'src/index.ts'],
+    ignores: ['*.config.ts', '*.config.js', 'src/index.ts'],
     rules: {
       'no-restricted-exports': [
         'error',
@@ -85,7 +74,6 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
     rules: {
       'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
       'no-restricted-syntax': [
@@ -108,7 +96,6 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
     rules: {
       'no-restricted-syntax': [
         'error',
@@ -120,14 +107,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
     rules: {
       'no-empty-pattern': 'off',
       'no-empty': 'off',
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
     ignores: ['src/components/ui/*.tsx'],
     rules: {
       '@typescript-eslint/no-restricted-imports': [
@@ -135,5 +120,9 @@ export default tseslint.config(
         { patterns: ['@radix-ui/*', '!@radix-ui/react-visually-hidden'] },
       ],
     },
+  },
+  {
+    linterOptions: { reportUnusedDisableDirectives: true },
+    languageOptions: { parserOptions: { projectService: true } },
   },
 );

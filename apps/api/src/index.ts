@@ -10,7 +10,7 @@ const app = new Hono();
 app.use(
   '/auth/*',
   cors({
-    origin: envServer.CORS_ORIGINS,
+    origin: envServer.AUTH_TRUSTED_ORIGINS,
     allowHeaders: ['Content-Type', 'Authorization'],
     allowMethods: ['POST', 'GET', 'OPTIONS'],
     exposeHeaders: ['Content-Length'],
@@ -21,7 +21,7 @@ app.use(
 app.use(
   '/trpc/*',
   cors({
-    origin: envServer.CORS_ORIGINS,
+    origin: envServer.AUTH_TRUSTED_ORIGINS,
     maxAge: 600,
     credentials: true,
   }),

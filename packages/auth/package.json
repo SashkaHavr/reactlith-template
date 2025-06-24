@@ -5,7 +5,8 @@
     "#*": "./src/*"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./permissions": "./src/permissions.ts"
   },
   "scripts": {
     "clean": "git clean -xdf .turbo node_modules",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/locale": "workspace:*",
     "better-auth": "catalog:"
   },
   "devDependencies": {

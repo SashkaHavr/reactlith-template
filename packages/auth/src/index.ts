@@ -1,19 +1,12 @@
-import { betterAuth } from 'better-auth';
+import { betterAuth, BetterAuthError } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { admin, magicLink } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
 import { envAuth } from '@reactlith-template/env/auth';
+import { isLocale, localeHeader } from '@reactlith-template/locale';
 
-const devMagicLink = envAuth.AUTH_DEV_MAGIC_LINK
-  ? [
-      magicLink({
-        sendMagicLink: ({ url }) => {
-          console.log(url);
-        },
-      }),
-    ]
-  : [];
+import { permissions } from '#permissions.ts';
 
 export const auth = betterAuth({
   basePath: '/auth',
@@ -21,12 +14,20 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, // Cache duration in seconds
+      maxAge: 5 * 60, // 5 minutes
     },
   },
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),
+  rateLimit: {
+    customRules: {
+      '/sign-in/magic-link': {
+        window: 60,
+        max: 1,
+      },
+    },
+  },
   socialProviders: {
     github:
       envAuth.AUTH_GITHUB_CLIENT_ID && envAuth.AUTH_GITHUB_CLIENT_SECRET
@@ -36,5 +37,27 @@ export const auth = betterAuth({
           }
         : undefined,
   },
-  plugins: [...devMagicLink, admin()],
+  plugins: [
+    magicLink({
+      sendMagicLink: ({ url, email }, request) => {
+        if (envAuth.AUTH_DEV_MAGIC_LINK && /^\S+@example\.com$/.test(email)) {
+          console.log(`${email} - ${url}`);
+          return;
+        }
+
+        if (!request) {
+          throw new BetterAuthError('sendMagicLink: Request is not defined');
+        }
+        const locale = request.headers.get(localeHeader);
+        if (!isLocale(locale)) {
+          throw new BetterAuthError(
+            "sendMagicLink: provided locale doesn't exist",
+          );
+        }
+      },
+    }),
+    admin({
+      ...permissions,
+    }),
+  ],
 });

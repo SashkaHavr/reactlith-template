@@ -63,4 +63,23 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   });
 });
 
+export function adminProcedure(
+  permission: NonNullable<
+    Parameters<typeof auth.api.userHasPermission>[0]['body']['permission']
+  >,
+) {
+  return protectedProcedure.use(async ({ ctx, next }) => {
+    const hasPermission = await auth.api.userHasPermission({
+      body: { userId: ctx.userId, permission: permission },
+    });
+    if (!hasPermission.success) {
+      throw new TRPCError({
+        message: "You don't have permissions to access this endpoint",
+        code: 'FORBIDDEN',
+      });
+    }
+    return next();
+  });
+}
+
 export const createCallerFactory = t.createCallerFactory;

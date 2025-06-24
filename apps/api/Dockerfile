@@ -17,12 +17,11 @@ WORKDIR /app
 COPY --from=turbo /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 COPY --from=turbo /app/out/full/ .
-RUN pnpm build
 
 # Run
 FROM oven/bun:slim AS runner
 WORKDIR /app
-COPY --from=builder /app/apps/api/dist/index.js .
+COPY --from=builder /app .
 
 RUN apt-get -y update && apt-get -y install curl
 HEALTHCHECK --interval=5s --timeout=1s --start-period=2s --retries=1 CMD [ "curl", "http://localhost:3000/trpc/health" ]
@@ -30,4 +29,4 @@ HEALTHCHECK --interval=5s --timeout=1s --start-period=2s --retries=1 CMD [ "curl
 USER bun
 EXPOSE 3000
 ENV NODE_ENV=production
-CMD [ "bun", "run", "index.js" ]
+CMD [ "bun", "run", "apps/api/src/index.ts" ]

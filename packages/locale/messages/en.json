@@ -1,0 +1,19 @@
+{
+  "index": {
+    "trpc-health-response": "tRPC /health response",
+    "auth-status": "Auth status",
+    "login-with-github": "Login with GitHub",
+    "or-continue-with-dev-magic-link": "Or continue with dev magic link",
+    "login": "Login",
+    "see-your-backend-server-terminal": "See your backend server terminal!",
+    "now-is": "Now is",
+    "logout": "Logout",
+    "user": "User",
+    "add-number": "Add number",
+    "delete-all-numbers": "Delete all numbers",
+    "works": "Works!",
+    "undefined": "Undefined",
+    "available": "Available",
+    "not-available": "Not available"
+  }
+}

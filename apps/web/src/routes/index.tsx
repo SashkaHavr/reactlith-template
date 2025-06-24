@@ -1,12 +1,20 @@
 import { useState } from 'react';
-import { skipToken, useMutation, useQuery } from '@tanstack/react-query';
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { useFormatter, useNow, useTranslations } from 'use-intl';
 
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
+import { LocaleSwitcher } from '~/components/locale/locale-switcher';
 import { ThemeToggle } from '~/components/theme/theme-toggle';
 import { authClient, useResetAuth } from '~/lib/auth';
+import { useAuth } from '~/lib/route-context-hooks';
 import { trpc } from '~/lib/trpc';
 
 export const Route = createFileRoute('/')({
@@ -29,8 +37,12 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 function RouteComponent() {
+  const t = useTranslations('index');
+  const format = useFormatter();
+  const queryClient = useQueryClient();
+
   const resetAuth = useResetAuth();
-  const { auth, queryClient } = Route.useRouteContext();
+  const auth = useAuth();
   const trpcHealth = useQuery(trpc.health.queryOptions());
   const authConfig = useQuery(trpc.config.authConfig.queryOptions());
   const numbers = useQuery(
@@ -65,7 +77,7 @@ function RouteComponent() {
         email: email,
         callbackURL: window.origin,
       }),
-    onSuccess: () => setShowHint(true),
+    onSuccess: () => setShowLoginHint(true),
   });
   const signout = useMutation({
     mutationFn: () => authClient.signOut(),
@@ -75,42 +87,53 @@ function RouteComponent() {
   });
 
   const [email, setEmail] = useState('');
-  const [showHint, setShowHint] = useState(false);
+  const now = useNow({ updateInterval: 1000 });
+  const [showLoginHint, setShowLoginHint] = useState(false);
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
-      <div className="flex w-70 flex-col gap-2">
-        <div className="flex gap-4">
-          <p className="self-center text-xl">Works!</p>
-          <ThemeToggle />
+      <div className="flex w-100 flex-col items-center">
+        <div className="flex w-fit flex-col gap-4">
+          <div className="flex gap-3">
+            <p className="self-center text-xl">{t('works')}</p>
+            <ThemeToggle />
+            <LocaleSwitcher />
+          </div>
+          <p>
+            {t('trpc-health-response')}:{' '}
+            <span
+              className={
+                trpcHealth.isSuccess ? 'text-green-500' : 'text-red-500'
+              }
+            >
+              {trpcHealth.data ?? t('undefined')}
+            </span>
+          </p>
+          <p>
+            {t('auth-status')}:{' '}
+            <span
+              className={auth.available ? 'text-green-500' : 'text-red-500'}
+            >
+              {auth.available ? t('available') : t('not-available')}
+            </span>
+          </p>
+          <p>
+            {t('now-is')}: {format.dateTime(now, 'full')}
+          </p>
         </div>
-        <p>
-          tRPC health response:{' '}
-          <span
-            className={trpcHealth.isSuccess ? 'text-green-500' : 'text-red-500'}
-          >
-            {trpcHealth.data ?? 'Undefined'}
-          </span>
-        </p>
-        <p>
-          Auth status:{' '}
-          <span className={auth.available ? 'text-green-500' : 'text-red-500'}>
-            {auth.available ? 'Available' : 'Not available'}
-          </span>
-        </p>
       </div>
       {!auth.isLoggedIn && authConfig.isSuccess && (
         <div className="flex flex-col gap-3">
           {authConfig.data.githubOAuth && (
             <Button variant="outline" onClick={() => githubSignin.mutate()}>
-              Login with GitHub
+              {t('login-with-github')}
               <GitHubIcon className="size-5" />
             </Button>
           )}
           {authConfig.data.githubOAuth && authConfig.data.devMagicLink && (
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
               <span className="relative z-10 bg-background px-2">
-                Or continue with dev magic link
+                {t('or-continue-with-dev-magic-link')}
               </span>
             </div>
           )}
@@ -126,12 +149,12 @@ function RouteComponent() {
                   variant="outline"
                   onClick={() => magicLinkSignin.mutate()}
                 >
-                  Login
+                  {t('login')}
                 </Button>
               </div>
-              {showHint && (
+              {showLoginHint && (
                 <p className="self-center text-sm text-foreground/70">
-                  See your backend server terminal!
+                  {t('see-your-backend-server-terminal')}
                 </p>
               )}
             </>
@@ -139,17 +162,21 @@ function RouteComponent() {
         </div>
       )}
       {auth.isLoggedIn && (
-        <div className="flex flex-col items-center gap-2">
-          <Button variant="outline" onClick={() => signout.mutate()}>
-            Logout
-          </Button>
-          <p>User: {auth.user.email}</p>
-          <div className="flex gap-2">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3">
+            <p>
+              {t('user')}: {auth.user.email}
+            </p>
+            <Button variant="outline" onClick={() => signout.mutate()}>
+              {t('logout')}
+            </Button>
+          </div>
+          <div className="flex gap-3">
             <Button variant="outline" onClick={() => addNumber.mutate()}>
-              Add number
+              {t('add-number')}
             </Button>
             <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
-              Delete all numbers
+              {t('delete-all-numbers')}
             </Button>
           </div>
           {numbers.isSuccess && (
