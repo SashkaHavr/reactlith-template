@@ -11,10 +11,8 @@ services:
           - db-internal
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 5s
-      timeout: 1s
-      retries: 1
-      start_period: 2s
+      interval: 10s
+      timeout: 10s
   pgadmin:
     image: dpage/pgadmin4
     env_file:

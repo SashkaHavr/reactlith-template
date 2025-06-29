@@ -24,7 +24,7 @@ WORKDIR /app
 COPY --from=builder /app .
 
 RUN apt-get -y update && apt-get -y install curl
-HEALTHCHECK --interval=5s --timeout=1s --start-period=2s --retries=1 CMD [ "curl", "http://localhost:3000/trpc/health" ]
+HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
 
 USER bun
 EXPOSE 3000
