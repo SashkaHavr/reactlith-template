@@ -24,4 +24,4 @@ WORKDIR /app
 COPY --from=builder /app .
 
 WORKDIR /app/packages/db
-CMD [ "bun", "push" ]
+CMD [ "bun", "./src/push.ts" ]
