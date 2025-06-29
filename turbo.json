@@ -13,10 +13,6 @@
       "outputs": ["dist"],
       "env": ["VITE_*"]
     },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
     "format": {
       "cache": false
     },
@@ -27,6 +23,10 @@
       "dependsOn": ["^build"],
       "outputLogs": "errors-only"
     },
+    "lint:fix": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
     "typecheck": {
       "dependsOn": ["^build"],
       "outputLogs": "errors-only"
@@ -36,10 +36,6 @@
     },
     "test": {
       "outputLogs": "full"
-    },
-    "test:watch": {
-      "cache": false,
-      "persistent": true
     },
     "//#clean:root": {
       "cache": false

@@ -7,6 +7,7 @@
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "start": "bun exec \"NODE_ENV=production bun run src/index.ts\"",
     "typecheck": "tsc --noEmit"
   },

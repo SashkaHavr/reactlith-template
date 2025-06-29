@@ -33,7 +33,6 @@ export default tseslint.config(
           allowNumber: false,
           allowNullableString: true,
           allowNullableBoolean: true,
-          allowNullableObject: true,
         },
       ],
       '@typescript-eslint/only-throw-error': 'off',
