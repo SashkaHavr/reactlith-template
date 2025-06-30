@@ -23,7 +23,9 @@ ENV VITE_API_URL=${VITE_API_URL}
 ARG VITE_API_UNDER_REVERSE_PROXY
 ENV VITE_API_UNDER_REVERSE_PROXY=${VITE_API_UNDER_REVERSE_PROXY}
 
-RUN pnpm build
+RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
+    --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
+    turbo build
 
 # Run
 FROM caddy AS runner

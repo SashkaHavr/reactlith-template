@@ -42,6 +42,9 @@ jobs:
             ${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:latest
             ${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:${{ github.sha }}
           build-args: ${{ matrix.image.build-args }}
+          secrets: |
+            TURBO_TEAM=${{ vars.TURBO_TEAM }}
+            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           cache-from: type=registry,ref=${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:buildcache
           cache-to: type=registry,ref=${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:buildcache,mode=max
 
