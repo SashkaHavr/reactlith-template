@@ -7,6 +7,14 @@
     "./en": "./messages/en.json",
     "./uk": "./messages/uk.json"
   },
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
+    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "typecheck": "tsc --noEmit"
+  },
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
     "typescript": "catalog:",
