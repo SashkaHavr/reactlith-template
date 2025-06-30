@@ -11,7 +11,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     needs: run-check
-    if: ${{ vars.REGISTRY }} != '' && ${{ vars.REGISTRY_USERNAME }} != ''
+    if: success() && ${{ vars.REGISTRY }} != '' && ${{ vars.REGISTRY_USERNAME }} != ''
 
     strategy:
       matrix:
