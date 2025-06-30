@@ -48,8 +48,8 @@ jobs:
           secrets: |
             TURBO_TEAM=${{ vars.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
-          cache-from: type=registry,ref=${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:buildcache
-          cache-to: type=registry,ref=${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:latest
+          cache-to: type=inline
 
   trigger-dokploy-deployment:
     runs-on: ubuntu-latest
