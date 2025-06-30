@@ -24,6 +24,7 @@
     "@reactlith-template/eslint-config": "workspace:*",
     "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
     "typescript": "catalog:"
   }
 }

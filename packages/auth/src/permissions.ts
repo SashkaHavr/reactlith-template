@@ -20,18 +20,20 @@ export const permissions = {
 } satisfies AdminOptions;
 
 const allRoles = Object.keys(permissions.roles);
-
 export type Role = keyof typeof permissions.roles;
-
-export function getRoles(role: string | null | undefined) {
-  if (!role) return;
-  const roles = role.split(',');
-  if (roles.length > 0 && roles.every((r) => allRoles.includes(r))) {
-    return roles as Role[];
+export function isRole(role: string | null | undefined): role is Role {
+  return !!role && allRoles.includes(role);
+}
+export function getRoles(roleArray: string | null | undefined) {
+  if (!roleArray) return;
+  const roles = roleArray.split(',');
+  if (roles.length > 0 && roles.every(isRole)) {
+    return roles;
   }
-  return;
 }
 
-export function isRole(role: string | null | undefined): role is Role {
-  return getRoles(role) != undefined;
+export function isRoleArray(
+  roleArray: string | null | undefined,
+): roleArray is string {
+  return getRoles(roleArray) != undefined;
 }

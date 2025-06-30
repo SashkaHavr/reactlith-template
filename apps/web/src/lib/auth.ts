@@ -13,9 +13,10 @@ import {
 import { createAuthClient } from 'better-auth/react';
 
 import type { auth } from '@reactlith-template/auth';
+import type { Role } from '@reactlith-template/auth/permissions';
 import {
   getRoles,
-  isRole,
+  isRoleArray,
   permissions,
 } from '@reactlith-template/auth/permissions';
 
@@ -79,9 +80,9 @@ export function hasPermissions(
   >,
 ) {
   return (
-    isRole(user.role) &&
+    isRoleArray(user.role) &&
     authClient.admin.checkRolePermission({
-      role: user.role,
+      role: user.role as Role,
       permissions: permissions,
     })
   );

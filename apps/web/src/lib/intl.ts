@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useRouter } from '@tanstack/react-router';
 
 import type baseMessages from '@reactlith-template/locale/en';
-import { defaultLocale, locales } from '@reactlith-template/locale';
+import { defaultLocale, isLocale, locales } from '@reactlith-template/locale';
 
 import {
   localeStoreName,
@@ -18,9 +18,7 @@ export function getLocale(localeFromStore: Locale | undefined): Locale {
     return defaultLocale;
   }
   if (localeFromStore) return localeFromStore;
-  const prefferedLocales = navigator.languages.filter((l) =>
-    locales.includes(l as Locale),
-  ) as Locale[];
+  const prefferedLocales = navigator.languages.filter(isLocale);
   const firstPrefferedLocale = prefferedLocales[0];
   if (firstPrefferedLocale) {
     return firstPrefferedLocale;

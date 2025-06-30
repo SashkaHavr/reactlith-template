@@ -373,6 +373,9 @@ importers:
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../../tools/typescript-config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.2.16
       typescript:
         specifier: 'catalog:'
         version: 5.8.2
