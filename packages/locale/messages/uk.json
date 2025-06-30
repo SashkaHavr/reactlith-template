@@ -2,18 +2,18 @@
   "index": {
     "add-number": "Додати число",
     "auth-status": "Статус сервера автентифікації",
+    "available": "Доступний",
     "delete-all-numbers": "Видалити усі числа",
     "login": "Увійти",
     "login-with-github": "Увійти через Github",
     "logout": "Вийти",
+    "not-available": "Недоступний",
     "now-is": "Зараз",
     "or-continue-with-dev-magic-link": "Або продовжити з магічним посиланням для розробників",
     "see-your-backend-server-terminal": "Подивіться у ваш бекенд термінал!",
     "trpc-health-response": "Відповідь /health від tRPC",
+    "undefined": "Невизначено",
     "user": "Користувач",
-    "works": "Працює!",
-    "available": "Доступний",
-    "not-available": "Недоступний",
-    "undefined": "Невизначено"
+    "works": "Працює!"
   }
 }

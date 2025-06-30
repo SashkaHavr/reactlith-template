@@ -356,19 +356,26 @@ importers:
         version: 5.8.2
 
   packages/locale:
-    devDependencies:
-      '@reactlith-template/typescript-config':
-        specifier: workspace:*
-        version: link:../../tools/typescript-config
-      typescript:
-        specifier: 'catalog:'
-        version: 5.8.2
+    dependencies:
       use-intl:
         specifier: 'catalog:'
         version: 4.3.1(react@19.1.0)
       zod:
         specifier: 'catalog:'
         version: 3.25.67
+    devDependencies:
+      '@reactlith-template/eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@reactlith-template/prettier-config':
+        specifier: workspace:*
+        version: link:../../tools/prettier-config
+      '@reactlith-template/typescript-config':
+        specifier: workspace:*
+        version: link:../../tools/typescript-config
+      typescript:
+        specifier: 'catalog:'
+        version: 5.8.2
 
   packages/trpc:
     dependencies:
@@ -466,6 +473,9 @@ importers:
       prettier-plugin-packagejson:
         specifier: ^2.5.15
         version: 2.5.15(prettier@3.5.3)
+      prettier-plugin-sort-json:
+        specifier: ^4.1.1
+        version: 4.1.1(prettier@3.5.3)
       prettier-plugin-tailwindcss:
         specifier: ^0.6.12
         version: 0.6.12(@ianvs/prettier-plugin-sort-imports@4.4.2(prettier@3.5.3))(prettier@3.5.3)
@@ -2806,6 +2816,12 @@ packages:
     peerDependenciesMeta:
       prettier:
         optional: true
+
+  prettier-plugin-sort-json@4.1.1:
+    resolution: {integrity: sha512-uJ49wCzwJ/foKKV4tIPxqi4jFFvwUzw4oACMRG2dcmDhBKrxBv0L2wSKkAqHCmxKCvj0xcCZS4jO2kSJO/tRJw==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      prettier: ^3.0.0
 
   prettier-plugin-tailwindcss@0.6.12:
     resolution: {integrity: sha512-OuTQKoqNwV7RnxTPwXWzOFXy6Jc4z8oeRZYGuMpRyG3WbuR3jjXdQFK8qFBMBx8UHWdHrddARz2fgUenild6aw==}
@@ -5566,6 +5582,10 @@ snapshots:
       sort-package-json: 3.2.1
       synckit: 0.11.8
     optionalDependencies:
+      prettier: 3.5.3
+
+  prettier-plugin-sort-json@4.1.1(prettier@3.5.3):
+    dependencies:
       prettier: 3.5.3
 
   prettier-plugin-tailwindcss@0.6.12(@ianvs/prettier-plugin-sort-imports@4.4.2(prettier@3.5.3))(prettier@3.5.3):

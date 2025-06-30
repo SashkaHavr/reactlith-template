@@ -15,10 +15,15 @@
     "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@reactlith-template/typescript-config": "workspace:*",
-    "typescript": "catalog:",
+  "prettier": "@reactlith-template/prettier-config",
+  "dependencies": {
     "use-intl": "catalog:",
     "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@reactlith-template/eslint-config": "workspace:*",
+    "@reactlith-template/prettier-config": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "typescript": "catalog:"
   }
 }
