@@ -21,6 +21,7 @@
     "module": "ESNext",
     "noEmit": true,
     "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
 
     "lib": ["ESNext"],
