@@ -5,8 +5,9 @@ packages:
 
 catalog:
   typescript: 5.8.2
-  '@types/bun': ^1.2.16
-  better-auth: ^1.2.9
+  '@types/node': ^24.0.7
+  '@types/bun': ^1.2.18
+  better-auth: ^1.2.12
   superjson: ^2.2.2
   zod: ^3.25.67
   '@t3-oss/env-core': ^0.13.8

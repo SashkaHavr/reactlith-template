@@ -19,7 +19,7 @@
     "@reactlith-template/typescript-config": "workspace:*",
     "@tanstack/eslint-plugin-query": "^5.78.0",
     "@tanstack/eslint-plugin-router": "^1.121.21",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "eslint": "^9.29.0",
     "eslint-plugin-react-compiler": "latest",
     "eslint-plugin-react-hooks": "^5.2.0",
