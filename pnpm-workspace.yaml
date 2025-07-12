@@ -5,13 +5,13 @@ packages:
 
 catalog:
   typescript: 5.8.2
-  '@types/node': ^24.0.12
+  '@types/node': ^24.0.14
   '@types/bun': ^1.2.18
   better-auth: ^1.2.12
   superjson: ^2.2.2
-  zod: ^4.0.0
+  zod: ^4.0.5
   '@t3-oss/env-core': ^0.13.8
-  hono: ^4.8.4
+  hono: ^4.8.5
   zustand: ^5.0.6
   lucide-react: 0.515.0
   '@tanstack/react-form': ^1.14.1
@@ -27,7 +27,7 @@ catalogs:
     '@trpc/server': ^11.4.3
     '@trpc/client': ^11.4.3
     '@trpc/tanstack-react-query': ^11.4.3
-    '@tanstack/react-query': ^5.82.0
+    '@tanstack/react-query': ^5.83.0
   tailwind:
     tailwindcss: ^4.1.11
     '@tailwindcss/vite': ^4.1.11
@@ -39,12 +39,12 @@ catalogs:
     drizzle-orm: beta
     drizzle-kit: beta
   vite:
-    vite: ^7.0.3
+    vite: ^7.0.5
     vite-tsconfig-paths: ^5.1.4
     '@vitejs/plugin-react': ^4.6.0
     '@julr/vite-plugin-validate-env': ^2.2.0
-    '@tanstack/router-plugin': ^1.125.6
-    '@tanstack/react-router': ^1.125.6
+    '@tanstack/router-plugin': ^1.128.0
+    '@tanstack/react-router': ^1.128.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

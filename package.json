@@ -8,8 +8,8 @@
     "clean:root": "git clean -xdf .turbo node_modules",
     "deps": "pnpx taze -r",
     "deps-major": "pnpx taze major -r",
-    "deps-major-w": "pnpx taze major -r -w",
-    "deps-w": "pnpx taze -r -w",
+    "deps-major-w": "pnpx taze major -r -w --install=false",
+    "deps-w": "pnpx taze -r -w --install=false",
     "dev": "turbo dev",
     "fix": "turbo format lint:fix typecheck",
     "format": "turbo format",
@@ -24,7 +24,7 @@
   "prettier": "@reactlith-template/prettier-config",
   "devDependencies": {
     "@reactlith-template/prettier-config": "workspace:*",
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.5"
   },
   "packageManager": "pnpm@10.13.1"
 }
