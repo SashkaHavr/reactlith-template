@@ -43,13 +43,12 @@ export const authGetSessionOptions = queryOptions({
 export async function getAuthData(queryClient: QueryClient) {
   try {
     const session = await queryClient.ensureQueryData(authGetSessionOptions);
-    const sessionData = session as typeof authClient.$Infer.Session | null;
-    return sessionData != null
+    return session != null
       ? {
           available: true as const,
           isLoggedIn: true as const,
-          session: sessionData.session,
-          user: sessionData.user,
+          session: session.session,
+          user: session.user,
         }
       : {
           available: true as const,
