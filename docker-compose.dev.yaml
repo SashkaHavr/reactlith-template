@@ -1,8 +1,7 @@
 services:
-  api:
+  web:
     environment:
       AUTH_DEV_MAGIC_LINK: true
       BETTER_AUTH_SECRET: dev-secret
-  web:
     ports:
       - 5260:3000

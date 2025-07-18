@@ -18,20 +18,21 @@ COPY --from=turbo /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 COPY --from=turbo /app/out/full/ .
 
-ARG VITE_API_URL
-ENV VITE_API_URL=${VITE_API_URL}
-ARG VITE_API_UNDER_REVERSE_PROXY
-ENV VITE_API_UNDER_REVERSE_PROXY=${VITE_API_UNDER_REVERSE_PROXY}
+ENV NODE_ENV=production
 
 RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
     --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
     turbo build
 
 # Run
-FROM caddy AS runner
+FROM oven/bun:slim AS runner
+WORKDIR /app
+COPY --from=builder /app/apps/web/.output .
 
-RUN apk --no-cache add curl
-HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000" ]
+RUN apt-get -y update && apt-get -y install curl
+HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
 
-COPY  --from=builder /app/apps/web/Caddyfile /etc/caddy/Caddyfile
-COPY  --from=builder /app/apps/web/dist /srv
+USER bun
+EXPOSE 3000
+ENV NODE_ENV=production
+CMD ["bun", "run", "server/index.mjs"]

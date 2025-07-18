@@ -37,38 +37,22 @@ services:
     depends_on:
       db:
         condition: service_healthy
-  api:
+  web:
     build:
       context: .
-      dockerfile: ./apps/api/Dockerfile
+      dockerfile: ./apps/web/Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db-internal:5432/postgres}
     env_file:
       - path: .env
         required: false
     networks:
-      db-network: {}
-      api-network:
-        aliases:
-          - api-internal
+      - db-network
     depends_on:
       db:
         condition: service_healthy
       db-update:
         condition: service_completed_successfully
-  web:
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
-      args:
-        VITE_API_UNDER_REVERSE_PROXY: "true"
-    environment:
-        CADDY_API_REVERSE_PROXY_URL: api-internal:3000
-    networks:
-      - api-network
-    depends_on:
-      api:
-        condition: service_healthy
 
 networks:
   db-network:
