@@ -8,6 +8,10 @@ export function useAuth() {
   return useRootRouteContext().auth;
 }
 
+export function useLocaleRouteContext() {
+  return useRouteContext({ from: '/_main/{-$locale}' });
+}
+
 export function useLoggedInAuth() {
   const auth = useRootRouteContext().auth;
   if (!auth.isLoggedIn) {

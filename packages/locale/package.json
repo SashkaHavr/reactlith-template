@@ -18,7 +18,8 @@
   "prettier": "@reactlith-template/prettier-config",
   "dependencies": {
     "use-intl": "catalog:",
-    "zod": "catalog:"
+    "zod": "catalog:",
+    "zustand": "catalog:"
   },
   "devDependencies": {
     "@reactlith-template/eslint-config": "workspace:*",

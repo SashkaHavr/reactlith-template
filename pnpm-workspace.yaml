@@ -41,10 +41,10 @@ catalogs:
   vite:
     vite: ^7.0.5
     vite-tsconfig-paths: ^5.1.4
-    '@vitejs/plugin-react': ^4.6.0
+    '@vitejs/plugin-react': ^4.7.0
     '@julr/vite-plugin-validate-env': ^2.2.0
-    '@tanstack/router-plugin': ^1.128.0
-    '@tanstack/react-router': ^1.128.0
+    '@tanstack/router-plugin': ^1.128.3
+    '@tanstack/react-router': ^1.128.3
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'

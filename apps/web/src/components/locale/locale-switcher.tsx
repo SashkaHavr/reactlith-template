@@ -1,8 +1,9 @@
 import type { Locale } from 'use-intl';
+import { useNavigate } from '@tanstack/react-router';
 
 import { locales } from '@reactlith-template/locale';
 
-import { getLocale } from '~/lib/intl';
+import { useLocaleRouteContext } from '~/lib/route-context-hooks';
 import {
   Select,
   SelectContent,
@@ -11,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { useLocaleStore } from './use-locale-store';
 
 const localeToText: Record<Locale, string> = {
   en: 'English',
@@ -19,13 +19,13 @@ const localeToText: Record<Locale, string> = {
 };
 
 export function LocaleSwitcher({ className }: { className?: string }) {
-  const { locale, setLocale } = useLocaleStore();
-
+  const locale = useLocaleRouteContext().intl.locale;
+  const navigate = useNavigate({ from: '/{-$locale}' });
   return (
     <Select
-      value={getLocale(locale)}
+      value={locale}
       onValueChange={(e) => {
-        setLocale(e as Locale);
+        void navigate({ params: { locale: e } });
       }}
     >
       <SelectTrigger className={className}>

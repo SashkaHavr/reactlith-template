@@ -40,7 +40,7 @@ export const authGetSessionOptions = queryOptions({
   queryFn: async () => await authClient.getSession(),
 });
 
-export async function getAuthData(queryClient: QueryClient) {
+export async function getAuthContext(queryClient: QueryClient) {
   try {
     const session = await queryClient.ensureQueryData(authGetSessionOptions);
     return session != null

@@ -1,5 +1,5 @@
 import { defineConfig } from '@julr/vite-plugin-validate-env';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 export default defineConfig({
   validator: 'standard',
