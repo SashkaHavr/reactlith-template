@@ -4,13 +4,13 @@
   "scripts": {
     "add-component": "pnpm dlx shadcn@latest add",
     "build": "vite build",
-    "clean": "git clean -xdf .turbo node_modules dist .tanstack",
+    "clean": "git clean -xdf .turbo node_modules dist .tanstack .nitro .output",
     "dev": "vite",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "start": "vite preview --host",
+    "start": "bun run .output/server/index.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -20,6 +20,8 @@
     "@tailwindcss/vite": "catalog:tailwind",
     "@tanstack/react-query": "catalog:trpc",
     "@tanstack/react-router": "catalog:vite",
+    "@tanstack/react-router-with-query": "catalog:vite",
+    "@tanstack/react-start": "catalog:vite",
     "@trpc/client": "catalog:trpc",
     "@trpc/tanstack-react-query": "catalog:trpc",
     "better-auth": "catalog:",

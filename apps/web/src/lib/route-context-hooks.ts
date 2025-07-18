@@ -1,15 +1,11 @@
 import { useRouteContext } from '@tanstack/react-router';
 
 export function useRootRouteContext() {
-  return useRouteContext({ from: '/_rootLayout' });
+  return useRouteContext({ from: '/{-$locale}' });
 }
 
 export function useAuth() {
   return useRootRouteContext().auth;
-}
-
-export function useIntlRouteContext() {
-  return useRouteContext({ from: '/_rootLayout/{-$locale}' });
 }
 
 export function useLoggedInAuth() {

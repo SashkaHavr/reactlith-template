@@ -21,9 +21,6 @@ import {
 } from '@reactlith-template/auth/permissions';
 
 export const authClient = createAuthClient({
-  baseURL: import.meta.env.VITE_API_UNDER_REVERSE_PROXY
-    ? undefined
-    : import.meta.env.VITE_API_URL,
   basePath: '/auth',
   plugins: [
     inferAdditionalFields<typeof auth>(),

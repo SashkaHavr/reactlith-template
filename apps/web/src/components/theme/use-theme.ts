@@ -29,6 +29,10 @@ export const useThemeStore = create<State & Actions>()(
 
 export function useRealTheme() {
   const theme = useThemeStore((state) => state.theme);
+  if (typeof window == 'undefined') {
+    return 'light'; // Default to light theme on server-side rendering
+  }
+
   const realTheme =
     theme === 'system'
       ? window.matchMedia('(prefers-color-scheme: dark)').matches

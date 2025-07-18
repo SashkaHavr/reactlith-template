@@ -8,114 +8,149 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as RootLayoutRouteRouteImport } from './routes/_rootLayout/route'
-import { Route as RootLayoutChar123LocaleChar125RouteRouteImport } from './routes/_rootLayout/{-$locale}/route'
-import { Route as RootLayoutChar123LocaleChar125IndexRouteImport } from './routes/_rootLayout/{-$locale}/index'
+import { createServerRootRoute } from '@tanstack/react-start/server'
 
-const RootLayoutRouteRoute = RootLayoutRouteRouteImport.update({
-  id: '/_rootLayout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RootLayoutChar123LocaleChar125RouteRoute =
-  RootLayoutChar123LocaleChar125RouteRouteImport.update({
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as Char123LocaleChar125RouteRouteImport } from './routes/{-$locale}/route'
+import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
+import { ServerRoute as TrpcSplatServerRouteImport } from './routes/trpc.$'
+import { ServerRoute as AuthSplatServerRouteImport } from './routes/auth.$'
+
+const rootServerRouteImport = createServerRootRoute()
+
+const Char123LocaleChar125RouteRoute =
+  Char123LocaleChar125RouteRouteImport.update({
     id: '/{-$locale}',
     path: '/{-$locale}',
-    getParentRoute: () => RootLayoutRouteRoute,
+    getParentRoute: () => rootRouteImport,
   } as any)
-const RootLayoutChar123LocaleChar125IndexRoute =
-  RootLayoutChar123LocaleChar125IndexRouteImport.update({
+const Char123LocaleChar125IndexRoute =
+  Char123LocaleChar125IndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => RootLayoutChar123LocaleChar125RouteRoute,
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
   } as any)
+const TrpcSplatServerRoute = TrpcSplatServerRouteImport.update({
+  id: '/trpc/$',
+  path: '/trpc/$',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
+const AuthSplatServerRoute = AuthSplatServerRouteImport.update({
+  id: '/auth/$',
+  path: '/auth/$',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/{-$locale}': typeof RootLayoutChar123LocaleChar125RouteRouteWithChildren
-  '/{-$locale}/': typeof RootLayoutChar123LocaleChar125IndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125RouteRouteWithChildren
+  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
 }
 export interface FileRoutesByTo {
-  '/{-$locale}': typeof RootLayoutChar123LocaleChar125IndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_rootLayout': typeof RootLayoutRouteRouteWithChildren
-  '/_rootLayout/{-$locale}': typeof RootLayoutChar123LocaleChar125RouteRouteWithChildren
-  '/_rootLayout/{-$locale}/': typeof RootLayoutChar123LocaleChar125IndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125RouteRouteWithChildren
+  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/{-$locale}' | '/{-$locale}/'
   fileRoutesByTo: FileRoutesByTo
   to: '/{-$locale}'
-  id:
-    | '__root__'
-    | '/_rootLayout'
-    | '/_rootLayout/{-$locale}'
-    | '/_rootLayout/{-$locale}/'
+  id: '__root__' | '/{-$locale}' | '/{-$locale}/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  RootLayoutRouteRoute: typeof RootLayoutRouteRouteWithChildren
+  Char123LocaleChar125RouteRoute: typeof Char123LocaleChar125RouteRouteWithChildren
+}
+export interface FileServerRoutesByFullPath {
+  '/auth/$': typeof AuthSplatServerRoute
+  '/trpc/$': typeof TrpcSplatServerRoute
+}
+export interface FileServerRoutesByTo {
+  '/auth/$': typeof AuthSplatServerRoute
+  '/trpc/$': typeof TrpcSplatServerRoute
+}
+export interface FileServerRoutesById {
+  __root__: typeof rootServerRouteImport
+  '/auth/$': typeof AuthSplatServerRoute
+  '/trpc/$': typeof TrpcSplatServerRoute
+}
+export interface FileServerRouteTypes {
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath
+  fullPaths: '/auth/$' | '/trpc/$'
+  fileServerRoutesByTo: FileServerRoutesByTo
+  to: '/auth/$' | '/trpc/$'
+  id: '__root__' | '/auth/$' | '/trpc/$'
+  fileServerRoutesById: FileServerRoutesById
+}
+export interface RootServerRouteChildren {
+  AuthSplatServerRoute: typeof AuthSplatServerRoute
+  TrpcSplatServerRoute: typeof TrpcSplatServerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_rootLayout': {
-      id: '/_rootLayout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof RootLayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_rootLayout/{-$locale}': {
-      id: '/_rootLayout/{-$locale}'
+    '/{-$locale}': {
+      id: '/{-$locale}'
       path: '/{-$locale}'
       fullPath: '/{-$locale}'
-      preLoaderRoute: typeof RootLayoutChar123LocaleChar125RouteRouteImport
-      parentRoute: typeof RootLayoutRouteRoute
+      preLoaderRoute: typeof Char123LocaleChar125RouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_rootLayout/{-$locale}/': {
-      id: '/_rootLayout/{-$locale}/'
+    '/{-$locale}/': {
+      id: '/{-$locale}/'
       path: '/'
       fullPath: '/{-$locale}/'
-      preLoaderRoute: typeof RootLayoutChar123LocaleChar125IndexRouteImport
-      parentRoute: typeof RootLayoutChar123LocaleChar125RouteRoute
+      preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+  }
+}
+declare module '@tanstack/react-start/server' {
+  interface ServerFileRoutesByPath {
+    '/trpc/$': {
+      id: '/trpc/$'
+      path: '/trpc/$'
+      fullPath: '/trpc/$'
+      preLoaderRoute: typeof TrpcSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/auth/$': {
+      id: '/auth/$'
+      path: '/auth/$'
+      fullPath: '/auth/$'
+      preLoaderRoute: typeof AuthSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
     }
   }
 }
 
-interface RootLayoutChar123LocaleChar125RouteRouteChildren {
-  RootLayoutChar123LocaleChar125IndexRoute: typeof RootLayoutChar123LocaleChar125IndexRoute
+interface Char123LocaleChar125RouteRouteChildren {
+  Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
 }
 
-const RootLayoutChar123LocaleChar125RouteRouteChildren: RootLayoutChar123LocaleChar125RouteRouteChildren =
+const Char123LocaleChar125RouteRouteChildren: Char123LocaleChar125RouteRouteChildren =
   {
-    RootLayoutChar123LocaleChar125IndexRoute:
-      RootLayoutChar123LocaleChar125IndexRoute,
+    Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
   }
 
-const RootLayoutChar123LocaleChar125RouteRouteWithChildren =
-  RootLayoutChar123LocaleChar125RouteRoute._addFileChildren(
-    RootLayoutChar123LocaleChar125RouteRouteChildren,
+const Char123LocaleChar125RouteRouteWithChildren =
+  Char123LocaleChar125RouteRoute._addFileChildren(
+    Char123LocaleChar125RouteRouteChildren,
   )
 
-interface RootLayoutRouteRouteChildren {
-  RootLayoutChar123LocaleChar125RouteRoute: typeof RootLayoutChar123LocaleChar125RouteRouteWithChildren
-}
-
-const RootLayoutRouteRouteChildren: RootLayoutRouteRouteChildren = {
-  RootLayoutChar123LocaleChar125RouteRoute:
-    RootLayoutChar123LocaleChar125RouteRouteWithChildren,
-}
-
-const RootLayoutRouteRouteWithChildren = RootLayoutRouteRoute._addFileChildren(
-  RootLayoutRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  RootLayoutRouteRoute: RootLayoutRouteRouteWithChildren,
+  Char123LocaleChar125RouteRoute: Char123LocaleChar125RouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+const rootServerRouteChildren: RootServerRouteChildren = {
+  AuthSplatServerRoute: AuthSplatServerRoute,
+  TrpcSplatServerRoute: TrpcSplatServerRoute,
+}
+export const serverRouteTree = rootServerRouteImport
+  ._addFileChildren(rootServerRouteChildren)
+  ._addFileTypes<FileServerRouteTypes>()

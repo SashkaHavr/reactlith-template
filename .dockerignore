@@ -172,6 +172,7 @@
 **/*.db
 
 **/.tanstack
+**/.nitro
 
 # .dockerignore specific
 **/*.md
