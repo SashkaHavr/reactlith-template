@@ -9,82 +9,112 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MainChar123LocaleChar125RouteRouteImport } from './routes/_main/{-$locale}/route'
-import { Route as MainChar123LocaleChar125IndexRouteImport } from './routes/_main/{-$locale}/index'
+import { Route as RootLayoutRouteRouteImport } from './routes/_rootLayout/route'
+import { Route as RootLayoutChar123LocaleChar125RouteRouteImport } from './routes/_rootLayout/{-$locale}/route'
+import { Route as RootLayoutChar123LocaleChar125IndexRouteImport } from './routes/_rootLayout/{-$locale}/index'
 
-const MainChar123LocaleChar125RouteRoute =
-  MainChar123LocaleChar125RouteRouteImport.update({
-    id: '/_main/{-$locale}',
+const RootLayoutRouteRoute = RootLayoutRouteRouteImport.update({
+  id: '/_rootLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RootLayoutChar123LocaleChar125RouteRoute =
+  RootLayoutChar123LocaleChar125RouteRouteImport.update({
+    id: '/{-$locale}',
     path: '/{-$locale}',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => RootLayoutRouteRoute,
   } as any)
-const MainChar123LocaleChar125IndexRoute =
-  MainChar123LocaleChar125IndexRouteImport.update({
+const RootLayoutChar123LocaleChar125IndexRoute =
+  RootLayoutChar123LocaleChar125IndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => MainChar123LocaleChar125RouteRoute,
+    getParentRoute: () => RootLayoutChar123LocaleChar125RouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/{-$locale}': typeof MainChar123LocaleChar125RouteRouteWithChildren
-  '/{-$locale}/': typeof MainChar123LocaleChar125IndexRoute
+  '/{-$locale}': typeof RootLayoutChar123LocaleChar125RouteRouteWithChildren
+  '/{-$locale}/': typeof RootLayoutChar123LocaleChar125IndexRoute
 }
 export interface FileRoutesByTo {
-  '/{-$locale}': typeof MainChar123LocaleChar125IndexRoute
+  '/{-$locale}': typeof RootLayoutChar123LocaleChar125IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_main/{-$locale}': typeof MainChar123LocaleChar125RouteRouteWithChildren
-  '/_main/{-$locale}/': typeof MainChar123LocaleChar125IndexRoute
+  '/_rootLayout': typeof RootLayoutRouteRouteWithChildren
+  '/_rootLayout/{-$locale}': typeof RootLayoutChar123LocaleChar125RouteRouteWithChildren
+  '/_rootLayout/{-$locale}/': typeof RootLayoutChar123LocaleChar125IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/{-$locale}' | '/{-$locale}/'
   fileRoutesByTo: FileRoutesByTo
   to: '/{-$locale}'
-  id: '__root__' | '/_main/{-$locale}' | '/_main/{-$locale}/'
+  id:
+    | '__root__'
+    | '/_rootLayout'
+    | '/_rootLayout/{-$locale}'
+    | '/_rootLayout/{-$locale}/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  MainChar123LocaleChar125RouteRoute: typeof MainChar123LocaleChar125RouteRouteWithChildren
+  RootLayoutRouteRoute: typeof RootLayoutRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_main/{-$locale}': {
-      id: '/_main/{-$locale}'
-      path: '/{-$locale}'
-      fullPath: '/{-$locale}'
-      preLoaderRoute: typeof MainChar123LocaleChar125RouteRouteImport
+    '/_rootLayout': {
+      id: '/_rootLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof RootLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_main/{-$locale}/': {
-      id: '/_main/{-$locale}/'
+    '/_rootLayout/{-$locale}': {
+      id: '/_rootLayout/{-$locale}'
+      path: '/{-$locale}'
+      fullPath: '/{-$locale}'
+      preLoaderRoute: typeof RootLayoutChar123LocaleChar125RouteRouteImport
+      parentRoute: typeof RootLayoutRouteRoute
+    }
+    '/_rootLayout/{-$locale}/': {
+      id: '/_rootLayout/{-$locale}/'
       path: '/'
       fullPath: '/{-$locale}/'
-      preLoaderRoute: typeof MainChar123LocaleChar125IndexRouteImport
-      parentRoute: typeof MainChar123LocaleChar125RouteRoute
+      preLoaderRoute: typeof RootLayoutChar123LocaleChar125IndexRouteImport
+      parentRoute: typeof RootLayoutChar123LocaleChar125RouteRoute
     }
   }
 }
 
-interface MainChar123LocaleChar125RouteRouteChildren {
-  MainChar123LocaleChar125IndexRoute: typeof MainChar123LocaleChar125IndexRoute
+interface RootLayoutChar123LocaleChar125RouteRouteChildren {
+  RootLayoutChar123LocaleChar125IndexRoute: typeof RootLayoutChar123LocaleChar125IndexRoute
 }
 
-const MainChar123LocaleChar125RouteRouteChildren: MainChar123LocaleChar125RouteRouteChildren =
+const RootLayoutChar123LocaleChar125RouteRouteChildren: RootLayoutChar123LocaleChar125RouteRouteChildren =
   {
-    MainChar123LocaleChar125IndexRoute: MainChar123LocaleChar125IndexRoute,
+    RootLayoutChar123LocaleChar125IndexRoute:
+      RootLayoutChar123LocaleChar125IndexRoute,
   }
 
-const MainChar123LocaleChar125RouteRouteWithChildren =
-  MainChar123LocaleChar125RouteRoute._addFileChildren(
-    MainChar123LocaleChar125RouteRouteChildren,
+const RootLayoutChar123LocaleChar125RouteRouteWithChildren =
+  RootLayoutChar123LocaleChar125RouteRoute._addFileChildren(
+    RootLayoutChar123LocaleChar125RouteRouteChildren,
   )
 
+interface RootLayoutRouteRouteChildren {
+  RootLayoutChar123LocaleChar125RouteRoute: typeof RootLayoutChar123LocaleChar125RouteRouteWithChildren
+}
+
+const RootLayoutRouteRouteChildren: RootLayoutRouteRouteChildren = {
+  RootLayoutChar123LocaleChar125RouteRoute:
+    RootLayoutChar123LocaleChar125RouteRouteWithChildren,
+}
+
+const RootLayoutRouteRouteWithChildren = RootLayoutRouteRoute._addFileChildren(
+  RootLayoutRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  MainChar123LocaleChar125RouteRoute:
-    MainChar123LocaleChar125RouteRouteWithChildren,
+  RootLayoutRouteRoute: RootLayoutRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

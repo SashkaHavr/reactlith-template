@@ -1,7 +1,7 @@
 import { useRouteContext } from '@tanstack/react-router';
 
 export function useRootRouteContext() {
-  return useRouteContext({ from: '__root__' });
+  return useRouteContext({ from: '/_rootLayout' });
 }
 
 export function useAuth() {
@@ -9,7 +9,7 @@ export function useAuth() {
 }
 
 export function useIntlRouteContext() {
-  return useRouteContext({ from: '/_main/{-$locale}' });
+  return useRouteContext({ from: '/_rootLayout/{-$locale}' });
 }
 
 export function useLoggedInAuth() {
