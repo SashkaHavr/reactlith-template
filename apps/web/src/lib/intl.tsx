@@ -2,19 +2,19 @@ import type { Formats } from 'use-intl';
 import { useEffect } from 'react';
 import { IntlProvider as BaseIntlProvider } from 'use-intl';
 
-import { useLocaleRouteContext } from './route-context-hooks';
+import { useIntlRouteContext } from './route-context-hooks';
 
 function useIntlSync() {
   const {
     intl: { locale },
-  } = useLocaleRouteContext();
+  } = useIntlRouteContext();
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
 }
 
 export function IntlProvider({ children }: { children: React.ReactNode }) {
-  const { intl } = useLocaleRouteContext();
+  const { intl } = useIntlRouteContext();
   useIntlSync();
   return (
     <BaseIntlProvider

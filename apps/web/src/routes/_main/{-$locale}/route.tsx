@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
-import { getIntlContext, isLocale } from '@reactlith-template/locale';
+import { getIntlContext, isLocale } from '@reactlith-template/intl';
 
 import { IntlProvider } from '~/lib/intl';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/locale",
+  "name": "@reactlith-template/intl",
   "private": true,
   "type": "module",
   "exports": {

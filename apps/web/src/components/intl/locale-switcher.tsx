@@ -1,7 +1,7 @@
 import type { Locale } from 'use-intl';
 import { useNavigate } from '@tanstack/react-router';
 
-import { locales } from '@reactlith-template/locale';
+import { locales } from '@reactlith-template/intl';
 
 import { useLocaleRouteContext } from '~/lib/route-context-hooks';
 import {

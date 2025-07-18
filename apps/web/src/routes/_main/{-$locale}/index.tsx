@@ -11,7 +11,7 @@ import { useFormatter, useNow, useTranslations } from 'use-intl';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
-import { LocaleSwitcher } from '~/components/locale/locale-switcher';
+import { LocaleSwitcher } from '~/components/intl/locale-switcher';
 import { ThemeToggle } from '~/components/theme/theme-toggle';
 import { authClient, useResetAuth } from '~/lib/auth';
 import { useAuth } from '~/lib/route-context-hooks';
@@ -95,7 +95,7 @@ function RouteComponent() {
       <div className="flex w-100 flex-col items-center">
         <div className="flex w-fit flex-col gap-4">
           <div className="flex gap-3">
-            <p className="self-center text-xl">{t("works")}</p>
+            <p className="self-center text-xl">{t('works')}</p>
             <ThemeToggle />
             <LocaleSwitcher />
           </div>

@@ -4,7 +4,7 @@ import { admin, magicLink } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
 import { envAuth } from '@reactlith-template/env/auth';
-import { isLocale, localeHeader } from '@reactlith-template/locale';
+import { isLocale, localeHeader } from '@reactlith-template/intl';
 
 import { permissions } from '#permissions.ts';
 

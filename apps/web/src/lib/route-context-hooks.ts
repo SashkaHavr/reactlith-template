@@ -8,7 +8,7 @@ export function useAuth() {
   return useRootRouteContext().auth;
 }
 
-export function useLocaleRouteContext() {
+export function useIntlRouteContext() {
   return useRouteContext({ from: '/_main/{-$locale}' });
 }
 

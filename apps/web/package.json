@@ -16,7 +16,7 @@
   "dependencies": {
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.3",
-    "@reactlith-template/locale": "workspace:*",
+    "@reactlith-template/intl": "workspace:*",
     "@tailwindcss/vite": "catalog:tailwind",
     "@tanstack/react-query": "catalog:trpc",
     "@tanstack/react-router": "catalog:vite",
