@@ -8,8 +8,6 @@ import superjson from 'superjson';
 
 import type { TRPCRouter } from '@reactlith-template/trpc';
 
-const trpcPath = '/trpc';
-
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -21,7 +19,7 @@ export function createTRPCRouteContext() {
     links: [
       httpBatchLink({
         transformer: superjson,
-        url: trpcPath,
+        url: '/trpc',
       }),
     ],
   });

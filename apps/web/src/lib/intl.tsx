@@ -1,21 +1,10 @@
 import type { Formats } from 'use-intl';
-import { useEffect } from 'react';
 import { IntlProvider as BaseIntlProvider } from 'use-intl';
 
 import { useRootRouteContext } from './route-context-hooks';
 
-function useIntlSync() {
-  const {
-    intl: { locale },
-  } = useRootRouteContext();
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-}
-
 export function IntlProvider({ children }: { children: React.ReactNode }) {
   const { intl } = useRootRouteContext();
-  useIntlSync();
   return (
     <BaseIntlProvider
       messages={intl.messages}

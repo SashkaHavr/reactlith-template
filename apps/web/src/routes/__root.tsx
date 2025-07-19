@@ -4,18 +4,19 @@ import type { ReactNode } from 'react';
 import {
   createRootRouteWithContext,
   HeadContent,
+  isMatch,
   Outlet,
   Scripts,
+  useRouterState,
 } from '@tanstack/react-router';
 
+import { defaultLocale } from '@reactlith-template/intl';
+
 import type { TRPCRouteContext } from '~/lib/trpc';
-import { getAuthContext } from '~/lib/auth';
+import themeDehydrationScript from '~/components/theme/theme-dehydration-script.ts?url';
 import indexCss from '../index.css?url';
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
-  beforeLoad: async ({ context: { queryClient } }) => {
-    return { auth: await getAuthContext(queryClient) };
-  },
   component: RootComponent,
   notFoundComponent: () => <p>Page not found</p>,
   head: () => ({
@@ -36,12 +37,11 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
       { rel: 'stylesheet', href: indexCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
     ],
+    scripts: [{ src: themeDehydrationScript, type: 'module' }],
   }),
 });
 
 function RootComponent() {
-  const { auth } = Route.useRouteContext();
-  console.log(auth.isLoggedIn);
   return (
     <RootDocument>
       <Outlet />
@@ -50,8 +50,13 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const matches = useRouterState({ select: (s) => s.matches }).filter((m) =>
+    isMatch(m, 'context.intl.locale'),
+  );
+  const locale = matches[0]?.context.intl.locale ?? defaultLocale;
+
   return (
-    <html>
+    <html suppressHydrationWarning lang={locale}>
       <head>
         <HeadContent />
       </head>

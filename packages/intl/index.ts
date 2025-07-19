@@ -6,13 +6,12 @@ import { persist } from 'zustand/middleware';
 
 import type baseMessages from './messages/en.json';
 
-const defaultLocale: (typeof locales)[number] = 'uk';
+export const defaultLocale: (typeof locales)[number] = 'uk';
 type BaseMessages = typeof baseMessages;
 export const locales = ['en', 'uk'] as const;
 export function isLocale(locale: unknown): locale is Locale {
   return (
-    typeof locale === 'string' &&
-    (locales as readonly string[]).includes(locale)
+    typeof locale == 'string' && (locales as readonly string[]).includes(locale)
   );
 }
 
@@ -43,7 +42,7 @@ async function getZodLocale(locale: Locale) {
 
 const existingTranslators = new Map<Locale, unknown>();
 
-function getTranslator<
+export function getTranslator<
   Namespace extends NamespaceKeys<
     BaseMessages,
     NestedKeyOf<BaseMessages>
@@ -99,14 +98,12 @@ function getLocale(localeRouteParam: string | undefined): Locale {
 export async function getIntlContext(localeRouteParam: string | undefined) {
   const locale = getLocale(localeRouteParam);
   const messages = await getMessages(locale);
-  const t = getTranslator({ locale, messages });
   z.config((await getZodLocale(locale))());
   return {
     intl: {
       locale: locale,
       messages: messages,
     },
-    t: t,
   };
 }
 

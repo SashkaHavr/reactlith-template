@@ -10,7 +10,6 @@ export default defineConfig({
     tanstackStart({
       customViteReactPlugin: true,
       target: 'bun',
-      spa: { enabled: true },
     }),
     react({
       babel: {
