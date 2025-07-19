@@ -72,9 +72,12 @@ const localeStore = createStore<LocaleStore>()(
   ),
 );
 
+export function setStoredLocale(locale: Locale) {
+  localeStore.getState().setLocale(locale);
+}
+
 function getLocale(localeRouteParam: string | undefined): Locale {
   if (isLocale(localeRouteParam)) {
-    localeStore.getState().setLocale(localeRouteParam);
     return localeRouteParam;
   }
   const storedLocale = localeStore.getState().locale;

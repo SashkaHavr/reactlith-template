@@ -1,6 +1,10 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
-import { getIntlContext, isLocale } from '@reactlith-template/intl';
+import {
+  getIntlContext,
+  isLocale,
+  setStoredLocale,
+} from '@reactlith-template/intl';
 
 import { ThemeProvider } from '~/components/theme/theme-provider';
 import { getAuthContext } from '~/lib/auth';
@@ -13,8 +17,10 @@ export const Route = createFileRoute('/{-$locale}')({
     if (params.locale && !isLocale(params.locale)) {
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
     }
-
     const intlContext = await getIntlContext(params.locale);
+    if (typeof window !== 'undefined') {
+      setStoredLocale(intlContext.intl.locale);
+    }
     return { ...intlContext, auth: await getAuthContext(queryClient) };
   },
   component: RouteComponent,
