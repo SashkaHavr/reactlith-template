@@ -20,6 +20,8 @@ import {
   permissions,
 } from '@reactlith-template/auth/permissions';
 
+import { getSessionServerFn } from './auth-server';
+
 export const authClient = createAuthClient({
   basePath: '/auth',
   plugins: [
@@ -34,7 +36,7 @@ const authBaseKey = 'auth';
 
 export const authGetSessionOptions = queryOptions({
   queryKey: [authBaseKey, 'getSession'],
-  queryFn: async () => await authClient.getSession(),
+  queryFn: async () => await getSessionServerFn(),
 });
 
 export async function getAuthContext(queryClient: QueryClient) {

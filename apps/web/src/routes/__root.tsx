@@ -9,9 +9,15 @@ import {
 } from '@tanstack/react-router';
 
 import type { TRPCRouteContext } from '~/lib/trpc';
+import { getAuthContext } from '~/lib/auth';
 import indexCss from '../index.css?url';
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
+  beforeLoad: async ({ context: { queryClient } }) => {
+    return { auth: await getAuthContext(queryClient) };
+  },
+  component: RootComponent,
+  notFoundComponent: () => <p>Page not found</p>,
   head: () => ({
     meta: [
       {
@@ -31,11 +37,11 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
     ],
   }),
-  component: RootComponent,
-  notFoundComponent: () => <p>Page not found</p>,
 });
 
 function RootComponent() {
+  const { auth } = Route.useRouteContext();
+  console.log(auth.isLoggedIn);
   return (
     <RootDocument>
       <Outlet />
