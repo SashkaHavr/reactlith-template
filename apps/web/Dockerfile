@@ -18,8 +18,6 @@ COPY --from=turbo /app/out/json/ .
 RUN pnpm install --frozen-lockfile
 COPY --from=turbo /app/out/full/ .
 
-ENV NODE_ENV=production
-
 RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
     --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
     turbo build

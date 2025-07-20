@@ -56,7 +56,6 @@ services:
 
 networks:
   db-network:
-  api-network:
 
 volumes:
   db-data:

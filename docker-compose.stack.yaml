@@ -15,7 +15,7 @@ services:
       update_config:
         order: start-first
   db-update:
-    image: ${REGISTRY}/reactlith/db-update:latest
+    image: ${REGISTRY}/reactlith-template/db-update:latest
     env_file: .env
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
@@ -23,30 +23,19 @@ services:
       - db-network
     deploy:
       mode: replicated-job
-  api:
-    image: ${REGISTRY}/reactlith/api:latest
+  web:
+    image: ${REGISTRY}/reactlith-template/web:latest
     env_file: .env
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
     networks:
       - db-network
-      - api-network
-    deploy:
-      update_config:
-        order: start-first
-  web:
-    image: ${REGISTRY}/reactlith/web:latest
-    environment:
-        CADDY_API_REVERSE_PROXY_URL: api:3000
-    networks:
-      - api-network
     deploy:
       update_config:
         order: start-first
 
 networks:
   db-network:
-  api-network:
 
 volumes:
   db-data:

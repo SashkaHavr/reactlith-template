@@ -18,12 +18,8 @@ jobs:
         image:
           - name: db-update
             dockerfile: './packages/db/Dockerfile'
-          - name: api
-            dockerfile: './apps/api/Dockerfile'
           - name: web
             dockerfile: './apps/web/Dockerfile'
-            build-args: |
-              VITE_API_UNDER_REVERSE_PROXY=true
 
     steps:
       - name: Login to Registry
@@ -42,13 +38,13 @@ jobs:
           file: ${{ matrix.image.dockerfile }}
           push: true
           tags: |
-            ${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:latest
-            ${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:${{ github.sha }}
+            ${{ vars.REGISTRY }}/reactlith-template/${{ matrix.image.name }}:latest
+            ${{ vars.REGISTRY }}/reactlith-template/${{ matrix.image.name }}:${{ github.sha }}
           build-args: ${{ matrix.image.build-args }}
           secrets: |
             TURBO_TEAM=${{ vars.TURBO_TEAM }}
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
-          cache-from: type=registry,ref=${{ vars.REGISTRY }}/reactlith/${{ matrix.image.name }}:latest
+          cache-from: type=registry,ref=${{ vars.REGISTRY }}/reactlith-template/${{ matrix.image.name }}:latest
           cache-to: type=inline
 
   trigger-dokploy-deployment:

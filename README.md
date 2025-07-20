@@ -22,7 +22,7 @@ docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d
 ```sh
 docker run -d --name pg-reactlith -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith:/var/lib/postgresql/data -p 5432:5432 postgres
 ```
-6. In [apps/api/](./apps/api/) **AND** [packages/db/](./package/db/) create .env file with
+6. In [apps/web/](./apps/web/) **AND** [packages/db/](./package/db/) create .env file with
 ```conf
 DATABASE_URL=postgresql://postgres:mysecretpassword@localhost:5432/postgres
 AUTH_DEV_MAGIC_LINK=true
