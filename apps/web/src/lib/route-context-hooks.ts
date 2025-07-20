@@ -10,8 +10,8 @@ export function useAuth() {
 
 export function useLoggedInAuth() {
   const auth = useRootRouteContext().auth;
-  if (!auth.isLoggedIn) {
+  if (!auth.loggedIn) {
     throw new Error('Auth is not defined');
   }
-  return useRootRouteContext().auth;
+  return auth;
 }

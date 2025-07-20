@@ -2,7 +2,7 @@ import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
 import { createContext } from '#context.ts';
-import { publicProcedure, router } from '#init.ts';
+import { createCallerFactory, publicProcedure, router } from '#init.ts';
 import { configRouter } from '#routers/config.ts';
 import { numbersRouter } from '#routers/numbers.ts';
 
@@ -17,9 +17,11 @@ export function trpcHandler({ request }: { request: Request }) {
     req: request,
     router: appRouter,
     endpoint: '/trpc',
-    createContext: (opts) => createContext({ opts }),
+    createContext: (opts) => createContext({ request: opts.req }),
   });
 }
+
+export const createTrpcCaller = createCallerFactory(appRouter);
 
 export type TRPCRouter = typeof appRouter;
 export type TRPCInput = inferRouterInputs<TRPCRouter>;

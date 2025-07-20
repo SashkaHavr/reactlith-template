@@ -45,18 +45,18 @@ export async function getAuthContext(queryClient: QueryClient) {
     return session != null
       ? {
           available: true as const,
-          isLoggedIn: true as const,
+          loggedIn: true as const,
           session: session.session,
           user: session.user,
         }
       : {
           available: true as const,
-          isLoggedIn: false as const,
+          loggedIn: false as const,
         };
   } catch {
     return {
       available: false as const,
-      isLoggedIn: false as const,
+      loggedIn: false as const,
     };
   }
 }

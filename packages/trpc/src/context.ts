@@ -1,7 +1,5 @@
-import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-
-export function createContext({ opts }: { opts: FetchCreateContextFnOptions }) {
-  return { request: opts.req, opts: opts };
+export function createContext({ request }: { request: Request }) {
+  return { request };
 }
 
 export type Context = Awaited<ReturnType<typeof createContext>>;

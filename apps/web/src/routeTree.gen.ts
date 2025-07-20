@@ -12,7 +12,9 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Char123LocaleChar125RouteRouteImport } from './routes/{-$locale}/route'
-import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
+import { Route as Char123LocaleChar125LayoutRouteRouteImport } from './routes/{-$locale}/_layout/route'
+import { Route as Char123LocaleChar125LayoutIndexRouteImport } from './routes/{-$locale}/_layout/index'
+import { Route as Char123LocaleChar125LayoutNumbersRouteImport } from './routes/{-$locale}/_layout/numbers'
 import { ServerRoute as TrpcSplatServerRouteImport } from './routes/trpc.$'
 import { ServerRoute as AuthSplatServerRouteImport } from './routes/auth.$'
 
@@ -24,11 +26,22 @@ const Char123LocaleChar125RouteRoute =
     path: '/{-$locale}',
     getParentRoute: () => rootRouteImport,
   } as any)
-const Char123LocaleChar125IndexRoute =
-  Char123LocaleChar125IndexRouteImport.update({
+const Char123LocaleChar125LayoutRouteRoute =
+  Char123LocaleChar125LayoutRouteRouteImport.update({
+    id: '/_layout',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125LayoutIndexRoute =
+  Char123LocaleChar125LayoutIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => Char123LocaleChar125RouteRoute,
+    getParentRoute: () => Char123LocaleChar125LayoutRouteRoute,
+  } as any)
+const Char123LocaleChar125LayoutNumbersRoute =
+  Char123LocaleChar125LayoutNumbersRouteImport.update({
+    id: '/numbers',
+    path: '/numbers',
+    getParentRoute: () => Char123LocaleChar125LayoutRouteRoute,
   } as any)
 const TrpcSplatServerRoute = TrpcSplatServerRouteImport.update({
   id: '/trpc/$',
@@ -42,23 +55,32 @@ const AuthSplatServerRoute = AuthSplatServerRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/{-$locale}': typeof Char123LocaleChar125RouteRouteWithChildren
-  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125LayoutRouteRouteWithChildren
+  '/{-$locale}/numbers': typeof Char123LocaleChar125LayoutNumbersRoute
+  '/{-$locale}/': typeof Char123LocaleChar125LayoutIndexRoute
 }
 export interface FileRoutesByTo {
-  '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125LayoutIndexRoute
+  '/{-$locale}/numbers': typeof Char123LocaleChar125LayoutNumbersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/{-$locale}': typeof Char123LocaleChar125RouteRouteWithChildren
-  '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/_layout': typeof Char123LocaleChar125LayoutRouteRouteWithChildren
+  '/{-$locale}/_layout/numbers': typeof Char123LocaleChar125LayoutNumbersRoute
+  '/{-$locale}/_layout/': typeof Char123LocaleChar125LayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/{-$locale}' | '/{-$locale}/'
+  fullPaths: '/{-$locale}' | '/{-$locale}/numbers' | '/{-$locale}/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/{-$locale}'
-  id: '__root__' | '/{-$locale}' | '/{-$locale}/'
+  to: '/{-$locale}' | '/{-$locale}/numbers'
+  id:
+    | '__root__'
+    | '/{-$locale}'
+    | '/{-$locale}/_layout'
+    | '/{-$locale}/_layout/numbers'
+    | '/{-$locale}/_layout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -99,12 +121,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125RouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/{-$locale}/': {
-      id: '/{-$locale}/'
+    '/{-$locale}/_layout': {
+      id: '/{-$locale}/_layout'
+      path: ''
+      fullPath: '/{-$locale}'
+      preLoaderRoute: typeof Char123LocaleChar125LayoutRouteRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/_layout/': {
+      id: '/{-$locale}/_layout/'
       path: '/'
       fullPath: '/{-$locale}/'
-      preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
-      parentRoute: typeof Char123LocaleChar125RouteRoute
+      preLoaderRoute: typeof Char123LocaleChar125LayoutIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125LayoutRouteRoute
+    }
+    '/{-$locale}/_layout/numbers': {
+      id: '/{-$locale}/_layout/numbers'
+      path: '/numbers'
+      fullPath: '/{-$locale}/numbers'
+      preLoaderRoute: typeof Char123LocaleChar125LayoutNumbersRouteImport
+      parentRoute: typeof Char123LocaleChar125LayoutRouteRoute
     }
   }
 }
@@ -127,13 +163,31 @@ declare module '@tanstack/react-start/server' {
   }
 }
 
+interface Char123LocaleChar125LayoutRouteRouteChildren {
+  Char123LocaleChar125LayoutNumbersRoute: typeof Char123LocaleChar125LayoutNumbersRoute
+  Char123LocaleChar125LayoutIndexRoute: typeof Char123LocaleChar125LayoutIndexRoute
+}
+
+const Char123LocaleChar125LayoutRouteRouteChildren: Char123LocaleChar125LayoutRouteRouteChildren =
+  {
+    Char123LocaleChar125LayoutNumbersRoute:
+      Char123LocaleChar125LayoutNumbersRoute,
+    Char123LocaleChar125LayoutIndexRoute: Char123LocaleChar125LayoutIndexRoute,
+  }
+
+const Char123LocaleChar125LayoutRouteRouteWithChildren =
+  Char123LocaleChar125LayoutRouteRoute._addFileChildren(
+    Char123LocaleChar125LayoutRouteRouteChildren,
+  )
+
 interface Char123LocaleChar125RouteRouteChildren {
-  Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
+  Char123LocaleChar125LayoutRouteRoute: typeof Char123LocaleChar125LayoutRouteRouteWithChildren
 }
 
 const Char123LocaleChar125RouteRouteChildren: Char123LocaleChar125RouteRouteChildren =
   {
-    Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
+    Char123LocaleChar125LayoutRouteRoute:
+      Char123LocaleChar125LayoutRouteRouteWithChildren,
   }
 
 const Char123LocaleChar125RouteRouteWithChildren =
