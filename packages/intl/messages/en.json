@@ -15,5 +15,6 @@
     "undefined": "Undefined",
     "user": "User",
     "works": "Works!"
-  }
+  },
+  "loading": "Loading..."
 }

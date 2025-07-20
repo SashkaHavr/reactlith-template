@@ -1,10 +1,12 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 import {
+  defaultLocale,
   getIntlContext,
+  getTranslator,
   isLocale,
-  setStoredLocale,
 } from '@reactlith-template/intl';
+import { LoadingSpinner } from '~/components/ui/loading';
 
 import { ThemeProvider } from '~/components/theme/theme-provider';
 import { getAuthContext } from '~/lib/auth';
@@ -17,11 +19,19 @@ export const Route = createFileRoute('/{-$locale}')({
     if (params.locale && !isLocale(params.locale)) {
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
     }
-    const intlContext = await getIntlContext(params.locale);
-    if (typeof window !== 'undefined') {
-      setStoredLocale(intlContext.intl.locale);
+    const intl = await getIntlContext(params.locale);
+    if (intl.locale != params.locale && intl.locale != defaultLocale) {
+      throw redirect({
+        to: '/{-$locale}',
+        params: { locale: intl.locale },
+      });
     }
-    return { ...intlContext, auth: await getAuthContext(queryClient) };
+    const t = getTranslator(intl);
+    return {
+      intl,
+      auth: await getAuthContext(queryClient),
+      loadingText: t('loading'),
+    };
   },
   component: RouteComponent,
 });
@@ -37,5 +47,14 @@ function RouteComponent() {
 }
 
 function PendingComponent() {
-  return <p className="text-4xl">Loading...</p>;
+  const loadingText = Route.useRouteContext({
+    select: (s) => s.loadingText,
+  });
+
+  return (
+    <div className="flex h-screen flex-col items-center justify-center gap-1 pb-20">
+      <LoadingSpinner />
+      <p className="text-lg">{loadingText}</p>
+    </div>
+  );
 }

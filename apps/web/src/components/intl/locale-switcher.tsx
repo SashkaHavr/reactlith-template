@@ -1,7 +1,7 @@
 import type { Locale } from 'use-intl';
 import { useNavigate } from '@tanstack/react-router';
 
-import { locales } from '@reactlith-template/intl';
+import { isLocale, locales } from '@reactlith-template/intl';
 
 import { useRootRouteContext } from '~/lib/route-context-hooks';
 import {
@@ -25,7 +25,9 @@ export function LocaleSwitcher({ className }: { className?: string }) {
     <Select
       value={locale}
       onValueChange={(e) => {
-        void navigate({ params: { locale: e } });
+        if (isLocale(e)) {
+          void navigate({ params: { locale: e } });
+        }
       }}
     >
       <SelectTrigger className={className}>

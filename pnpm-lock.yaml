@@ -378,9 +378,6 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.0.5
-      zustand:
-        specifier: 'catalog:'
-        version: 5.0.6(@types/react@19.1.8)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
     devDependencies:
       '@reactlith-template/eslint-config':
         specifier: workspace:*

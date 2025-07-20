@@ -1,8 +1,6 @@
 import type { Locale, NamespaceKeys, NestedKeyOf } from 'use-intl';
 import { createTranslator } from 'use-intl';
 import z from 'zod';
-import { createStore } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 import type baseMessages from './messages/en.json';
 
@@ -57,43 +55,9 @@ export function getTranslator<
   return newT;
 }
 
-interface LocaleStore {
-  locale: Locale | undefined;
-  setLocale: (locale: Locale) => void;
-}
-
-const localeStore = createStore<LocaleStore>()(
-  persist(
-    (set) => ({
-      locale: undefined,
-      setLocale: (locale) => set({ locale }),
-    }),
-    { name: 'locale' },
-  ),
-);
-
-export function setStoredLocale(locale: Locale) {
-  localeStore.getState().setLocale(locale);
-}
-
 function getLocale(localeRouteParam: string | undefined): Locale {
   if (isLocale(localeRouteParam)) {
     return localeRouteParam;
-  }
-  const storedLocale = localeStore.getState().locale;
-  if (isLocale(storedLocale)) {
-    return storedLocale;
-  }
-  if (
-    typeof navigator !== 'undefined' &&
-    'languages' in navigator &&
-    Array.isArray(navigator.languages)
-  ) {
-    const prefferedLocales = navigator.languages.filter(isLocale);
-    const firstPrefferedLocale = prefferedLocales[0];
-    if (firstPrefferedLocale) {
-      return firstPrefferedLocale;
-    }
   }
   return defaultLocale;
 }
@@ -103,10 +67,8 @@ export async function getIntlContext(localeRouteParam: string | undefined) {
   const messages = await getMessages(locale);
   z.config((await getZodLocale(locale))());
   return {
-    intl: {
-      locale: locale,
-      messages: messages,
-    },
+    locale: locale,
+    messages: messages,
   };
 }
 
