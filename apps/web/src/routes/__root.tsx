@@ -13,7 +13,7 @@ import {
 import { defaultLocale } from '@reactlith-template/intl';
 
 import type { TRPCRouteContext } from '~/lib/trpc';
-import themeDehydrationScript from '~/components/theme/theme-dehydration-script.js?raw';
+import setInitialThemeScript from '~/components/theme/set-initial-theme.js?raw';
 import indexCss from '../index.css?url';
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
@@ -37,7 +37,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
       { rel: 'stylesheet', href: indexCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
     ],
-    scripts: [{ children: themeDehydrationScript }],
+    scripts: [{ children: setInitialThemeScript }],
   }),
 });
 
