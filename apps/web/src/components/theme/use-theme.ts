@@ -28,6 +28,10 @@ export const useThemeStore = create<State & Actions>()(
 );
 
 export function matchSystemTheme(theme: Theme) {
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
+
   return theme == 'system'
     ? window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
