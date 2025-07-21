@@ -15,7 +15,7 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.5.1",
     "@reactlith-template/typescript-config": "workspace:*",
     "prettier": "^3.6.2",
-    "prettier-plugin-packagejson": "^2.5.18",
+    "prettier-plugin-packagejson": "^2.5.19",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "typescript": "catalog:"

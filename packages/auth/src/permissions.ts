@@ -1,4 +1,3 @@
-import type { AdminOptions } from 'better-auth/plugins';
 import { createAccessControl } from 'better-auth/plugins/access';
 import { adminAc, defaultStatements } from 'better-auth/plugins/admin/access';
 
@@ -17,7 +16,7 @@ const admin = ac.newRole({
 export const permissions = {
   ac,
   roles: { admin, user },
-} satisfies AdminOptions;
+};
 
 const allRoles = Object.keys(permissions.roles);
 export type Role = keyof typeof permissions.roles;
