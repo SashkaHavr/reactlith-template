@@ -10,6 +10,8 @@ export function createRouter() {
   const router = createTanStackRouter({
     context: { ...trpcRouteContext },
     routeTree,
+    defaultPreloadStaleTime: 0,
+    defaultPreload: 'intent',
     Wrap: (props) => {
       return (
         <TRPCProvider
