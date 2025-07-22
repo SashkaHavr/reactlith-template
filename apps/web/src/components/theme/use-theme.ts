@@ -29,7 +29,7 @@ export const useThemeStore = create<State & Actions>()(
 
 export function matchSystemTheme(theme: Theme) {
   if (typeof window === 'undefined') {
-    return 'light';
+    return undefined;
   }
 
   return theme == 'system'

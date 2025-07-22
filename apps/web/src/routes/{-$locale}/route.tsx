@@ -8,7 +8,6 @@ import {
 } from '@reactlith-template/intl';
 import { LoadingSpinner } from '~/components/ui/loading';
 
-import { ThemeProvider } from '~/components/theme/theme-provider';
 import { getAuthContext } from '~/lib/auth';
 import { IntlProvider } from '~/lib/intl';
 
@@ -38,11 +37,9 @@ export const Route = createFileRoute('/{-$locale}')({
 
 function RouteComponent() {
   return (
-    <ThemeProvider>
-      <IntlProvider>
-        <Outlet />
-      </IntlProvider>
-    </ThemeProvider>
+    <IntlProvider>
+      <Outlet />
+    </IntlProvider>
   );
 }
 
