@@ -11,14 +11,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from './ui/select';
 
 const localeToText: Record<Locale, string> = {
   en: 'English',
   uk: 'Українська',
 };
 
-export function LocaleSwitcher({ className }: { className?: string }) {
+export function LocaleSelect({ className }: { className?: string }) {
   const locale = useRootRouteContext().intl.locale;
   const navigate = useNavigate({ from: '/{-$locale}' });
   return (

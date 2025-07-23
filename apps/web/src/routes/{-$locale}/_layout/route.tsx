@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { useFormatter, useNow, useTranslations } from 'use-intl';
 
-import { LocaleSwitcher } from '~/components/intl/locale-switcher';
+import { LocaleSelect } from '~/components/locale-select';
 import { ThemeToggle } from '~/components/theme/theme-toggle';
 import { useAuth } from '~/lib/route-context-hooks';
 import { useTRPC } from '~/lib/trpc';
@@ -28,7 +28,7 @@ function RouteComponent() {
           <div className="flex gap-3">
             <p className="self-center text-xl">{t('works')}</p>
             <ThemeToggle />
-            <LocaleSwitcher />
+            <LocaleSelect />
           </div>
           <p>
             {t('trpc-health-response')}:{' '}
