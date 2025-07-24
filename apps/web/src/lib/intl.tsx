@@ -1,10 +1,8 @@
 import type { Formats } from 'use-intl';
-import { Navigate, useParams } from '@tanstack/react-router';
+import { Navigate, useParams, useRouteContext } from '@tanstack/react-router';
 import { IntlProvider as BaseIntlProvider } from 'use-intl';
 
 import { defaultLocale, isLocale } from '@reactlith-template/intl';
-
-import { useRootRouteContext } from './route-context-hooks';
 
 function getPreferredLocale() {
   if (
@@ -21,7 +19,7 @@ function getPreferredLocale() {
 }
 
 export function IntlProvider({ children }: { children: React.ReactNode }) {
-  const { intl } = useRootRouteContext();
+  const intl = useRouteContext({ from: '/{-$locale}', select: (s) => s.intl });
   const { locale } = useParams({ from: '/{-$locale}' });
   if (!isLocale(locale)) {
     const preferredLocale = getPreferredLocale();

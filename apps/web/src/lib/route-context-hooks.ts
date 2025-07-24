@@ -1,15 +1,11 @@
 import { useRouteContext } from '@tanstack/react-router';
 
-export function useRootRouteContext() {
-  return useRouteContext({ from: '/{-$locale}' });
-}
-
 export function useAuth() {
-  return useRootRouteContext().auth;
+  return useRouteContext({ from: '__root__', select: (s) => s.auth });
 }
 
 export function useLoggedInAuth() {
-  const auth = useRootRouteContext().auth;
+  const auth = useAuth();
   if (!auth.loggedIn) {
     throw new Error('Auth is not defined');
   }

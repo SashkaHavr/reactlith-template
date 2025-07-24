@@ -14,9 +14,15 @@ import { ThemeProvider } from 'next-themes';
 import { defaultLocale } from '@reactlith-template/intl';
 
 import type { TRPCRouteContext } from '~/lib/trpc';
+import { getAuthContext } from '~/lib/auth';
 import indexCss from '../index.css?url';
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
+  beforeLoad: async ({ context: { queryClient } }) => {
+    return {
+      auth: await getAuthContext(queryClient),
+    };
+  },
   component: RootComponent,
   notFoundComponent: () => <p>Page not found</p>,
   head: () => ({

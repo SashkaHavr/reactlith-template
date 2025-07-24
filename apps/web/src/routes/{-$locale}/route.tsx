@@ -8,13 +8,12 @@ import {
 } from '@reactlith-template/intl';
 import { LoadingSpinner } from '~/components/ui/loading';
 
-import { getAuthContext } from '~/lib/auth';
 import { IntlProvider } from '~/lib/intl';
 
 export const Route = createFileRoute('/{-$locale}')({
   ssr: 'data-only',
   pendingComponent: PendingComponent,
-  beforeLoad: async ({ params, context: { queryClient } }) => {
+  beforeLoad: async ({ params }) => {
     if (params.locale && !isLocale(params.locale)) {
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
     }
@@ -28,7 +27,6 @@ export const Route = createFileRoute('/{-$locale}')({
     const t = getTranslator(intl);
     return {
       intl,
-      auth: await getAuthContext(queryClient),
       loadingText: t('loading'),
     };
   },
