@@ -6,13 +6,11 @@ import {
   getTranslator,
   isLocale,
 } from '@reactlith-template/intl';
-import { LoadingSpinner } from '~/components/ui/loading';
 
 import { IntlProvider } from '~/lib/intl';
 
 export const Route = createFileRoute('/{-$locale}')({
   ssr: 'data-only',
-  pendingComponent: PendingComponent,
   beforeLoad: async ({ params }) => {
     if (params.locale && !isLocale(params.locale)) {
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
@@ -38,18 +36,5 @@ function RouteComponent() {
     <IntlProvider>
       <Outlet />
     </IntlProvider>
-  );
-}
-
-function PendingComponent() {
-  const loadingText = Route.useRouteContext({
-    select: (s) => s.loadingText,
-  });
-
-  return (
-    <div className="flex h-screen flex-col items-center justify-center gap-1 pb-20">
-      <LoadingSpinner />
-      <p className="text-lg">{loadingText}</p>
-    </div>
   );
 }

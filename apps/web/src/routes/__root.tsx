@@ -24,7 +24,6 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     };
   },
   component: RootComponent,
-  notFoundComponent: () => <p>Page not found</p>,
   head: () => ({
     meta: [
       {
