@@ -3,7 +3,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router';
 import { useFormatter, useNow, useTranslations } from 'use-intl';
 
 import { LocaleSelect } from '~/components/locale-select';
-import { ThemeToggle } from '~/components/theme/theme-toggle';
+import { ThemeToggle } from '~/components/theme-toggle';
 import { useAuth } from '~/lib/route-context-hooks';
 import { useTRPC } from '~/lib/trpc';
 

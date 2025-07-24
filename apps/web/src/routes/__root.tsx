@@ -9,13 +9,11 @@ import {
   Scripts,
   useRouterState,
 } from '@tanstack/react-router';
+import { ThemeProvider } from 'next-themes';
 
 import { defaultLocale } from '@reactlith-template/intl';
 
 import type { TRPCRouteContext } from '~/lib/trpc';
-import setInitialThemeScript from '~/components/theme/set-initial-theme.js?raw';
-import { useRealTheme } from '~/components/theme/use-theme';
-import { cn } from '~/lib/utils';
 import indexCss from '../index.css?url';
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
@@ -39,14 +37,15 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
       { rel: 'stylesheet', href: indexCss },
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
     ],
-    scripts: [{ children: setInitialThemeScript }],
   }),
 });
 
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <ThemeProvider attribute="class">
+        <Outlet />
+      </ThemeProvider>
     </RootDocument>
   );
 }
@@ -56,10 +55,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
     isMatch(m, 'context.intl.locale'),
   );
   const locale = matches[0]?.context.intl.locale ?? defaultLocale;
-  const theme = useRealTheme();
 
   return (
-    <html suppressHydrationWarning lang={locale} className={cn(theme)}>
+    <html suppressHydrationWarning lang={locale}>
       <head>
         <HeadContent />
       </head>

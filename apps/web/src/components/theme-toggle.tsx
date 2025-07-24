@@ -1,9 +1,9 @@
 import type { VariantProps } from 'class-variance-authority';
 import { MoonIcon, SunIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
-import type { buttonVariants } from '../ui/button';
-import { Button } from '../ui/button';
-import { useRealTheme, useThemeStore } from './use-theme';
+import type { buttonVariants } from './ui/button';
+import { Button } from './ui/button';
 
 export function ThemeToggle(
   props: React.ComponentProps<'button'> &
@@ -11,17 +11,16 @@ export function ThemeToggle(
       asChild?: boolean;
     },
 ) {
-  const realTheme = useRealTheme();
-  const { setTheme } = useThemeStore();
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <Button
       variant="outline"
       size="icon"
-      onClick={() => setTheme(realTheme == 'light' ? 'dark' : 'light')}
+      onClick={() => setTheme(resolvedTheme == 'light' ? 'dark' : 'light')}
       {...props}
     >
-      {realTheme == 'light' ? <SunIcon /> : <MoonIcon />}
+      {resolvedTheme == 'light' ? <SunIcon /> : <MoonIcon />}
     </Button>
   );
 }

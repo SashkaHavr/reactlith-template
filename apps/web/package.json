@@ -28,12 +28,12 @@
     "class-variance-authority": "catalog:tailwind",
     "clsx": "catalog:tailwind",
     "lucide-react": "catalog:",
+    "next-themes": "^0.4.6",
     "react": "catalog:react",
     "react-dom": "catalog:react",
     "superjson": "catalog:",
     "tailwind-merge": "catalog:tailwind",
-    "use-intl": "catalog:",
-    "zustand": "catalog:"
+    "use-intl": "catalog:"
   },
   "devDependencies": {
     "@julr/vite-plugin-validate-env": "catalog:vite",
