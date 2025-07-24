@@ -26,6 +26,7 @@ RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
 FROM oven/bun:slim AS runner
 WORKDIR /app
 COPY --from=builder /app/apps/web/.output .
+COPY --from=builder /app /full
 
 RUN apt-get -y update && apt-get -y install curl
 HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
@@ -33,4 +34,4 @@ HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/tr
 USER bun
 EXPOSE 3000
 ENV NODE_ENV=production
-CMD ["bun", "run", "server/index.mjs"]
+CMD [ "sh", "-c", "cd /full/packages/db && bun push && cd /app && bun run server/index.mjs" ]
