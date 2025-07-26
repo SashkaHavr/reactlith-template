@@ -5,7 +5,7 @@ import type baseMessages from '../messages/en.json';
 
 export const defaultLocale: (typeof locales)[number] = 'en';
 type BaseMessages = typeof baseMessages;
-export const locales = ['en', 'uk'] as const;
+export const locales = ['en'] as const;
 export function isLocale(locale: unknown): locale is Locale {
   return (
     typeof locale === 'string' &&
@@ -22,19 +22,17 @@ declare module 'use-intl' {
 
 async function getMessages(locale: Locale) {
   switch (locale) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     case 'en':
       return (await import(`../messages/en.json`)) as unknown as BaseMessages;
-    case 'uk':
-      return (await import(`../messages/uk.json`)) as unknown as BaseMessages;
   }
 }
 
 async function getZodLocale(locale: Locale) {
   switch (locale) {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     case 'en':
       return (await import(`zod/v4/locales/en.js`)).default;
-    case 'uk':
-      return (await import(`zod/v4/locales/ua.js`)).default;
   }
 }
 
