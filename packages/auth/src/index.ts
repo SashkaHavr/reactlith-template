@@ -26,15 +26,6 @@ export const auth = betterAuth({
       },
     },
   },
-  socialProviders: {
-    github:
-      envAuth.AUTH_GITHUB_CLIENT_ID && envAuth.AUTH_GITHUB_CLIENT_SECRET
-        ? {
-            clientId: envAuth.AUTH_GITHUB_CLIENT_ID,
-            clientSecret: envAuth.AUTH_GITHUB_CLIENT_SECRET,
-          }
-        : undefined,
-  },
   plugins: [
     magicLink({
       sendMagicLink: ({ url, email }, request) => {

@@ -21,6 +21,7 @@ export const Route = createFileRoute('/{-$locale}')({
       if (Array.isArray(acceptLanguageHeader)) {
         const preferredLocales = acceptLanguageHeader.filter(isLocale);
         const firstPreferredLocale = preferredLocales[0];
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (firstPreferredLocale && firstPreferredLocale != defaultLocale) {
           throw redirect({
             to: currentMatch ? '/{-$locale}' + currentMatch : '/{-$locale}',
@@ -31,6 +32,7 @@ export const Route = createFileRoute('/{-$locale}')({
     }
 
     const intl = await getIntlContext(params.locale);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (intl.locale != params.locale && intl.locale != defaultLocale) {
       throw redirect({
         to: '/{-$locale}',
