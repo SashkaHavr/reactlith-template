@@ -1,4 +1,4 @@
-import { createMiddleware, createServerFn } from '@tanstack/react-start';
+import { createMiddleware } from '@tanstack/react-start';
 import { getWebRequest } from '@tanstack/react-start/server';
 
 import { createTrpcCaller } from '@reactlith-template/trpc';
@@ -12,9 +12,3 @@ export const trpcServerFnMiddleware = createMiddleware({
     },
   });
 });
-
-export const getNumbersServerFn = createServerFn()
-  .middleware([trpcServerFnMiddleware])
-  .handler(({ context: { trpc } }) => {
-    return trpc.numbers.getAll();
-  });

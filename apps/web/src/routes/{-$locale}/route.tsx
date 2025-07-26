@@ -15,6 +15,7 @@ export const Route = createFileRoute('/{-$locale}')({
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
     }
     const intl = await getIntlContext(params.locale);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (intl.locale != params.locale && intl.locale != defaultLocale) {
       throw redirect({
         to: '/{-$locale}',
