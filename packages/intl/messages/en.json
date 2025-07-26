@@ -4,22 +4,5 @@
     "loading": "Loading...",
     "notFound": "The page you are looking for does not exist",
     "returnToHomePage": "Return to Home page"
-  },
-  "index": {
-    "add-number": "Add number",
-    "auth-status": "Auth status",
-    "available": "Available",
-    "delete-all-numbers": "Delete all numbers",
-    "login": "Login",
-    "login-with-github": "Login with GitHub",
-    "logout": "Logout",
-    "not-available": "Not available",
-    "now-is": "Now is",
-    "or-continue-with-dev-magic-link": "Or continue with dev magic link",
-    "see-your-backend-server-terminal": "See your backend server terminal!",
-    "trpc-health-response": "tRPC /health response",
-    "undefined": "Undefined",
-    "user": "User",
-    "works": "Works!"
   }
 }
