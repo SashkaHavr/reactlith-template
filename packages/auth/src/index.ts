@@ -14,7 +14,6 @@ import { permissions } from '#permissions.ts';
 
 export const auth = betterAuth({
   basePath: '/auth',
-  trustedOrigins: envAuth.AUTH_TRUSTED_ORIGINS,
   session: {
     cookieCache: {
       enabled: true,
