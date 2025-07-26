@@ -1,5 +1,6 @@
 {
   "name": "@reactlith-template/auth",
+  "private": true,
   "type": "module",
   "imports": {
     "#*": "./src/*"

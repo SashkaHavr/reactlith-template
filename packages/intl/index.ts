@@ -4,7 +4,7 @@ import z from 'zod';
 
 import type baseMessages from './messages/en.json';
 
-export const defaultLocale: (typeof locales)[number] = 'uk';
+export const defaultLocale: (typeof locales)[number] = 'en';
 type BaseMessages = typeof baseMessages;
 export const locales = ['en', 'uk'] as const;
 export function isLocale(locale: unknown): locale is Locale {

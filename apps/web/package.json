@@ -1,5 +1,6 @@
 {
   "name": "@reactlith-template/web",
+  "private": true,
   "type": "module",
   "scripts": {
     "add-component": "pnpm dlx shadcn@latest add",
