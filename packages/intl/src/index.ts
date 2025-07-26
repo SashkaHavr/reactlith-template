@@ -2,7 +2,7 @@ import type { Locale, NamespaceKeys, NestedKeyOf } from 'use-intl';
 import { createTranslator } from 'use-intl';
 import z from 'zod';
 
-import type baseMessages from './messages/en.json';
+import type baseMessages from '../messages/en.json';
 
 export const defaultLocale: (typeof locales)[number] = 'en';
 type BaseMessages = typeof baseMessages;
@@ -23,9 +23,9 @@ declare module 'use-intl' {
 async function getMessages(locale: Locale) {
   switch (locale) {
     case 'en':
-      return (await import(`./messages/en.json`)) as unknown as BaseMessages;
+      return (await import(`../messages/en.json`)) as unknown as BaseMessages;
     case 'uk':
-      return (await import(`./messages/uk.json`)) as unknown as BaseMessages;
+      return (await import(`../messages/uk.json`)) as unknown as BaseMessages;
   }
 }
 
