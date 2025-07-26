@@ -8,8 +8,16 @@ export const authConfig = {
   AUTH_GITHUB_CLIENT_SECRET: z.string().optional(),
 };
 
+export const authProdConfig =
+  process.env.NODE_ENV == 'production'
+    ? {
+        BETTER_AUTH_URL: z.url(),
+        BETTER_AUTH_SECRET: z.string().nonempty(),
+      }
+    : {};
+
 export const envAuth = createEnv({
-  server: { ...authConfig },
+  server: { ...authConfig, ...authProdConfig },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 });
