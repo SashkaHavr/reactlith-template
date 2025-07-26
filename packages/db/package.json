@@ -21,6 +21,7 @@
   "prettier": "@reactlith-template/prettier-config",
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
+    "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
     "pg": "^8.16.3"
   },
@@ -30,7 +31,6 @@
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "@types/pg": "^8.15.4",
-    "drizzle-kit": "catalog:drizzle",
     "typescript": "catalog:"
   }
 }
