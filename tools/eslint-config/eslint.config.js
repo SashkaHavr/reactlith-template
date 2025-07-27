@@ -107,12 +107,6 @@ export default tseslint.config(
     },
   },
   {
-    rules: {
-      'no-empty-pattern': 'off',
-      'no-empty': 'off',
-    },
-  },
-  {
     ignores: ['src/components/ui/*.tsx'],
     rules: {
       '@typescript-eslint/no-restricted-imports': [

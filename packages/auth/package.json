@@ -10,7 +10,7 @@
     "./permissions": "./src/permissions.ts"
   },
   "scripts": {
-    "clean": "git clean -xdf .turbo node_modules",
+    "clean": "git clean -xdf .turbo node_modules dist .tanstack .nitro .output",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
     "generate-db-schema": "bun exec \"DATABASE_URL=url npx @better-auth/cli@latest generate --config src/index.ts\"",
@@ -22,7 +22,6 @@
   "dependencies": {
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
-    "@reactlith-template/intl": "workspace:*",
     "better-auth": "catalog:"
   },
   "devDependencies": {

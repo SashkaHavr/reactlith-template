@@ -4,11 +4,6 @@ import { admin, magicLink } from 'better-auth/plugins';
 
 import { db } from '@reactlith-template/db';
 import { envAuth } from '@reactlith-template/env/auth';
-import {
-  defaultLocale,
-  isLocale,
-  localeHeader,
-} from '@reactlith-template/intl';
 
 import { permissions } from '#permissions.ts';
 
@@ -46,11 +41,6 @@ export const auth = betterAuth({
         if (!request) {
           throw new BetterAuthError('sendMagicLink: Request is not defined');
         }
-        const localeHeaderContent = request.headers.get(localeHeader);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const locale = isLocale(localeHeaderContent)
-          ? localeHeaderContent
-          : defaultLocale;
 
         if (envAuth.AUTH_DEV_MAGIC_LINK && /^\S+@example\.com$/.test(email)) {
           console.log(`${email} - ${url}`);
