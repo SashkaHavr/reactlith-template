@@ -1,15 +1,19 @@
 import { Link } from '@tanstack/react-router';
 
+import { useOptionalTranslations } from '~/lib/route-context-hooks';
 import { Button } from './ui/button';
 
 export function NotFoundComponent() {
+  const t = useOptionalTranslations();
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4 pb-20">
       <p className="text-lg font-semibold">
-        The page you are looking for does not exist
+        {t?.defaultComponents.notFound ?? 'Not found'}
       </p>
       <Button asChild variant="link">
-        <Link to="/{-$locale}">Return to Home page</Link>
+        <Link to="/{-$locale}">
+          {t?.defaultComponents.returnToHomePage ?? 'Home page'}
+        </Link>
       </Button>
     </div>
   );

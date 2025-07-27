@@ -1,4 +1,8 @@
-import { useRouteContext } from '@tanstack/react-router';
+import {
+  isMatch,
+  useRouteContext,
+  useRouterState,
+} from '@tanstack/react-router';
 
 export function useAuth() {
   return useRouteContext({ from: '__root__', select: (s) => s.auth });
@@ -10,4 +14,11 @@ export function useLoggedInAuth() {
     throw new Error('Auth is not defined');
   }
   return auth;
+}
+
+export function useOptionalTranslations() {
+  const matches = useRouterState({ select: (s) => s.matches }).filter((m) =>
+    isMatch(m, 'context.intl.messages'),
+  );
+  return matches[0]?.context.intl.messages;
 }

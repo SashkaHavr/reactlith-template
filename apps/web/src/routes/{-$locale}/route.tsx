@@ -3,7 +3,6 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import {
   defaultLocale,
   getIntlContext,
-  getTranslator,
   isLocale,
 } from '@reactlith-template/intl';
 
@@ -22,10 +21,8 @@ export const Route = createFileRoute('/{-$locale}')({
         params: { locale: intl.locale },
       });
     }
-    const t = getTranslator(intl);
     return {
       intl,
-      loadingText: t('loading'),
     };
   },
   component: RouteComponent,
