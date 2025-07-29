@@ -11,12 +11,13 @@
   },
   "scripts": {
     "clean": "git clean -xdf .turbo node_modules dist .tanstack .nitro .output",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:up": "docker run -d --name pg-reactlith-template -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith-template:/var/lib/postgresql/data -p 5432:5432 postgres",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "push": "drizzle-kit push",
-    "studio": "drizzle-kit studio",
     "typecheck": "tsc --noEmit"
   },
   "prettier": "@reactlith-template/prettier-config",

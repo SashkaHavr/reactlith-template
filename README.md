@@ -20,7 +20,7 @@ docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d
 4. Install [bun](https://bun.sh/docs/installation)
 5. Create PostgreSQL docker container 
 ```sh
-docker run -d --name pg-reactlith -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith:/var/lib/postgresql/data -p 5432:5432 postgres
+docker run -d --name pg-reactlith-template -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith-template:/var/lib/postgresql/data -p 5432:5432 postgres
 ```
 6. In [apps/web/](./apps/web/) **AND** [packages/db/](./package/db/) create .env file with
 ```conf
