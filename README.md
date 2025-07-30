@@ -2,14 +2,16 @@
 
 ## About
 
-Minimal react monorepo template.
+Minimal full-stack typescript/react monorepo template.
 
 Used packages: https://github.com/stars/SashkaHavr/lists/reactlith
+
+This project was created using CLI: https://github.com/SashkaHavr/reactlith
 
 ## Fast local startup
 
 ```sh
-docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d
+pnpm compose
 ```
 
 ## Development setup
@@ -18,18 +20,16 @@ docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d
 2. Install [pnpm](https://pnpm.io/installation)
 3. Install [turbo](https://turborepo.com/docs/getting-started/installation#global-installation)
 4. Install [bun](https://bun.sh/docs/installation)
-5. Create PostgreSQL docker container 
-```sh
-docker run -d --name pg-reactlith-template -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith-template:/var/lib/postgresql/data -p 5432:5432 postgres
-```
-6. In [apps/web/](./apps/web/) **AND** [packages/db/](./package/db/) create .env file with
+5. Make sure docker engine is running
+6. Run `pnpm install` in root directory
+7. Run `pnpm db:up` in [./packages/db/](./packages/db/)
+8. In [./apps/web/](./apps/web/) create .env file with
+9. 
 ```conf
 DATABASE_URL=postgresql://postgres:mysecretpassword@localhost:5432/postgres
 AUTH_DEV_MAGIC_LINK=true
 ```
-7. Run `pnpm install` in root directory
-8. Run `pnpm push` in [packages/db/](./package/db/)
-9. Run `pnpm dev` in root directory
+10. Run `pnpm dev` in [./apps/web/](./apps/web/)
 
 ## Production setup under domain
 
@@ -57,7 +57,6 @@ BETTER_AUTH_SECRET=<Generated secret, e.g. with "openssl rand -base64 32">
 
 Docker compose includes pgadmin4 that is connected to the same docker network as database. To start it, set following variables in .env file:
 ```conf
-PGADMIN_DEFAULT_EMAIL=<>
+PGADMIN_DEFAULT_EMAIL=<user@example.com>
 PGADMIN_DEFAULT_PASSWORD=<something secure>
 ```
-Credentials can be found in [docker-compose.yaml](docker-compose.yaml)
