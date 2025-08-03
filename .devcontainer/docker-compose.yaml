@@ -1,6 +1,6 @@
 services:
   devcontainer:
-    build:
+    build: 
       context: .
       dockerfile: Dockerfile
     networks:
@@ -28,9 +28,11 @@ services:
         aliases:
           - db-internal
     healthcheck:
-      test: ['CMD', 'pg_isready', '-U', 'postgres']
+      test: ["CMD", "pg_isready", "-U", "postgres", "-t", "10"]
       interval: 10s
       timeout: 10s
+      start_interval: 1s
+      start_period: 1s
 
 networks:
   db-network:
