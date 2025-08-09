@@ -15,15 +15,17 @@ export const Route = createFileRoute('/{-$locale}')({
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
     }
 
-    const acceptLanguageHeader = await getAcceptLanguageHeaderServerFn();
-    if (Array.isArray(acceptLanguageHeader)) {
-      const preferredLocales = acceptLanguageHeader.filter(isLocale);
-      const firstPreferredLocale = preferredLocales[0];
-      if (firstPreferredLocale && firstPreferredLocale != params.locale) {
-        throw redirect({
-          to: '/{-$locale}',
-          params: { locale: firstPreferredLocale },
-        });
+    if (params.locale == undefined) {
+      const acceptLanguageHeader = await getAcceptLanguageHeaderServerFn();
+      if (Array.isArray(acceptLanguageHeader)) {
+        const preferredLocales = acceptLanguageHeader.filter(isLocale);
+        const firstPreferredLocale = preferredLocales[0];
+        if (firstPreferredLocale && firstPreferredLocale != defaultLocale) {
+          throw redirect({
+            to: '/{-$locale}',
+            params: { locale: firstPreferredLocale },
+          });
+        }
       }
     }
 
