@@ -1,4 +1,4 @@
-import { useTranslationsFromRoute } from '~/lib/route-context-hooks';
+import { useTranslationsFromRoute } from '~/hooks/route-context';
 import { LoadingSpinner } from './ui/loading-spinner';
 
 export function PendingComponent() {

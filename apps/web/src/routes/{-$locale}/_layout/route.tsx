@@ -4,8 +4,8 @@ import { useFormatter, useNow, useTranslations } from 'use-intl';
 
 import { LocaleSelect } from '~/components/locale-select';
 import { ThemeToggle } from '~/components/theme-toggle';
+import { useAuth } from '~/hooks/route-context';
 import { useIsClient } from '~/hooks/use-is-client';
-import { useAuth } from '~/lib/route-context-hooks';
 import { useTRPC } from '~/lib/trpc';
 import { healthServerFn } from '~/lib/trpc-server';
 

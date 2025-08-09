@@ -8,8 +8,8 @@ import { useTranslations } from 'use-intl';
 
 import { Button } from '~/components/ui/button';
 
+import { useLoggedInAuth } from '~/hooks/route-context';
 import { authClient, useResetAuth } from '~/lib/auth';
-import { useLoggedInAuth } from '~/lib/route-context-hooks';
 import { useTRPC } from '~/lib/trpc';
 import { getNumbersServerFn } from '~/lib/trpc-server';
 

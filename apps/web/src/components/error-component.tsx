@@ -3,7 +3,7 @@ import {
   Link,
 } from '@tanstack/react-router';
 
-import { useTranslationsFromRoute } from '~/lib/route-context-hooks';
+import { useTranslationsFromRoute } from '~/hooks/route-context';
 import { Button } from './ui/button';
 
 export function ErrorComponent({ error }: { error: Error }) {
