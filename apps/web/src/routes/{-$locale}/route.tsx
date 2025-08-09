@@ -7,12 +7,26 @@ import {
 } from '@reactlith-template/intl';
 
 import { IntlProvider } from '~/lib/intl';
+import { getAcceptLanguageHeaderServerFn } from '~/lib/intl-server';
 
 export const Route = createFileRoute('/{-$locale}')({
   beforeLoad: async ({ params }) => {
     if (params.locale && !isLocale(params.locale)) {
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });
     }
+
+    const acceptLanguageHeader = await getAcceptLanguageHeaderServerFn();
+    if (Array.isArray(acceptLanguageHeader)) {
+      const preferredLocales = acceptLanguageHeader.filter(isLocale);
+      const firstPreferredLocale = preferredLocales[0];
+      if (firstPreferredLocale && firstPreferredLocale != params.locale) {
+        throw redirect({
+          to: '/{-$locale}',
+          params: { locale: firstPreferredLocale },
+        });
+      }
+    }
+
     const intl = await getIntlContext(params.locale);
     if (intl.locale != params.locale && intl.locale != defaultLocale) {
       throw redirect({
