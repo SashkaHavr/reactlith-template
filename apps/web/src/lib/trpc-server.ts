@@ -13,6 +13,12 @@ export const trpcServerFnMiddleware = createMiddleware({
   });
 });
 
+export const healthServerFn = createServerFn()
+  .middleware([trpcServerFnMiddleware])
+  .handler(({ context: { trpc } }) => {
+    return trpc.health();
+  });
+
 export const getNumbersServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])
   .handler(({ context: { trpc } }) => {

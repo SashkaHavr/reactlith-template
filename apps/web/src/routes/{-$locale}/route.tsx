@@ -9,7 +9,6 @@ import {
 import { IntlProvider } from '~/lib/intl';
 
 export const Route = createFileRoute('/{-$locale}')({
-  ssr: 'data-only',
   beforeLoad: async ({ params }) => {
     if (params.locale && !isLocale(params.locale)) {
       throw redirect({ to: '/{-$locale}', params: { locale: undefined } });

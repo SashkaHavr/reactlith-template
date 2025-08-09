@@ -1,9 +1,9 @@
 import type { Locale } from 'use-intl';
 import { useNavigate } from '@tanstack/react-router';
-import { useLocale } from 'use-intl';
 
 import { isLocale, locales } from '@reactlith-template/intl';
 
+import { useLocaleFromRoute } from '~/lib/route-context-hooks';
 import {
   Select,
   SelectContent,
@@ -19,7 +19,7 @@ const localeToText: Record<Locale, string> = {
 };
 
 export function LocaleSelect({ className }: { className?: string }) {
-  const locale = useLocale();
+  const locale = useLocaleFromRoute();
   const navigate = useNavigate({ from: '/{-$locale}' });
   return (
     <Select
@@ -31,15 +31,17 @@ export function LocaleSelect({ className }: { className?: string }) {
       }}
     >
       <SelectTrigger className={className}>
-        <SelectValue />
+        {locale && <SelectValue>{localeToText[locale]}</SelectValue>}
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          {locales.map((l) => (
-            <SelectItem key={l} value={l}>
-              {localeToText[l]}
-            </SelectItem>
-          ))}
+          {locales.map((l) => {
+            return (
+              <SelectItem key={l} value={l}>
+                {localeToText[l]}
+              </SelectItem>
+            );
+          })}
         </SelectGroup>
       </SelectContent>
     </Select>
