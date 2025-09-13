@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "add-component": "pnpm dlx shadcn@latest add",
+    "postadd-component": "pnpm run format",
     "build": "vite build",
     "clean": "git clean -xdf .turbo node_modules dist .tanstack .nitro .output",
     "dev": "vite",
