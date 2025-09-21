@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "add-component": "pnpm dlx shadcn@latest add",
-    "postadd-component": "pnpm run format",
     "build": "vite build",
     "clean": "git clean -xdf .turbo node_modules dist .tanstack .nitro .output",
+    "component": "pnpm dlx shadcn@latest add",
+    "postcomponent": "pnpm run format",
     "dev": "vite",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
