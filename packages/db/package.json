@@ -25,7 +25,8 @@
     "@reactlith-template/env": "workspace:*",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
-    "pg": "catalog:drizzle"
+    "pg": "catalog:drizzle",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@reactlith-template/eslint-config": "workspace:*",
