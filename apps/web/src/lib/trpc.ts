@@ -1,5 +1,10 @@
 import { QueryClient } from '@tanstack/react-query';
-import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import {
+  createTRPCClient,
+  httpBatchLink,
+  httpSubscriptionLink,
+  splitLink,
+} from '@trpc/client';
 import {
   createTRPCContext,
   createTRPCOptionsProxy,
@@ -13,13 +18,25 @@ export function createTRPCRouteContext() {
     defaultOptions: {
       dehydrate: { serializeData: superjson.serialize },
       hydrate: { deserializeData: superjson.deserialize },
+      queries: {
+        // Do not refetch preloaded data on mount (30 seconds stale time)
+        staleTime: 30000,
+      },
     },
   });
   const trpcClient = createTRPCClient<TRPCRouter>({
     links: [
-      httpBatchLink({
-        transformer: superjson,
-        url: '/trpc',
+      splitLink({
+        // uses the httpSubscriptionLink for subscriptions
+        condition: (op) => op.type === 'subscription',
+        true: httpSubscriptionLink({
+          transformer: superjson,
+          url: `/trpc`,
+        }),
+        false: httpBatchLink({
+          transformer: superjson,
+          url: '/trpc',
+        }),
       }),
     ],
   });

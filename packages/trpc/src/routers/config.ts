@@ -1,14 +1,23 @@
+import z from 'zod';
+
 import { envServer } from '@reactlith-template/env/server';
 
 import { publicProcedure, router } from '#init.ts';
 
 export const configRouter = router({
-  authConfig: publicProcedure.query(() => {
-    return {
-      devMagicLink: envServer.AUTH_DEV_MAGIC_LINK,
-      githubOAuth:
-        !!envServer.AUTH_GITHUB_CLIENT_ID &&
-        !!envServer.AUTH_GITHUB_CLIENT_SECRET,
-    };
-  }),
+  general: publicProcedure
+    .output(
+      z.object({
+        auth: z.object({ testAuth: z.boolean(), githubOAuth: z.boolean() }),
+      }),
+    )
+    .query(() => {
+      return {
+        auth: {
+          testAuth: envServer.TEST_AUTH,
+          githubOAuth:
+            !!envServer.GITHUB_CLIENT_ID && !!envServer.GITHUB_CLIENT_SECRET,
+        },
+      };
+    }),
 });

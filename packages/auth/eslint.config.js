@@ -1,3 +1,3 @@
 import eslintConfig from '@reactlith-template/eslint-config';
 
-export default [...eslintConfig];
+export default [{ ignores: ['./generated/**'] }, ...eslintConfig];

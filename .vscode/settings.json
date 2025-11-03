@@ -1,6 +1,6 @@
 {
   "i18n-ally.enabledFrameworks": ["next-intl"],
-  "i18n-ally.localesPaths": ["packages/intl/messages"],
+  "i18n-ally.localesPaths": ["**/messages"],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.sortKeys": true,
   "files.exclude": {
@@ -9,7 +9,21 @@
     "**/.tanstack": true
   },
   "search.exclude": {
-    "pnpm-lock.yaml": true,
+    "bun.lock": true,
     "**/routeTree.gen.ts": true
-  }
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["bun.lock"],
+      "schema": {
+        "allowTrailingCommas": true
+      }
+    }
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "emmet.showExpandedAbbreviation": "never",
+  "remote.localPortHost": "allInterfaces",
+  "tailwindCSS.lint.suggestCanonicalClasses": "ignore"
 }

@@ -1,5 +1,5 @@
 import { createMiddleware, createServerFn } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
+import { getRequest } from '@tanstack/react-start/server';
 
 import { auth } from '@reactlith-template/auth';
 
@@ -9,13 +9,14 @@ export const authServerFnMiddleware = createMiddleware({
   return next({
     context: {
       auth: auth.api,
-      headers: getWebRequest().headers,
+      headers: getRequest().headers,
     },
   });
 });
 
 export const getSessionServerFn = createServerFn()
   .middleware([authServerFnMiddleware])
-  .handler(({ context: { auth, headers } }) => {
-    return auth.getSession({ headers });
+  .handler(async ({ context: { auth, headers } }) => {
+    const session = await auth.getSession({ headers });
+    return session ? { session: session.session, user: session.user } : null;
   });

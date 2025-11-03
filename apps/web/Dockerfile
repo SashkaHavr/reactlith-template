@@ -1,49 +1,31 @@
-FROM oven/bun:slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-ENV TURBO_TELEMETRY_DISABLED=1
-RUN bun install -g pnpm
-RUN bun install -g turbo
+FROM oven/bun:1.3.1-alpine AS bun
 
-# Generate a partial monorepo
-FROM base AS turbo
-WORKDIR /app
-COPY . .
-RUN turbo prune @reactlith-template/web --docker
+FROM bun AS base
 
 # Install and build
-FROM base AS builder
+FROM base AS build
 WORKDIR /app
-COPY --from=turbo /app/out/json/ .
-RUN pnpm install --frozen-lockfile --prod
-COPY --from=turbo /app/out/full/ .
-
+COPY . .
+RUN bun install --frozen-lockfile
 RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
     --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
-    turbo build
-
-# Generate a partial monorepo for db
-FROM base AS turbo-db
-WORKDIR /app
-COPY . .
-RUN turbo prune @reactlith-template/db --docker
-
-# Install and build
-FROM base AS builder-db
-WORKDIR /app
-COPY --from=turbo-db /app/out/json/ .
-RUN pnpm install --frozen-lockfile --prod
-COPY --from=turbo-db /app/out/full/ .
+    bun run build
 
 # Run
-FROM oven/bun:slim AS runner
-COPY --from=builder /app/apps/web/.output /app
-COPY --from=builder-db /app /db
+FROM bun AS runner
 
-RUN apt-get -y update && apt-get -y install curl
+RUN apk --no-cache add curl
 HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
+
+ENV NODE_ENV=production
+
+COPY --from=build /app/apps/web/.output /app/web/.output
+
+COPY /packages/db/drizzle /app/db/drizzle
+COPY --from=build /app/packages/db/dist /app/db
+
+COPY --from=build /app/packages/auth/dist /app/auth
 
 USER bun
 EXPOSE 3000
-ENV NODE_ENV=production
-CMD [ "sh", "-c", "cd /db/packages/db && bun db:push && cd /app && bun run server/index.mjs" ]
+CMD [ "sh", "-c", "cd /app/db && bun run migrate.js && cd /app/auth && bun run generate-test-users.js && cd /app/web && bun run .output/server/index.mjs" ]

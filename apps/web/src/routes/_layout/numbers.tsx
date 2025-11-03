@@ -9,14 +9,14 @@ import { useTranslations } from 'use-intl';
 import { Button } from '~/components/ui/button';
 
 import { useLoggedInAuth } from '~/hooks/route-context';
-import { authClient, useResetAuth } from '~/lib/auth';
+import { useSignout } from '~/lib/auth';
 import { useTRPC } from '~/lib/trpc';
 import { getNumbersServerFn } from '~/lib/trpc-server';
 
-export const Route = createFileRoute('/{-$locale}/_layout/numbers')({
+export const Route = createFileRoute('/_layout/numbers')({
   beforeLoad: ({ context: { auth } }) => {
     if (!auth.loggedIn) {
-      throw redirect({ to: '/{-$locale}' });
+      throw redirect({ to: '/' });
     }
   },
   loader: async ({ context: { queryClient, trpc } }) => {
@@ -34,7 +34,6 @@ function RouteComponent() {
   const queryClient = useQueryClient();
 
   const auth = useLoggedInAuth();
-  const resetAuth = useResetAuth();
 
   const numbers = useSuspenseQuery(trpc.numbers.getAll.queryOptions());
 
@@ -53,12 +52,7 @@ function RouteComponent() {
       onSuccess: () => invalidateNumbers(),
     }),
   );
-  const signout = useMutation({
-    mutationFn: () => authClient.signOut(),
-    onSuccess: async () => {
-      await resetAuth();
-    },
-  });
+  const signout = useSignout();
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
@@ -77,7 +71,9 @@ function RouteComponent() {
           {t('delete-all-numbers')}
         </Button>
       </div>
-      <p className="text-xl font-bold">{JSON.stringify(numbers.data)}</p>
+      <p className="text-xl font-bold">
+        {JSON.stringify(numbers.data.numbers)}
+      </p>
     </div>
   );
 }

@@ -1,11 +1,11 @@
-import { integer, pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { integer, pgTable } from 'drizzle-orm/pg-core';
 
+import { baseTable } from '#utils/base-table.ts';
+import { oneToManyCascadeOnDelete } from '#utils/foreign-keys.ts';
 import { user } from './auth';
 
 export const number = pgTable('number', {
-  id: serial().primaryKey(),
+  ...baseTable,
   number: integer().notNull(),
-  userId: text()
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
+  userId: oneToManyCascadeOnDelete(() => user.id),
 });

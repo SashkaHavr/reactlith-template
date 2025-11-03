@@ -1,19 +1,22 @@
 import { TRPCError } from '@trpc/server';
-import { eq } from 'drizzle-orm';
+import z from 'zod';
 
 import { db } from '@reactlith-template/db';
+import { eq } from '@reactlith-template/db/drizzle';
 import { number as numberTable } from '@reactlith-template/db/schema';
 
 import { protectedProcedure, router } from '#init.ts';
 
 export const numbersRouter = router({
-  getAll: protectedProcedure.query(async ({ ctx }) => {
-    const numbers = await db.query.number.findMany({
-      where: { userId: ctx.userId },
-    });
-    return numbers.map((n) => n.number);
-  }),
-  addNew: protectedProcedure.mutation(async ({ ctx }) => {
+  getAll: protectedProcedure
+    .output(z.object({ numbers: z.array(z.number()) }))
+    .query(async ({ ctx }) => {
+      const numbers = await db.query.number.findMany({
+        where: { userId: ctx.userId },
+      });
+      return { numbers: numbers.map((n) => n.number) };
+    }),
+  addNew: protectedProcedure.output(z.undefined()).mutation(async ({ ctx }) => {
     const numbers = await db.query.number.findMany({
       where: { userId: ctx.userId },
     });
@@ -28,7 +31,9 @@ export const numbersRouter = router({
       .insert(numberTable)
       .values({ userId: ctx.userId, number: Math.floor(Math.random() * 100) });
   }),
-  deleteAll: protectedProcedure.mutation(async ({ ctx }) => {
-    await db.delete(numberTable).where(eq(numberTable.userId, ctx.userId));
-  }),
+  deleteAll: protectedProcedure
+    .output(z.undefined())
+    .mutation(async ({ ctx }) => {
+      await db.delete(numberTable).where(eq(numberTable.userId, ctx.userId));
+    }),
 });

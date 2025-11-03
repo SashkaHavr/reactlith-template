@@ -1,13 +1,10 @@
 services:
   db:
-    image: postgres
-    restart: always
+    image: postgres:17
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
-      db-network:
-        aliases:
-          - db-internal
+      - db-network
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
     healthcheck:
@@ -18,7 +15,6 @@ services:
       start_period: 1s
   db-studio:
     image: ghcr.io/drizzle-team/gateway:latest
-    restart: always
     volumes:
       - drizzle-gateway:/app
     networks:
@@ -35,11 +31,10 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
-    restart: always
     networks:
       - db-network
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db-internal:5432/postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
     env_file:
       - path: .env
         required: false

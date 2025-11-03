@@ -7,5 +7,6 @@
     "target": "ES2024",
     "lib": ["ES2024", "DOM", "DOM.Iterable"]
   },
-  "extends": "@reactlith-template/typescript-config"
+  "extends": "@reactlith-template/typescript-config",
+  "exclude": [".nitro", ".output", "dist"]
 }

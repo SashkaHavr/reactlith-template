@@ -10,10 +10,12 @@
     "./permissions": "./src/permissions.ts"
   },
   "scripts": {
-    "clean": "git clean -xdf .turbo node_modules dist .tanstack .nitro .output",
+    "build-scripts": "bun build --entrypoints ./src/generate-test-users.ts --outdir ./dist --target bun",
+    "clean": "bun exec \"rm -rf node_modules .turbo\"",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
-    "generate-db-schema": "bun exec \"DATABASE_URL=url pnpm dlx @better-auth/cli@latest generate --config src/index.ts\"",
+    "generate-db-schema": "bun exec \"DATABASE_URL=url bunx @better-auth/cli@latest generate --config src/index.ts --output ./generated/auth-schema.ts --yes\"",
+    "generate-test-users": "bun run ./src/generate-test-users.ts",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit"

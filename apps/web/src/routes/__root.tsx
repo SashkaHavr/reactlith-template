@@ -4,23 +4,39 @@ import type { ReactNode } from 'react';
 import {
   createRootRouteWithContext,
   HeadContent,
-  isMatch,
   Outlet,
   Scripts,
-  useRouterState,
 } from '@tanstack/react-router';
-import { ThemeProvider } from 'next-themes';
 
-import { defaultLocale } from '@reactlith-template/intl';
+import { setupZodLocale } from '@reactlith-template/intl';
 
 import type { TRPCRouteContext } from '~/lib/trpc';
+import { getTheme } from '~/components/theme/context';
+import { ThemeProvider, ThemeScript } from '~/components/theme/provider';
 import { getAuthContext } from '~/lib/auth';
+import { IntlProvider } from '~/lib/intl';
+import { getLocale, getMessages } from '~/lib/intl-server';
+import { getGeneralConfigServerFn } from '~/lib/trpc-server';
+import { cn } from '~/lib/utils';
+import { seo } from '~/utils/seo';
 import indexCss from '../index.css?url';
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
-  beforeLoad: async ({ context: { queryClient } }) => {
+  beforeLoad: async ({ context: { queryClient, trpc } }) => {
+    const locale = getLocale();
+    await setupZodLocale(locale);
+    await queryClient.ensureQueryData({
+      queryKey: trpc.config.general.queryKey(),
+      queryFn: () => getGeneralConfigServerFn(),
+    });
+
     return {
       auth: await getAuthContext(queryClient),
+      intl: {
+        messages: await getMessages(locale),
+        locale: locale,
+      },
+      theme: getTheme(),
     };
   },
   component: RootComponent,
@@ -33,9 +49,8 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       },
-      {
-        title: 'Reactlith template',
-      },
+      { name: 'theme-color' },
+      ...seo({ title: 'Rectlith template' }),
       { name: 'robots', content: 'noindex, nofollow' },
     ],
     links: [
@@ -48,26 +63,30 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
 function RootComponent() {
   return (
     <RootDocument>
-      <ThemeProvider attribute="class">
-        <Outlet />
-      </ThemeProvider>
+      <Outlet />
     </RootDocument>
   );
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const matches = useRouterState({ select: (s) => s.matches }).filter((m) =>
-    isMatch(m, 'context.intl.locale'),
-  );
-  const locale = matches[0]?.context.intl.locale ?? defaultLocale;
+  const { locale, theme } = Route.useRouteContext({
+    select: (s) => ({ locale: s.intl.locale, theme: s.theme }),
+  });
 
   return (
-    <html suppressHydrationWarning lang={locale}>
+    <html
+      suppressHydrationWarning
+      lang={locale}
+      className={cn(theme !== 'system' && theme)}
+    >
       <head>
         <HeadContent />
+        <ThemeScript />
       </head>
       <body>
-        {children}
+        <ThemeProvider>
+          <IntlProvider>{children}</IntlProvider>
+        </ThemeProvider>
         <Scripts />
       </body>
     </html>

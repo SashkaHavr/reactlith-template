@@ -2,16 +2,15 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "tasks": {
-    "start": {
-      "dependsOn": ["build"],
-      "cache": false,
-      "persistent": true
-    },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env", ".env.local"],
       "outputs": ["dist", ".output"],
       "env": ["VITE_*", "NODE_ENV"]
+    },
+    "build-scripts": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist"]
     },
     "format": {
       "cache": false

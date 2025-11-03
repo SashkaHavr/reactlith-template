@@ -1,12 +1,16 @@
-import { createServerFileRoute } from '@tanstack/react-start/server';
+import { createFileRoute } from '@tanstack/react-router';
 
 import { trpcHandler } from '@reactlith-template/trpc';
 
-export const ServerRoute = createServerFileRoute('/trpc/$').methods({
-  GET: async ({ request }) => {
-    return trpcHandler({ request });
-  },
-  POST: async ({ request }) => {
-    return trpcHandler({ request });
+export const Route = createFileRoute('/trpc/$')({
+  server: {
+    handlers: {
+      GET: async ({ request }) => {
+        return trpcHandler({ request });
+      },
+      POST: async ({ request }) => {
+        return trpcHandler({ request });
+      },
+    },
   },
 });
