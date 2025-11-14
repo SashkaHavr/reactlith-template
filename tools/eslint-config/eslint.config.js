@@ -106,7 +106,7 @@ export default defineConfig(
     rules: {
       '@typescript-eslint/no-restricted-imports': [
         'error',
-        { patterns: ['@radix-ui/*', '!@radix-ui/react-visually-hidden'] },
+        { patterns: ['@base-ui-components/*'] },
       ],
     },
   },

@@ -5,7 +5,8 @@ import { UserIcon } from 'lucide-react';
 import { useTranslations } from 'use-intl';
 
 import { Button } from '~/components/ui/button';
-import { Field, FieldGroup } from '~/components/ui/field';
+import { Field } from '~/components/ui/field';
+import { Fieldset } from '~/components/ui/fieldset';
 import {
   Select,
   SelectContent,
@@ -68,7 +69,7 @@ function RouteComponent() {
 
   return (
     authConfig.isSuccess && (
-      <FieldGroup className="max-w-100">
+      <Fieldset className="max-w-80">
         {authConfig.data.auth.testAuth && (
           <Field className="grid grid-cols-2">
             <Button
@@ -114,7 +115,7 @@ function RouteComponent() {
             </Button>
           </Field>
         )}
-      </FieldGroup>
+      </Fieldset>
     )
   );
 }
