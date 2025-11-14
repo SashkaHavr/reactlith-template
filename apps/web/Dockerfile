@@ -1,18 +1,24 @@
-FROM oven/bun:1.3.1-alpine AS bun
+FROM oven/bun:1.3.2-alpine AS base
 
-FROM bun AS base
+# Generate a partial monorepo
+FROM base AS turbo
+RUN bun install -g turbo@2.6.1
+WORKDIR /app
+COPY . .
+RUN turbo prune @reactlith-template/web --docker
 
 # Install and build
 FROM base AS build
 WORKDIR /app
-COPY . .
+COPY --from=turbo /app/out/json/ .
 RUN bun install --frozen-lockfile
+COPY --from=turbo /app/out/full/ .
 RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
     --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
     bun run build
 
 # Run
-FROM bun AS runner
+FROM base AS runner
 
 RUN apk --no-cache add curl
 HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
