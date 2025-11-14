@@ -1,4 +1,3 @@
 {
-  "extends": "@reactlith-template/typescript-config",
-  "exclude": ["dist"]
+  "extends": "@reactlith-template/typescript-config"
 }

@@ -8,10 +8,6 @@
       "outputs": ["dist", ".output"],
       "env": ["VITE_*", "NODE_ENV"]
     },
-    "build-scripts": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist"]
-    },
     "format": {
       "cache": false
     },

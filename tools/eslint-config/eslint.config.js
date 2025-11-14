@@ -46,8 +46,8 @@ export default defineConfig(
     ignores: ['src/components/ui/*.tsx'],
     extends: [pluginReactRefresh.configs.vite],
   },
-  // @ts-ignore
   pluginReactCompiler.configs.recommended,
+  // @ts-ignore
   pluginReactHooks.configs.flat.recommended,
   pluginQuery.configs['flat/recommended'],
   pluginRouter.configs['flat/recommended'],

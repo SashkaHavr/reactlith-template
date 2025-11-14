@@ -1,3 +1,7 @@
 {
-  "extends": "@reactlith-template/typescript-config"
+  "extends": "@reactlith-template/typescript-config",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true
+  }
 }

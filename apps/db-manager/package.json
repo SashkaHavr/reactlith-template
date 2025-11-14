@@ -1,29 +1,29 @@
 {
-  "name": "@reactlith-template/eslint-config",
+  "name": "@reactlith-template/db-manager",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": "./eslint.config.js"
+  "imports": {
+    "#*": "./src/*"
   },
   "scripts": {
+    "build": "bun build --target bun --outdir ./dist ./src/index.ts",
     "clean": "bun exec \"rm -rf node_modules .turbo\"",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "typecheck": "tsc --noEmit"
   },
   "prettier": "@reactlith-template/prettier-config",
+  "dependencies": {
+    "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/db": "workspace:*"
+  },
   "devDependencies": {
-    "@eslint/compat": "^1.4.0",
-    "@eslint/js": "^9.36.0",
+    "@reactlith-template/eslint-config": "workspace:*",
+    "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@tanstack/eslint-plugin-query": "^5.90.2",
-    "@tanstack/eslint-plugin-router": "^1.132.0",
     "@types/bun": "catalog:",
-    "eslint": "^9.36.0",
-    "eslint-plugin-react-compiler": "latest",
-    "eslint-plugin-react-hooks": "7.0.0",
-    "eslint-plugin-react-refresh": "^0.4.22",
-    "typescript": "catalog:",
-    "typescript-eslint": "^8.44.1"
+    "typescript": "catalog:"
   }
 }

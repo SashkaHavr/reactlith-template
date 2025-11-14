@@ -1,12 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "exclude": ["node_modules", "dist", ".nitro", ".output"],
   "compilerOptions": {
     // Base Options:
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "ESNext",
-    "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
@@ -17,7 +15,6 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": false,
-    "checkJs": true,
 
     "module": "ESNext",
     "noEmit": true,

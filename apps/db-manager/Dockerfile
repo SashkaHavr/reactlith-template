@@ -5,7 +5,7 @@ FROM base AS turbo
 RUN bun install -g turbo@2.6.1
 WORKDIR /app
 COPY . .
-RUN turbo prune @reactlith-template/web --docker
+RUN turbo prune @reactlith-template/db-manager --docker
 
 # Install and build
 FROM base AS build
@@ -21,13 +21,10 @@ RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
 FROM base AS runner
 WORKDIR /app
 
-RUN apk --no-cache add curl
-HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
-
 ENV NODE_ENV=production
 
-COPY --from=build /app/apps/web/.output .
+COPY /packages/db/drizzle ./drizzle
+COPY --from=build /app/apps/db-manager/dist .
 
 USER bun
-EXPOSE 3000
-ENTRYPOINT [ "bun", "run","./server/index.mjs" ]
+ENTRYPOINT [ "bun", "run", "index.js" ]

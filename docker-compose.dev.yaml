@@ -2,6 +2,11 @@ services:
   db-studio:
     ports:
       - 5261:4983
+  db-manager:
+    environment:
+      TEST_AUTH: true
+      BETTER_AUTH_SECRET: dev-secret
+      BETTER_AUTH_URL: http://localhost:5260
   web:
     environment:
       TEST_AUTH: true
