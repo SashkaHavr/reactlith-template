@@ -19,15 +19,21 @@ RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
 
 # Run
 FROM base AS runner
-WORKDIR /app
 
 RUN apk --no-cache add curl
 HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
 
 ENV NODE_ENV=production
 
+
+WORKDIR /infra
+COPY /packages/db/drizzle ./db/drizzle
+COPY --from=build /app/packages/db/dist ./db
+COPY --from=build /app/packages/auth/dist ./auth
+
+WORKDIR /app
 COPY --from=build /app/apps/web/.output .
 
 USER bun
 EXPOSE 3000
-ENTRYPOINT [ "bun", "run","./server/index.mjs" ]
+CMD [ "sh", "-c", "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js && bun run index.mjs" ]

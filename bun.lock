@@ -9,20 +9,6 @@
         "turbo": "2.6.1",
       },
     },
-    "apps/db-manager": {
-      "name": "@reactlith-template/db-manager",
-      "dependencies": {
-        "@reactlith-template/auth": "workspace:*",
-        "@reactlith-template/db": "workspace:*",
-      },
-      "devDependencies": {
-        "@reactlith-template/eslint-config": "workspace:*",
-        "@reactlith-template/prettier-config": "workspace:*",
-        "@reactlith-template/typescript-config": "workspace:*",
-        "@types/bun": "catalog:",
-        "typescript": "catalog:",
-      },
-    },
     "apps/web": {
       "name": "@reactlith-template/web",
       "dependencies": {
@@ -536,8 +522,6 @@
     "@reactlith-template/auth": ["@reactlith-template/auth@workspace:packages/auth"],
 
     "@reactlith-template/db": ["@reactlith-template/db@workspace:packages/db"],
-
-    "@reactlith-template/db-manager": ["@reactlith-template/db-manager@workspace:apps/db-manager"],
 
     "@reactlith-template/empty": ["@reactlith-template/empty@workspace:packages/empty"],
 

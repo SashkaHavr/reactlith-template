@@ -61,7 +61,7 @@
     }
   },
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build build-scripts",
     "check": "turbo format:check lint typecheck",
     "clean": "turbo clean clean:root",
     "clean:root": "bun exec \"rm -rf node_modules .turbo\"",

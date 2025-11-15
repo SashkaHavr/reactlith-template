@@ -3,9 +3,8 @@ import { envAuth } from '@reactlith-template/env/auth';
 
 import { auth } from '#index.ts';
 
-export async function generateTestUsers() {
+async function main() {
   if (!envAuth.TEST_AUTH) {
-    console.log('TEST_AUTH is disabled. Skipping test user generation.');
     return;
   }
 
@@ -33,3 +32,5 @@ export async function generateTestUsers() {
     ),
   );
 }
+
+await main();

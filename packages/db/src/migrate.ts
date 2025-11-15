@@ -1,7 +1,9 @@
-import { migrate as drizzleMigrate } from 'drizzle-orm/node-postgres/migrator';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
 
 import { db } from '#index.ts';
 
-export async function migrate() {
-  await drizzleMigrate(db, { migrationsFolder: './drizzle' });
+async function main() {
+  await migrate(db, { migrationsFolder: './drizzle' });
 }
+
+await main();
