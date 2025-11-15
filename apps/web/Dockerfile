@@ -36,4 +36,4 @@ COPY --from=build /app/apps/web/.output .
 
 USER bun
 EXPOSE 3000
-CMD [ "sh", "-c", "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js && bun run index.mjs" ]
+CMD [ "sh", "-c", "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js && bun run ./server/index.mjs" ]
