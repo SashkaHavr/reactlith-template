@@ -21,7 +21,7 @@ RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
 FROM base AS runner
 
 RUN apk --no-cache add curl
-HEALTHCHECK --interval=10s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
+HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
 
 ENV NODE_ENV=production
 
