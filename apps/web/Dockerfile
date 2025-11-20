@@ -13,9 +13,7 @@ WORKDIR /app
 COPY --from=turbo /app/out/json/ .
 RUN bun install --frozen-lockfile
 COPY --from=turbo /app/out/full/ .
-RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
-    --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
-    bun run build
+RUN bun run build
 
 # Run
 FROM base AS runner
