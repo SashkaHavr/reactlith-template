@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@base-ui-components/react": "^1.0.0-beta.4",
+    "@base-ui-components/react": "1.0.0-beta.4",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/intl": "workspace:*",
     "@reactlith-template/trpc": "workspace:*",
