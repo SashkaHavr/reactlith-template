@@ -1,18 +1,19 @@
 FROM oven/bun:1.3.2-alpine AS base
 
 # Generate a partial monorepo
-FROM base AS turbo
-RUN bun install -g turbo@2.6.1
-WORKDIR /app
-COPY . .
-RUN turbo prune @reactlith-template/web --docker
+# FROM base AS turbo
+# RUN bun install -g turbo@2.6.1
+# WORKDIR /app
+# COPY . .
+# RUN turbo prune @reactlith-template/web --docker
 
 # Install and build
 FROM base AS build
 WORKDIR /app
-COPY --from=turbo /app/out/json/ .
+COPY . .
+# COPY --from=turbo /app/out/json/ .
 RUN bun install --frozen-lockfile
-COPY --from=turbo /app/out/full/ .
+# COPY --from=turbo /app/out/full/ .
 RUN bun run build
 
 # Run
