@@ -37,5 +37,4 @@ export async function setupZodLocale(locale: Locale) {
   z.config((await getZodLocale(locale))());
 }
 
-export const localeHeaderName = 'reactlith-template-Locale';
-export const localeCookieName = 'reactlith-template-locale';
+export const localeCookieName = 'locale';
