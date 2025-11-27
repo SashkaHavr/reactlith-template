@@ -1,4 +1,2 @@
 [install]
-minimumReleaseAge = 259200
-minimumReleaseAgeExcludes = ["@types/bun"]
 publicHoistPattern = [ "*eslint*", "*prettier*" ]
