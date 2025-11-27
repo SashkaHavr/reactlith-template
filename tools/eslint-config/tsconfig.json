@@ -1,7 +1,4 @@
 {
   "extends": "@reactlith-template/typescript-config",
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true
-  }
+  "include": ["eslint.config.js"]
 }

@@ -1,5 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
+  "include": [],
   "compilerOptions": {
     // Base Options:
     "esModuleInterop": true,
@@ -8,6 +9,10 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
+
+    // JS
+    "allowJs": true,
+    "checkJs": true,
 
     // Strictness
     "strict": true,
