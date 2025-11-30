@@ -77,11 +77,9 @@
     "typecheck": "turbo typecheck"
   },
   "prettier": "@reactlith-template/prettier-config",
-  "dependencies": {
-    "turbo": "2.6.1"
-  },
   "devDependencies": {
-    "@reactlith-template/prettier-config": "workspace:*"
+    "@reactlith-template/prettier-config": "workspace:*",
+    "turbo": "2.6.1"
   },
   "packageManager": "bun@1.3.3"
 }

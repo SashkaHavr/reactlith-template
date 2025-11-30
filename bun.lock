@@ -4,11 +4,9 @@
   "workspaces": {
     "": {
       "name": "reactlith-template",
-      "dependencies": {
-        "turbo": "2.6.1",
-      },
       "devDependencies": {
         "@reactlith-template/prettier-config": "workspace:*",
+        "turbo": "2.6.1",
       },
     },
     "apps/web": {
