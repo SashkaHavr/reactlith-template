@@ -27,7 +27,6 @@ services:
         required: false
     environment:
       - STORE_PATH=/app
-
   web:
     build:
       context: .
