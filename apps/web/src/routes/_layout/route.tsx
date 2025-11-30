@@ -7,6 +7,7 @@ import {
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { useFormatter, useNow, useTranslations } from 'use-intl';
 
+import { isLocale } from '@reactlith-template/intl';
 import { Button } from '~/components/ui/button';
 import {
   Select,
@@ -66,7 +67,14 @@ function LocaleSwitcher() {
 
   return (
     <>
-      <Select value={locale} onValueChange={(value) => setLocale(value)}>
+      <Select
+        value={locale}
+        onValueChange={(value) => {
+          if (isLocale(value)) {
+            setLocale(value);
+          }
+        }}
+      >
         <SelectTrigger>
           <span>{localeToString[locale]}</span>
         </SelectTrigger>

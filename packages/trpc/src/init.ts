@@ -65,7 +65,9 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
 
 export function adminProcedure(
   permission: NonNullable<
-    Parameters<typeof auth.api.userHasPermission>[0]['body']['permission']
+    NonNullable<
+      Parameters<typeof auth.api.userHasPermission>[0]
+    >['body']['permission']
   >,
 ) {
   return protectedProcedure.use(async ({ ctx, next }) => {

@@ -13,17 +13,17 @@
   },
   "prettier": "@reactlith-template/prettier-config",
   "devDependencies": {
-    "@eslint/compat": "^1.4.0",
-    "@eslint/js": "^9.36.0",
+    "@eslint/compat": "~2.0.0",
+    "@eslint/js": "~9.39.1",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@tanstack/eslint-plugin-query": "^5.90.2",
-    "@tanstack/eslint-plugin-router": "^1.132.0",
+    "@tanstack/eslint-plugin-query": "~5.91.2",
+    "@tanstack/eslint-plugin-router": "~1.139.0",
     "@types/bun": "catalog:",
-    "eslint": "^9.36.0",
+    "eslint": "~9.39.1",
     "eslint-plugin-react-compiler": "latest",
-    "eslint-plugin-react-hooks": "7.0.0",
-    "eslint-plugin-react-refresh": "^0.4.22",
+    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-refresh": "~0.4.22",
     "typescript": "catalog:",
-    "typescript-eslint": "^8.44.1"
+    "typescript-eslint": "~8.48.0"
   }
 }

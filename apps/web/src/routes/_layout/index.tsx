@@ -88,7 +88,11 @@ function RouteComponent() {
             </Button>
             <Select
               value={selectedTestUser}
-              onValueChange={setSelectedTestUser}
+              onValueChange={(value) => {
+                if (value) {
+                  setSelectedTestUser(value);
+                }
+              }}
             >
               <SelectTrigger>
                 <span>{`${t('test-user')} ${selectedTestUser}`}</span>
