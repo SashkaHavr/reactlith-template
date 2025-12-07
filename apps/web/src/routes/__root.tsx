@@ -85,7 +85,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body>
         <ThemeProvider>
-          <IntlProvider>{children}</IntlProvider>
+          <IntlProvider>
+            <div className="isolate">{children}</div>
+          </IntlProvider>
         </ThemeProvider>
         <Scripts />
       </body>
