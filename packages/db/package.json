@@ -11,7 +11,7 @@
     "./drizzle": "./src/drizzle.ts"
   },
   "scripts": {
-    "build-scripts": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
+    "build-scripts": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun --external pg",
     "clean": "bun exec \"rm -rf node_modules .turbo dist\"",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run ./src/migrate.ts",
