@@ -22,8 +22,8 @@
     "catalogs": {
       "drizzle": {
         "@types/pg": "~8.15.5",
-        "drizzle-kit": "beta",
-        "drizzle-orm": "beta",
+        "drizzle-kit": "1.0.0-beta.2-58a4521",
+        "drizzle-orm": "1.0.0-beta.2-58a4521",
         "pg": "~8.16.3"
       },
       "react": {
