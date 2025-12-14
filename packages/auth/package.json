@@ -10,7 +10,7 @@
     "./permissions": "./src/permissions.ts"
   },
   "scripts": {
-    "build-scripts": "bun build --entrypoints ./src/generate-test-users.ts --outdir ./dist --target bun --external pg",
+    "build-scripts": "bun build --entrypoints ./src/generate-test-users.ts --outdir ./dist --target bun",
     "clean": "bun exec \"rm -rf node_modules .turbo\"",
     "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
     "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",

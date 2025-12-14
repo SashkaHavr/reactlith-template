@@ -11,7 +11,7 @@
     "./drizzle": "./src/drizzle.ts"
   },
   "scripts": {
-    "build-scripts": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun --external pg",
+    "build-scripts": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
     "clean": "bun exec \"rm -rf node_modules .turbo dist\"",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run ./src/migrate.ts",
@@ -28,7 +28,6 @@
     "@reactlith-template/env": "workspace:*",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
-    "pg": "catalog:drizzle",
     "uuid": "catalog:"
   },
   "devDependencies": {
@@ -36,7 +35,6 @@
     "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
-    "@types/pg": "catalog:drizzle",
     "typescript": "catalog:"
   }
 }

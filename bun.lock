@@ -73,7 +73,6 @@
         "@reactlith-template/env": "workspace:*",
         "drizzle-kit": "catalog:drizzle",
         "drizzle-orm": "catalog:drizzle",
-        "pg": "catalog:drizzle",
         "uuid": "catalog:",
       },
       "devDependencies": {
@@ -81,7 +80,6 @@
         "@reactlith-template/prettier-config": "workspace:*",
         "@reactlith-template/typescript-config": "workspace:*",
         "@types/bun": "catalog:",
-        "@types/pg": "catalog:drizzle",
         "typescript": "catalog:",
       },
     },
@@ -190,10 +188,8 @@
   },
   "catalogs": {
     "drizzle": {
-      "@types/pg": "~8.15.5",
       "drizzle-kit": "1.0.0-beta.2-58a4521",
       "drizzle-orm": "1.0.0-beta.2-58a4521",
-      "pg": "~8.16.3",
     },
     "react": {
       "@types/react": "~19.2.7",

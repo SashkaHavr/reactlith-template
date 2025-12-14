@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/bun-sql';
 
 import { envDB } from '@reactlith-template/env/db';
 
@@ -7,7 +7,7 @@ import * as schema from './schema';
 
 export const db = drizzle({
   connection: {
-    connectionString: envDB.DATABASE_URL,
+    url: envDB.DATABASE_URL,
   },
   schema: schema,
   relations: relations,
