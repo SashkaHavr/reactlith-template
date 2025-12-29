@@ -1,7 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import {
+  ClientOnly,
   createFileRoute,
   Outlet,
+  useHydrated,
   useRouteContext,
 } from '@tanstack/react-router';
 import { MoonIcon, SunIcon } from 'lucide-react';
@@ -18,7 +20,6 @@ import {
 
 import { useTheme } from '~/components/theme/context';
 import { useAuth } from '~/hooks/route-context';
-import { useIsClient } from '~/hooks/use-is-client';
 import { localeToString, useSetLocale } from '~/lib/intl-server';
 import { useTRPC } from '~/lib/trpc';
 import { getHealthCheckServerFn } from '~/lib/trpc-server';
@@ -35,17 +36,17 @@ export const Route = createFileRoute('/_layout')({
 
 function ThemeSwitcher() {
   const theme = useTheme();
-  const isClient = useIsClient();
+  const hydrated = useHydrated();
 
   return (
     <>
-      {(!isClient || theme.resolvedTheme === 'light') && (
+      {(!hydrated || theme.resolvedTheme === 'light') && (
         <Button className="dark:hidden" onClick={() => theme.setTheme('dark')}>
           <MoonIcon />
           <span>Dark mode</span>
         </Button>
       )}
-      {(!isClient || theme.resolvedTheme === 'dark') && (
+      {(!hydrated || theme.resolvedTheme === 'dark') && (
         <Button
           className="hidden dark:inline-flex"
           onClick={() => theme.setTheme('light')}
@@ -99,7 +100,6 @@ function RouteComponent() {
   const trpcHealth = useSuspenseQuery(trpc.health.queryOptions());
 
   const now = useNow({ updateInterval: 1000 });
-  const isClient = useIsClient();
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
@@ -129,7 +129,8 @@ function RouteComponent() {
             </span>
           </p>
           <p>
-            {t('now-is')}: {isClient ? format.dateTime(now, 'full') : ''}
+            {t('now-is')}:{' '}
+            <ClientOnly>{format.dateTime(now, 'full')}</ClientOnly>
           </p>
         </div>
       </div>
