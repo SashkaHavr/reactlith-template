@@ -22,7 +22,7 @@ COPY --from=build /app/packages/db/dist ./db
 COPY --from=build /app/packages/auth/dist ./auth
 
 WORKDIR /app
-COPY --from=build /app/apps/web/.output .
+COPY --from=build /app/apps/web/dist .
 
 USER bun
 EXPOSE 3000

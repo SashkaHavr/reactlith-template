@@ -57,9 +57,18 @@
     }
   },
   "scripts": {
+    "build": "bun run --filter '*' build",
+    "clean": "git clean -xdfq 'node_modules/*' '**/node_modules/*' '**/dist/*'",
+    "check": "ultracite check --type-aware --type-check",
+    "fix": "ultracite fix --type-aware --type-check",
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d",
     "deps": "bun update --interactive --recursive"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "oxfmt": "^0.21.0",
+    "oxlint": "^1.36.0",
+    "oxlint-tsgolint": "^0.10.0",
+    "ultracite": "7.0.5"
+  },
   "packageManager": "bun@1.3.3"
 }
