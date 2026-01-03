@@ -5,9 +5,6 @@ services:
       dockerfile: Dockerfile
     networks:
       - db-network
-    env_file:
-      - path: .env
-        required: false
     command: sleep infinity
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
@@ -21,14 +18,15 @@ services:
     image: postgres:17
     volumes:
       - db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
     networks:
       - db-network
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres", "-t", "10"]
+      test: ['CMD', 'pg_isready', '-U', 'postgres', '-t', '10']
       interval: 1s
       timeout: 10s
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
 
 networks:
   db-network:
