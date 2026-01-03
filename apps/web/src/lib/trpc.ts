@@ -1,17 +1,17 @@
-import { QueryClient } from '@tanstack/react-query';
+import type { TRPCRouter } from "@reactlith-template/trpc";
+
+import { QueryClient } from "@tanstack/react-query";
 import {
   createTRPCClient,
   httpBatchLink,
   httpSubscriptionLink,
   splitLink,
-} from '@trpc/client';
+} from "@trpc/client";
 import {
   createTRPCContext,
   createTRPCOptionsProxy,
-} from '@trpc/tanstack-react-query';
-import superjson from 'superjson';
-
-import type { TRPCRouter } from '@reactlith-template/trpc';
+} from "@trpc/tanstack-react-query";
+import superjson from "superjson";
 
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
@@ -28,14 +28,14 @@ export function createTRPCRouteContext() {
     links: [
       splitLink({
         // uses the httpSubscriptionLink for subscriptions
-        condition: (op) => op.type === 'subscription',
+        condition: (op) => op.type === "subscription",
         true: httpSubscriptionLink({
           transformer: superjson,
           url: `/trpc`,
         }),
         false: httpBatchLink({
           transformer: superjson,
-          url: '/trpc',
+          url: "/trpc",
         }),
       }),
     ],

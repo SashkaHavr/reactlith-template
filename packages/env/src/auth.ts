@@ -1,5 +1,5 @@
-import { createEnv } from '@t3-oss/env-core';
-import { z } from 'zod';
+import { createEnv } from "@t3-oss/env-core";
+import { z } from "zod";
 
 export const authConfig = {
   TEST_AUTH: z.stringbool().default(false),
@@ -9,7 +9,7 @@ export const authConfig = {
 };
 
 export const authProdConfig =
-  process.env.NODE_ENV === 'production'
+  process.env.NODE_ENV === "production"
     ? {
         BETTER_AUTH_URL: z.url(),
         BETTER_AUTH_SECRET: z.string().nonempty(),

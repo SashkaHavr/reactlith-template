@@ -1,10 +1,9 @@
-import { createMiddleware, createServerFn } from '@tanstack/react-start';
-import { getRequest } from '@tanstack/react-start/server';
-
-import { auth } from '@reactlith-template/auth';
+import { auth } from "@reactlith-template/auth";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 
 export const authServerFnMiddleware = createMiddleware({
-  type: 'function',
+  type: "function",
 }).server(({ next }) => {
   return next({
     context: {

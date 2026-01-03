@@ -4,7 +4,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 env:
   REGISTRY: ${{ vars.REGISTRY || 'docker.io' }}
@@ -22,7 +22,7 @@ jobs:
       matrix:
         image:
           - name: web
-            dockerfile: './apps/web/Dockerfile'
+            dockerfile: "./apps/web/Dockerfile"
 
     steps:
       - name: Set image name

@@ -1,27 +1,26 @@
-import { useState } from 'react';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, redirect } from '@tanstack/react-router';
-import { UserIcon } from 'lucide-react';
-import { useTranslations } from 'use-intl';
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { UserIcon } from "lucide-react";
+import { useState } from "react";
+import { useTranslations } from "use-intl";
 
-import { Button } from '~/components/ui/button';
-import { Field } from '~/components/ui/field';
-import { Fieldset } from '~/components/ui/fieldset';
+import { Button } from "~/components/ui/button";
+import { Field } from "~/components/ui/field";
+import { Fieldset } from "~/components/ui/fieldset";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '~/components/ui/select';
-import { Spinner } from '~/components/ui/spinner';
+} from "~/components/ui/select";
+import { Spinner } from "~/components/ui/spinner";
+import { authClient, useResetAuth } from "~/lib/auth";
+import { useTRPC } from "~/lib/trpc";
 
-import { authClient, useResetAuth } from '~/lib/auth';
-import { useTRPC } from '~/lib/trpc';
-
-export const Route = createFileRoute('/_layout/')({
+export const Route = createFileRoute("/_layout/")({
   beforeLoad: ({ context: { auth } }) => {
     if (auth.loggedIn) {
-      throw redirect({ to: '/numbers' });
+      throw redirect({ to: "/numbers" });
     }
   },
   component: RouteComponent,
@@ -43,7 +42,7 @@ function GitHubIcon({ className }: { className?: string }) {
 
 function RouteComponent() {
   const trpc = useTRPC();
-  const t = useTranslations('index');
+  const t = useTranslations("index");
 
   const authConfig = useSuspenseQuery(trpc.config.general.queryOptions());
   const resetAuth = useResetAuth();
@@ -51,12 +50,12 @@ function RouteComponent() {
   const githubSignin = useMutation({
     mutationFn: () =>
       authClient.signIn.social({
-        provider: 'github',
+        provider: "github",
         callbackURL: window.origin,
       }),
   });
 
-  const [selectedTestUser, setSelectedTestUser] = useState<string>('0');
+  const [selectedTestUser, setSelectedTestUser] = useState<string>("0");
   const loginAsTestUser = useMutation({
     mutationFn: async ({ user }: { user: number }) => {
       await authClient.signIn.email({
@@ -84,7 +83,7 @@ function RouteComponent() {
             >
               {loginAsTestUser.isPending && <Spinner />}
               <UserIcon />
-              {t('login-with')}
+              {t("login-with")}
             </Button>
             <Select
               value={selectedTestUser}
@@ -95,12 +94,12 @@ function RouteComponent() {
               }}
             >
               <SelectTrigger>
-                <span>{`${t('test-user')} ${selectedTestUser}`}</span>
+                <span>{`${t("test-user")} ${selectedTestUser}`}</span>
               </SelectTrigger>
               <SelectContent>
                 {Array.from(Array(100).keys()).map((user) => (
                   <SelectItem key={user} value={user.toString()}>
-                    {`${t('test-user')} ${user}`}
+                    {`${t("test-user")} ${user}`}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -114,7 +113,7 @@ function RouteComponent() {
               type="button"
               onClick={() => githubSignin.mutate()}
             >
-              {t('login-with-github')}
+              {t("login-with-github")}
               <GitHubIcon className="size-5" />
             </Button>
           </Field>

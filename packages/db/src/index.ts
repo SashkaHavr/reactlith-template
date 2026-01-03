@@ -1,9 +1,8 @@
-import { drizzle } from 'drizzle-orm/bun-sql';
+import { relations } from "#relations.ts";
+import { envDB } from "@reactlith-template/env/db";
+import { drizzle } from "drizzle-orm/bun-sql";
 
-import { envDB } from '@reactlith-template/env/db';
-
-import { relations } from '#relations.ts';
-import * as schema from './schema';
+import * as schema from "./schema";
 
 export const db = drizzle({
   connection: {
@@ -11,5 +10,5 @@ export const db = drizzle({
   },
   schema: schema,
   relations: relations,
-  casing: 'snake_case',
+  casing: "snake_case",
 });

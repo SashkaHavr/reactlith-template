@@ -1,10 +1,9 @@
-import { createMiddleware, createServerFn } from '@tanstack/react-start';
-import { getRequest } from '@tanstack/react-start/server';
-
-import { createTrpcCaller } from '@reactlith-template/trpc';
+import { createTrpcCaller } from "@reactlith-template/trpc";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 
 export const trpcServerFnMiddleware = createMiddleware({
-  type: 'function',
+  type: "function",
 }).server(({ next }) => {
   return next({
     context: {

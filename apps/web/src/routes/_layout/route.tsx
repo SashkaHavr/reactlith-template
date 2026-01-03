@@ -1,30 +1,29 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { isLocale } from "@reactlith-template/intl";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ClientOnly,
   createFileRoute,
   Outlet,
   useHydrated,
   useRouteContext,
-} from '@tanstack/react-router';
-import { MoonIcon, SunIcon } from 'lucide-react';
-import { useFormatter, useNow, useTranslations } from 'use-intl';
+} from "@tanstack/react-router";
+import { MoonIcon, SunIcon } from "lucide-react";
+import { useFormatter, useNow, useTranslations } from "use-intl";
 
-import { isLocale } from '@reactlith-template/intl';
-import { Button } from '~/components/ui/button';
+import { useTheme } from "~/components/theme/context";
+import { Button } from "~/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from '~/components/ui/select';
+} from "~/components/ui/select";
+import { useAuth } from "~/hooks/route-context";
+import { localeToString, useSetLocale } from "~/lib/intl-server";
+import { useTRPC } from "~/lib/trpc";
+import { getHealthCheckServerFn } from "~/lib/trpc-server";
 
-import { useTheme } from '~/components/theme/context';
-import { useAuth } from '~/hooks/route-context';
-import { localeToString, useSetLocale } from '~/lib/intl-server';
-import { useTRPC } from '~/lib/trpc';
-import { getHealthCheckServerFn } from '~/lib/trpc-server';
-
-export const Route = createFileRoute('/_layout')({
+export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { trpc, queryClient } }) => {
     await queryClient.ensureQueryData({
       queryKey: trpc.health.queryKey(),
@@ -40,16 +39,16 @@ function ThemeSwitcher() {
 
   return (
     <>
-      {(!hydrated || theme.resolvedTheme === 'light') && (
-        <Button className="dark:hidden" onClick={() => theme.setTheme('dark')}>
+      {(!hydrated || theme.resolvedTheme === "light") && (
+        <Button className="dark:hidden" onClick={() => theme.setTheme("dark")}>
           <MoonIcon />
           <span>Dark mode</span>
         </Button>
       )}
-      {(!hydrated || theme.resolvedTheme === 'dark') && (
+      {(!hydrated || theme.resolvedTheme === "dark") && (
         <Button
           className="hidden dark:inline-flex"
-          onClick={() => theme.setTheme('light')}
+          onClick={() => theme.setTheme("light")}
         >
           <SunIcon />
           <span>Light mode</span>
@@ -61,7 +60,7 @@ function ThemeSwitcher() {
 
 function LocaleSwitcher() {
   const locale = useRouteContext({
-    from: '__root__',
+    from: "__root__",
     select: (s) => s.intl.locale,
   });
   const setLocale = useSetLocale();
@@ -93,7 +92,7 @@ function LocaleSwitcher() {
 
 function RouteComponent() {
   const trpc = useTRPC();
-  const t = useTranslations('index');
+  const t = useTranslations("index");
   const format = useFormatter();
 
   const auth = useAuth();
@@ -106,31 +105,31 @@ function RouteComponent() {
       <div className="flex w-100 flex-col items-center">
         <div className="flex w-fit flex-col gap-4">
           <div className="flex gap-3">
-            <p className="self-center text-xl">{t('works')}</p>
+            <p className="self-center text-xl">{t("works")}</p>
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
           <p>
-            {t('trpc-health-response')}:{' '}
+            {t("trpc-health-response")}:{" "}
             <span
               className={
-                trpcHealth.isSuccess ? 'text-green-500' : 'text-red-500'
+                trpcHealth.isSuccess ? "text-green-500" : "text-red-500"
               }
             >
               {trpcHealth.data}
             </span>
           </p>
           <p>
-            {t('auth-status')}:{' '}
+            {t("auth-status")}:{" "}
             <span
-              className={auth.available ? 'text-green-500' : 'text-red-500'}
+              className={auth.available ? "text-green-500" : "text-red-500"}
             >
-              {auth.available ? t('available') : t('not-available')}
+              {auth.available ? t("available") : t("not-available")}
             </span>
           </p>
           <p>
-            {t('now-is')}:{' '}
-            <ClientOnly>{format.dateTime(now, 'full')}</ClientOnly>
+            {t("now-is")}:{" "}
+            <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
           </p>
         </div>
       </div>
