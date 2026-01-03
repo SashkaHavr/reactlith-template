@@ -10,22 +10,12 @@
     "./db": "./src/db.ts",
     "./auth": "./src/auth.ts"
   },
-  "scripts": {
-    "clean": "bun exec \"rm -rf node_modules .turbo\"",
-    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
-    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "typecheck": "tsc --noEmit"
-  },
-  "prettier": "@reactlith-template/prettier-config",
+  "scripts": {},
   "dependencies": {
     "@t3-oss/env-core": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@reactlith-template/eslint-config": "workspace:*",
-    "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "typescript": "catalog:"

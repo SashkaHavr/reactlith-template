@@ -5,9 +5,7 @@ FROM base AS build
 WORKDIR /app
 COPY . .
 RUN bun install --frozen-lockfile
-RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
-    --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
-    bun run turbo run @reactlith-template/web#build @reactlith-template/auth#build-scripts @reactlith-template/db#build-scripts
+RUN bun run --filter @reactlith-template/web --filter @reactlith-template/auth --filter @reactlith-template/db build
 
 # Run
 FROM base AS runner

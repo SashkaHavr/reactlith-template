@@ -4,7 +4,6 @@
   "i18n-ally.keystyle": "nested",
   "i18n-ally.sortKeys": true,
   "files.exclude": {
-    "**/.turbo": true,
     "**/node_modules": true,
     "**/.tanstack": true
   },
@@ -20,7 +19,6 @@
       }
     }
   ],
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "emmet.showExpandedAbbreviation": "never",

@@ -4,16 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "bunx --bun vite build",
-    "clean": "bun exec \"rm -rf node_modules dist .tanstack .nitro .output .turbo\"",
     "component": "bunx --bun shadcn@latest add",
     "postcomponent": "bun run format",
     "dev": "bunx --bun vite dev",
-    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
-    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "start": "bun exec \"NODE_ENV=production bun run .output/server/index.mjs\"",
-    "typecheck": "tsc --noEmit"
+    "start": "bun exec \"NODE_ENV=production bun run .output/server/index.mjs\""
   },
   "dependencies": {
     "@base-ui/react": "1.0.0",
@@ -47,8 +41,6 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@reactlith-template/eslint-config": "workspace:*",
-    "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "@types/react": "catalog:react",

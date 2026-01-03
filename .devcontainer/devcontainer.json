@@ -10,9 +10,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "dbaeumer.vscode-eslint",
         "lokalise.i18n-ally",
-        "esbenp.prettier-vscode",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss"
       ]

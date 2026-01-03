@@ -4,8 +4,7 @@
   "workspaces": {
     "packages": [
       "apps/*",
-      "packages/*",
-      "tools/*"
+      "packages/*"
     ],
     "catalog": {
       "@t3-oss/env-core": "~0.13.8",
@@ -58,26 +57,9 @@
     }
   },
   "scripts": {
-    "build": "turbo build build-scripts",
-    "check": "turbo format:check lint typecheck",
-    "clean": "turbo clean clean:root",
-    "clean:root": "bun exec \"rm -rf node_modules .turbo\"",
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d",
-    "deps": "bun update --interactive --recursive",
-    "fix": "turbo format lint:fix typecheck",
-    "format": "turbo format format:root",
-    "format:check": "turbo format:check format:root:check",
-    "format:root": "prettier . \"!./apps/**\" \"!./packages/**\" \"!./tools/**\" --write",
-    "format:root:check": "prettier . \"!./apps/**\" \"!./packages/**\" \"!./tools/**\" --check",
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint:fix",
-    "start": "turbo start",
-    "typecheck": "turbo typecheck"
+    "deps": "bun update --interactive --recursive"
   },
-  "prettier": "@reactlith-template/prettier-config",
-  "devDependencies": {
-    "@reactlith-template/prettier-config": "workspace:*",
-    "turbo": "2.6.1"
-  },
+  "devDependencies": {},
   "packageManager": "bun@1.3.3"
 }
