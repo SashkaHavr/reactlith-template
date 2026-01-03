@@ -7,7 +7,7 @@ import {
 } from "@reactlith-template/intl";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { getCookie, getRequestHeaders } from "@tanstack/react-start/server";
+import { getCookie, getRequestHeader } from "@tanstack/react-start/server";
 
 import { getClientCookie, setClientCookie } from "~/utils/cookie";
 
@@ -20,10 +20,8 @@ export const getLocale = createIsomorphicFn()
       return localeFromCookie;
     }
 
-    const headers = getRequestHeaders();
     const locales =
-      headers
-        .get("accept-language")
+      getRequestHeader("accept-language")
         ?.split(",")
         .map((lang) => lang.split(";")[0]) ?? [];
     return locales.find(isLocale) ?? defaultLocale;
