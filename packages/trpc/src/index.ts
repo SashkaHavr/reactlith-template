@@ -1,13 +1,13 @@
-import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
-import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
-import { createContext } from '#context.ts';
-import { createCallerFactory, publicProcedure, router } from '#init.ts';
-import { configRouter } from '#routers/config.ts';
-import { numbersRouter } from '#routers/numbers.ts';
+import { createContext } from "#context.ts";
+import { createCallerFactory, publicProcedure, router } from "#init.ts";
+import { configRouter } from "#routers/config.ts";
+import { numbersRouter } from "#routers/numbers.ts";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 const appRouter = router({
-  health: publicProcedure.query(() => 'tRPC healthy!'),
+  health: publicProcedure.query(() => "tRPC healthy!"),
   numbers: numbersRouter,
   config: configRouter,
 });
@@ -16,7 +16,7 @@ export function trpcHandler({ request }: { request: Request }) {
   return fetchRequestHandler({
     req: request,
     router: appRouter,
-    endpoint: '/trpc',
+    endpoint: "/trpc",
     createContext: (opts) => createContext({ request: opts.req }),
   });
 }

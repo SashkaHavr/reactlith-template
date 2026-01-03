@@ -1,10 +1,9 @@
-import { boolean, index, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
-
-import { baseTable } from '#utils/base-table.ts';
-import { oneToManyCascadeOnDelete } from '#utils/foreign-keys.ts';
+import { baseTable } from "#utils/base-table.ts";
+import { oneToManyCascadeOnDelete } from "#utils/foreign-keys.ts";
+import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable(
-  'user',
+  "user",
   {
     ...baseTable,
     name: text().notNull(),
@@ -16,11 +15,11 @@ export const user = pgTable(
     banReason: text(),
     banExpires: timestamp(),
   },
-  (table) => [index().on(table.email)],
+  (table) => [index().on(table.email)]
 );
 
 export const session = pgTable(
-  'session',
+  "session",
   {
     ...baseTable,
     expiresAt: timestamp().notNull(),
@@ -30,11 +29,11 @@ export const session = pgTable(
     userId: oneToManyCascadeOnDelete(() => user.id),
     impersonatedBy: text(),
   },
-  (table) => [index().on(table.userId), index().on(table.token)],
+  (table) => [index().on(table.userId), index().on(table.token)]
 );
 
 export const account = pgTable(
-  'account',
+  "account",
   {
     ...baseTable,
     accountId: text().notNull(),
@@ -48,16 +47,16 @@ export const account = pgTable(
     scope: text(),
     password: text(),
   },
-  (table) => [index().on(table.userId)],
+  (table) => [index().on(table.userId)]
 );
 
 export const verification = pgTable(
-  'verification',
+  "verification",
   {
     ...baseTable,
     identifier: text().notNull(),
     value: text().notNull(),
     expiresAt: timestamp().notNull(),
   },
-  (table) => [index().on(table.identifier)],
+  (table) => [index().on(table.identifier)]
 );

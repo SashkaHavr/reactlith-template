@@ -10,12 +10,9 @@
     "moduleDetection": "force",
     "isolatedModules": true,
 
-    // JS
-    "allowJs": true,
-    "checkJs": true,
-
     // Strictness
     "strict": true,
+    "strictNullChecks": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,

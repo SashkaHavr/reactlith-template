@@ -1,11 +1,10 @@
-import { initTRPC, TRPCError } from '@trpc/server';
-import superjson from 'superjson';
-import z, { ZodError } from 'zod';
+import type { Context } from "#context.ts";
 
-import { auth } from '@reactlith-template/auth';
-import { envServer } from '@reactlith-template/env/server';
-
-import type { Context } from '#context.ts';
+import { auth } from "@reactlith-template/auth";
+import { envServer } from "@reactlith-template/env/server";
+import { initTRPC, TRPCError } from "@trpc/server";
+import superjson from "superjson";
+import z, { ZodError } from "zod";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -25,18 +24,18 @@ const t = initTRPC.context<Context>().create({
 export const router = t.router;
 
 export const publicProcedure =
-  envServer.NODE_ENV === 'production'
+  envServer.NODE_ENV === "production"
     ? t.procedure
     : t.procedure.use(async ({ next }) => {
         const result = await next();
         if (
           !result.ok &&
           [
-            'INTERNAL_SERVER_ERROR',
-            'NOT_IMPLEMENTED',
-            'BAD_GATEWAY',
-            'SERVICE_UNAVAILABLE',
-            'SERVICE_UNAVAILABLE',
+            "INTERNAL_SERVER_ERROR",
+            "NOT_IMPLEMENTED",
+            "BAD_GATEWAY",
+            "SERVICE_UNAVAILABLE",
+            "SERVICE_UNAVAILABLE",
           ].includes(result.error.code)
         ) {
           console.error(result.error);
@@ -50,8 +49,8 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   });
   if (!session) {
     throw new TRPCError({
-      message: 'You must authenticate to use this endpoint',
-      code: 'UNAUTHORIZED',
+      message: "You must authenticate to use this endpoint",
+      code: "UNAUTHORIZED",
     });
   }
   return next({
@@ -67,8 +66,8 @@ export function adminProcedure(
   permission: NonNullable<
     NonNullable<
       Parameters<typeof auth.api.userHasPermission>[0]
-    >['body']['permission']
-  >,
+    >["body"]["permission"]
+  >
 ) {
   return protectedProcedure.use(async ({ ctx, next }) => {
     const hasPermission = await auth.api.userHasPermission({
@@ -77,7 +76,7 @@ export function adminProcedure(
     if (!hasPermission.success) {
       throw new TRPCError({
         message: "You don't have permissions to access this endpoint",
-        code: 'FORBIDDEN',
+        code: "FORBIDDEN",
       });
     }
     return next();

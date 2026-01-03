@@ -5,9 +5,7 @@ FROM base AS build
 WORKDIR /app
 COPY . .
 RUN bun install --frozen-lockfile
-RUN --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
-    --mount=type=secret,id=TURBO_TOKEN,env=TURBO_TOKEN \
-    bun run turbo run @reactlith-template/web#build @reactlith-template/auth#build-scripts @reactlith-template/db#build-scripts
+RUN bun run --filter @reactlith-template/web --filter @reactlith-template/auth --filter @reactlith-template/db build
 
 # Run
 FROM base AS runner
@@ -24,8 +22,8 @@ COPY --from=build /app/packages/db/dist ./db
 COPY --from=build /app/packages/auth/dist ./auth
 
 WORKDIR /app
-COPY --from=build /app/apps/web/.output .
+COPY --from=build /app/apps/web/dist .
 
 USER bun
 EXPOSE 3000
-CMD [ "sh", "-c", "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js && bun run ./server/index.mjs" ]
+CMD [ "bun", "run", "./server/index.mjs" ]

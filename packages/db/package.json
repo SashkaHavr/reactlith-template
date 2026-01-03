@@ -11,19 +11,12 @@
     "./drizzle": "./src/drizzle.ts"
   },
   "scripts": {
-    "build-scripts": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
-    "clean": "bun exec \"rm -rf node_modules .turbo dist\"",
+    "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run ./src/migrate.ts",
     "db:studio": "drizzle-kit studio",
-    "db:up": "docker run -d --name pg-reactlith-template -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith-template:/var/lib/postgresql/data -p 5432:5432 postgres",
-    "format": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --write",
-    "format:check": "prettier . --ignore-path ../../.gitignore --ignore-path ../../.prettierignore --check",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
-    "typecheck": "tsc --noEmit"
+    "db:up": "docker run -d --name pg-reactlith-template -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith-template:/var/lib/postgresql/data -p 5432:5432 postgres"
   },
-  "prettier": "@reactlith-template/prettier-config",
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
     "drizzle-kit": "catalog:drizzle",
@@ -31,8 +24,6 @@
     "uuid": "catalog:"
   },
   "devDependencies": {
-    "@reactlith-template/eslint-config": "workspace:*",
-    "@reactlith-template/prettier-config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "typescript": "catalog:"

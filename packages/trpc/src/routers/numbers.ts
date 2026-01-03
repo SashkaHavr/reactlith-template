@@ -1,11 +1,9 @@
-import { TRPCError } from '@trpc/server';
-import z from 'zod';
-
-import { db } from '@reactlith-template/db';
-import { eq } from '@reactlith-template/db/drizzle';
-import { number as numberTable } from '@reactlith-template/db/schema';
-
-import { protectedProcedure, router } from '#init.ts';
+import { protectedProcedure, router } from "#init.ts";
+import { db } from "@reactlith-template/db";
+import { eq } from "@reactlith-template/db/drizzle";
+import { number as numberTable } from "@reactlith-template/db/schema";
+import { TRPCError } from "@trpc/server";
+import z from "zod";
 
 export const numbersRouter = router({
   getAll: protectedProcedure
@@ -22,8 +20,8 @@ export const numbersRouter = router({
     });
     if (numbers.length >= 10) {
       throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: 'Max numbers count is 10',
+        code: "BAD_REQUEST",
+        message: "Max numbers count is 10",
       });
     }
 

@@ -1,7 +1,6 @@
-import { db } from '@reactlith-template/db';
-import { envAuth } from '@reactlith-template/env/auth';
-
-import { auth } from '#index.ts';
+import { auth } from "#index.ts";
+import { db } from "@reactlith-template/db";
+import { envAuth } from "@reactlith-template/env/auth";
 
 async function main() {
   if (!envAuth.TEST_AUTH) {
@@ -9,10 +8,10 @@ async function main() {
   }
 
   const user = await db.query.user.findFirst({
-    where: { email: { like: '%@example.com' } },
+    where: { email: { like: "%@example.com" } },
   });
   if (user) {
-    console.log('Test users already exist. Skipping generation.');
+    console.log("Test users already exist. Skipping generation.");
     return;
   }
 
@@ -28,8 +27,8 @@ async function main() {
         })
         .catch(() => {
           /* user already exists */
-        }),
-    ),
+        })
+    )
   );
 }
 

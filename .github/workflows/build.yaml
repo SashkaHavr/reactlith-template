@@ -4,7 +4,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 env:
   REGISTRY: ${{ vars.REGISTRY || 'docker.io' }}
@@ -22,7 +22,7 @@ jobs:
       matrix:
         image:
           - name: web
-            dockerfile: './apps/web/Dockerfile'
+            dockerfile: "./apps/web/Dockerfile"
 
     steps:
       - name: Set image name
@@ -52,9 +52,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: ${{ matrix.image.build-args }}
-          secrets: |
-            TURBO_TEAM=${{ vars.TURBO_TEAM }}
-            TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:main
           cache-to: type=inline
 

@@ -12,6 +12,38 @@ services:
       timeout: 10s
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
+  web-predeploy:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    command:
+      [
+        'sh',
+        '-c',
+        'bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js',
+      ]
+    networks:
+      - db-network
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    networks:
+      - db-network
+    depends_on:
+      db:
+        condition: service_healthy
+      web-predeploy:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
   db-studio:
     image: ghcr.io/drizzle-team/gateway:latest
     volumes:
@@ -22,26 +54,8 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
     environment:
       - STORE_PATH=/app
-  web:
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
-    networks:
-      - db-network
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
-    environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
 
 networks:
   db-network:

@@ -1,27 +1,27 @@
-import tailwindcss from '@tailwindcss/vite';
-import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin';
-import { tanstackStart } from '@tanstack/react-start/plugin/vite';
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-import tsConfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import react from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite";
+import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   build: {
     rollupOptions: {
-      external: ['bun'],
+      external: ["bun"],
     },
   },
   server: {
     port: 3000,
-    host: '127.0.0.1',
+    host: "127.0.0.1",
   },
   plugins: [
     tailwindcss(),
     tanstackStart(),
-    nitroV2Plugin({ preset: 'bun' }),
+    nitro({ preset: "bun", output: { dir: "dist" } }),
     react({
       babel: {
-        plugins: ['babel-plugin-react-compiler'],
+        plugins: ["babel-plugin-react-compiler"],
       },
     }),
     tsConfigPaths(),

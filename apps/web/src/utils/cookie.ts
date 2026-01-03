@@ -1,5 +1,5 @@
 export function getClientCookie(name: string) {
-  return document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop();
+  return document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)")?.pop();
 }
 
 export function setClientCookie(name: string, value: string, days = 400) {
