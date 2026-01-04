@@ -3,12 +3,7 @@
 import type { ReactNode } from "react";
 
 import { setupZodLocale } from "@reactlith-template/intl";
-import {
-  createRootRouteWithContext,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 
 import type { TRPCRouteContext } from "~/lib/trpc";
 
@@ -76,11 +71,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   });
 
   return (
-    <html
-      suppressHydrationWarning
-      lang={locale}
-      className={cn(theme !== "system" && theme)}
-    >
+    <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
       <head>
         <HeadContent />
         <ThemeScript />

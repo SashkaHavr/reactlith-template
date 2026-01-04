@@ -29,9 +29,7 @@ export const numbersRouter = router({
       .insert(numberTable)
       .values({ userId: ctx.userId, number: Math.floor(Math.random() * 100) });
   }),
-  deleteAll: protectedProcedure
-    .output(z.undefined())
-    .mutation(async ({ ctx }) => {
-      await db.delete(numberTable).where(eq(numberTable.userId, ctx.userId));
-    }),
+  deleteAll: protectedProcedure.output(z.undefined()).mutation(async ({ ctx }) => {
+    await db.delete(numberTable).where(eq(numberTable.userId, ctx.userId));
+  }),
 });

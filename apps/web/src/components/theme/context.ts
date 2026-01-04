@@ -15,9 +15,7 @@ export interface ThemeContextData {
   resolvedTheme: ResolvedTheme;
 }
 
-export const ThemeContext = createContext<ThemeContextData | undefined>(
-  undefined
-);
+export const ThemeContext = createContext<ThemeContextData | undefined>(undefined);
 
 export function useTheme() {
   const data = use(ThemeContext);

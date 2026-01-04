@@ -4,9 +4,7 @@ import { uuid } from "drizzle-orm/pg-core";
 
 import type { baseTable } from "./base-table";
 
-type ForeignKeyColumn = ReturnType<
-  typeof pgTable<string, typeof baseTable>
->["id"];
+type ForeignKeyColumn = ReturnType<typeof pgTable<string, typeof baseTable>>["id"];
 
 export function oneToManyCascadeOnDelete(column: () => ForeignKeyColumn) {
   return uuid().notNull().references(column, { onDelete: "cascade" });

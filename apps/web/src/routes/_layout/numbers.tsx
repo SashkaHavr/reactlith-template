@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 
@@ -44,12 +40,12 @@ function RouteComponent() {
   const addNumber = useMutation(
     trpc.numbers.addNew.mutationOptions({
       onSuccess: () => invalidateNumbers(),
-    })
+    }),
   );
   const deleteNumbers = useMutation(
     trpc.numbers.deleteAll.mutationOptions({
       onSuccess: () => invalidateNumbers(),
-    })
+    }),
   );
   const signout = useSignout();
   return (
@@ -70,9 +66,7 @@ function RouteComponent() {
           {t("delete-all-numbers")}
         </Button>
       </div>
-      <p className="text-xl font-bold">
-        {JSON.stringify(numbers.data.numbers)}
-      </p>
+      <p className="text-xl font-bold">{JSON.stringify(numbers.data.numbers)}</p>
     </div>
   );
 }

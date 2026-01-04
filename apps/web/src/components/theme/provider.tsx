@@ -20,9 +20,7 @@ function updateMetaThemeColor() {
   const themeColor = getComputedStyle(document.documentElement)
     .getPropertyValue("--theme-color")
     .trim();
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", themeColor);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -40,15 +38,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>("light");
 
-  const handleMediaQuery = useEffectEvent(
-    (e: MediaQueryListEvent | MediaQueryList) => {
-      if (savedTheme !== "system") return;
-      const systemTheme = getSystemTheme(e);
-      setSystemTheme(systemTheme);
-      document.documentElement.classList.toggle("dark", systemTheme === "dark");
-      updateMetaThemeColor();
-    }
-  );
+  const handleMediaQuery = useEffectEvent((e: MediaQueryListEvent | MediaQueryList) => {
+    if (savedTheme !== "system") return;
+    const systemTheme = getSystemTheme(e);
+    setSystemTheme(systemTheme);
+    document.documentElement.classList.toggle("dark", systemTheme === "dark");
+    updateMetaThemeColor();
+  });
 
   useEffect(() => {
     const media = window.matchMedia(MEDIA);
@@ -60,9 +56,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const resolvedTheme = savedTheme === "system" ? systemTheme : savedTheme;
 
   return (
-    <ThemeContext
-      value={{ theme: savedTheme, setTheme: setSavedTheme, resolvedTheme }}
-    >
+    <ThemeContext value={{ theme: savedTheme, setTheme: setSavedTheme, resolvedTheme }}>
       {children}
     </ThemeContext>
   );
@@ -74,21 +68,16 @@ export function ThemeScript() {
       {`(${(() => {
         let mode = "light";
         const dark = document.documentElement.classList.contains("dark");
-        const isSystemTheme =
-          !document.documentElement.classList.contains("light") && !dark;
+        const isSystemTheme = !document.documentElement.classList.contains("light") && !dark;
         if (isSystemTheme) {
-          mode = window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
+          mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
           document.documentElement.classList.toggle("dark", mode === "dark");
         } else mode = dark ? "dark" : "light";
         document
           .querySelector('meta[name="theme-color"]')
           ?.setAttribute(
             "content",
-            getComputedStyle(document.documentElement)
-              .getPropertyValue("--theme-color")
-              .trim()
+            getComputedStyle(document.documentElement).getPropertyValue("--theme-color").trim(),
           );
       }).toString()})()`}
     </ScriptOnce>

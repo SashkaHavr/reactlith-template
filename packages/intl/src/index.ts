@@ -6,10 +6,7 @@ export const defaultLocale: (typeof locales)[number] = "en";
 export const locales = ["en", "uk"] as const;
 
 export function isLocale(locale: unknown): locale is Locale {
-  return (
-    typeof locale === "string" &&
-    (locales as readonly string[]).includes(locale)
-  );
+  return typeof locale === "string" && (locales as readonly string[]).includes(locale);
 }
 
 export function parseLocale(localeOptional: string | undefined): Locale {

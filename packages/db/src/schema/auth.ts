@@ -15,7 +15,7 @@ export const user = pgTable(
     banReason: text(),
     banExpires: timestamp(),
   },
-  (table) => [index().on(table.email)]
+  (table) => [index().on(table.email)],
 );
 
 export const session = pgTable(
@@ -29,7 +29,7 @@ export const session = pgTable(
     userId: oneToManyCascadeOnDelete(() => user.id),
     impersonatedBy: text(),
   },
-  (table) => [index().on(table.userId), index().on(table.token)]
+  (table) => [index().on(table.userId), index().on(table.token)],
 );
 
 export const account = pgTable(
@@ -47,7 +47,7 @@ export const account = pgTable(
     scope: text(),
     password: text(),
   },
-  (table) => [index().on(table.userId)]
+  (table) => [index().on(table.userId)],
 );
 
 export const verification = pgTable(
@@ -58,5 +58,5 @@ export const verification = pgTable(
     value: text().notNull(),
     expiresAt: timestamp().notNull(),
   },
-  (table) => [index().on(table.identifier)]
+  (table) => [index().on(table.identifier)],
 );

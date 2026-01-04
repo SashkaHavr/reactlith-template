@@ -2,11 +2,7 @@ import type { auth } from "@reactlith-template/auth";
 import type { QueryClient } from "@tanstack/react-query";
 
 import { permissions } from "@reactlith-template/auth/permissions";
-import {
-  queryOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";

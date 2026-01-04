@@ -1,10 +1,6 @@
 import type { Locale } from "use-intl";
 
-import {
-  defaultLocale,
-  isLocale,
-  localeCookieName,
-} from "@reactlith-template/intl";
+import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie, getRequestHeader } from "@tanstack/react-start/server";
@@ -58,13 +54,9 @@ type BaseMessages = typeof baseMessages;
 export async function getMessages(locale: Locale) {
   switch (locale) {
     case "en":
-      return (await import(
-        `../../messages/en.json`
-      )) as unknown as BaseMessages;
+      return (await import(`../../messages/en.json`)) as unknown as BaseMessages;
     case "uk":
-      return (await import(
-        `../../messages/uk.json`
-      )) as unknown as BaseMessages;
+      return (await import(`../../messages/uk.json`)) as unknown as BaseMessages;
   }
 }
 

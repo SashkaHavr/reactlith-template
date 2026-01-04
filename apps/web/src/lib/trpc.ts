@@ -1,16 +1,8 @@
 import type { TRPCRouter } from "@reactlith-template/trpc";
 
 import { QueryClient } from "@tanstack/react-query";
-import {
-  createTRPCClient,
-  httpBatchLink,
-  httpSubscriptionLink,
-  splitLink,
-} from "@trpc/client";
-import {
-  createTRPCContext,
-  createTRPCOptionsProxy,
-} from "@trpc/tanstack-react-query";
+import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
+import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
 
 export function createTRPCRouteContext() {
@@ -48,5 +40,4 @@ export function createTRPCRouteContext() {
 }
 
 export type TRPCRouteContext = ReturnType<typeof createTRPCRouteContext>;
-export const { TRPCProvider, useTRPC, useTRPCClient } =
-  createTRPCContext<TRPCRouter>();
+export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRouter>();

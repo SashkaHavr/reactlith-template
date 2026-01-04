@@ -12,12 +12,7 @@ import { useFormatter, useNow, useTranslations } from "use-intl";
 
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "~/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { useAuth } from "~/hooks/route-context";
 import { localeToString, useSetLocale } from "~/lib/intl-server";
 import { useTRPC } from "~/lib/trpc";
@@ -46,10 +41,7 @@ function ThemeSwitcher() {
         </Button>
       )}
       {(!hydrated || theme.resolvedTheme === "dark") && (
-        <Button
-          className="hidden dark:inline-flex"
-          onClick={() => theme.setTheme("light")}
-        >
+        <Button className="hidden dark:inline-flex" onClick={() => theme.setTheme("light")}>
           <SunIcon />
           <span>Light mode</span>
         </Button>
@@ -111,25 +103,18 @@ function RouteComponent() {
           </div>
           <p>
             {t("trpc-health-response")}:{" "}
-            <span
-              className={
-                trpcHealth.isSuccess ? "text-green-500" : "text-red-500"
-              }
-            >
+            <span className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
               {trpcHealth.data}
             </span>
           </p>
           <p>
             {t("auth-status")}:{" "}
-            <span
-              className={auth.available ? "text-green-500" : "text-red-500"}
-            >
+            <span className={auth.available ? "text-green-500" : "text-red-500"}>
               {auth.available ? t("available") : t("not-available")}
             </span>
           </p>
           <p>
-            {t("now-is")}:{" "}
-            <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
+            {t("now-is")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
           </p>
         </div>
       </div>

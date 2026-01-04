@@ -27,8 +27,8 @@ async function main() {
         })
         .catch(() => {
           /* user already exists */
-        })
-    )
+        }),
+    ),
   );
 }
 

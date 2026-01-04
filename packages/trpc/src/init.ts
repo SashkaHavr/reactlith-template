@@ -14,8 +14,7 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? z.prettifyError(error.cause) : null,
+        zodError: error.cause instanceof ZodError ? z.prettifyError(error.cause) : null,
       },
     };
   },
@@ -64,10 +63,8 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
 
 export function adminProcedure(
   permission: NonNullable<
-    NonNullable<
-      Parameters<typeof auth.api.userHasPermission>[0]
-    >["body"]["permission"]
-  >
+    NonNullable<Parameters<typeof auth.api.userHasPermission>[0]>["body"]["permission"]
+  >,
 ) {
   return protectedProcedure.use(async ({ ctx, next }) => {
     const hasPermission = await auth.api.userHasPermission({

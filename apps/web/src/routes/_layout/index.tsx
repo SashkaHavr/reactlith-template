@@ -7,12 +7,7 @@ import { useTranslations } from "use-intl";
 import { Button } from "~/components/ui/button";
 import { Field } from "~/components/ui/field";
 import { Fieldset } from "~/components/ui/fieldset";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "~/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { Spinner } from "~/components/ui/spinner";
 import { authClient, useResetAuth } from "~/lib/auth";
 import { useTRPC } from "~/lib/trpc";
@@ -108,11 +103,7 @@ function RouteComponent() {
         )}
         {authConfig.data.auth.githubOAuth && (
           <Field>
-            <Button
-              variant="outline"
-              type="button"
-              onClick={() => githubSignin.mutate()}
-            >
+            <Button variant="outline" type="button" onClick={() => githubSignin.mutate()}>
               {t("login-with-github")}
               <GitHubIcon className="size-5" />
             </Button>
