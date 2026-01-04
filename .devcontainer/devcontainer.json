@@ -1,5 +1,5 @@
 {
-  "name": "Reactlith template Dev Container",
+  "name": "Dev Container",
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",

@@ -1,6 +1,6 @@
 import { protectedProcedure, router } from "#init.ts";
 import { db } from "@reactlith-template/db";
-import { eq } from "@reactlith-template/db/drizzle";
+import { eq } from "drizzle-orm";
 import { number as numberTable } from "@reactlith-template/db/schema";
 import { TRPCError } from "@trpc/server";
 import z from "zod";

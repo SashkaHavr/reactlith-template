@@ -6,9 +6,7 @@
     "#*": "./src/*"
   },
   "exports": {
-    "./server": "./src/server.ts",
-    "./db": "./src/db.ts",
-    "./auth": "./src/auth.ts"
+    "./*": "./src/*.ts"
   },
   "scripts": {},
   "dependencies": {

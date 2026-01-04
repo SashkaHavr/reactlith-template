@@ -7,15 +7,13 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts",
-    "./drizzle": "./src/drizzle.ts"
+    "./schema": "./src/schema/index.ts"
   },
   "scripts": {
     "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun run ./src/migrate.ts",
-    "db:studio": "drizzle-kit studio",
-    "db:up": "docker run -d --name pg-reactlith-template -e POSTGRES_PASSWORD=mysecretpassword -v pgdata-reactlith-template:/var/lib/postgresql/data -p 5432:5432 postgres"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
