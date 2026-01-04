@@ -1,8 +1,8 @@
 import type { Context } from "#context.ts";
 
 import { auth } from "@reactlith-template/auth";
-import { envServer } from "@reactlith-template/env/server";
 import { initTRPC, TRPCError } from "@trpc/server";
+import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import superjson from "superjson";
 import z, { ZodError } from "zod";
 
@@ -22,25 +22,21 @@ const t = initTRPC.context<Context>().create({
 
 export const router = t.router;
 
-export const publicProcedure =
-  envServer.NODE_ENV === "production"
-    ? t.procedure
-    : t.procedure.use(async ({ next }) => {
-        const result = await next();
-        if (
-          !result.ok &&
-          [
-            "INTERNAL_SERVER_ERROR",
-            "NOT_IMPLEMENTED",
-            "BAD_GATEWAY",
-            "SERVICE_UNAVAILABLE",
-            "SERVICE_UNAVAILABLE",
-          ].includes(result.error.code)
-        ) {
-          console.error(result.error);
-        }
-        return result;
-      });
+export const publicProcedure = t.procedure.use(async ({ next }) => {
+  const result = await next();
+  if (result.ok) {
+    return result;
+  }
+
+  const statusCode = getHTTPStatusCodeFromError(result.error);
+  if (statusCode >= 500) {
+    console.error(`${result.error.code}: ${result.error.message}`);
+  }
+  if (statusCode >= 400 && statusCode < 500) {
+    console.warn(`${result.error.code}: ${result.error.message}`);
+  }
+  return result;
+});
 
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const session = await auth.api.getSession({
