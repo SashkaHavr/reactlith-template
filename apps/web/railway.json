@@ -4,7 +4,7 @@
     "dockerfilePath": "/apps/web/Dockerfile"
     },
   "deploy": {
-    "preDeployCommand": "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js",
+    "preDeployCommand": "sh -c \"bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js\"",
     "healthcheckPath": "/trpc/health"
   }
 }
