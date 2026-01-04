@@ -3,9 +3,6 @@ name: Reusable workspace check
 on:
   workflow_call:
 
-env:
-  DO_NOT_TRACK: 1
-
 jobs:
   run-check:
     runs-on: ubuntu-latest
