@@ -14,7 +14,7 @@ export function NotFoundComponent() {
       <EmptyDescription>{t("routeComponents.notFoundDescription")}</EmptyDescription>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button render={<Link to="/">{t("routeComponents.returnToHomePage")}</Link>} />
+          <Button render={<Link to="/" />}>{t("routeComponents.returnToHomePage")}</Button>
         </div>
       </EmptyContent>
     </Empty>

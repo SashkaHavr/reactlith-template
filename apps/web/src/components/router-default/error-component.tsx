@@ -16,7 +16,7 @@ export function ErrorComponent({ error }: { error: Error }) {
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button render={<Link to="/">{t("routeComponents.returnToHomePage")}</Link>} />
+          <Button render={<Link to="/" />}>{t("routeComponents.returnToHomePage")}</Button>
         </div>
       </EmptyContent>
     </Empty>
