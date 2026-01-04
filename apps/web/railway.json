@@ -2,7 +2,7 @@
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
     "dockerfilePath": "/apps/web/Dockerfile"
-    },
+  },
   "deploy": {
     "preDeployCommand": "sh -c \"bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js\"",
     "healthcheckPath": "/trpc/health"
