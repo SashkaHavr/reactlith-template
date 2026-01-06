@@ -13,6 +13,7 @@
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/otel": "workspace:*",
     "@trpc/server": "catalog:trpc",
     "drizzle-orm": "catalog:drizzle",
     "superjson": "catalog:",
