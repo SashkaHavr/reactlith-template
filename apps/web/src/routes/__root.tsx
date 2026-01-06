@@ -1,12 +1,8 @@
 /// <reference types="vite/client" />
 
 import type { ReactNode } from "react";
-
-import { setupZodLocale } from "@reactlith-template/intl";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-
 import type { TRPCRouteContext } from "~/lib/trpc";
-
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getAuthContext } from "~/lib/auth";
@@ -28,7 +24,6 @@ const getGeneralConfigServerFn = createServerFn()
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
     const locale = getLocale();
-    await setupZodLocale(locale);
     await queryClient.ensureQueryData({
       queryKey: trpc.config.general.queryKey(),
       queryFn: () => getGeneralConfigServerFn(),
