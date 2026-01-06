@@ -1,4 +1,5 @@
-import type { auth } from "@reactlith-template/auth";
+import { auth } from "@reactlith-template/auth";
+import type { AuthType } from "@reactlith-template/auth";
 import type { QueryClient } from "@tanstack/react-query";
 
 import { permissions } from "@reactlith-template/auth/permissions";
@@ -6,12 +7,30 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 import { useRouter } from "@tanstack/react-router";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 
-import { getSessionServerFn } from "./auth-server";
+const authServerFnMiddleware = createMiddleware({
+  type: "function",
+}).server(({ next }) => {
+  return next({
+    context: {
+      auth: auth.api,
+      headers: getRequest().headers,
+    },
+  });
+});
+
+const getSessionServerFn = createServerFn()
+  .middleware([authServerFnMiddleware])
+  .handler(async ({ context: { auth, headers } }) => {
+    const session = await auth.getSession({ headers });
+    return session ? { session: session.session, user: session.user } : null;
+  });
 
 export const authClient = createAuthClient({
   basePath: "/auth",
-  plugins: [inferAdditionalFields<typeof auth>(), adminClient(permissions)],
+  plugins: [inferAdditionalFields<AuthType>(), adminClient(permissions)],
   fetchOptions: { throw: true },
 });
 

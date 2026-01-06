@@ -15,7 +15,6 @@
     "@opentelemetry/sdk-node": "^0.208.0",
     "@opentelemetry/sdk-trace-base": "^2.2.0",
     "@reactlith-template/env": "workspace:*"
-
   },
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",

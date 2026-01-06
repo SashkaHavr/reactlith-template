@@ -1,4 +1,4 @@
-import type { Locale } from "use-intl";
+import type { Formats, Locale } from "use-intl";
 
 import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
@@ -65,8 +65,22 @@ export const localeToString: Record<Locale, string> = {
   uk: "Українська",
 };
 
+export const intlFormats = {
+  dateTime: {
+    full: {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    },
+  },
+} satisfies Formats;
+
 declare module "use-intl" {
   interface AppConfig {
     Messages: BaseMessages;
+    Formats: typeof intlFormats;
   }
 }
