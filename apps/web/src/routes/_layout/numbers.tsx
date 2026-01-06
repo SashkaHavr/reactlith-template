@@ -6,8 +6,7 @@ import { useTranslations } from "use-intl";
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth } from "~/hooks/route-context";
 import { useSignout } from "~/lib/auth";
-import { useTRPC } from "~/lib/trpc";
-import { trpcServerFnMiddleware } from "~/lib/trpc-server";
+import { trpcServerFnMiddleware, useTRPC } from "~/lib/trpc";
 
 const getNumbersServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])

@@ -16,8 +16,7 @@ import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { useAuth } from "~/hooks/route-context";
 import { localeToString, useSetLocale } from "~/lib/intl";
-import { useTRPC } from "~/lib/trpc";
-import { trpcServerFnMiddleware } from "~/lib/trpc-server";
+import { trpcServerFnMiddleware, useTRPC } from "~/lib/trpc";
 
 const getHealthCheckServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])

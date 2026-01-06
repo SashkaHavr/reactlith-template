@@ -3,7 +3,8 @@ import { BatchSpanProcessor, ConsoleSpanExporter } from "@opentelemetry/sdk-trac
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { envOtel } from "@reactlith-template/env/otel";
 import { envHost } from "@reactlith-template/env/host";
-import { trace, type Span, SpanStatusCode } from "@opentelemetry/api";
+import { trace, SpanStatusCode } from "@opentelemetry/api";
+import type { Span } from "@opentelemetry/api";
 
 const traceExporter = new ConsoleSpanExporter();
 

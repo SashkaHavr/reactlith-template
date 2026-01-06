@@ -28,6 +28,8 @@
 
     "typescript/no-unnecessary-boolean-literal-compare": "error",
     "typescript/consistent-type-imports": "error",
+    "typescript/no-import-type-side-effects": "error",
+    "import/consistent-type-specifier-style": "error",
     "typescript/no-misused-promises": "error",
 
     "unicorn/no-array-reverse": "error",

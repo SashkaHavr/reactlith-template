@@ -1,6 +1,8 @@
+import { createTrpcCaller } from "@reactlith-template/trpc";
 import type { TRPCRouter } from "@reactlith-template/trpc";
-
 import { QueryClient } from "@tanstack/react-query";
+import { createMiddleware } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
@@ -41,3 +43,13 @@ export function createTRPCRouteContext() {
 
 export type TRPCRouteContext = ReturnType<typeof createTRPCRouteContext>;
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRouter>();
+
+export const trpcServerFnMiddleware = createMiddleware({
+  type: "function",
+}).server(({ next }) => {
+  return next({
+    context: {
+      trpc: createTrpcCaller({ request: getRequest() }),
+    },
+  });
+});
