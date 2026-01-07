@@ -4,5 +4,8 @@ import { v7 as uuidv7 } from "uuid";
 export const baseTable = {
   id: uuid().primaryKey().$defaultFn(uuidv7),
   createdAt: timestamp().notNull().defaultNow(),
-  updatedAt: timestamp().notNull().defaultNow(),
+  updatedAt: timestamp()
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 };
