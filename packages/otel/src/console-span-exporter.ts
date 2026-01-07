@@ -29,6 +29,13 @@ export class ConsoleSpanExporter implements SpanExporter {
       status: span.status,
       events: span.events,
       links: span.links,
+      test: {
+        directKey: "value",
+        nested: {
+          nestedKey: "nestedValue",
+        },
+        "logically.nested": "logicallyNestedValue",
+      },
     };
   }
   private _sendSpans(spans: ReadableSpan[], done?: (result: ExportResult) => void): void {
