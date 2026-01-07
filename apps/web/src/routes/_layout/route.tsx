@@ -1,4 +1,3 @@
-import { isLocale } from "@reactlith-template/intl";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ClientOnly,
@@ -11,6 +10,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useFormatter, useNow, useTranslations } from "use-intl";
 
+import { isLocale } from "@reactlith-template/intl";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";

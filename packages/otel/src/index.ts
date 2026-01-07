@@ -1,14 +1,16 @@
+import type { Span } from "@opentelemetry/api";
+
+import { trace, SpanStatusCode, SpanKind } from "@opentelemetry/api";
+import { resourceFromAttributes } from "@opentelemetry/resources";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import {
   BatchSpanProcessor,
   ConsoleSpanExporter as DefaultConsoleSpanExporter,
 } from "@opentelemetry/sdk-trace-base";
-import { resourceFromAttributes } from "@opentelemetry/resources";
-import { envOtel } from "@reactlith-template/env/otel";
-import { trace, SpanStatusCode, SpanKind } from "@opentelemetry/api";
-import type { Span } from "@opentelemetry/api";
-import { envNode } from "@reactlith-template/env/node";
+
 import { StructuredLogSpanExporter } from "#structured-log-span-exporter.ts";
+import { envNode } from "@reactlith-template/env/node";
+import { envOtel } from "@reactlith-template/env/otel";
 
 const traceExporter =
   envNode.NODE_ENV === "production"

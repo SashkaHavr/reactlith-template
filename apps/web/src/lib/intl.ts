@@ -1,10 +1,10 @@
 import type { Formats, Locale } from "use-intl";
 
-import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie, getRequestHeader } from "@tanstack/react-start/server";
 
+import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
 import { getClientCookie, setClientCookie } from "~/utils/cookie";
 
 import type baseMessages from "../../messages/en.json";

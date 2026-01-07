@@ -1,7 +1,8 @@
 // oxlint-disable
 
-import { type ExportResult, ExportResultCode, hrTimeToMicroseconds } from "@opentelemetry/core";
 import type { ReadableSpan, SpanExporter } from "@opentelemetry/sdk-trace-base";
+
+import { type ExportResult, ExportResultCode, hrTimeToMicroseconds } from "@opentelemetry/core";
 
 function unflatten(obj: Record<string, any>) {
   const result: Record<string, any> = {};

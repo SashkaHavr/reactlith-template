@@ -1,14 +1,16 @@
-import { auth } from "@reactlith-template/auth";
-import type { AuthType } from "@reactlith-template/auth";
 import type { QueryClient } from "@tanstack/react-query";
 
-import { permissions } from "@reactlith-template/auth/permissions";
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
-import { createAuthClient } from "better-auth/react";
 import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/react";
+
+import type { AuthType } from "@reactlith-template/auth";
+
+import { auth } from "@reactlith-template/auth";
+import { permissions } from "@reactlith-template/auth/permissions";
 
 const authServerFnMiddleware = createMiddleware({
   type: "function",

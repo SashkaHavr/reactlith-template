@@ -1,9 +1,10 @@
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
+import z from "zod";
+
 import { protectedProcedure, router } from "#init.ts";
 import { db } from "@reactlith-template/db";
-import { eq } from "drizzle-orm";
 import { number as numberTable } from "@reactlith-template/db/schema";
-import { TRPCError } from "@trpc/server";
-import z from "zod";
 
 export const numbersRouter = router({
   getAll: protectedProcedure

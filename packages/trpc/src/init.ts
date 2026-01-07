@@ -1,11 +1,12 @@
-import type { Context } from "#context.ts";
-
-import { auth } from "@reactlith-template/auth";
-import { getActiveSpan, SpanStatusCode, startActiveSpan } from "@reactlith-template/otel";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { getHTTPStatusCodeFromError } from "@trpc/server/http";
 import superjson from "superjson";
 import z, { ZodError } from "zod";
+
+import type { Context } from "#context.ts";
+
+import { auth } from "@reactlith-template/auth";
+import { getActiveSpan, SpanStatusCode, startActiveSpan } from "@reactlith-template/otel";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,

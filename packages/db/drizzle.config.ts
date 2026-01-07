@@ -1,5 +1,6 @@
-import { envDB } from "@reactlith-template/env/db";
 import { defineConfig } from "drizzle-kit";
+
+import { envDB } from "@reactlith-template/env/db";
 
 export default defineConfig({
   out: "./drizzle",

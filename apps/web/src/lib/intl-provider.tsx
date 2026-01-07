@@ -1,5 +1,6 @@
 import { useRouteContext } from "@tanstack/react-router";
 import { IntlProvider as BaseIntlProvider } from "use-intl";
+
 import { intlFormats } from "./intl";
 
 export function IntlProvider({ children }: { children: React.ReactNode }) {

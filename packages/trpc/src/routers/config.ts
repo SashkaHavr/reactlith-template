@@ -1,6 +1,7 @@
+import z from "zod";
+
 import { publicProcedure, router } from "#init.ts";
 import { envAuth } from "@reactlith-template/env/auth";
-import z from "zod";
 
 export const configRouter = router({
   general: publicProcedure

@@ -1,19 +1,22 @@
 /// <reference types="vite/client" />
 
 import type { ReactNode } from "react";
+
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { trpcServerFnMiddleware } from "~/lib/trpc";
+import { createServerFn } from "@tanstack/react-start";
+
 import type { TRPCRouteContext } from "~/lib/trpc";
+
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getAuthContext } from "~/lib/auth";
-import { IntlProvider } from "~/lib/intl-provider";
 import { getLocale, getMessages } from "~/lib/intl";
+import { IntlProvider } from "~/lib/intl-provider";
+import { trpcServerFnMiddleware } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
-import { createServerFn } from "@tanstack/react-start";
 
 const getGeneralConfigServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])
