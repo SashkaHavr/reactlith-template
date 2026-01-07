@@ -3,8 +3,27 @@
 import { type ExportResult, ExportResultCode, hrTimeToMicroseconds } from "@opentelemetry/core";
 import type { ReadableSpan, SpanExporter } from "@opentelemetry/sdk-trace-base";
 
-// Single line console span exporter for OpenTelemetry
-export class ConsoleSpanExporter implements SpanExporter {
+function unflatten(obj: Record<string, any>) {
+  const result: Record<string, any> = {};
+
+  for (const key in obj) {
+    const parts = key.split(".");
+    let current = result;
+
+    parts.forEach((part, index) => {
+      if (index === parts.length - 1) {
+        current[part] = obj[key];
+      } else {
+        current[part] = current[part] || {};
+        current = current[part];
+      }
+    });
+  }
+
+  return result;
+}
+
+export class StructuredLogSpanExporter implements SpanExporter {
   export(spans: ReadableSpan[], resultCallback: (result: ExportResult) => void): void {
     return this._sendSpans(spans, resultCallback);
   }
@@ -17,7 +36,7 @@ export class ConsoleSpanExporter implements SpanExporter {
   }
   private _exportInfo(span: ReadableSpan) {
     return {
-      resource: span.resource.attributes,
+      resource: unflatten(span.resource.attributes),
       traceId: span.spanContext().traceId,
       parentSpanId: span.parentSpanContext?.spanId,
       name: span.name,
@@ -25,17 +44,10 @@ export class ConsoleSpanExporter implements SpanExporter {
       kind: span.kind,
       timestamp: hrTimeToMicroseconds(span.startTime),
       duration: hrTimeToMicroseconds(span.duration),
-      attributes: span.attributes,
+      attributes: unflatten(span.attributes),
       status: span.status,
       events: span.events,
       links: span.links,
-      test: {
-        directKey: "value",
-        nested: {
-          nestedKey: "nestedValue",
-        },
-        "logically.nested": "logicallyNestedValue",
-      },
     };
   }
   private _sendSpans(spans: ReadableSpan[], done?: (result: ExportResult) => void): void {

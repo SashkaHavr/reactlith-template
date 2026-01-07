@@ -5,35 +5,23 @@ import {
 } from "@opentelemetry/sdk-trace-base";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { envOtel } from "@reactlith-template/env/otel";
-import { envHost } from "@reactlith-template/env/host";
 import { trace, SpanStatusCode, SpanKind } from "@opentelemetry/api";
 import type { Span } from "@opentelemetry/api";
-import { ConsoleSpanExporter } from "#console-span-exporter.ts";
 import { envNode } from "@reactlith-template/env/node";
+import { StructuredLogSpanExporter } from "#structured-log-span-exporter.ts";
 
 const traceExporter =
-  envNode.NODE_ENV === "production" ? new ConsoleSpanExporter() : new DefaultConsoleSpanExporter();
+  envNode.NODE_ENV === "production"
+    ? new StructuredLogSpanExporter()
+    : new DefaultConsoleSpanExporter();
 
 const resource = resourceFromAttributes({
-  "service.name": envHost.SERVICE_NAME,
-  "service.namepace":
-    envHost.PROJECT_NAME && envHost.ENVIRONMENT_NAME
-      ? `${envHost.PROJECT_NAME}.${envHost.ENVIRONMENT_NAME}`
-      : undefined,
-  "service.instance.id": envHost.REPLICA_ID,
-
-  "server.address": envHost.PUBLIC_DOMAIN,
-
-  "deployment.environment.name": envHost.ENVIRONMENT_NAME,
-  "deployment.id": envHost.DEPLOYMENT_ID,
-
-  "cloud.region": envHost.REPLICA_REGION,
-
-  // Non-standard
-  "service.id": envHost.SERVICE_ID,
-  "service.project.id": envHost.PROJECT_ID,
-  "service.project.name": envHost.PROJECT_NAME,
-  "deployment.environment.id": envHost.ENVIRONMENT_ID,
+  "service.name": envOtel.SERVICE_NAME,
+  "service.namepace": envOtel.SERVICE_NAMESPACE,
+  "service.instance.id": envOtel.SERVICE_INSTANCE_ID,
+  "server.address": envOtel.SERVER_ADDRESS,
+  "deployment.environment.name": envOtel.DEPLOYMENT_ENVIRONMENT_NAME,
+  "cloud.region": envOtel.CLOUD_REGION,
 });
 
 const sdk = new NodeSDK({
