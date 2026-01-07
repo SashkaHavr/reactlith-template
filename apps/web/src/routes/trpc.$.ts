@@ -5,10 +5,10 @@ export const Route = createFileRoute("/trpc/$")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        return trpcHandler({ request });
+        return await trpcHandler({ request });
       },
       POST: async ({ request }) => {
-        return trpcHandler({ request });
+        return await trpcHandler({ request });
       },
     },
   },

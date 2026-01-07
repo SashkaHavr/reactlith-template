@@ -38,8 +38,8 @@ if (envOtel.OTEL_ENABLED) {
 }
 
 const tracer = trace.getTracer("reactlith-template.trpc");
-export function startActiveSpan<T>(name: string, fn: (span: Span) => Promise<T>): Promise<T> {
-  return tracer.startActiveSpan(name, async (span) => {
+export async function startActiveSpan<T>(name: string, fn: (span: Span) => Promise<T>): Promise<T> {
+  return await tracer.startActiveSpan(name, async (span) => {
     try {
       return await fn(span);
     } finally {

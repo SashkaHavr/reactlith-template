@@ -43,8 +43,8 @@ function RouteComponent() {
   const resetAuth = useResetAuth();
 
   const githubSignin = useMutation({
-    mutationFn: () =>
-      authClient.signIn.social({
+    mutationFn: async () =>
+      await authClient.signIn.social({
         provider: "github",
         callbackURL: window.origin,
       }),
@@ -71,7 +71,7 @@ function RouteComponent() {
               type="button"
               onClick={() =>
                 loginAsTestUser.mutate({
-                  user: parseInt(selectedTestUser),
+                  user: parseInt(selectedTestUser, 10),
                 })
               }
               disabled={loginAsTestUser.isPending}
@@ -92,7 +92,7 @@ function RouteComponent() {
                 <span>{`${t("test-user")} ${selectedTestUser}`}</span>
               </SelectTrigger>
               <SelectContent>
-                {Array.from(Array(100).keys()).map((user) => (
+                {Array.from(Array.of({ length: 100 }).keys()).map((user) => (
                   <SelectItem key={user} value={user.toString()}>
                     {`${t("test-user")} ${user}`}
                   </SelectItem>

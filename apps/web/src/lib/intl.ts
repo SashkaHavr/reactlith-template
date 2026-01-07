@@ -20,7 +20,7 @@ export const getLocale = createIsomorphicFn()
       getRequestHeader("accept-language")
         ?.split(",")
         .map((lang) => lang.split(";")[0]) ?? [];
-    return locales.find(isLocale) ?? defaultLocale;
+    return locales.find((value) => isLocale(value)) ?? defaultLocale;
   })
   .client(() => {
     const localeFromCookie = getClientCookie(localeCookieName);
@@ -29,7 +29,7 @@ export const getLocale = createIsomorphicFn()
     }
 
     const locales = navigator.languages;
-    return locales.find(isLocale) ?? defaultLocale;
+    return locales.find((value) => isLocale(value)) ?? defaultLocale;
   });
 
 export function useSetLocale() {

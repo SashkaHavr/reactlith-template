@@ -12,8 +12,8 @@ import { getRequest } from "@tanstack/react-start/server";
 
 const authServerFnMiddleware = createMiddleware({
   type: "function",
-}).server(({ next }) => {
-  return next({
+}).server(async ({ next }) => {
+  return await next({
     context: {
       auth: auth.api,
       headers: getRequest().headers,
@@ -44,16 +44,16 @@ export const authGetSessionOptions = queryOptions({
 export async function getAuthContext(queryClient: QueryClient) {
   try {
     const session = await queryClient.ensureQueryData(authGetSessionOptions);
-    return session !== null
+    return session === null
       ? {
+          available: true as const,
+          loggedIn: false as const,
+        }
+      : {
           available: true as const,
           loggedIn: true as const,
           session: session.session,
           user: session.user,
-        }
-      : {
-          available: true as const,
-          loggedIn: false as const,
         };
   } catch {
     return {
@@ -77,7 +77,7 @@ export function useResetAuth() {
 export function useSignout() {
   const resetAuth = useResetAuth();
   return useMutation({
-    mutationFn: () => authClient.signOut(),
+    mutationFn: async () => await authClient.signOut(),
     onSuccess: async () => {
       await resetAuth();
     },

@@ -20,15 +20,15 @@ import { trpcServerFnMiddleware, useTRPC } from "~/lib/trpc";
 
 const getHealthCheckServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])
-  .handler(({ context: { trpc } }) => {
-    return trpc.health();
+  .handler(async ({ context: { trpc } }) => {
+    return await trpc.health();
   });
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { trpc, queryClient } }) => {
     await queryClient.ensureQueryData({
       queryKey: trpc.health.queryKey(),
-      queryFn: () => getHealthCheckServerFn(),
+      queryFn: async () => await getHealthCheckServerFn(),
     });
   },
   component: RouteComponent,
@@ -64,27 +64,25 @@ function LocaleSwitcher() {
   const setLocale = useSetLocale();
 
   return (
-    <>
-      <Select
-        value={locale}
-        onValueChange={(value) => {
-          if (isLocale(value)) {
-            setLocale(value);
-          }
-        }}
-      >
-        <SelectTrigger>
-          <span>{localeToString[locale]}</span>
-        </SelectTrigger>
-        <SelectContent>
-          {Object.entries(localeToString).map(([key, label]) => (
-            <SelectItem key={key} value={key}>
-              {label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </>
+    <Select
+      value={locale}
+      onValueChange={(value) => {
+        if (isLocale(value)) {
+          setLocale(value);
+        }
+      }}
+    >
+      <SelectTrigger>
+        <span>{localeToString[locale]}</span>
+      </SelectTrigger>
+      <SelectContent>
+        {Object.entries(localeToString).map(([key, label]) => (
+          <SelectItem key={key} value={key}>
+            {label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 

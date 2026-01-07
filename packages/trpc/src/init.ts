@@ -24,7 +24,7 @@ const t = initTRPC.context<Context>().create({
 export const router = t.router;
 
 export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx: { request } }) => {
-  return startActiveSpan(path, async (span) => {
+  return await startActiveSpan(path, async (span) => {
     const url = new URL(request.url);
     span.setAttributes({
       "http.request.method": request.method,
@@ -80,7 +80,7 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
     "user.role": session.user.role ?? undefined,
   });
 
-  return next({
+  return await next({
     ctx: {
       ...ctx,
       session: session,
@@ -106,7 +106,7 @@ export function adminProcedure(
       .flatMap(([key, value]) =>
         value.map((p): `${keyof typeof permissions}.${typeof p}` => `${key}.${p}`),
       )
-      .flatMap((value) => value);
+      .flat();
     if (requestPermissionsList.length === 0) {
       throw new TRPCError({
         message: "No permissions specified for adminProcedure",
@@ -128,7 +128,7 @@ export function adminProcedure(
       "trpc.permissions": requestPermissionsList,
     });
 
-    return next();
+    return await next();
   });
 }
 

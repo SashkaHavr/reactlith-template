@@ -17,8 +17,8 @@ import { createServerFn } from "@tanstack/react-start";
 
 const getGeneralConfigServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])
-  .handler(({ context: { trpc } }) => {
-    return trpc.config.general();
+  .handler(async ({ context: { trpc } }) => {
+    return await trpc.config.general();
   });
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
@@ -26,7 +26,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     const locale = getLocale();
     await queryClient.ensureQueryData({
       queryKey: trpc.config.general.queryKey(),
-      queryFn: () => getGeneralConfigServerFn(),
+      queryFn: async () => await getGeneralConfigServerFn(),
     });
 
     return {

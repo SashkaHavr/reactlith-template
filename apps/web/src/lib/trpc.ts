@@ -46,8 +46,8 @@ export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRo
 
 export const trpcServerFnMiddleware = createMiddleware({
   type: "function",
-}).server(({ next }) => {
-  return next({
+}).server(async ({ next }) => {
+  return await next({
     context: {
       trpc: createTrpcCaller({ request: getRequest() }),
     },

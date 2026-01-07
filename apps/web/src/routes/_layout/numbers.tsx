@@ -10,8 +10,8 @@ import { trpcServerFnMiddleware, useTRPC } from "~/lib/trpc";
 
 const getNumbersServerFn = createServerFn()
   .middleware([trpcServerFnMiddleware])
-  .handler(({ context: { trpc } }) => {
-    return trpc.numbers.getAll();
+  .handler(async ({ context: { trpc } }) => {
+    return await trpc.numbers.getAll();
   });
 
 export const Route = createFileRoute("/_layout/numbers")({
@@ -45,12 +45,12 @@ function RouteComponent() {
   };
   const addNumber = useMutation(
     trpc.numbers.addNew.mutationOptions({
-      onSuccess: () => invalidateNumbers(),
+      onSuccess: async () => await invalidateNumbers(),
     }),
   );
   const deleteNumbers = useMutation(
     trpc.numbers.deleteAll.mutationOptions({
-      onSuccess: () => invalidateNumbers(),
+      onSuccess: async () => await invalidateNumbers(),
     }),
   );
   const signout = useSignout();

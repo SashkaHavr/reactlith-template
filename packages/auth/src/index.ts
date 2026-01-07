@@ -10,7 +10,8 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, // 5 minutes
+      // 5 minutes
+      maxAge: 5 * 60,
     },
   },
   database: drizzleAdapter(db, {

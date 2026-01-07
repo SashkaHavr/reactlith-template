@@ -12,8 +12,8 @@ const appRouter = router({
   config: configRouter,
 });
 
-export function trpcHandler({ request }: { request: Request }) {
-  return fetchRequestHandler({
+export async function trpcHandler({ request }: { request: Request }) {
+  return await fetchRequestHandler({
     req: request,
     router: appRouter,
     endpoint: "/trpc",

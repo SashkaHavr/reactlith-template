@@ -16,18 +16,19 @@ async function main() {
   }
 
   await Promise.all(
-    Array.from(Array(100).keys()).map((user) =>
-      auth.api
-        .createUser({
-          body: {
-            email: `user${user}@example.com`,
-            password: `password${user}`,
-            name: `Test User ${user}`,
-          },
-        })
-        .catch(() => {
-          /* user already exists */
-        }),
+    Array.from(Array.from({ length: 100 }).keys()).map(
+      async (user) =>
+        await auth.api
+          .createUser({
+            body: {
+              email: `user${user}@example.com`,
+              password: `password${user}`,
+              name: `Test User ${user}`,
+            },
+          })
+          .catch(() => {
+            /* user already exists */
+          }),
     ),
   );
 }
