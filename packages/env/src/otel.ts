@@ -1,12 +1,10 @@
 import { createEnv } from "@t3-oss/env-core";
 import z from "zod";
 
-export const otelConfig = {
-  OTEL_ENABLED: z.stringbool().default(false),
-};
-
 export const envOtel = createEnv({
-  server: { ...otelConfig },
+  server: {
+    OTEL_ENABLED: z.stringbool().default(false),
+  },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
 });

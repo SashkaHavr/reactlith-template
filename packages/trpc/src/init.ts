@@ -28,7 +28,6 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx: {
     const url = new URL(request.url);
     span.setAttributes({
       "http.request.method": request.method,
-      "url.full": url.href,
       "url.path": url.pathname,
       "url.query": decodeURIComponent(url.search),
       "trpc.type": type,

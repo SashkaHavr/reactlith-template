@@ -1,5 +1,5 @@
 import { publicProcedure, router } from "#init.ts";
-import { envServer } from "@reactlith-template/env/server";
+import { envAuth } from "@reactlith-template/env/auth";
 import z from "zod";
 
 export const configRouter = router({
@@ -12,8 +12,8 @@ export const configRouter = router({
     .query(() => {
       return {
         auth: {
-          testAuth: envServer.TEST_AUTH,
-          githubOAuth: !!envServer.GITHUB_CLIENT_ID && !!envServer.GITHUB_CLIENT_SECRET,
+          testAuth: envAuth.TEST_AUTH,
+          githubOAuth: !!envAuth.GITHUB_CLIENT_ID && !!envAuth.GITHUB_CLIENT_SECRET,
         },
       };
     }),

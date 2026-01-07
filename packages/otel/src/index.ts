@@ -1,16 +1,25 @@
 import { NodeSDK } from "@opentelemetry/sdk-node";
-import { BatchSpanProcessor, ConsoleSpanExporter } from "@opentelemetry/sdk-trace-base";
+import {
+  BatchSpanProcessor,
+  ConsoleSpanExporter as DefaultConsoleSpanExporter,
+} from "@opentelemetry/sdk-trace-base";
 import { resourceFromAttributes } from "@opentelemetry/resources";
 import { envOtel } from "@reactlith-template/env/otel";
 import { envHost } from "@reactlith-template/env/host";
-import { trace, SpanStatusCode } from "@opentelemetry/api";
+import { trace, SpanStatusCode, SpanKind } from "@opentelemetry/api";
 import type { Span } from "@opentelemetry/api";
+import { ConsoleSpanExporter } from "#console-span-exporter.ts";
+import { envNode } from "@reactlith-template/env/node";
 
-const traceExporter = new ConsoleSpanExporter();
+const traceExporter =
+  envNode.NODE_ENV === "production" ? new ConsoleSpanExporter() : new DefaultConsoleSpanExporter();
 
 const resource = resourceFromAttributes({
   "service.name": envHost.SERVICE_NAME,
-  "service.namepace": `${envHost.PROJECT_NAME}.${envHost.ENVIRONMENT_NAME}`,
+  "service.namepace":
+    envHost.PROJECT_NAME && envHost.ENVIRONMENT_NAME
+      ? `${envHost.PROJECT_NAME}.${envHost.ENVIRONMENT_NAME}`
+      : undefined,
   "service.instance.id": envHost.REPLICA_ID,
 
   "server.address": envHost.PUBLIC_DOMAIN,
@@ -39,7 +48,7 @@ if (envOtel.OTEL_ENABLED) {
 
 const tracer = trace.getTracer("reactlith-template.trpc");
 export async function startActiveSpan<T>(name: string, fn: (span: Span) => Promise<T>): Promise<T> {
-  return await tracer.startActiveSpan(name, async (span) => {
+  return await tracer.startActiveSpan(name, { kind: SpanKind.SERVER }, async (span) => {
     try {
       return await fn(span);
     } finally {
