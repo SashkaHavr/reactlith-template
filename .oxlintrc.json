@@ -31,6 +31,21 @@
     "only-throw-error": "off",
     "no-var": "error",
     "no-process-env": "error",
+    "max-lines": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@base-ui/react/*"]
+          }
+        ]
+      }
+    ],
+    "no-warning-comments": "off",
+    "no-inline-comments": "off",
+
+    "oxc/no-map-spread": "off",
 
     "typescript/consistent-type-imports": "error",
     "typescript/no-import-type-side-effects": "error",
@@ -49,12 +64,7 @@
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",
 
-    "react/only-export-components": "off",
-    "react/jsx-boolean-value": "off",
     "react/react-in-jsx-scope": "off",
-    "react/jsx-filename-extension": "off",
-    "react/no-unknown-property": "off",
-    "react/jsx-props-no-spreading": "off",
 
     "promise/always-return": ["error", { "ignoreLastCallback": true }]
   },
