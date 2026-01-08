@@ -18,12 +18,12 @@ const traceExporter =
     : new DefaultConsoleSpanExporter();
 
 const resource = resourceFromAttributes({
-  "service.name": envOtel.SERVICE_NAME,
-  "service.namepace": envOtel.SERVICE_NAMESPACE,
-  "service.instance.id": envOtel.SERVICE_INSTANCE_ID,
-  "server.address": envOtel.SERVER_ADDRESS,
-  "deployment.environment.name": envOtel.DEPLOYMENT_ENVIRONMENT_NAME,
-  "cloud.region": envOtel.CLOUD_REGION,
+  "service.name": envOtel.OTEL_SERVICE_NAME,
+  "service.namespace": envOtel.OTEL_SERVICE_NAMESPACE,
+  "service.instance.id": envOtel.OTEL_SERVICE_INSTANCE_ID,
+  "server.address": envOtel.OTEL_SERVER_ADDRESS,
+  "deployment.environment.name": envOtel.OTEL_DEPLOYMENT_ENVIRONMENT_NAME,
+  "cloud.region": envOtel.OTEL_CLOUD_REGION,
 });
 
 const sdk = new NodeSDK({
