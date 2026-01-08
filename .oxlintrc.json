@@ -31,6 +31,19 @@
     "only-throw-error": "off",
     "no-var": "error",
     "no-process-env": "error",
+    "max-lines": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@base-ui/react/*"]
+          }
+        ]
+      }
+    ],
+
+    "oxc/no-map-spread": "off",
 
     "typescript/consistent-type-imports": "error",
     "typescript/no-import-type-side-effects": "error",
