@@ -16,8 +16,8 @@ async function main() {
   }
 
   await Promise.all(
-    Array.from(Array.from({ length: 100 }).keys()).map(
-      async (user) =>
+    Array.from({ length: 100 }).map(
+      async (_, user) =>
         await auth.api
           .createUser({
             body: {
