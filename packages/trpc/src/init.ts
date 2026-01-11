@@ -6,6 +6,7 @@ import z, { ZodError } from "zod";
 import type { Context } from "#context.ts";
 
 import { auth } from "@reactlith-template/auth";
+import { envNode } from "@reactlith-template/env/node";
 import { getActiveSpan, SpanStatusCode, startActiveSpan } from "@reactlith-template/otel";
 
 const t = initTRPC.context<Context>().create({
@@ -54,6 +55,10 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx: {
         span.recordException(z.prettifyError(result.error.cause));
       } else if (result.error.cause !== undefined) {
         span.recordException(result.error.cause);
+      }
+
+      if (envNode.NODE_ENV === "development" && getHTTPStatusCodeFromError(result.error) >= 500) {
+        console.error(result.error);
       }
     }
 
