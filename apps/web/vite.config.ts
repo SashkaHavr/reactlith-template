@@ -18,7 +18,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     tanstackStart(),
-    nitro({ preset: "bun", output: { dir: "dist" } }),
+    nitro({ preset: "bun", output: { dir: "dist" }, compressPublicAssets: { brotli: true } }),
     react({
       babel: {
         plugins: ["babel-plugin-react-compiler"],
