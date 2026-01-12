@@ -1,18 +1,15 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { useTranslations } from "use-intl";
 
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth } from "~/hooks/route-context";
 import { useSignout } from "~/lib/auth";
-import { trpcServerFnMiddleware, useTRPC } from "~/lib/trpc";
+import { trpcServerFn, useTRPC } from "~/lib/trpc";
 
-const getNumbersServerFn = createServerFn()
-  .middleware([trpcServerFnMiddleware])
-  .handler(async ({ context: { trpc } }) => {
-    return await trpc.numbers.getAll();
-  });
+const getNumbersServerFn = trpcServerFn.handler(
+  async ({ context: { trpc } }) => await trpc.numbers.getAll(),
+);
 
 export const Route = createFileRoute("/_layout/numbers")({
   beforeLoad: ({ context: { auth } }) => {

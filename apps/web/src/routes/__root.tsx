@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 
 import type { TRPCRouteContext } from "~/lib/trpc";
 
@@ -12,17 +11,15 @@ import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getAuthContext } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
-import { trpcServerFnMiddleware } from "~/lib/trpc";
+import { trpcServerFn } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
-const getGeneralConfigServerFn = createServerFn()
-  .middleware([trpcServerFnMiddleware])
-  .handler(async ({ context: { trpc } }) => {
-    return await trpc.config.general();
-  });
+const getGeneralConfigServerFn = trpcServerFn.handler(
+  async ({ context: { trpc } }) => await trpc.config.general(),
+);
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {

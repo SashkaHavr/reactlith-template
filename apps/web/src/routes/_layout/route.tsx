@@ -6,7 +6,6 @@ import {
   useHydrated,
   useRouteContext,
 } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useFormatter, useNow, useTranslations } from "use-intl";
 
@@ -16,13 +15,11 @@ import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { useAuth } from "~/hooks/route-context";
 import { localeToString, useSetLocale } from "~/lib/intl";
-import { trpcServerFnMiddleware, useTRPC } from "~/lib/trpc";
+import { trpcServerFn, useTRPC } from "~/lib/trpc";
 
-const getHealthCheckServerFn = createServerFn()
-  .middleware([trpcServerFnMiddleware])
-  .handler(async ({ context: { trpc } }) => {
-    return await trpc.health();
-  });
+const getHealthCheckServerFn = trpcServerFn.handler(
+  async ({ context: { trpc } }) => await trpc.health(),
+);
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { trpc, queryClient } }) => {

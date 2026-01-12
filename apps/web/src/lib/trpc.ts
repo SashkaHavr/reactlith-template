@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { createMiddleware } from "@tanstack/react-start";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
@@ -46,7 +46,7 @@ export function createTRPCRouteContext() {
 export type TRPCRouteContext = ReturnType<typeof createTRPCRouteContext>;
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRouter>();
 
-export const trpcServerFnMiddleware = createMiddleware({
+const trpcServerFnMiddleware = createMiddleware({
   type: "function",
 }).server(async ({ next }) => {
   return await next({
@@ -55,3 +55,5 @@ export const trpcServerFnMiddleware = createMiddleware({
     },
   });
 });
+
+export const trpcServerFn = createServerFn().middleware([trpcServerFnMiddleware]);
