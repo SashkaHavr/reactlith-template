@@ -13,7 +13,6 @@ import { isLocale } from "@reactlith-template/intl";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { useAuth } from "~/hooks/route-context";
 import { localeToString, useSetLocale } from "~/lib/intl";
 import { trpcServerFn, useTRPC } from "~/lib/trpc";
 
@@ -88,7 +87,6 @@ function RouteComponent() {
   const t = useTranslations("index");
   const format = useFormatter();
 
-  const auth = useAuth();
   const trpcHealth = useSuspenseQuery(trpc.health.queryOptions());
 
   const now = useNow({ updateInterval: 1000 });
@@ -106,12 +104,6 @@ function RouteComponent() {
             {t("trpc-health-response")}:{" "}
             <span className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
               {trpcHealth.data}
-            </span>
-          </p>
-          <p>
-            {t("auth-status")}:{" "}
-            <span className={auth.available ? "text-green-500" : "text-red-500"}>
-              {auth.available ? t("available") : t("not-available")}
             </span>
           </p>
           <p>

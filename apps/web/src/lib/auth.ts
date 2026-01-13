@@ -1,68 +1,31 @@
-import type { QueryClient } from "@tanstack/react-query";
-
-import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { createMiddleware, createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
 
-import { auth } from "@reactlith-template/auth";
-import { permissions } from "@reactlith-template/auth/permissions";
+import { adminPluginOptions } from "@reactlith-template/auth/permissions";
 
-const authServerFnMiddleware = createMiddleware({
-  type: "function",
-}).server(async ({ next }) => {
-  return await next({
-    context: {
-      auth: auth.api,
-      headers: getRequest().headers,
-    },
-  });
-});
-
-const getSessionServerFn = createServerFn()
-  .middleware([authServerFnMiddleware])
-  .handler(async ({ context: { auth, headers } }) => {
-    const session = await auth.getSession({ headers });
-    return session ? { session: session.session, user: session.user } : null;
-  });
+import { useTRPC } from "./trpc";
 
 export const authClient = createAuthClient({
   basePath: "/auth",
-  plugins: [inferAdditionalFields<AuthType>(), adminClient(permissions)],
+  plugins: [inferAdditionalFields<AuthType>(), adminClient(adminPluginOptions)],
   fetchOptions: { throw: true },
 });
 
-const authBaseKey = "auth";
+export function useAuth() {
+  const trpc = useTRPC();
+  return useSuspenseQuery(trpc.auth.getSession.queryOptions()).data;
+}
 
-export const authGetSessionOptions = queryOptions({
-  queryKey: [authBaseKey, "getSession"],
-  queryFn: async () => await getSessionServerFn(),
-});
-
-export async function getAuthContext(queryClient: QueryClient) {
-  try {
-    const session = await queryClient.ensureQueryData(authGetSessionOptions);
-    return session === null
-      ? {
-          available: true as const,
-          loggedIn: false as const,
-        }
-      : {
-          available: true as const,
-          loggedIn: true as const,
-          session: session.session,
-          user: session.user,
-        };
-  } catch {
-    return {
-      available: false as const,
-      loggedIn: false as const,
-    };
+export function useLoggedInAuth() {
+  const auth = useAuth();
+  if (!auth.loggedIn) {
+    throw new Error("Auth is not defined");
   }
+  return auth;
 }
 
 export function useResetAuth() {

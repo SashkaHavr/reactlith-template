@@ -1,3 +1,5 @@
+import type { admin as adminPlugin } from "better-auth/plugins";
+
 import { createAccessControl } from "better-auth/plugins/access";
 import { adminAc, defaultStatements } from "better-auth/plugins/admin/access";
 
@@ -13,7 +15,7 @@ const admin = ac.newRole({
   ...adminAc.statements,
 });
 
-export const permissions = {
+export const adminPluginOptions = {
   ac,
   roles: { admin, user },
-};
+} satisfies Parameters<typeof adminPlugin>[0];

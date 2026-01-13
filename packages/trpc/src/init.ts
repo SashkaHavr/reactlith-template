@@ -4,6 +4,7 @@ import superjson from "superjson";
 import z, { ZodError } from "zod";
 
 import type { Context } from "#context.ts";
+import type { Permissions } from "@reactlith-template/auth";
 
 import { auth } from "@reactlith-template/auth";
 import { envNode } from "@reactlith-template/env/node";
@@ -94,11 +95,7 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   });
 });
 
-export function adminProcedure(
-  permissions: NonNullable<
-    NonNullable<Parameters<typeof auth.api.userHasPermission>[0]>["body"]["permissions"]
-  >,
-) {
+export function adminProcedure(permissions: Permissions) {
   return protectedProcedure.use(async ({ ctx, next }) => {
     const span = getActiveSpan();
 

@@ -4,13 +4,15 @@ import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 import { createContext } from "#context.ts";
 import { createCallerFactory, publicProcedure, router } from "#init.ts";
+import { authRouter } from "#routers/auth.ts";
 import { configRouter } from "#routers/config.ts";
 import { numbersRouter } from "#routers/numbers.ts";
 
 const appRouter = router({
   health: publicProcedure.query(() => "tRPC healthy!"),
-  numbers: numbersRouter,
   config: configRouter,
+  auth: authRouter,
+  numbers: numbersRouter,
 });
 
 export async function trpcHandler({ request }: { request: Request }) {

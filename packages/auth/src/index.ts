@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
 
-import { permissions } from "#permissions.ts";
+import { adminPluginOptions } from "#permissions.ts";
 import { db } from "@reactlith-template/db";
 import { envAuth } from "@reactlith-template/env/auth";
 
@@ -29,7 +29,7 @@ export const auth = betterAuth({
   },
   plugins: [
     admin({
-      ...permissions,
+      ...adminPluginOptions,
     }),
   ],
   emailAndPassword: {
@@ -44,3 +44,7 @@ export const auth = betterAuth({
 });
 
 export type AuthType = typeof auth;
+
+export type Permissions = {
+  [K in keyof typeof adminPluginOptions.ac.statements]: (typeof adminPluginOptions.ac.statements)[K][number][];
+};

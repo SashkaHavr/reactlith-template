@@ -3,8 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 
 import { Button } from "~/components/ui/button";
-import { useLoggedInAuth } from "~/hooks/route-context";
-import { useSignout } from "~/lib/auth";
+import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import { trpcServerFn, useTRPC } from "~/lib/trpc";
 
 const getNumbersServerFn = trpcServerFn.handler(
