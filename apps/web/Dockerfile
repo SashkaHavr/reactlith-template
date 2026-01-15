@@ -4,7 +4,7 @@ FROM oven/bun:1.3.3-alpine AS base
 FROM base AS build
 WORKDIR /app
 COPY . .
-RUN bun install --frozen-lockfile
+RUN bun ci
 RUN bun run --filter @reactlith-template/web --filter @reactlith-template/auth --filter @reactlith-template/db build
 
 # Run
