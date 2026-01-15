@@ -4,11 +4,7 @@ import { useTranslations } from "use-intl";
 
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { trpcServerFn, useTRPC } from "~/lib/trpc";
-
-const getNumbersServerFn = trpcServerFn.handler(
-  async ({ context: { trpc } }) => await trpc.numbers.getAll(),
-);
+import { useTRPC } from "~/lib/trpc";
 
 export const Route = createFileRoute("/_layout/numbers")({
   beforeLoad: ({ context: { auth } }) => {
@@ -17,10 +13,7 @@ export const Route = createFileRoute("/_layout/numbers")({
     }
   },
   loader: async ({ context: { queryClient, trpc } }) => {
-    await queryClient.ensureQueryData({
-      queryKey: trpc.numbers.getAll.queryKey(),
-      queryFn: getNumbersServerFn,
-    });
+    await queryClient.ensureQueryData(trpc.numbers.getAll.queryOptions());
   },
   component: RouteComponent,
 });

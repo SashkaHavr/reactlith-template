@@ -1,5 +1,5 @@
-import { QueryClient } from "@tanstack/react-query";
-import { createMiddleware, createServerFn } from "@tanstack/react-start";
+import { isServer, QueryClient } from "@tanstack/react-query";
+import { createServerOnlyFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
@@ -7,7 +7,21 @@ import superjson from "superjson";
 
 import type { TRPCRouter } from "@reactlith-template/trpc";
 
-import { createTrpcCaller } from "@reactlith-template/trpc";
+import { trpcHandler } from "@reactlith-template/trpc";
+
+const trpcServerFetch = createServerOnlyFn(async (input: RequestInfo | URL, init?: RequestInit) => {
+  const serverRequest = getRequest();
+  if (typeof input !== "string") {
+    throw new TypeError("Only string input is supported in trpcServerFetch");
+  }
+  const response = await trpcHandler({
+    request: new Request(new URL(input, new URL(serverRequest.url).origin), {
+      ...init,
+      headers: serverRequest.headers,
+    }),
+  });
+  return response;
+});
 
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
@@ -32,6 +46,8 @@ export function createTRPCRouteContext() {
         false: httpBatchLink({
           transformer: superjson,
           url: "/trpc",
+          // Custom fetch implementation to support server-side requests
+          fetch: isServer ? trpcServerFetch : undefined,
         }),
       }),
     ],
@@ -45,15 +61,3 @@ export function createTRPCRouteContext() {
 
 export type TRPCRouteContext = ReturnType<typeof createTRPCRouteContext>;
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRouter>();
-
-const trpcServerFnMiddleware = createMiddleware({
-  type: "function",
-}).server(async ({ next }) => {
-  return await next({
-    context: {
-      trpc: createTrpcCaller({ request: getRequest() }),
-    },
-  });
-});
-
-export const trpcServerFn = createServerFn().middleware([trpcServerFnMiddleware]);

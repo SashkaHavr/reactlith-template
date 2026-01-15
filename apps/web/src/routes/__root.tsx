@@ -11,24 +11,16 @@ import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
-import { trpcServerFn } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
-const getGeneralConfigServerFn = trpcServerFn.handler(
-  async ({ context: { trpc } }) => await trpc.config.general(),
-);
-
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
     const locale = getLocale();
     const data = await Promise.all([
-      queryClient.ensureQueryData({
-        queryKey: trpc.config.general.queryKey(),
-        queryFn: async () => await getGeneralConfigServerFn(),
-      }),
+      queryClient.ensureQueryData(trpc.config.general.queryOptions()),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 

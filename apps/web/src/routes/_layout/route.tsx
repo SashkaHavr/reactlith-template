@@ -14,18 +14,11 @@ import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { localeToString, useSetLocale } from "~/lib/intl";
-import { trpcServerFn, useTRPC } from "~/lib/trpc";
-
-const getHealthCheckServerFn = trpcServerFn.handler(
-  async ({ context: { trpc } }) => await trpc.health(),
-);
+import { useTRPC } from "~/lib/trpc";
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { trpc, queryClient } }) => {
-    await queryClient.ensureQueryData({
-      queryKey: trpc.health.queryKey(),
-      queryFn: async () => await getHealthCheckServerFn(),
-    });
+    await queryClient.ensureQueryData(trpc.health.queryOptions());
   },
   component: RouteComponent,
 });
