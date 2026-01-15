@@ -8,6 +8,7 @@ import type { TRPCRouteContext } from "~/lib/trpc";
 
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
+import { getSessionQueryOptions } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
 import { trpcServerFn } from "~/lib/trpc";
@@ -20,10 +21,6 @@ const getGeneralConfigServerFn = trpcServerFn.handler(
   async ({ context: { trpc } }) => await trpc.config.general(),
 );
 
-const getAuthSessionServerFn = trpcServerFn.handler(
-  async ({ context: { trpc } }) => await trpc.auth.getSession(),
-);
-
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
     const locale = getLocale();
@@ -32,10 +29,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
         queryKey: trpc.config.general.queryKey(),
         queryFn: async () => await getGeneralConfigServerFn(),
       }),
-      queryClient.ensureQueryData({
-        queryKey: trpc.auth.getSession.queryKey(),
-        queryFn: async () => await getAuthSessionServerFn(),
-      }),
+      queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 
     return {

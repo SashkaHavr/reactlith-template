@@ -1,13 +1,14 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
+import { createIsomorphicFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
 
+import { auth } from "@reactlith-template/auth";
 import { adminPluginOptions } from "@reactlith-template/auth/permissions";
-
-import { useTRPC } from "./trpc";
 
 export const authClient = createAuthClient({
   basePath: "/auth",
@@ -15,9 +16,41 @@ export const authClient = createAuthClient({
   fetchOptions: { throw: true },
 });
 
+const getSession = createIsomorphicFn()
+  .server(async () => {
+    return await auth.api.getSession({ headers: getRequest().headers });
+  })
+  .client(async () => {
+    return await authClient.getSession();
+  });
+
+export const getSessionQueryOptions = queryOptions({
+  queryKey: ["auth", "getSession"] as const,
+  queryFn: async () => {
+    try {
+      const session = await getSession();
+      return session === null
+        ? {
+            available: true as const,
+            loggedIn: false as const,
+          }
+        : {
+            available: true as const,
+            loggedIn: true as const,
+            session: session.session,
+            user: session.user,
+          };
+    } catch {
+      return {
+        available: false as const,
+        loggedIn: false as const,
+      };
+    }
+  },
+});
+
 export function useAuth() {
-  const trpc = useTRPC();
-  return useSuspenseQuery(trpc.auth.getSession.queryOptions()).data;
+  return useSuspenseQuery(getSessionQueryOptions).data;
 }
 
 export function useLoggedInAuth() {
