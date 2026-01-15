@@ -92,8 +92,8 @@ function RouteComponent() {
                 <span>{`${t("test-user")} ${selectedTestUser}`}</span>
               </SelectTrigger>
               <SelectContent>
-                {Array.from(Array.of({ length: 100 }).keys()).map((user) => (
-                  <SelectItem key={user} value={user.toString()}>
+                {Array.from({ length: 100 }).map((_, user) => (
+                  <SelectItem key={`login-user-${user}`} value={user.toString()}>
                     {`${t("test-user")} ${user}`}
                   </SelectItem>
                 ))}
