@@ -133,6 +133,7 @@
         "@reactlith-template/db": "workspace:*",
         "@reactlith-template/env": "workspace:*",
         "@reactlith-template/otel": "workspace:*",
+        "@tanstack/start-server-core": "catalog:trpc",
         "@trpc/server": "catalog:trpc",
         "drizzle-orm": "catalog:drizzle",
         "superjson": "catalog:",
@@ -182,6 +183,7 @@
     },
     "trpc": {
       "@tanstack/react-query": "~5.90.16",
+      "@tanstack/start-server-core": "~1.145.3",
       "@trpc/client": "~11.8.1",
       "@trpc/server": "~11.8.1",
       "@trpc/tanstack-react-query": "~11.8.1",

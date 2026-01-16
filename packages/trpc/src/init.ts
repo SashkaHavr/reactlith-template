@@ -6,7 +6,6 @@ import z, { ZodError } from "zod";
 import type { Context } from "#context.ts";
 import type { Permissions } from "@reactlith-template/auth";
 
-import { auth } from "@reactlith-template/auth";
 import { envNode } from "@reactlith-template/env/node";
 import { getActiveSpan, SpanStatusCode, startActiveSpan } from "@reactlith-template/otel";
 
@@ -70,7 +69,7 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx: {
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const span = getActiveSpan();
 
-  const session = await auth.api.getSession({
+  const session = await ctx.auth.getSession({
     headers: ctx.request.headers,
   });
   if (!session) {
@@ -116,7 +115,7 @@ export function adminProcedure(permissions: Permissions) {
       });
     }
 
-    const hasPermission = await auth.api.userHasPermission({
+    const hasPermission = await ctx.auth.userHasPermission({
       body: { userId: ctx.userId, permissions: permissions },
     });
     if (!hasPermission.success) {
