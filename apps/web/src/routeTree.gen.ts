@@ -9,20 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
-import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrpcSplatRouteImport } from './routes/trpc.$'
 import { Route as AuthSplatRouteImport } from './routes/auth.$'
-import { Route as LayoutNumbersRouteImport } from './routes/_layout/numbers'
 
-const LayoutRouteRoute = LayoutRouteRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutIndexRoute = LayoutIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const TrpcSplatRoute = TrpcSplatRouteImport.update({
   id: '/trpc/$',
@@ -34,67 +28,45 @@ const AuthSplatRoute = AuthSplatRouteImport.update({
   path: '/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LayoutNumbersRoute = LayoutNumbersRouteImport.update({
-  id: '/numbers',
-  path: '/numbers',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof LayoutIndexRoute
-  '/numbers': typeof LayoutNumbersRoute
+  '/': typeof IndexRoute
   '/auth/$': typeof AuthSplatRoute
   '/trpc/$': typeof TrpcSplatRoute
 }
 export interface FileRoutesByTo {
-  '/numbers': typeof LayoutNumbersRoute
+  '/': typeof IndexRoute
   '/auth/$': typeof AuthSplatRoute
   '/trpc/$': typeof TrpcSplatRoute
-  '/': typeof LayoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_layout': typeof LayoutRouteRouteWithChildren
-  '/_layout/numbers': typeof LayoutNumbersRoute
+  '/': typeof IndexRoute
   '/auth/$': typeof AuthSplatRoute
   '/trpc/$': typeof TrpcSplatRoute
-  '/_layout/': typeof LayoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/numbers' | '/auth/$' | '/trpc/$'
+  fullPaths: '/' | '/auth/$' | '/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/numbers' | '/auth/$' | '/trpc/$' | '/'
-  id:
-    | '__root__'
-    | '/_layout'
-    | '/_layout/numbers'
-    | '/auth/$'
-    | '/trpc/$'
-    | '/_layout/'
+  to: '/' | '/auth/$' | '/trpc/$'
+  id: '__root__' | '/' | '/auth/$' | '/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  IndexRoute: typeof IndexRoute
   AuthSplatRoute: typeof AuthSplatRoute
   TrpcSplatRoute: typeof TrpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof LayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexRouteImport
-      parentRoute: typeof LayoutRouteRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/trpc/$': {
       id: '/trpc/$'
@@ -110,32 +82,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_layout/numbers': {
-      id: '/_layout/numbers'
-      path: '/numbers'
-      fullPath: '/numbers'
-      preLoaderRoute: typeof LayoutNumbersRouteImport
-      parentRoute: typeof LayoutRouteRoute
-    }
   }
 }
 
-interface LayoutRouteRouteChildren {
-  LayoutNumbersRoute: typeof LayoutNumbersRoute
-  LayoutIndexRoute: typeof LayoutIndexRoute
-}
-
-const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
-  LayoutNumbersRoute: LayoutNumbersRoute,
-  LayoutIndexRoute: LayoutIndexRoute,
-}
-
-const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
-  LayoutRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  IndexRoute: IndexRoute,
   AuthSplatRoute: AuthSplatRoute,
   TrpcSplatRoute: TrpcSplatRoute,
 }

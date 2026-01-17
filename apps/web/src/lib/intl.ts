@@ -52,14 +52,11 @@ export async function getMessages(locale: Locale) {
   switch (locale) {
     case "en":
       return (await import(`../../messages/en.json`)) as unknown as BaseMessages;
-    case "uk":
-      return (await import(`../../messages/uk.json`)) as unknown as BaseMessages;
   }
 }
 
 export const localeToString: Record<Locale, string> = {
   en: "English",
-  uk: "Українська",
 };
 
 export const intlFormats = {
