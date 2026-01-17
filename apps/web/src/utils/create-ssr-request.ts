@@ -6,15 +6,12 @@ function getRelativeUrl(url: URL) {
 }
 
 function constructServerUrl(input: RequestInfo | URL, serverRequest: Request) {
-  const serverRequestOrigin = new URL(serverRequest.url).origin;
-  if (typeof input === "string") {
-    return new URL(input, serverRequestOrigin);
-  } else if (input instanceof URL) {
-    return new URL(getRelativeUrl(input), serverRequestOrigin);
-  } else if (input instanceof Request) {
-    return new URL(getRelativeUrl(new URL(input.url)), serverRequestOrigin);
-  }
-  throw new TypeError("Invalid input type for constructServerUrl");
+  return new URL(
+    typeof input === "string"
+      ? input
+      : getRelativeUrl(new URL(input instanceof Request ? input.url : input)),
+    new URL(serverRequest.url).origin,
+  );
 }
 
 export const createSSRRequest = createServerOnlyFn(
