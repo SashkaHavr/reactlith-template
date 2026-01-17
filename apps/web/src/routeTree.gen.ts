@@ -9,26 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
-import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
-import { Route as LayoutNumbersRouteImport } from './routes/_layout/numbers'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as apiIngestRouteImport } from './routes/(api)/ingest'
 import { Route as apiTrpcSplatRouteImport } from './routes/(api)/trpc.$'
 import { Route as apiAuthSplatRouteImport } from './routes/(api)/auth.$'
 
-const LayoutRouteRoute = LayoutRouteRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutIndexRoute = LayoutIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
-const LayoutNumbersRoute = LayoutNumbersRouteImport.update({
-  id: '/numbers',
-  path: '/numbers',
-  getParentRoute: () => LayoutRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const apiIngestRoute = apiIngestRouteImport.update({
   id: '/(api)/ingest',
@@ -47,45 +36,34 @@ const apiAuthSplatRoute = apiAuthSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
   '/ingest': typeof apiIngestRoute
-  '/numbers': typeof LayoutNumbersRoute
   '/auth/$': typeof apiAuthSplatRoute
   '/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/ingest': typeof apiIngestRoute
-  '/numbers': typeof LayoutNumbersRoute
-  '/': typeof LayoutIndexRoute
   '/auth/$': typeof apiAuthSplatRoute
   '/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_layout': typeof LayoutRouteRouteWithChildren
+  '/': typeof IndexRoute
   '/(api)/ingest': typeof apiIngestRoute
-  '/_layout/numbers': typeof LayoutNumbersRoute
-  '/_layout/': typeof LayoutIndexRoute
   '/(api)/auth/$': typeof apiAuthSplatRoute
   '/(api)/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ingest' | '/numbers' | '/auth/$' | '/trpc/$'
+  fullPaths: '/' | '/ingest' | '/auth/$' | '/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/ingest' | '/numbers' | '/' | '/auth/$' | '/trpc/$'
-  id:
-    | '__root__'
-    | '/_layout'
-    | '/(api)/ingest'
-    | '/_layout/numbers'
-    | '/_layout/'
-    | '/(api)/auth/$'
-    | '/(api)/trpc/$'
+  to: '/' | '/ingest' | '/auth/$' | '/trpc/$'
+  id: '__root__' | '/' | '/(api)/ingest' | '/(api)/auth/$' | '/(api)/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  IndexRoute: typeof IndexRoute
   apiIngestRoute: typeof apiIngestRoute
   apiAuthSplatRoute: typeof apiAuthSplatRoute
   apiTrpcSplatRoute: typeof apiTrpcSplatRoute
@@ -93,26 +71,12 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof LayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexRouteImport
-      parentRoute: typeof LayoutRouteRoute
-    }
-    '/_layout/numbers': {
-      id: '/_layout/numbers'
-      path: '/numbers'
-      fullPath: '/numbers'
-      preLoaderRoute: typeof LayoutNumbersRouteImport
-      parentRoute: typeof LayoutRouteRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(api)/ingest': {
       id: '/(api)/ingest'
@@ -138,22 +102,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LayoutRouteRouteChildren {
-  LayoutNumbersRoute: typeof LayoutNumbersRoute
-  LayoutIndexRoute: typeof LayoutIndexRoute
-}
-
-const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
-  LayoutNumbersRoute: LayoutNumbersRoute,
-  LayoutIndexRoute: LayoutIndexRoute,
-}
-
-const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
-  LayoutRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  IndexRoute: IndexRoute,
   apiIngestRoute: apiIngestRoute,
   apiAuthSplatRoute: apiAuthSplatRoute,
   apiTrpcSplatRoute: apiTrpcSplatRoute,

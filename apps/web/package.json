@@ -10,8 +10,6 @@
   },
   "devDependencies": {
     "@base-ui/react": "^1.4.1",
-    "@fontsource-variable/geist": "5.2.8",
-    "@fontsource-variable/geist-mono": "5.2.7",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/trpc": "workspace:*",

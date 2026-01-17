@@ -1,15 +1,4 @@
 {
-  "index": {
-    "add-number": "Add number",
-    "auth-status": "Auth status",
-    "delete-all-numbers": "Delete all numbers",
-    "time-now": "Time now",
-    "sign-in-with-google": "Sign in with Google",
-    "logout": "Logout",
-    "trpc-health-response": "tRPC /health response",
-    "user": "User",
-    "works": "Works!"
-  },
   "routeComponents": {
     "error": "Something went wrong",
     "notFound": "Not Found",

@@ -10,7 +10,7 @@ import z from "zod";
 import { createContext } from "#context.ts";
 import { createCallerFactory, publicProcedure, router } from "#init.ts";
 import { configRouter } from "#routers/config.ts";
-import { numbersRouter } from "#routers/numbers.ts";
+
 const appRouter = router({
   health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
     const res = await Result.tryPromise(async () => await ctx.db.execute(sql`select 1`));
@@ -24,7 +24,6 @@ const appRouter = router({
     return null;
   }),
   config: configRouter,
-  numbers: numbersRouter,
 });
 
 export async function trpcHandler({ request }: { request: Request }) {
