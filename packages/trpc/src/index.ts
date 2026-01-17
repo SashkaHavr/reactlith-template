@@ -5,12 +5,10 @@ import z from "zod";
 import { createContext } from "#context.ts";
 import { createCallerFactory, publicProcedure, router } from "#init.ts";
 import { configRouter } from "#routers/config.ts";
-import { numbersRouter } from "#routers/numbers.ts";
 
 const appRouter = router({
   health: publicProcedure.output(z.string()).query(() => "tRPC healthy!"),
   config: configRouter,
-  numbers: numbersRouter,
 });
 
 export async function trpcHandler({ request }: { request: Request }) {
