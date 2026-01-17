@@ -29,11 +29,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     from: "__root__",
     select: (s) => s.theme,
   });
-  const setSavedTheme = (newTheme: ResolvedTheme) => {
-    setThemeCookie(newTheme);
-    void router.invalidate().then(() => {
-      updateMetaThemeColor();
-    });
+  const setSavedTheme = async (newTheme: ResolvedTheme) => {
+    await setThemeCookie(newTheme);
+    await router.invalidate();
+    updateMetaThemeColor();
   };
 
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>("light");
@@ -56,7 +55,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const resolvedTheme = savedTheme === "system" ? systemTheme : savedTheme;
 
   return (
-    <ThemeContext value={{ theme: savedTheme, setTheme: setSavedTheme, resolvedTheme }}>
+    <ThemeContext
+      value={{
+        theme: savedTheme,
+        setTheme: (newTheme) => void setSavedTheme(newTheme),
+        resolvedTheme,
+      }}
+    >
       {children}
     </ThemeContext>
   );

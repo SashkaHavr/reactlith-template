@@ -18,7 +18,7 @@ import indexCss from "../index.css?url";
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
-    const locale = getLocale();
+    const locale = await getLocale();
     const data = await Promise.all([
       queryClient.ensureQueryData(trpc.config.general.queryOptions()),
       queryClient.ensureQueryData(getSessionQueryOptions),
@@ -30,7 +30,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
         messages: await getMessages(locale),
         locale: locale,
       },
-      theme: getTheme(),
+      theme: await getTheme(),
     };
   },
   component: RootComponent,

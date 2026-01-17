@@ -1,13 +1,42 @@
-export function getClientCookie(name: string) {
-  return document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)")?.pop();
-}
+import { createIsomorphicFn } from "@tanstack/react-start";
+import {
+  getCookie as getServerCookie,
+  setCookie as setServerCookie,
+  deleteCookie as deleteServerCookie,
+} from "@tanstack/react-start/server";
 
-export function setClientCookie(name: string, value: string, days = 400) {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
-}
+const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
 
-export function deleteLocalCookie(name: string) {
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
-}
+export const getCookie = createIsomorphicFn()
+  // oxlint-disable-next-line require-await
+  .server(async (name: string) => {
+    return getServerCookie(name);
+  })
+  .client(async (name: string) => {
+    const cookie = await cookieStore.get({ name });
+    return cookie?.value;
+  });
+
+export const setCookie = createIsomorphicFn()
+  // oxlint-disable-next-line require-await
+  .server(async (name: string, value: string, days = 400) => {
+    return setServerCookie(name, value, {
+      expires: new Date(Date.now() + days * MILLISECONDS_IN_A_DAY),
+    });
+  })
+  .client(async (name: string, value: string, days = 400) => {
+    await cookieStore.set({
+      name,
+      value,
+      expires: Date.now() + days * MILLISECONDS_IN_A_DAY,
+    });
+  });
+
+export const deleteCookie = createIsomorphicFn()
+  // oxlint-disable-next-line require-await
+  .server(async (name: string) => {
+    return deleteServerCookie(name);
+  })
+  .client(async (name: string) => {
+    await cookieStore.delete({ name });
+  });

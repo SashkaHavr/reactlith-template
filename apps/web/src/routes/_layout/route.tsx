@@ -57,7 +57,7 @@ function LocaleSwitcher() {
       value={locale}
       onValueChange={(value) => {
         if (isLocale(value)) {
-          setLocale(value);
+          void setLocale(value);
         }
       }}
     >

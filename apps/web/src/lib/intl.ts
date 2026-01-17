@@ -2,42 +2,40 @@ import type { Formats, Locale } from "use-intl";
 
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { getCookie, getRequestHeader } from "@tanstack/react-start/server";
+import { getRequestHeader } from "@tanstack/react-start/server";
 
 import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
-import { getClientCookie, setClientCookie } from "~/utils/cookie";
+import { getCookie, setCookie } from "~/utils/cookie";
 
 import type baseMessages from "../../messages/en.json";
 
-export const getLocale = createIsomorphicFn()
+const getSystemLocale = createIsomorphicFn()
   .server(() => {
-    const localeFromCookie = getCookie(localeCookieName);
-    if (isLocale(localeFromCookie)) {
-      return localeFromCookie;
-    }
-
     const locales =
       getRequestHeader("accept-language")
         ?.split(",")
         .map((lang) => lang.split(";")[0]) ?? [];
-    return locales.find((value) => isLocale(value)) ?? defaultLocale;
+    return locales.find((value) => isLocale(value));
   })
   .client(() => {
-    const localeFromCookie = getClientCookie(localeCookieName);
-    if (isLocale(localeFromCookie)) {
-      return localeFromCookie;
-    }
-
     const locales = navigator.languages;
-    return locales.find((value) => isLocale(value)) ?? defaultLocale;
+    return locales.find((value) => isLocale(value));
   });
+
+export async function getLocale(): Promise<Locale> {
+  const localeFromCookie = await getCookie(localeCookieName);
+  if (isLocale(localeFromCookie)) {
+    return localeFromCookie;
+  }
+  return getSystemLocale() ?? defaultLocale;
+}
 
 export function useSetLocale() {
   const router = useRouter();
 
-  return (locale: string) => {
+  return async (locale: string) => {
     if (!isLocale(locale)) return;
-    setClientCookie(localeCookieName, locale);
+    await setCookie(localeCookieName, locale);
     void router.invalidate();
   };
 }

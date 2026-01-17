@@ -1,8 +1,6 @@
-import { createIsomorphicFn } from "@tanstack/react-start";
-import { getCookie } from "@tanstack/react-start/server";
 import { createContext, use } from "react";
 
-import { getClientCookie, setClientCookie } from "~/utils/cookie";
+import { getCookie, setCookie } from "~/utils/cookie";
 
 export type ResolvedTheme = "light" | "dark";
 export type Theme = ResolvedTheme | "system";
@@ -31,22 +29,14 @@ export function useTheme() {
   );
 }
 
-export const getTheme = createIsomorphicFn()
-  .server((): Theme => {
-    const theme = getCookie(themeCookieName);
-    if (theme === "light" || theme === "dark") {
-      return theme;
-    }
-    return "system";
-  })
-  .client((): Theme => {
-    const theme = getClientCookie(themeCookieName);
-    if (theme === "light" || theme === "dark") {
-      return theme;
-    }
-    return "system";
-  });
+export async function getTheme(): Promise<Theme> {
+  const theme = await getCookie(themeCookieName);
+  if (theme === "light" || theme === "dark") {
+    return theme;
+  }
+  return "system";
+}
 
-export function setThemeCookie(theme: ResolvedTheme) {
-  setClientCookie(themeCookieName, theme);
+export async function setThemeCookie(theme: ResolvedTheme) {
+  await setCookie(themeCookieName, theme);
 }
