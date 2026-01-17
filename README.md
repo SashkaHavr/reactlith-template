@@ -6,8 +6,6 @@ Minimal full-stack typescript/react monorepo template.
 
 Used packages: https://github.com/stars/SashkaHavr/lists/reactlith
 
-This project was created using CLI: https://github.com/SashkaHavr/reactlith
-
 ## Fast local startup
 
 ```sh
