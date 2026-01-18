@@ -1,0 +1,29 @@
+{
+  "extends": ["../../.oxlintrc.json"],
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["@base-ui/react/*"]
+          }
+        ],
+        "paths": [
+          {
+            "name": "@tanstack/react-start/server",
+            "importNames": ["getCookie", "setCookie", "deleteCookie"]
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/components/ui/**", "src/utils/cookie.ts"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
+}

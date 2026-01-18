@@ -1,15 +1,16 @@
 {
+  "extends": ["../../.oxlintrc.json"],
   "rules": {
     "no-restricted-imports": [
       "error",
       {
         "paths": [
           {
-            "name": "@reactlith-template/db",
+            "name": "@nectar/db",
             "importNames": ["db"]
           },
           {
-            "name": "@reactlith-template/auth",
+            "name": "@nectar/auth",
             "importNames": ["auth"]
           }
         ]
@@ -19,7 +20,9 @@
   "overrides": [
     {
       "files": ["src/context.ts"],
-      "rules": { "no-restricted-imports": "off" }
+      "rules": {
+        "no-restricted-imports": "off"
+      }
     }
   ]
 }

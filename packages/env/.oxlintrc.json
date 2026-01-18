@@ -1,3 +1,4 @@
 {
+  "extends": ["../../.oxlintrc.json"],
   "rules": { "no-process-env": "off" }
 }
