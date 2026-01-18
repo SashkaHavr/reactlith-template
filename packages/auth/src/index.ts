@@ -46,5 +46,5 @@ export const auth = betterAuth({
 export type AuthType = typeof auth;
 
 export type Permissions = {
-  [K in keyof typeof adminPluginOptions.ac.statements]: (typeof adminPluginOptions.ac.statements)[K][number][];
+  [K in keyof typeof adminPluginOptions.ac.statements]?: (typeof adminPluginOptions.ac.statements)[K][number][];
 };

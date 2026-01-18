@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "ignorePatterns": ["**/components/ui/**", "**/generated/**", "*.gen.ts"],
+  "ignorePatterns": ["**/generated/**", "*.gen.ts"],
   "plugins": [
     "eslint",
     "typescript",
@@ -44,6 +44,7 @@
     ],
     "no-warning-comments": "off",
     "no-inline-comments": "off",
+    "no-negated-condition": "off",
 
     "oxc/no-map-spread": "off",
 
@@ -72,6 +73,10 @@
     {
       "files": ["*.config.ts"],
       "rules": { "import/no-default-export": "off" }
+    },
+    {
+      "files": ["**/components/ui/**"],
+      "rules": { "no-restricted-imports": "off" }
     }
   ]
 }
