@@ -17,6 +17,7 @@
   "dependencies": {
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
     "better-auth": "catalog:"
   },
   "devDependencies": {

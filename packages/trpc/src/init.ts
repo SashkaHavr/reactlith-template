@@ -6,8 +6,7 @@ import z, { ZodError } from "zod";
 import type { Context } from "#context.ts";
 import type { Permissions } from "@reactlith-template/auth";
 
-import { envNode } from "@reactlith-template/env/node";
-import { getActiveSpan, SpanStatusCode, startActiveSpan } from "@reactlith-template/otel";
+import { baseLogger } from "@reactlith-template/utils/logger";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -25,50 +24,54 @@ const t = initTRPC.context<Context>().create({
 
 export const router = t.router;
 
-export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx: { request } }) => {
-  return await startActiveSpan(path, async (span) => {
-    const url = new URL(request.url);
-    span.setAttributes({
-      "http.request.method": request.method,
-      "url.path": url.pathname,
-      "url.query": decodeURIComponent(url.search),
-      "trpc.type": type,
-      "trpc.path": path,
-    });
-
-    const result = await next();
-
-    if (result.ok) {
-      span.setAttributes({
-        "http.response.status_code": 200,
-      });
-      span.setStatus({ code: SpanStatusCode.OK });
-    } else {
-      span.setAttributes({
-        "http.response.status_code": getHTTPStatusCodeFromError(result.error),
-        "trpc.error_code": result.error.code,
-      });
-      span.recordException(result.error);
-      span.setStatus({ code: SpanStatusCode.ERROR, message: result.error.message });
-
-      if (result.error.cause instanceof ZodError) {
-        span.recordException(z.prettifyError(result.error.cause));
-      } else if (result.error.cause !== undefined) {
-        span.recordException(result.error.cause);
-      }
-
-      if (envNode.NODE_ENV === "development" && getHTTPStatusCodeFromError(result.error) >= 500) {
-        console.error(result.error);
-      }
-    }
-
-    return result;
+export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx }) => {
+  const startTime = Date.now();
+  const url = new URL(ctx.request.url);
+  const logger = baseLogger.child({
+    startTime: startTime,
+    service: "trpc",
+    request: {
+      id: crypto.randomUUID(),
+      method: ctx.request.method,
+      path: url.pathname,
+      query: decodeURIComponent(url.search),
+    },
+    trpcRequest: {
+      type: type,
+      path: path,
+    },
   });
+
+  const result = await next({ ctx: { logger } });
+
+  const endTime = Date.now();
+  logger.setBindings({
+    endTime: endTime,
+    duration: endTime - startTime,
+  });
+
+  if (result.ok) {
+    logger.info({
+      response: {
+        statusCode: 200,
+      },
+    });
+  } else {
+    logger.setBindings({
+      response: {
+        statusCode: getHTTPStatusCodeFromError(result.error),
+      },
+      trpcResponse: {
+        errorCode: result.error.code,
+      },
+    });
+    logger.error(result.error);
+  }
+
+  return result;
 });
 
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
-  const span = getActiveSpan();
-
   const session = await ctx.auth.getSession({
     headers: ctx.request.headers,
   });
@@ -79,15 +82,16 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
     });
   }
 
-  span?.setAttributes({
-    "user.id": session.user.id,
-    "user.email": session.user.email,
-    "user.role": session.user.role ?? undefined,
+  ctx.logger.setBindings({
+    user: {
+      id: session.user.id,
+      email: session.user.email,
+      role: session.user.role ?? undefined,
+    },
   });
 
   return await next({
     ctx: {
-      ...ctx,
       session: session,
       userId: session.user.id,
     },
@@ -96,8 +100,6 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
 
 export function adminProcedure(permissions: Permissions) {
   return protectedProcedure.use(async ({ ctx, next }) => {
-    const span = getActiveSpan();
-
     const requestPermissionsList = (
       Object.entries(permissions) as [
         keyof typeof permissions,
@@ -108,6 +110,13 @@ export function adminProcedure(permissions: Permissions) {
         value.map((p): `${keyof typeof permissions}.${typeof p}` => `${key}.${p}`),
       )
       .flat();
+
+    ctx.logger.setBindings({
+      adminProcedure: {
+        permissionsRequested: requestPermissionsList,
+      },
+    });
+
     if (requestPermissionsList.length === 0) {
       throw new TRPCError({
         message: "No permissions specified for adminProcedure",
@@ -124,10 +133,6 @@ export function adminProcedure(permissions: Permissions) {
         code: "FORBIDDEN",
       });
     }
-
-    span?.setAttributes({
-      "trpc.permissions": requestPermissionsList,
-    });
 
     return await next();
   });

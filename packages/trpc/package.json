@@ -13,7 +13,7 @@
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
-    "@reactlith-template/otel": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
     "@tanstack/react-start": "catalog:vite",
     "@trpc/server": "catalog:trpc",
     "drizzle-orm": "catalog:drizzle",

@@ -1,0 +1,22 @@
+{
+  "name": "@reactlith-template/utils",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./src/*"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@reactlith-template/env": "workspace:*",
+    "pino": "catalog:"
+  },
+  "devDependencies": {
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
+    "pino-pretty": "catalog:",
+    "typescript": "catalog:"
+  }
+}

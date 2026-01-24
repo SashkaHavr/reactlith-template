@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
 
+import { logPlugin } from "#log-plugin.ts";
 import { adminPluginOptions } from "#permissions.ts";
 import { db } from "@reactlith-template/db";
 import { envAuth } from "@reactlith-template/env/auth";
@@ -31,6 +32,7 @@ export const auth = betterAuth({
     admin({
       ...adminPluginOptions,
     }),
+    logPlugin,
   ],
   emailAndPassword: {
     enabled: envAuth.TEST_AUTH,
