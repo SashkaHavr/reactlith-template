@@ -13,7 +13,7 @@ import { createAuthClient } from "better-auth/react";
 import type { AuthType } from "@reactlith-template/auth";
 
 import { auth } from "@reactlith-template/auth";
-import { adminPluginOptions } from "@reactlith-template/auth/permissions";
+import { ac, roles } from "@reactlith-template/auth/permissions";
 import { createSSRRequest } from "~/utils/create-ssr-request";
 
 const authServerFetch = createServerOnlyFn(
@@ -23,7 +23,7 @@ const authServerFetch = createServerOnlyFn(
 
 export const authClient = createAuthClient({
   basePath: "/auth",
-  plugins: [inferAdditionalFields<AuthType>(), adminClient(adminPluginOptions)],
+  plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac: ac, roles: roles })],
   fetchOptions: { throw: true, customFetchImpl: isServer ? authServerFetch : undefined },
 });
 

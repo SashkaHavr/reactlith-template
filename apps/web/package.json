@@ -9,7 +9,7 @@
     "start": "bun exec \"NODE_ENV=production bun run dist/server/index.mjs\""
   },
   "dependencies": {
-    "@base-ui/react": "1.0.0",
+    "@base-ui/react": "1.1.0",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/intl": "workspace:*",
@@ -37,7 +37,6 @@
     "tw-animate-css": "catalog:tailwind",
     "use-intl": "catalog:",
     "vite": "catalog:vite",
-    "vite-tsconfig-paths": "catalog:vite",
     "zod": "catalog:"
   },
   "devDependencies": {

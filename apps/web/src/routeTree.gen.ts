@@ -41,10 +41,10 @@ const LayoutNumbersRoute = LayoutNumbersRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof LayoutIndexRoute
   '/numbers': typeof LayoutNumbersRoute
   '/auth/$': typeof AuthSplatRoute
   '/trpc/$': typeof TrpcSplatRoute
-  '/': typeof LayoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/numbers': typeof LayoutNumbersRoute
@@ -62,7 +62,7 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/numbers' | '/auth/$' | '/trpc/$' | '/'
+  fullPaths: '/' | '/numbers' | '/auth/$' | '/trpc/$'
   fileRoutesByTo: FileRoutesByTo
   to: '/numbers' | '/auth/$' | '/trpc/$' | '/'
   id:
@@ -85,7 +85,7 @@ declare module '@tanstack/react-router' {
     '/_layout': {
       id: '/_layout'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof LayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
