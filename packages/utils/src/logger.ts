@@ -58,6 +58,11 @@ export const baseLogger = pino(
     serializers: {
       err: stdSerializers.errWithCause,
     },
+    formatters: {
+      level(label) {
+        return { level: label };
+      },
+    },
     transport:
       envNode.NODE_ENV === "development"
         ? {
