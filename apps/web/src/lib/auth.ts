@@ -27,8 +27,10 @@ export const authClient = createAuthClient({
   fetchOptions: { throw: true, customFetchImpl: isServer ? authServerFetch : undefined },
 });
 
+export const baseAuthKey = "auth" as const;
+
 export const getSessionQueryOptions = queryOptions({
-  queryKey: ["auth", "getSession"] as const,
+  queryKey: [baseAuthKey, "getSession"] as const,
   queryFn: async () => {
     try {
       const session = await authClient.getSession();
@@ -79,7 +81,7 @@ export function useSignout() {
   const resetAuth = useResetAuth();
   return useMutation({
     mutationFn: async () => await authClient.signOut(),
-    onSuccess: async () => {
+    onSettled: async () => {
       await resetAuth();
     },
   });

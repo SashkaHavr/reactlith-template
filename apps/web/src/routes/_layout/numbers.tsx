@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 
@@ -21,27 +21,13 @@ export const Route = createFileRoute("/_layout/numbers")({
 function RouteComponent() {
   const trpc = useTRPC();
   const t = useTranslations("index");
-  const queryClient = useQueryClient();
 
   const auth = useLoggedInAuth();
 
   const numbers = useSuspenseQuery(trpc.numbers.getAll.queryOptions());
 
-  const invalidateNumbers = async () => {
-    await queryClient.invalidateQueries({
-      queryKey: trpc.numbers.getAll.queryKey(),
-    });
-  };
-  const addNumber = useMutation(
-    trpc.numbers.addNew.mutationOptions({
-      onSuccess: async () => await invalidateNumbers(),
-    }),
-  );
-  const deleteNumbers = useMutation(
-    trpc.numbers.deleteAll.mutationOptions({
-      onSuccess: async () => await invalidateNumbers(),
-    }),
-  );
+  const addNumber = useMutation(trpc.numbers.addNew.mutationOptions());
+  const deleteNumbers = useMutation(trpc.numbers.deleteAll.mutationOptions());
   const signout = useSignout();
   return (
     <div className="flex flex-col items-center gap-4">

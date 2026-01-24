@@ -48,6 +48,9 @@ function RouteComponent() {
         provider: "github",
         callbackURL: window.origin,
       }),
+    onSettled: async () => {
+      await resetAuth();
+    },
   });
 
   const [selectedTestUser, setSelectedTestUser] = useState<string>("0");
@@ -57,6 +60,8 @@ function RouteComponent() {
         email: `user${user}@example.com`,
         password: `password${user}`,
       });
+    },
+    onSettled: async () => {
       await resetAuth();
     },
   });
