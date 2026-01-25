@@ -9,7 +9,7 @@ import { Field } from "~/components/ui/field";
 import { Fieldset } from "~/components/ui/fieldset";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { Spinner } from "~/components/ui/spinner";
-import { authClient, useResetAuth } from "~/lib/auth";
+import { authClient, resetAuth } from "~/lib/auth";
 import { useTRPC } from "~/lib/trpc";
 
 export const Route = createFileRoute("/_layout/")({
@@ -40,7 +40,6 @@ function RouteComponent() {
   const t = useTranslations("index");
 
   const authConfig = useSuspenseQuery(trpc.config.general.queryOptions());
-  const resetAuth = useResetAuth();
 
   const githubSignin = useMutation({
     mutationFn: async () =>

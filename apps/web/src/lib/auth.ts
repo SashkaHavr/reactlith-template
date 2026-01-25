@@ -1,11 +1,4 @@
-import {
-  isServer,
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { isServer, queryOptions, useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createServerOnlyFn } from "@tanstack/react-start";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -66,19 +59,12 @@ export function useLoggedInAuth() {
   return auth;
 }
 
-export function useResetAuth() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
-  return async () => {
-    await authClient.getSession({ query: { disableCookieCache: true } });
-    queryClient.clear();
-    await router.invalidate();
-  };
+export async function resetAuth() {
+  await authClient.getSession({ query: { disableCookieCache: true } });
+  window.location.reload();
 }
 
 export function useSignout() {
-  const resetAuth = useResetAuth();
   return useMutation({
     mutationFn: async () => await authClient.signOut(),
     onSettled: async () => {
