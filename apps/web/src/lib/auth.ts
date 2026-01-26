@@ -1,11 +1,5 @@
-import {
-  isServer,
-  queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
+import { isServer, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createServerOnlyFn } from "@tanstack/react-start";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
@@ -55,7 +49,7 @@ export const getSessionQueryOptions = queryOptions({
 });
 
 export function useAuth() {
-  return useSuspenseQuery(getSessionQueryOptions).data;
+  return useRouteContext({ from: "__root__", select: (ctx) => ctx.auth });
 }
 
 export function useLoggedInAuth() {
