@@ -6,7 +6,7 @@
   // vite dev/bun start, drizzle studio
   "forwardPorts": [3000, 4983],
   "postCreateCommand": "bun install && bun --filter '@reactlith-template/db' db:migrate && bun --filter '@reactlith-template/auth' generate-test-users",
-  "remoteUser": "root",
+  "remoteUser": "node",
   "customizations": {
     "vscode": {
       "extensions": [
