@@ -11,8 +11,8 @@
   },
   "scripts": {
     "build": "bun build --entrypoints ./src/generate-test-users.ts --outdir ./dist --target bun",
-    "generate-db-schema": "bun exec \"DATABASE_URL=url bunx @better-auth/cli@latest generate --config src/index.ts --output ./generated/auth-schema.ts --yes\"",
-    "generate-test-users": "bun run ./src/generate-test-users.ts"
+    "generate-db-schema": "bunx @better-auth/cli@latest generate --config generated/config.ts --output ./generated/auth-schema.ts --yes",
+    "generate-test-users": "NODE_ENV=development bun run ./src/generate-test-users.ts"
   },
   "dependencies": {
     "@reactlith-template/db": "workspace:*",
