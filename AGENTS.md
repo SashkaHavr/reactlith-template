@@ -29,6 +29,7 @@ This repository is a Bun-based TypeScript monorepo.
 - Base components are created with base-ui primitives and don't have `asChild` prop. Use `render` prop instead.
   Example: `<Button className="..." render={<Link to="..."/>}>Click me!</Button>`.
 - Put route specific components in `src/routes/someRoute/-components/*` and reusable components in `src/components/*`.
+- Keep route components thin. Place only route-specific providers and general layout in route components.
 - Use `useTrpc()` and `useSuspenseQuery(trpc.someQuery.queryOptions())` for stable tRPC queries in React components.
 - Use `useTrpc()` and `useQuery(trpc.someQuery.queryOptions())` for conditional tRPC queries in React components.
   Preload them manually with `context.queryClient.ensureQueryData(context.trpc.someQuery.queryOptions())` in route `loader`.
