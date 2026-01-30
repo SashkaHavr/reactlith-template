@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 
 import { router } from "#init.ts";
-import { protectedProcedure } from "#procedures/protectedProcedure.ts";
+import { protectedProcedure } from "#procedures/protected-procedure.ts";
 import { number as numberTable } from "@reactlith-template/db/schema";
 
 export const numbersRouter = router({

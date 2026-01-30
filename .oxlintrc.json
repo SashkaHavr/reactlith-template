@@ -57,7 +57,14 @@
 
     "react/react-in-jsx-scope": "off",
 
-    "promise/always-return": ["error", { "ignoreLastCallback": true }]
+    "promise/always-return": ["error", { "ignoreLastCallback": true }],
+
+    "unicorn/filename-case": [
+      "error",
+      {
+        "ignore": "^*.gen.ts$"
+      }
+    ]
   },
   "overrides": [
     {

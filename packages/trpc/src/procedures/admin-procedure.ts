@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 
 import type { Permissions } from "@reactlith-template/auth";
 
-import { protectedProcedure } from "./protectedProcedure";
+import { protectedProcedure } from "./protected-procedure";
 
 export function adminProcedure(permissions: Permissions) {
   return protectedProcedure.use(async ({ ctx, next }) => {
