@@ -47,7 +47,8 @@
       "error",
       { "allowNullableBoolean": true, "allowNullableString": true }
     ],
-    "typescript/return-await": ["error", "always"],
+    "typescript/return-await": ["error", "error-handling-correctness-only"],
+    "react/no-unescaped-entities": "off",
 
     "import/consistent-type-specifier-style": "error",
     "import/no-default-export": "error",
@@ -64,7 +65,9 @@
       {
         "ignore": "^*.gen.ts$"
       }
-    ]
+    ],
+
+    "unicorn/no-useless-undefined": ["error", { "checkArrowFunctionBody": false }]
   },
   "overrides": [
     {

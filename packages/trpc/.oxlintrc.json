@@ -6,11 +6,11 @@
       {
         "paths": [
           {
-            "name": "@nectar/db",
+            "name": "@reactlith-template/db",
             "importNames": ["db"]
           },
           {
-            "name": "@nectar/auth",
+            "name": "@reactlith-template/auth",
             "importNames": ["auth"]
           }
         ]

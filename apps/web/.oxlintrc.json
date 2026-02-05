@@ -6,7 +6,7 @@
       {
         "patterns": [
           {
-            "group": ["@base-ui/react/*"]
+            "group": ["@base-ui/**"]
           }
         ],
         "paths": [

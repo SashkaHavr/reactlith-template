@@ -3,7 +3,7 @@
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  // vite dev/bun start, drizzle studio
+  // vite dev/bun start, drizzle studio, opencode
   "forwardPorts": [3000, 4983, 4096],
   "postCreateCommand": "bun install && bun --filter '@reactlith-template/db' db:migrate && bun --filter '@reactlith-template/auth' generate-test-users",
   "remoteUser": "node",
