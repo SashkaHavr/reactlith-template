@@ -7,11 +7,13 @@
         "paths": [
           {
             "name": "@reactlith-template/db",
-            "importNames": ["db"]
+            "importNames": ["db"],
+            "allowTypeImports": true
           },
           {
             "name": "@reactlith-template/auth",
-            "importNames": ["auth"]
+            "importNames": ["auth"],
+            "allowTypeImports": true
           }
         ]
       }
