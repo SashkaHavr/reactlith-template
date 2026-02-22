@@ -98,6 +98,7 @@ function RouteComponent() {
               </SelectTrigger>
               <SelectContent>
                 {Array.from({ length: 100 }).map((_, user) => (
+                  // oxlint-disable-next-line react/no-array-index-key
                   <SelectItem key={`login-user-${user}`} value={user.toString()}>
                     {`${t("test-user")} ${user}`}
                   </SelectItem>
