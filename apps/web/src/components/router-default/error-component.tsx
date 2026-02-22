@@ -1,12 +1,11 @@
 import {
   ErrorComponent as DefaultErrorComponent,
   isMatch,
-  Link,
   useRouterState,
 } from "@tanstack/react-router";
 import { createTranslator } from "use-intl";
 
-import { Button } from "../ui/button";
+import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 
 function useOptionalIntl() {
@@ -42,9 +41,7 @@ export function ErrorComponent({ error }: { error: Error }) {
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button nativeButton={false} render={<Link to="/" />}>
-            {t("routeComponents.returnToHomePage")}
-          </Button>
+          <LinkButton to="/">{t("routeComponents.returnToHomePage")}</LinkButton>
         </div>
       </EmptyContent>
     </Empty>

@@ -63,10 +63,10 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint --type-aware --type-check",
-    "lint:fix": "oxlint --fix-suggestions --type-aware --type-check",
+    "lint:fix": "oxlint --fix --type-aware --type-check",
     "check": "oxlint --type-aware --type-check && oxfmt --check",
     "check:llm": "oxfmt && oxlint --type-aware --type-check",
-    "fix": "oxlint --fix-suggestions --type-aware --type-check && oxfmt",
+    "fix": "oxlint --fix --type-aware --type-check && oxfmt",
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d",
     "deps": "bun update --interactive --recursive"
   },

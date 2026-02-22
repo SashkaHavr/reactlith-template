@@ -1,7 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 
-import { Button } from "../ui/button";
+import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "../ui/empty";
 
 export function NotFoundComponent() {
@@ -14,9 +13,7 @@ export function NotFoundComponent() {
       <EmptyDescription>{t("routeComponents.notFoundDescription")}</EmptyDescription>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button nativeButton={false} render={<Link to="/" />}>
-            {t("routeComponents.returnToHomePage")}
-          </Button>
+          <LinkButton to="/">{t("routeComponents.returnToHomePage")}</LinkButton>
         </div>
       </EmptyContent>
     </Empty>

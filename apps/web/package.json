@@ -9,7 +9,7 @@
     "start": "bun exec \"NODE_ENV=production bun run dist/server/index.mjs\""
   },
   "dependencies": {
-    "@base-ui/react": "1.1.0",
+    "@base-ui/react": "1.2.0",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/intl": "workspace:*",
