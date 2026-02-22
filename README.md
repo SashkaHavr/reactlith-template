@@ -29,7 +29,7 @@ bun compose
 DATABASE_URL=<your database url>
 TEST_AUTH=true
 BETTER_AUTH_URL=http://localhost:3000
-BETTER_AUTH_SECRET=supersecretkey
+BETTER_AUTH_SECRET=abcdefghijklmnopqrstuvwxyz123456789
 ```
 
 6. Run `bun dev` in [./apps/web/](./apps/web/)

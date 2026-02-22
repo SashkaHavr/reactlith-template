@@ -10,7 +10,7 @@ services:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
       TEST_AUTH: true
       BETTER_AUTH_URL: http://localhost:3000
-      BETTER_AUTH_SECRET: supersecretkey
+      BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
     depends_on:
       db:
         condition: service_healthy
