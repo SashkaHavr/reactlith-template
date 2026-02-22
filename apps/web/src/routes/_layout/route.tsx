@@ -9,7 +9,7 @@ import {
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useFormatter, useNow, useTranslations } from "use-intl";
 
-import { isLocale } from "@reactlith-template/intl";
+import { isLocale } from "@reactlith-template/utils/intl";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";

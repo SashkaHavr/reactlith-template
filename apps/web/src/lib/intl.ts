@@ -3,7 +3,7 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import type { Formats, Locale } from "use-intl";
 
-import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
+import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/utils/intl";
 import { getCookie, setCookie } from "~/utils/cookie";
 
 import type baseMessages from "../../messages/en.json";

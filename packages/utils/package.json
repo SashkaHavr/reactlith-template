@@ -11,7 +11,8 @@
   "scripts": {},
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
-    "pino": "catalog:"
+    "pino": "catalog:",
+    "use-intl": "catalog:"
   },
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
