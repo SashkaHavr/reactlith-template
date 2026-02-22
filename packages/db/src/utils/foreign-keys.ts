@@ -1,5 +1,4 @@
 import type { pgTable } from "drizzle-orm/pg-core";
-
 import { uuid } from "drizzle-orm/pg-core";
 
 import type { baseTable } from "./base-table";

@@ -1,5 +1,4 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 import { createContext } from "#context.ts";

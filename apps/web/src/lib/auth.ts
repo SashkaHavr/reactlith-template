@@ -5,7 +5,6 @@ import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
-
 import { auth } from "@reactlith-template/auth";
 import { ac, roles } from "@reactlith-template/auth/permissions";
 import { createSSRRequest } from "~/utils/create-ssr-request";

@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "ignorePatterns": ["**/*.gen.ts", "**/drizzle", "**/generated", "**/dist"],
-  "experimentalSortImports": { "internalPattern": ["@reactlith-template", "~/", "#"] },
+  "experimentalSortImports": { "internalPattern": ["@reactlith-template", "~/"] },
   "experimentalTailwindcss": { "stylesheet": "./apps/web/src/index.css" }
 }

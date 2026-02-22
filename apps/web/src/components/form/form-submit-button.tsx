@@ -8,11 +8,14 @@ export function FormSubmitButton({
 }: Omit<React.ComponentProps<typeof Button>, "type" | "disabled">) {
   const form = useFormContext();
   return (
-    <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting] as const}>
-      {([canSubmit, isSubmitting]) => {
+    <form.Subscribe
+      // @ts-expect-error type error in tsgo?
+      selector={(state) => ({ isSubmitting: state.isSubmitting, canSubmit: state.canSubmit })}
+    >
+      {(form) => {
         return (
-          <Button type="submit" disabled={!canSubmit} {...props}>
-            {isSubmitting && <Spinner />}
+          <Button type="submit" disabled={!form.canSubmit} {...props}>
+            {form.isSubmitting && <Spinner />}
             <span>{children}</span>
           </Button>
         );

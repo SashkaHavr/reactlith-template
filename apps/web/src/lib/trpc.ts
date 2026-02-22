@@ -5,7 +5,6 @@ import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-
 import superjson from "superjson";
 
 import type { TRPCRouter } from "@reactlith-template/trpc";
-
 import { trpcHandler } from "@reactlith-template/trpc";
 import { createSSRRequest } from "~/utils/create-ssr-request";
 

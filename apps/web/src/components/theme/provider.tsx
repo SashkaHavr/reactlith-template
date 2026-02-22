@@ -3,7 +3,6 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import { useEffect, useEffectEvent, useState } from "react";
 
 import type { ResolvedTheme } from "./context";
-
 import { setThemeCookie, ThemeContext } from "./context";
 
 const MEDIA = "(prefers-color-scheme: dark)";

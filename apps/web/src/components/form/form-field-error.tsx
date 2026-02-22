@@ -5,10 +5,10 @@ export function FormFieldError(props: Omit<React.ComponentProps<typeof FieldErro
   const field = useFieldContext();
   return (
     <FieldError match={!field.state.meta.isValid} {...props}>
-      {field.state.meta.errors.map((_error, index) => {
+      {field.state.meta.errors.map((_error) => {
         const error = _error as { message?: string } | string;
         return (
-          <p key={`error-${field.name}-${index}`}>
+          <p key={`fielderror-${field.name}-`}>
             {typeof error === "string" ? error : error.message}
           </p>
         );

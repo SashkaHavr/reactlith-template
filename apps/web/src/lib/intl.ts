@@ -1,8 +1,7 @@
-import type { Formats, Locale } from "use-intl";
-
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
+import type { Formats, Locale } from "use-intl";
 
 import { defaultLocale, isLocale, localeCookieName } from "@reactlith-template/intl";
 import { getCookie, setCookie } from "~/utils/cookie";

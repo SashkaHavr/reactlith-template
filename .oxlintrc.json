@@ -35,6 +35,7 @@
     "no-warning-comments": "off",
     "no-inline-comments": "off",
     "no-negated-condition": "off",
+    "no-shadow": "off",
 
     "oxc/no-map-spread": "off",
 

@@ -1,16 +1,14 @@
 /// <reference types="vite/client" />
 
-import type { ReactNode } from "react";
-
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-
-import type { TRPCRouteContext } from "~/lib/trpc";
+import type { ReactNode } from "react";
 
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
+import type { TRPCRouteContext } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 import { seo } from "~/utils/seo";
 
