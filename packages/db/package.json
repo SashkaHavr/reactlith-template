@@ -11,9 +11,10 @@
   },
   "scripts": {
     "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "bunx --bun drizzle-kit generate",
     "db:migrate": "bun run ./src/migrate.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:push": "bunx --bun drizzle-kit push",
+    "db:studio": "bunx --bun drizzle-kit studio"
   },
   "dependencies": {
     "@reactlith-template/env": "workspace:*",

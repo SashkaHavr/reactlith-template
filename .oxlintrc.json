@@ -49,7 +49,6 @@
       { "allowNullableBoolean": true, "allowNullableString": true }
     ],
     "typescript/return-await": ["error", "error-handling-correctness-only"],
-    "react/no-unescaped-entities": "off",
 
     "import/consistent-type-specifier-style": "error",
     "import/no-default-export": "error",
@@ -57,7 +56,9 @@
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",
 
+    "react/no-unescaped-entities": "off",
     "react/react-in-jsx-scope": "off",
+    "react/no-array-index-key": "off",
 
     "promise/always-return": ["error", { "ignoreLastCallback": true }],
 

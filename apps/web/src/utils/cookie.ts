@@ -13,6 +13,9 @@ export const getCookie = createIsomorphicFn()
     return getServerCookie(name);
   })
   .client(async (name: string) => {
+    if (!("cookieStore" in window)) {
+      return document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)")?.pop();
+    }
     const cookie = await cookieStore.get({ name });
     return cookie?.value;
   });
@@ -25,6 +28,11 @@ export const setCookie = createIsomorphicFn()
     });
   })
   .client(async (name: string, value: string, days = 400) => {
+    if (!("cookieStore" in window)) {
+      const expires = new Date(Date.now() + days * MILLISECONDS_IN_A_DAY);
+      document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
+      return;
+    }
     await cookieStore.set({
       name,
       value,
@@ -38,5 +46,9 @@ export const deleteCookie = createIsomorphicFn()
     return deleteServerCookie(name);
   })
   .client(async (name: string) => {
+    if (!("cookieStore" in window)) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+      return;
+    }
     await cookieStore.delete({ name });
   });
