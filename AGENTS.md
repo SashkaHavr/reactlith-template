@@ -13,7 +13,7 @@
 
 ## Client-side React code
 
-- Use `~/lib/utils` `cn(...)` for className composition in React components.
+- Use `~/lib/utils` `cn(...)` for className composition in React components. Don't use it just to split long className strings, only when conditional classNames are needed.
 - Use components from `src/components/ui/*` instead of standard html elements (e.g. `Button`, `Input`).
 - Base components are created with base-ui primitives and do not have `asChild`. Use the `render` prop instead. Example: `<DialogTrigger render={<Button />}>Click me!</Button>`.
 - Use form components and hooks from `src/components/form/*` for forms.
@@ -50,6 +50,7 @@ const form = useAppForm({
 - When creating sub-routes, always create a folder `src/routes/<route>/` and use `src/routes/<route>/index.tsx` for the index route and `src/routes/<route>/route.tsx` for layout.
 - Use `useTRPC()` and `useSuspenseQuery(trpc.someQuery.queryOptions())` for non-conditional tRPC queries in React components. These queries will be automatically preloaded.
 - Use `useTRPC()` and `useQuery(trpc.someQuery.queryOptions())` for conditional tRPC queries in React components. Preload conditional queries manually with `context.queryClient.ensureQueryData(context.trpc.someQuery.queryOptions())` in route `loader`.
+- Use second paramter of `.queryOptions()` to specify query options like `enabled` or `select` when needed, e.g. `trpc.someQuery.queryOptions(input, { enabled: false })`.
 
 ## Backend tRPC procedures
 
