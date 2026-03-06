@@ -10,6 +10,7 @@
 
 - Do not access `process.env` directly outside the env package. Define env vars in `packages/env/src/*`.
 - Prefer named top-level `function` declarations over top-level arrow functions.
+- Prefer arrow functions for local handlers/callbacks inside functions/components/hooks.
 
 ## Client-side React code
 
