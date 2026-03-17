@@ -1,8 +1,6 @@
 import { createServerOnlyFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
-import { envAuth } from "@reactlith-template/env/auth";
-
 function getRelativeUrl(url: URL) {
   return `${url.pathname}${url.search}${url.hash}`;
 }
@@ -22,10 +20,6 @@ function prepareHeaders(original?: Headers, additional?: HeadersInit) {
     for (const [key, value] of new Headers(additional).entries()) {
       headers.set(key, value);
     }
-  }
-  const origin = headers.get("origin");
-  if (!origin) {
-    headers.set("origin", envAuth.BETTER_AUTH_URL);
   }
   return headers;
 }

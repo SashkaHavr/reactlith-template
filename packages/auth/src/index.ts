@@ -9,6 +9,10 @@ import { envAuth } from "@reactlith-template/env/auth";
 
 export const auth = betterAuth({
   basePath: "/auth",
+  baseURL: {
+    allowedHosts: [...envAuth.BETTER_AUTH_ALLOWED_HOSTS],
+  },
+  secret: envAuth.BETTER_AUTH_SECRET,
   session: {
     cookieCache: {
       enabled: true,

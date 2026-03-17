@@ -1,5 +1,5 @@
 import type { BetterAuthPlugin, InternalLogger } from "better-auth";
-import { createAuthMiddleware } from "better-auth/plugins";
+import { createAuthMiddleware } from "better-auth/api";
 
 import { baseLogger } from "@reactlith-template/utils/logger";
 
