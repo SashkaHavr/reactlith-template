@@ -9,7 +9,6 @@ export function FormSubmitButton({
   const form = useFormContext();
   return (
     <form.Subscribe
-      // @ts-expect-error type error in tsgo?
       selector={(state) => ({ isSubmitting: state.isSubmitting, canSubmit: state.canSubmit })}
     >
       {(form) => {
