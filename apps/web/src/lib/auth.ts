@@ -16,7 +16,6 @@ const authServerFetch = createServerOnlyFn(
 
 export const authClient = createAuthClient({
   basePath: "/auth",
-  // @ts-expect-error type error in tsgo?
   plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
   fetchOptions: { throw: true, customFetchImpl: isServer ? authServerFetch : undefined },
 });

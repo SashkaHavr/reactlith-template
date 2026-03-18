@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
+    "@types/babel__core": "catalog:vite",
     "@types/bun": "catalog:",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
