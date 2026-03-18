@@ -20,7 +20,6 @@
     }
   ],
   "editor.formatOnSave": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
   "emmet.showExpandedAbbreviation": "never",
   "remote.localPortHost": "allInterfaces",
   "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
@@ -76,6 +75,5 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
-  },
-  "oxc.typeAware": true
+  }
 }
