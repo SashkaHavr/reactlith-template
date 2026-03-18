@@ -51,9 +51,10 @@
         "@tanstack/react-router-ssr-query": "1.161.1",
         "@tanstack/react-start": "1.161.1",
         "@tanstack/router-plugin": "1.161.1",
-        "@vitejs/plugin-react": "5.1.4",
-        "vite": "8.0.0-beta.15",
-        "nitro": "3.0.1-alpha.2"
+        "@vitejs/plugin-react": "6.0.1",
+        "vite": "8.0.0",
+        "@rolldown/plugin-babel": "0.2.1",
+        "nitro": "3.0.260311-beta"
       }
     }
   },

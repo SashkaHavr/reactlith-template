@@ -14,6 +14,7 @@
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/trpc": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
+    "@rolldown/plugin-babel": "catalog:vite",
     "@tailwindcss/vite": "catalog:tailwind",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:trpc",

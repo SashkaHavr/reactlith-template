@@ -1,6 +1,7 @@
+import babel from "@rolldown/plugin-babel";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import react from "@vitejs/plugin-react";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
@@ -9,6 +10,9 @@ export default defineConfig({
     rolldownOptions: {
       external: ["bun"],
     },
+  },
+  dev: {
+    preTransformRequests: false,
   },
   server: {
     port: 3000,
@@ -21,10 +25,9 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({ preset: "bun", output: { dir: "dist" }, compressPublicAssets: { brotli: true } }),
-    react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
   ],
 });
