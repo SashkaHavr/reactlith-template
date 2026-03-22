@@ -25,7 +25,7 @@
     "@trpc/client": "catalog:trpc",
     "@trpc/tanstack-react-query": "catalog:trpc",
     "@vitejs/plugin-react": "catalog:vite",
-    "babel-plugin-react-compiler": "latest",
+    "babel-plugin-react-compiler": "catalog:react",
     "better-auth": "catalog:",
     "class-variance-authority": "catalog:tailwind",
     "clsx": "catalog:tailwind",
