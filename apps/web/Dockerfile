@@ -1,4 +1,4 @@
-FROM oven/bun:1.3.3-alpine AS base
+FROM oven/bun:1.3.11-alpine AS base
 
 # Install and build
 FROM base AS build
