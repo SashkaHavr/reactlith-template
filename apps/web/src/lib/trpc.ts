@@ -1,4 +1,4 @@
-import { isServer, QueryClient } from "@tanstack/react-query";
+import { environmentManager, QueryClient } from "@tanstack/react-query";
 import { createServerOnlyFn } from "@tanstack/react-start";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
@@ -49,7 +49,7 @@ export function createTRPCRouteContext() {
           transformer: superjson,
           url: "/trpc",
           // Custom fetch implementation to support server-side requests
-          fetch: isServer ? trpcServerFetch : undefined,
+          fetch: environmentManager.isServer() ? trpcServerFetch : undefined,
         }),
       }),
     ],

@@ -1,4 +1,9 @@
-import { isServer, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  environmentManager,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createServerOnlyFn } from "@tanstack/react-start";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
@@ -17,7 +22,10 @@ const authServerFetch = createServerOnlyFn(
 export const authClient = createAuthClient({
   basePath: "/auth",
   plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
-  fetchOptions: { throw: true, customFetchImpl: isServer ? authServerFetch : undefined },
+  fetchOptions: {
+    throw: true,
+    customFetchImpl: environmentManager.isServer() ? authServerFetch : undefined,
+  },
 });
 
 export const baseAuthKey = "auth" as const;
