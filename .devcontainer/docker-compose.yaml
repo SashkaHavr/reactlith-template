@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
     networks:
       - db-network
     command: sleep infinity
