@@ -25,6 +25,7 @@
     "allowImportingTsExtensions": true,
 
     "lib": ["ESNext"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["*"]
   }
 }
