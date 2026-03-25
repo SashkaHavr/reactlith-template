@@ -23,15 +23,6 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  socialProviders: {
-    github:
-      envAuth.GITHUB_CLIENT_ID && envAuth.GITHUB_CLIENT_SECRET
-        ? {
-            clientId: envAuth.GITHUB_CLIENT_ID,
-            clientSecret: envAuth.GITHUB_CLIENT_SECRET,
-          }
-        : undefined,
-  },
   plugins: [admin({ ac, roles }), logPlugin],
   emailAndPassword: {
     enabled: envAuth.TEST_AUTH,

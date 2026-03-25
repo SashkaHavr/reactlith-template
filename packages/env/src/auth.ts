@@ -31,9 +31,6 @@ export const envAuth = createEnv({
     BETTER_AUTH_SECRET: envNode.NODE_ENV === "development" ? secret.optional() : secret,
 
     TEST_AUTH: z.stringbool().default(false),
-
-    GITHUB_CLIENT_ID: z.string().optional(),
-    GITHUB_CLIENT_SECRET: z.string().optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

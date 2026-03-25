@@ -100,7 +100,7 @@ function RouteComponent() {
             </span>
           </p>
           <p>
-            {t("now-is")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
+            {t("time-now")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
           </p>
         </div>
       </div>
