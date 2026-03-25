@@ -1,8 +1,9 @@
 import { Form as FormPrimitive } from "@base-ui/react/form";
+import type React from "react";
 
 import { cn } from "~/lib/utils";
 
-function Form({ className, ...props }: FormPrimitive.Props) {
+export function Form({ className, ...props }: FormPrimitive.Props): React.ReactElement {
   return (
     <FormPrimitive
       className={cn("flex w-full flex-col gap-4", className)}
@@ -12,4 +13,4 @@ function Form({ className, ...props }: FormPrimitive.Props) {
   );
 }
 
-export { Form };
+export { FormPrimitive };

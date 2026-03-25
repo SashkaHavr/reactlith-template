@@ -13,7 +13,7 @@
     "apps/web": {
       "name": "@reactlith-template/web",
       "dependencies": {
-        "@base-ui/react": "1.3.0",
+        "@base-ui/react": "^1.3.0",
         "@reactlith-template/auth": "workspace:*",
         "@reactlith-template/env": "workspace:*",
         "@reactlith-template/trpc": "workspace:*",

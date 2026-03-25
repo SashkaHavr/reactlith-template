@@ -1,5 +1,4 @@
 import { Button } from "../ui/button";
-import { Spinner } from "../ui/spinner";
 import { useFormContext } from "./form-context";
 
 export function FormSubmitButton({
@@ -13,8 +12,7 @@ export function FormSubmitButton({
     >
       {(form) => {
         return (
-          <Button type="submit" disabled={!form.canSubmit} {...props}>
-            {form.isSubmitting && <Spinner />}
+          <Button type="submit" disabled={!form.canSubmit} loading={form.isSubmitting} {...props}>
             <span>{children}</span>
           </Button>
         );
