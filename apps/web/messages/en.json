@@ -20,7 +20,6 @@
   },
   "routeComponents": {
     "error": "Something went wrong",
-    "loading": "Loading...",
     "notFound": "Not Found",
     "notFoundDescription": "The page you're looking for doesn't exist.",
     "returnToHomePage": "Return to Home page"

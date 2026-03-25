@@ -21,7 +21,7 @@ export function ErrorComponent({ error }: { error: Error }) {
     : (key: string) =>
         ({
           "routeComponents.error": "Something went wrong",
-          "routeComponents.returnToHomePage": "	Return to Home page",
+          "routeComponents.returnToHomePage": "Return to Home page",
         })[key] ?? key;
 
   console.error(

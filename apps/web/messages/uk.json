@@ -20,7 +20,6 @@
   },
   "routeComponents": {
     "error": "Щось пішло не так",
-    "loading": "Завантаження...",
     "notFound": "Сторінка, яку ви шукаєте, не існує",
     "notFoundDescription": "The page you're looking for doesn't exist.",
     "returnToHomePage": "Повернутися на домашню сторінку"
