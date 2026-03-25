@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
+import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
@@ -48,6 +50,20 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     links: [
       { rel: "stylesheet", href: indexCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      {
+        rel: "preload",
+        href: fontSansHref,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: fontHeadingHref,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
     ],
   }),
 });

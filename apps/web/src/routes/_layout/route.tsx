@@ -89,7 +89,7 @@ function RouteComponent() {
       <div className="flex w-100 flex-col items-center">
         <div className="flex w-fit flex-col gap-4">
           <div className="flex gap-3">
-            <p className="self-center text-xl">{t("works")}</p>
+            <p className="self-center font-heading text-xl">{t("works")}</p>
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
