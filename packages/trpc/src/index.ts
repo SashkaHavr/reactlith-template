@@ -1,15 +1,16 @@
+import { unstable_localLink } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { Result } from "better-result";
 import { sql } from "drizzle-orm";
+import superjson from "superjson";
 import z from "zod";
 
 import { createContext } from "#context.ts";
 import { createCallerFactory, publicProcedure, router } from "#init.ts";
 import { configRouter } from "#routers/config.ts";
 import { numbersRouter } from "#routers/numbers.ts";
-
 const appRouter = router({
   health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
     const res = await Result.tryPromise(() => ctx.db.execute(sql`select 1`));
@@ -32,6 +33,18 @@ export async function trpcHandler({ request }: { request: Request }) {
 }
 
 export const createTrpcCaller = createCallerFactory(appRouter);
+
+export function createLocalLink({ request }: { request: Request }) {
+  return unstable_localLink({
+    router: appRouter,
+    // oxlint-disable-next-line require-await
+    createContext: async () => {
+      // Create your context here
+      return createContext({ request });
+    },
+    transformer: superjson,
+  });
+}
 
 export type TRPCRouter = typeof appRouter;
 export type TRPCInput = inferRouterInputs<TRPCRouter>;

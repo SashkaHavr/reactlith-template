@@ -1,21 +1,18 @@
 import { environmentManager, QueryClient } from "@tanstack/react-query";
 import { createServerOnlyFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
 
+import { createLocalLink } from "@reactlith-template/trpc";
 import type { TRPCRouter } from "@reactlith-template/trpc";
-import { trpcHandler } from "@reactlith-template/trpc";
-import { createSSRRequest } from "~/utils/create-ssr-request";
 
 import { baseAuthKey } from "./auth";
 
-const trpcServerFetch = createServerOnlyFn(
-  async (input: RequestInfo | URL, init?: RequestInit) =>
-    await trpcHandler({
-      request: createSSRRequest(input, init),
-    }),
-);
+const getLocalLink = createServerOnlyFn(() => {
+  return createLocalLink({ request: getRequest() });
+});
 
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
@@ -37,22 +34,22 @@ export function createTRPCRouteContext() {
     },
   });
   const trpcClient = createTRPCClient<TRPCRouter>({
-    links: [
-      splitLink({
-        // uses the httpSubscriptionLink for subscriptions
-        condition: (op) => op.type === "subscription",
-        true: httpSubscriptionLink({
-          transformer: superjson,
-          url: `/trpc`,
-        }),
-        false: httpBatchLink({
-          transformer: superjson,
-          url: "/trpc",
-          // Custom fetch implementation to support server-side requests
-          fetch: environmentManager.isServer() ? trpcServerFetch : undefined,
-        }),
-      }),
-    ],
+    links: environmentManager.isServer()
+      ? [getLocalLink()]
+      : [
+          splitLink({
+            // uses the httpSubscriptionLink for subscriptions
+            condition: (op) => op.type === "subscription",
+            true: httpSubscriptionLink({
+              transformer: superjson,
+              url: `/trpc`,
+            }),
+            false: httpBatchLink({
+              transformer: superjson,
+              url: "/trpc",
+            }),
+          }),
+        ],
   });
   const trpc = createTRPCOptionsProxy({
     client: trpcClient,

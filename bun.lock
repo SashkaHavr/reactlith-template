@@ -112,6 +112,7 @@
         "@reactlith-template/env": "workspace:*",
         "@reactlith-template/utils": "workspace:*",
         "@tanstack/react-start": "catalog:vite",
+        "@trpc/client": "catalog:trpc",
         "@trpc/server": "catalog:trpc",
         "better-result": "catalog:",
         "drizzle-orm": "catalog:drizzle",
