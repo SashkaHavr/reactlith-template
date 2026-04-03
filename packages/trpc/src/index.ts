@@ -1,5 +1,8 @@
+import { TRPCError } from "@trpc/server";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { Result } from "better-result";
+import { sql } from "drizzle-orm";
 import z from "zod";
 
 import { createContext } from "#context.ts";
@@ -8,7 +11,13 @@ import { configRouter } from "#routers/config.ts";
 import { numbersRouter } from "#routers/numbers.ts";
 
 const appRouter = router({
-  health: publicProcedure.output(z.string()).query(() => "tRPC healthy!"),
+  health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
+    const res = await Result.tryPromise(() => ctx.db.execute(sql`select 1`));
+    if (!res.isOk()) {
+      throw new TRPCError({ message: "DB connection failed", code: "INTERNAL_SERVER_ERROR" });
+    }
+    return null;
+  }),
   config: configRouter,
   numbers: numbersRouter,
 });

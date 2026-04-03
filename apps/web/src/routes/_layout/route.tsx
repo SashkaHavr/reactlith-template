@@ -93,11 +93,8 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p>
-            {t("trpc-health-response")}:{" "}
-            <span className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
-              {trpcHealth.data}
-            </span>
+          <p className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
+            {t("trpc-health-response")}
           </p>
           <p>
             {t("time-now")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>

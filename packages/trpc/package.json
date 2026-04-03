@@ -16,6 +16,7 @@
     "@reactlith-template/utils": "workspace:*",
     "@tanstack/react-start": "catalog:vite",
     "@trpc/server": "catalog:trpc",
+    "better-result": "catalog:",
     "drizzle-orm": "catalog:drizzle",
     "superjson": "catalog:",
     "zod": "catalog:"
