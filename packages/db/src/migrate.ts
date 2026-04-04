@@ -1,3 +1,4 @@
+import fsSync from "fs";
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
@@ -6,6 +7,8 @@ import { parseArgs } from "util";
 import { migrate } from "drizzle-orm/bun-sql/migrator";
 
 import { db } from "#index.ts";
+
+const migrationsFolder = "./drizzle";
 
 async function foreachMigrationFileLine(action: (content: string) => string) {
   await Promise.all(
@@ -25,6 +28,8 @@ async function foreachMigrationFileLine(action: (content: string) => string) {
 }
 
 async function main() {
+  if (!fsSync.existsSync(migrationsFolder)) return;
+
   const { values } = parseArgs({
     args: Bun.argv,
     options: {
@@ -41,7 +46,7 @@ async function main() {
     await foreachMigrationFileLine((s) => `-- ${s}`);
   }
 
-  await migrate(db, { migrationsFolder: "./drizzle" });
+  await migrate(db, { migrationsFolder });
 
   if (values.force) {
     await foreachMigrationFileLine((s) => s.slice(3));
