@@ -2,11 +2,11 @@ import fsSync from "fs";
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
-import { parseArgs } from "util";
 
 import { Result } from "better-result";
 import { sql } from "drizzle-orm";
 import { migrate } from "drizzle-orm/bun-sql/migrator";
+import z from "zod";
 
 import { db } from "#index.ts";
 
@@ -38,25 +38,18 @@ async function main() {
 
   if (!fsSync.existsSync(migrationsFolder)) return;
 
-  const { values } = parseArgs({
-    args: Bun.argv,
-    options: {
-      force: {
-        type: "boolean",
-        default: false,
-      },
-    },
-    strict: true,
-    allowPositionals: true,
-  });
+  const env = z
+    .object({ DANGEROUSLY_FORCE_DB_MIGRATION: z.stringbool().default(false) })
+    // oxlint-disable-next-line node/no-process-env
+    .parse(process.env);
 
-  if (values.force) {
+  if (env.DANGEROUSLY_FORCE_DB_MIGRATION) {
     await foreachMigrationFileLine((s) => `-- ${s}`);
   }
 
   await migrate(db, { migrationsFolder });
 
-  if (values.force) {
+  if (env.DANGEROUSLY_FORCE_DB_MIGRATION) {
     await foreachMigrationFileLine((s) => s.slice(3));
   }
 }

@@ -21,7 +21,8 @@
     "better-result": "catalog:",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
-    "uuid": "catalog:"
+    "uuid": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
