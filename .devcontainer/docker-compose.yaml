@@ -11,6 +11,8 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
       TEST_AUTH: true
+      BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
+      BETTER_AUTH_ALLOWED_HOSTS: '["localhost:*", "127.0.0.1:*"]'
     depends_on:
       db:
         condition: service_healthy

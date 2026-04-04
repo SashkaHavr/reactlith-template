@@ -26,26 +26,21 @@ export const baseAuthKey = "auth" as const;
 export const getSessionQueryOptions = queryOptions({
   queryKey: [baseAuthKey, "getSession"] as const,
   queryFn: async () => {
-    try {
-      const session = await getSession();
-      return session === null
-        ? {
-            available: true as const,
-            loggedIn: false as const,
-          }
-        : {
-            available: true as const,
-            loggedIn: true as const,
-            session: session.session,
-            user: session.user,
-          };
-    } catch {
+    const session = await getSession();
+    if (session === null) {
       return {
-        available: false as const,
         loggedIn: false as const,
       };
     }
+    return {
+      loggedIn: true as const,
+      ...session,
+    };
   },
+  retry: 20,
+  retryDelay: 500,
+  gcTime: Infinity,
+  staleTime: Infinity,
 });
 
 export function useAuth() {

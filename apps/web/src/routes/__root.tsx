@@ -18,6 +18,15 @@ import indexCss from "../index.css?url";
 
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
+    await queryClient.ensureQueryData(
+      trpc.health.queryOptions(void 0, {
+        staleTime: "static",
+        gcTime: Infinity,
+        retry: 20,
+        retryDelay: 500,
+      }),
+    );
+
     const locale = await getLocale();
     const data = await Promise.all([
       queryClient.ensureQueryData(trpc.config.general.queryOptions()),

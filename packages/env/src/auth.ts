@@ -27,7 +27,9 @@ const secret = z.string().nonempty();
 export const envAuth = createEnv({
   server: {
     BETTER_AUTH_ALLOWED_HOSTS:
-      envNode.NODE_ENV === "development" ? allowedHosts.default(["localhost:*"]) : allowedHosts,
+      envNode.NODE_ENV === "development"
+        ? allowedHosts.default(["localhost:*", "127.0.0.1:*"])
+        : allowedHosts,
     BETTER_AUTH_SECRET: envNode.NODE_ENV === "development" ? secret.optional() : secret,
 
     TEST_AUTH: z.stringbool().default(false),
