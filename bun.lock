@@ -74,6 +74,7 @@
       "name": "@reactlith-template/db",
       "dependencies": {
         "@reactlith-template/env": "workspace:*",
+        "better-result": "catalog:",
         "drizzle-kit": "catalog:drizzle",
         "drizzle-orm": "catalog:drizzle",
         "uuid": "catalog:",

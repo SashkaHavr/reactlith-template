@@ -4,6 +4,8 @@ import os from "os";
 import path from "path";
 import { parseArgs } from "util";
 
+import { Result } from "better-result";
+import { sql } from "drizzle-orm";
 import { migrate } from "drizzle-orm/bun-sql/migrator";
 
 import { db } from "#index.ts";
@@ -28,6 +30,12 @@ async function foreachMigrationFileLine(action: (content: string) => string) {
 }
 
 async function main() {
+  (
+    await Result.tryPromise(() => db.execute(sql`select 1`), {
+      retry: { times: 20, delayMs: 500, backoff: "constant" },
+    })
+  ).unwrap();
+
   if (!fsSync.existsSync(migrationsFolder)) return;
 
   const { values } = parseArgs({
