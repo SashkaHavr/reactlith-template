@@ -31,7 +31,7 @@ async function foreachMigrationFileLine(action: (content: string) => string) {
 
 async function main() {
   (
-    await Result.tryPromise(() => db.execute(sql`select 1`), {
+    await Result.tryPromise(async () => await db.execute(sql`select 1`), {
       retry: { times: 20, delayMs: 500, backoff: "constant" },
     })
   ).unwrap();

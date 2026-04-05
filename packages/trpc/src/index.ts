@@ -13,9 +13,13 @@ import { configRouter } from "#routers/config.ts";
 import { numbersRouter } from "#routers/numbers.ts";
 const appRouter = router({
   health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
-    const res = await Result.tryPromise(() => ctx.db.execute(sql`select 1`));
-    if (!res.isOk()) {
-      throw new TRPCError({ message: "DB connection failed", code: "INTERNAL_SERVER_ERROR" });
+    const res = await Result.tryPromise(async () => await ctx.db.execute(sql`select 1`));
+    if (res.isErr()) {
+      throw new TRPCError({
+        message: "Healthcheck: DB connection failed",
+        code: "INTERNAL_SERVER_ERROR",
+        cause: res.error,
+      });
     }
     return null;
   }),
