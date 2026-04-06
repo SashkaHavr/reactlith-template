@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
-import { Route as TrpcSplatRouteImport } from './routes/trpc.$'
-import { Route as AuthSplatRouteImport } from './routes/auth.$'
 import { Route as LayoutNumbersRouteImport } from './routes/_layout/numbers'
+import { Route as apiTrpcSplatRouteImport } from './routes/(api)/trpc.$'
+import { Route as apiAuthSplatRouteImport } from './routes/(api)/auth.$'
 
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
@@ -24,60 +24,60 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRouteRoute,
 } as any)
-const TrpcSplatRoute = TrpcSplatRouteImport.update({
-  id: '/trpc/$',
-  path: '/trpc/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthSplatRoute = AuthSplatRouteImport.update({
-  id: '/auth/$',
-  path: '/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LayoutNumbersRoute = LayoutNumbersRouteImport.update({
   id: '/numbers',
   path: '/numbers',
   getParentRoute: () => LayoutRouteRoute,
 } as any)
+const apiTrpcSplatRoute = apiTrpcSplatRouteImport.update({
+  id: '/(api)/trpc/$',
+  path: '/trpc/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiAuthSplatRoute = apiAuthSplatRouteImport.update({
+  id: '/(api)/auth/$',
+  path: '/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/numbers': typeof LayoutNumbersRoute
-  '/auth/$': typeof AuthSplatRoute
-  '/trpc/$': typeof TrpcSplatRoute
+  '/auth/$': typeof apiAuthSplatRoute
+  '/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/numbers': typeof LayoutNumbersRoute
-  '/auth/$': typeof AuthSplatRoute
-  '/trpc/$': typeof TrpcSplatRoute
   '/': typeof LayoutIndexRoute
+  '/auth/$': typeof apiAuthSplatRoute
+  '/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteRouteWithChildren
   '/_layout/numbers': typeof LayoutNumbersRoute
-  '/auth/$': typeof AuthSplatRoute
-  '/trpc/$': typeof TrpcSplatRoute
   '/_layout/': typeof LayoutIndexRoute
+  '/(api)/auth/$': typeof apiAuthSplatRoute
+  '/(api)/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/numbers' | '/auth/$' | '/trpc/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/numbers' | '/auth/$' | '/trpc/$' | '/'
+  to: '/numbers' | '/' | '/auth/$' | '/trpc/$'
   id:
     | '__root__'
     | '/_layout'
     | '/_layout/numbers'
-    | '/auth/$'
-    | '/trpc/$'
     | '/_layout/'
+    | '/(api)/auth/$'
+    | '/(api)/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
-  AuthSplatRoute: typeof AuthSplatRoute
-  TrpcSplatRoute: typeof TrpcSplatRoute
+  apiAuthSplatRoute: typeof apiAuthSplatRoute
+  apiTrpcSplatRoute: typeof apiTrpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -96,26 +96,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRouteRoute
     }
-    '/trpc/$': {
-      id: '/trpc/$'
-      path: '/trpc/$'
-      fullPath: '/trpc/$'
-      preLoaderRoute: typeof TrpcSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/$': {
-      id: '/auth/$'
-      path: '/auth/$'
-      fullPath: '/auth/$'
-      preLoaderRoute: typeof AuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_layout/numbers': {
       id: '/_layout/numbers'
       path: '/numbers'
       fullPath: '/numbers'
       preLoaderRoute: typeof LayoutNumbersRouteImport
       parentRoute: typeof LayoutRouteRoute
+    }
+    '/(api)/trpc/$': {
+      id: '/(api)/trpc/$'
+      path: '/trpc/$'
+      fullPath: '/trpc/$'
+      preLoaderRoute: typeof apiTrpcSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(api)/auth/$': {
+      id: '/(api)/auth/$'
+      path: '/auth/$'
+      fullPath: '/auth/$'
+      preLoaderRoute: typeof apiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -136,8 +136,8 @@ const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRouteRoute: LayoutRouteRouteWithChildren,
-  AuthSplatRoute: AuthSplatRoute,
-  TrpcSplatRoute: TrpcSplatRoute,
+  apiAuthSplatRoute: apiAuthSplatRoute,
+  apiTrpcSplatRoute: apiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { trpcHandler } from "@reactlith-template/trpc";
 
-export const Route = createFileRoute("/trpc/$")({
+export const Route = createFileRoute("/(api)/trpc/$")({
   server: {
     handlers: {
       GET: async ({ request }) => {
