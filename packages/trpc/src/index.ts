@@ -36,7 +36,10 @@ export async function trpcHandler({ request }: { request: Request }) {
   });
 }
 
-export const createTrpcCaller = createCallerFactory(appRouter);
+const trpcCallerFactory = createCallerFactory(appRouter);
+export function createTrpcCaller({ request }: { request: Request }) {
+  return trpcCallerFactory(createContext({ request }));
+}
 
 export function createLocalLink({ request }: { request: Request }) {
   return unstable_localLink({
