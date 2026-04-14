@@ -10,23 +10,25 @@
     "./schema": "./src/schema/index.ts"
   },
   "scripts": {
-    "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
-    "db:generate": "bunx --no-install --bun drizzle-kit generate",
-    "db:migrate": "bun run ./src/migrate.ts",
-    "db:push": "bunx --no-install --bun drizzle-kit push",
-    "db:studio": "bunx --no-install --bun drizzle-kit studio"
+    "build": "tsdown ./src/migrate.ts -d ./dist",
+    "db:generate": "pnpm exec drizzle-kit generate",
+    "db:migrate": "node ./src/migrate.ts",
+    "db:push": "pnpm exec drizzle-kit push",
+    "db:studio": "pnpm exec drizzle-kit studio"
   },
   "dependencies": {
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/pg": "^8.20.0",
     "better-result": "catalog:",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
+    "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
-    "typescript": "catalog:"
   }
 }

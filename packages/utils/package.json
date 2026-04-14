@@ -9,15 +9,13 @@
     "./*": "./src/*.ts"
   },
   "scripts": {},
-  "dependencies": {
-    "@reactlith-template/env": "workspace:*",
-    "pino": "catalog:",
-    "use-intl": "catalog:"
-  },
   "devDependencies": {
+    "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
+    "pino": "catalog:",
     "pino-pretty": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "use-intl": "catalog:"
   }
 }

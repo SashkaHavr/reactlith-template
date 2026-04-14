@@ -8,17 +8,9 @@
     "**/.tanstack": true
   },
   "search.exclude": {
-    "bun.lock": true,
+    "pnpm-lock.yaml": true,
     "**/routeTree.gen.ts": true
   },
-  "json.schemas": [
-    {
-      "fileMatch": ["bun.lock"],
-      "schema": {
-        "allowTrailingCommas": true
-      }
-    }
-  ],
   "editor.formatOnSave": true,
   "emmet.showExpandedAbbreviation": "never",
   "remote.localPortHost": "allInterfaces",

@@ -20,7 +20,7 @@ services:
       [
         "sh",
         "-c",
-        "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js",
+        "cd /app/packages/db && node /app/packages/db/migrate.mjs && cd /app && node /app/packages/auth/generate-test-users.mjs",
       ]
     networks:
       - db-network

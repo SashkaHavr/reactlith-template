@@ -9,10 +9,9 @@
     ".": "./src/index.ts"
   },
   "scripts": {},
-  "dependencies": {},
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "typescript": "catalog:"
   }
 }

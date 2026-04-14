@@ -42,6 +42,7 @@ export function Input({
       data-slot="input-control"
     >
       {nativeInput ? (
+        // @ts-expect-error incompatible style type
         <input
           className={inputClassName}
           data-slot="input"

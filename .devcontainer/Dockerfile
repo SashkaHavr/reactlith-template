@@ -1,5 +1,3 @@
-FROM mcr.microsoft.com/devcontainers/javascript-node:24-bookworm
-USER node
+FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-RUN npm install -g bun@1.3.11
-ENV BUN_INSTALL_BIN=/home/node/.local/bin
+RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=11.0.0-rc.0 ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -

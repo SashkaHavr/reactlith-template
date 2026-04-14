@@ -5,7 +5,7 @@ import path from "path";
 
 import { Result } from "better-result";
 import { sql } from "drizzle-orm";
-import { migrate } from "drizzle-orm/bun-sql/migrator";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 import z from "zod";
 
 import { db } from "#index.ts";
@@ -16,10 +16,11 @@ async function foreachMigrationFileLine(action: (content: string) => string) {
   await Promise.all(
     (await fs.readdir("./drizzle", { withFileTypes: true })).map(async (dir) => {
       if (!dir.isDirectory()) return;
-      const sqlMigrationFile = Bun.file(path.join("./drizzle", dir.name, "migration.sql"));
-      if (!(await sqlMigrationFile.exists())) return;
-      const migration = await sqlMigrationFile.text();
-      await sqlMigrationFile.write(
+      const migrationFilePath = path.join("./drizzle", dir.name, "migration.sql");
+      if (!fsSync.existsSync(migrationFilePath)) return;
+      const migration = await fs.readFile(migrationFilePath, "utf8");
+      await fs.writeFile(
+        migrationFilePath,
         migration
           .split(os.EOL)
           .map((s) => action(s))
