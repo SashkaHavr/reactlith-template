@@ -16,17 +16,15 @@
     "db:push": "bunx --no-install --bun drizzle-kit push",
     "db:studio": "bunx --no-install --bun drizzle-kit studio"
   },
-  "dependencies": {
+  "devDependencies": {
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
     "better-result": "catalog:",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
+    "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
-    "typescript": "catalog:"
   }
 }

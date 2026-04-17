@@ -3,6 +3,7 @@ import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
+import { genericOAuthClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
@@ -11,7 +12,7 @@ import { ac, roles } from "@reactlith-template/auth/permissions";
 
 export const authClient = createAuthClient({
   basePath: "/auth",
-  plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
+  plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles }), genericOAuthClient()],
   fetchOptions: {
     throw: true,
   },

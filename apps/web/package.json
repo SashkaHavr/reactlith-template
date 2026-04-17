@@ -8,13 +8,14 @@
     "dev": "bunx --no-install --bun vite dev",
     "start": "bun exec \"NODE_ENV=production bun run dist/server/index.mjs\""
   },
-  "dependencies": {
+  "devDependencies": {
     "@base-ui/react": "^1.3.0",
     "@fontsource-variable/geist": "5.2.8",
     "@fontsource-variable/geist-mono": "5.2.7",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/trpc": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@rolldown/plugin-babel": "catalog:vite",
     "@tailwindcss/vite": "catalog:tailwind",
@@ -26,6 +27,10 @@
     "@tanstack/router-plugin": "catalog:vite",
     "@trpc/client": "catalog:trpc",
     "@trpc/tanstack-react-query": "catalog:trpc",
+    "@types/babel__core": "catalog:vite",
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:vite",
     "babel-plugin-react-compiler": "catalog:react",
     "better-auth": "catalog:",
@@ -39,16 +44,9 @@
     "tailwind-merge": "catalog:tailwind",
     "tailwindcss": "catalog:tailwind",
     "tw-animate-css": "catalog:tailwind",
+    "typescript": "catalog:",
     "use-intl": "catalog:",
     "vite": "catalog:vite",
     "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@reactlith-template/typescript-config": "workspace:*",
-    "@types/babel__core": "catalog:vite",
-    "@types/bun": "catalog:",
-    "@types/react": "catalog:react",
-    "@types/react-dom": "catalog:react",
-    "typescript": "catalog:"
   }
 }

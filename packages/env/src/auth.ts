@@ -32,7 +32,10 @@ export const envAuth = createEnv({
         : allowedHosts,
     BETTER_AUTH_SECRET: envNode.NODE_ENV === "development" ? secret.optional() : secret,
 
-    TEST_AUTH: z.stringbool().default(false),
+    GOOGLE_CLIENT_ID: z.string().nonempty(),
+    GOOGLE_CLIENT_SECRET: z.string().nonempty(),
+    GOOGLE_AUTHORIZATION_ENDPOINT: z.string().nonempty().optional(),
+    GOOGLE_TOKEN_ENDPOINT: z.string().nonempty().optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

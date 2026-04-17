@@ -1,0 +1,11 @@
+{
+  "name": "@reactlith-template/emulate",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bunx --no-install --bun emulate --service google"
+  },
+  "dependencies": {
+    "emulate": "^0.4.1"
+  }
+}

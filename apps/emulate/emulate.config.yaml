@@ -1,0 +1,9 @@
+google:
+  users:
+    - email: user1@example.com
+      name: Test User 1
+  oauth_clients:
+    - client_id: my-client-id.apps.googleusercontent.com
+      client_secret: GOCSPX-secret
+      redirect_uris:
+        - http://localhost:3000/auth/oauth2/callback/google-emulate

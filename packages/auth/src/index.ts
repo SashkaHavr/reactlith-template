@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin } from "better-auth/plugins";
+import { admin, genericOAuth } from "better-auth/plugins";
 
 import { logPlugin } from "#log-plugin.ts";
 import { ac, roles } from "#permissions.ts";
@@ -23,15 +23,38 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  plugins: [admin({ ac, roles }), logPlugin],
-  emailAndPassword: {
-    enabled: envAuth.TEST_AUTH,
-    disableSignUp: true,
-  },
+  plugins: [
+    admin({ ac, roles }),
+    logPlugin,
+    ...(envAuth.GOOGLE_AUTHORIZATION_ENDPOINT || envAuth.GOOGLE_TOKEN_ENDPOINT
+      ? [
+          genericOAuth({
+            config: [
+              {
+                providerId: "google-emulate",
+                clientId: envAuth.GOOGLE_CLIENT_ID,
+                clientSecret: envAuth.GOOGLE_CLIENT_SECRET,
+                authorizationUrl: envAuth.GOOGLE_AUTHORIZATION_ENDPOINT,
+                tokenUrl: envAuth.GOOGLE_TOKEN_ENDPOINT,
+              },
+            ],
+          }),
+        ]
+      : []),
+  ],
   advanced: {
     database: {
       generateId: false,
     },
+  },
+  socialProviders: {
+    google:
+      envAuth.GOOGLE_AUTHORIZATION_ENDPOINT || envAuth.GOOGLE_TOKEN_ENDPOINT
+        ? undefined
+        : {
+            clientId: envAuth.GOOGLE_CLIENT_ID,
+            clientSecret: envAuth.GOOGLE_CLIENT_SECRET,
+          },
   },
 });
 

@@ -3,8 +3,7 @@
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  // vite dev/bun start, drizzle studio
-  "forwardPorts": [3000, 4983],
+  "forwardPorts": [3000, 4000],
   "postCreateCommand": "bun install",
   "remoteUser": "node",
   "customizations": {
