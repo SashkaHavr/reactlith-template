@@ -7,7 +7,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts"
+    "./schema": "./src/schema/index.ts",
+    "./test-utils": "./test/utils.ts"
   },
   "scripts": {
     "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
@@ -21,10 +22,12 @@
     "better-result": "catalog:",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
+    "drizzle-seed": "catalog:drizzle",
     "uuid": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.4.3",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "typescript": "catalog:"

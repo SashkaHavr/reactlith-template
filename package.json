@@ -25,7 +25,8 @@
     "catalogs": {
       "drizzle": {
         "drizzle-kit": "1.0.0-beta.20",
-        "drizzle-orm": "1.0.0-beta.20"
+        "drizzle-orm": "1.0.0-beta.20",
+        "drizzle-seed": "1.0.0-beta.20"
       },
       "react": {
         "@types/react": "19.2.14",
