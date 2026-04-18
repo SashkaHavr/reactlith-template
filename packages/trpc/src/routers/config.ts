@@ -7,13 +7,14 @@ export const configRouter = router({
   general: publicProcedure
     .output(
       z.object({
-        auth: z.object({ testAuth: z.boolean() }),
+        auth: z.object({ google: z.boolean(), googleEmulate: z.boolean() }),
       }),
     )
     .query(() => {
       return {
         auth: {
-          testAuth: envAuth.TEST_AUTH,
+          google: !!envAuth.GOOGLE_CLIENT_ID && !!envAuth.GOOGLE_CLIENT_SECRET,
+          googleEmulate: !!envAuth.GOOGLE_EMULATE_URL,
         },
       };
     }),

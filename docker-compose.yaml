@@ -16,12 +16,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
-    command:
-      [
-        "sh",
-        "-c",
-        "bun run --cwd /infra/db /infra/db/migrate.js && bun run /infra/auth/generate-test-users.js",
-      ]
+    command: ["sh", "-c", "bun run --cwd /app/packages/db /app/packages/db/migrate.js"]
     networks:
       - db-network
     depends_on:

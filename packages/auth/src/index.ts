@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin } from "better-auth/plugins";
+import { admin, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import { logPlugin } from "#log-plugin.ts";
@@ -24,15 +24,38 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  plugins: [admin({ ac, roles }), logPlugin, tanstackStartCookies()],
-  emailAndPassword: {
-    enabled: envAuth.TEST_AUTH,
-    disableSignUp: true,
-  },
+  plugins: [
+    admin({ ac, roles }),
+    logPlugin,
+    ...(envAuth.GOOGLE_EMULATE_URL
+      ? [
+          genericOAuth({
+            config: [
+              {
+                providerId: "google-emulate",
+                clientId: envAuth.GOOGLE_CLIENT_ID,
+                clientSecret: envAuth.GOOGLE_CLIENT_SECRET,
+                authorizationUrl: `${envAuth.GOOGLE_EMULATE_URL}/o/oauth2/v2/auth`,
+                tokenUrl: `${envAuth.GOOGLE_EMULATE_URL}/oauth2/token`,
+              },
+            ],
+          }),
+        ]
+      : []),
+    tanstackStartCookies(),
+  ],
   advanced: {
     database: {
       generateId: false,
     },
+  },
+  socialProviders: {
+    google: envAuth.GOOGLE_EMULATE_URL
+      ? undefined
+      : {
+          clientId: envAuth.GOOGLE_CLIENT_ID,
+          clientSecret: envAuth.GOOGLE_CLIENT_SECRET,
+        },
   },
 });
 

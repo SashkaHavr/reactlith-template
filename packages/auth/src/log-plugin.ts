@@ -31,7 +31,11 @@ export const logPlugin = {
         // oxlint-disable-next-line require-await
         handler: createAuthMiddleware(async (ctx) => {
           const log = getLogger(ctx.request);
-          if (ctx.context.returned instanceof Error) {
+          if (
+            ctx.context.returned instanceof Error &&
+            (!("statusCode" in ctx.context.returned) ||
+              (ctx.context.returned.statusCode as number) > 400)
+          ) {
             log?.error(ctx.context.returned);
           }
         }),

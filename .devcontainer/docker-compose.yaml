@@ -10,9 +10,11 @@ services:
     command: sleep infinity
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
-      TEST_AUTH: true
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
       BETTER_AUTH_ALLOWED_HOSTS: '["localhost:*", "127.0.0.1:*"]'
+      GOOGLE_CLIENT_ID: my-client-id.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: GOCSPX-secret
+      GOOGLE_EMULATE_URL: http://host.docker.internal:4000
     depends_on:
       db:
         condition: service_healthy

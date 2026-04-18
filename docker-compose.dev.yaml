@@ -1,7 +1,6 @@
 services:
   web-predeploy:
     environment:
-      TEST_AUTH: true
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
       BETTER_AUTH_ALLOWED_HOSTS: http://localhost:5260
   db-studio:
@@ -9,8 +8,10 @@ services:
       - 5261:4983
   web:
     environment:
-      TEST_AUTH: true
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
       BETTER_AUTH_ALLOWED_HOSTS: http://localhost:5260
+      GOOGLE_CLIENT_ID: my-client-id.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: GOCSPX-secret
+      GOOGLE_EMULATE_URL: http://host.docker.internal:4000
     ports:
       - 5260:3000

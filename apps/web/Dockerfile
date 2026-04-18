@@ -5,7 +5,7 @@ FROM base AS build
 WORKDIR /app
 COPY . .
 RUN bun ci
-RUN bun run --filter @reactlith-template/web --filter @reactlith-template/auth --filter @reactlith-template/db build
+RUN bun run --filter @reactlith-template/web --filter @reactlith-template/db build
 
 # Run
 FROM base AS runner
@@ -16,12 +16,9 @@ HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trp
 ENV NODE_ENV=production
 
 
-WORKDIR /infra
-COPY /packages/db/drizzle ./db/drizzle
-COPY --from=build /app/packages/db/dist ./db
-COPY --from=build /app/packages/auth/dist ./auth
-
 WORKDIR /app
+COPY /packages/db/drizzle ./packages/db/drizzle
+COPY --from=build /app/packages/db/dist ./packages/db
 COPY --from=build /app/apps/web/dist .
 
 USER bun
