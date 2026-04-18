@@ -33,7 +33,7 @@ export default defineConfig({
         asyncContext: true,
         vite: {},
       },
-      plugins: ["src/nitro/evlog-runtime-config"],
+      plugins: ["src/lib/evlog-plugin"],
       modules: [evlog()],
     }),
     react(),
