@@ -5,6 +5,8 @@ import {
 } from "@tanstack/react-router";
 import { createTranslator } from "use-intl";
 
+import { logError } from "~/lib/log";
+
 import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 
@@ -24,12 +26,7 @@ export function ErrorComponent({ error }: { error: Error }) {
           "routeComponents.returnToHomePage": "Return to Home page",
         })[key] ?? key;
 
-  console.error(
-    JSON.stringify(error, [
-      ...Object.getOwnPropertyNames(error).filter((k) => k !== "line" && k !== "column"),
-      "name",
-    ]),
-  );
+  logError(error);
 
   return (
     <Empty>

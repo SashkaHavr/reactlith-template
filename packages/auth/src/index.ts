@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin } from "better-auth/plugins";
+import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import { logPlugin } from "#log-plugin.ts";
 import { ac, roles } from "#permissions.ts";
@@ -23,7 +24,7 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  plugins: [admin({ ac, roles }), logPlugin],
+  plugins: [admin({ ac, roles }), logPlugin, tanstackStartCookies()],
   emailAndPassword: {
     enabled: envAuth.TEST_AUTH,
     disableSignUp: true,

@@ -11,7 +11,7 @@
   "scripts": {},
   "dependencies": {
     "@reactlith-template/env": "workspace:*",
-    "pino": "catalog:",
+    "evlog": "catalog:",
     "use-intl": "catalog:"
   },
   "devDependencies": {

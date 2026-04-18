@@ -31,6 +31,7 @@
     "better-auth": "catalog:",
     "class-variance-authority": "catalog:tailwind",
     "clsx": "catalog:tailwind",
+    "evlog": "catalog:",
     "lucide-react": "catalog:",
     "nitro": "catalog:vite",
     "react": "catalog:react",

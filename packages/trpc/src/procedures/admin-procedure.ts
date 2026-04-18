@@ -17,8 +17,8 @@ export function adminProcedure(permissions: Permissions) {
       )
       .flat();
 
-    ctx.logger.setBindings({
-      adminProcedure: {
+    ctx.log?.set({
+      admin: {
         permissionsRequested: requestPermissionsList,
       },
     });

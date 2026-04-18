@@ -4,14 +4,18 @@ import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-la
 import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { createIsomorphicFn } from "@tanstack/react-start";
+import { setIdentity, clearIdentity } from "evlog/client";
+import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { envNode } from "@reactlith-template/env/node";
+import { identifyUser } from "@reactlith-template/utils/logger";
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
+import { getServerLogger } from "~/lib/log";
 import type { TRPCRouteContext } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 import { seo } from "~/utils/seo";
@@ -36,13 +40,18 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     }
 
     const locale = await getLocale();
-    const data = await Promise.all([
+    const [config, auth] = await Promise.all([
       queryClient.ensureQueryData(trpc.config.general.queryOptions()),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 
+    if (auth.loggedIn) {
+      identifyUser(getServerLogger(), auth);
+    }
+
     return {
-      auth: data[1],
+      auth,
+      config,
       intl: {
         messages: await getMessages(locale),
         locale: locale,
@@ -94,9 +103,17 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { locale, theme } = Route.useRouteContext({
-    select: (s) => ({ locale: s.intl.locale, theme: s.theme }),
+  const { locale, theme, auth } = Route.useRouteContext({
+    select: (s) => ({ locale: s.intl.locale, theme: s.theme, auth: s.auth }),
   });
+
+  useEffect(() => {
+    if (auth.loggedIn) {
+      setIdentity({ user: { id: auth.user.id, role: auth.user.role } });
+    } else {
+      clearIdentity();
+    }
+  }, [auth]);
 
   return (
     <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
