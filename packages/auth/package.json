@@ -12,15 +12,13 @@
   "scripts": {
     "generate-db-schema": "bunx auth@latest generate --config generated/config.ts --output ./generated/auth-schema.ts --yes"
   },
-  "dependencies": {
+  "devDependencies": {
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
-    "@reactlith-template/utils": "workspace:*",
-    "better-auth": "catalog:"
-  },
-  "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
     "@types/bun": "catalog:",
+    "better-auth": "catalog:",
     "typescript": "catalog:"
   }
 }

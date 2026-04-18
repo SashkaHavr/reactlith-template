@@ -17,19 +17,17 @@
     "db:push": "bunx --no-install --bun drizzle-kit push",
     "db:studio": "bunx --no-install --bun drizzle-kit studio"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@electric-sql/pglite": "0.4.3",
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
     "better-result": "catalog:",
     "drizzle-kit": "catalog:drizzle",
     "drizzle-orm": "catalog:drizzle",
     "drizzle-seed": "catalog:drizzle",
+    "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@electric-sql/pglite": "0.4.3",
-    "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
-    "typescript": "catalog:"
   }
 }

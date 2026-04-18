@@ -9,22 +9,20 @@
     ".": "./src/index.ts"
   },
   "scripts": {},
-  "dependencies": {
+  "devDependencies": {
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@tanstack/react-start": "catalog:vite",
     "@trpc/client": "catalog:trpc",
     "@trpc/server": "catalog:trpc",
+    "@types/bun": "catalog:",
     "better-result": "catalog:",
     "drizzle-orm": "catalog:drizzle",
     "superjson": "catalog:",
+    "typescript": "catalog:",
     "zod": "catalog:"
-  },
-  "devDependencies": {
-    "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
-    "typescript": "catalog:"
   }
 }

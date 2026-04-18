@@ -15,12 +15,12 @@ HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trp
 
 ENV NODE_ENV=production
 
-
 WORKDIR /app
 COPY /packages/db/drizzle ./packages/db/drizzle
 COPY --from=build /app/packages/db/dist ./packages/db
-COPY --from=build /app/apps/web/dist .
+COPY --from=build /app/apps/web/dist ./apps/web
 
+WORKDIR /app/apps/web
 USER bun
 EXPOSE 3000
 CMD [ "bun", "run", "./server/index.mjs" ]

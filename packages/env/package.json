@@ -9,13 +9,11 @@
     "./*": "./src/*.ts"
   },
   "scripts": {},
-  "dependencies": {
-    "@t3-oss/env-core": "catalog:",
-    "zod": "catalog:"
-  },
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
+    "@t3-oss/env-core": "catalog:",
     "@types/bun": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "zod": "catalog:"
   }
 }
