@@ -14,7 +14,6 @@
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "evlog": "catalog:",
-    "pino-pretty": "catalog:",
     "typescript": "catalog:",
     "use-intl": "catalog:"
   }

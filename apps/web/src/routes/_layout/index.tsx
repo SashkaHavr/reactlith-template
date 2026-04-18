@@ -2,6 +2,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 
+import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { authClient, useResetAuth } from "~/lib/auth";
 import { useTRPC } from "~/lib/trpc";
@@ -42,7 +43,7 @@ function RouteComponent() {
     <div className="max-w-80">
       {authConfig.google && (
         <Button variant="outline" className="w-full" onClick={() => signInWithGoogle.mutate()}>
-          {/* <img className="object-contain" src={googleIconSrc} alt="Google" /> */}
+          <GoogleIcon />
           <span>{t("sign-in-with-google")}</span>
         </Button>
       )}
