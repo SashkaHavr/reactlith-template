@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 
 import { publicProcedure } from "#init.ts";
 import { identifyUser } from "@reactlith-template/utils/logger";
+
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const session = await ctx.auth.getSession({
     headers: ctx.request.headers,
