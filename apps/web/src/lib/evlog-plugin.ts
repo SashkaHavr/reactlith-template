@@ -4,9 +4,8 @@ import { definePlugin } from "nitro";
 
 function evlogRuntimeConfigPlugin() {
   const dev = process.env.NODE_ENV === "development";
+  if (!dev && process.env.__EVLOG_CONFIG) return;
 
-  // evlog's Nitro v3 plugin reads this env bridge at runtime before falling
-  // back to Nitro runtime config, which is not reachable in this bundled build.
   process.env.__EVLOG_CONFIG = JSON.stringify({
     env: { service: "reactlith-template-web-backend" },
     exclude: ["/.well-known/**", "/ingest"],
