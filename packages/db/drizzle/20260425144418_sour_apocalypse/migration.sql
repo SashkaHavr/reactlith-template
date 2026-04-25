@@ -1,32 +1,32 @@
 CREATE TABLE "account" (
 	"id" uuid PRIMARY KEY,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"account_id" text NOT NULL,
 	"provider_id" text NOT NULL,
 	"user_id" uuid NOT NULL,
 	"access_token" text,
 	"refresh_token" text,
 	"id_token" text,
-	"access_token_expires_at" timestamp,
-	"refresh_token_expires_at" timestamp,
+	"access_token_expires_at" timestamp with time zone,
+	"refresh_token_expires_at" timestamp with time zone,
 	"scope" text,
 	"password" text
 );
 --> statement-breakpoint
 CREATE TABLE "number" (
 	"id" uuid PRIMARY KEY,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"number" integer NOT NULL,
 	"user_id" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
 	"id" uuid PRIMARY KEY,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	"expires_at" timestamp NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"expires_at" timestamp with time zone NOT NULL,
 	"token" text NOT NULL UNIQUE,
 	"ip_address" text,
 	"user_agent" text,
@@ -36,8 +36,8 @@ CREATE TABLE "session" (
 --> statement-breakpoint
 CREATE TABLE "user" (
 	"id" uuid PRIMARY KEY,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"name" text NOT NULL,
 	"email" text NOT NULL UNIQUE,
 	"email_verified" boolean DEFAULT false NOT NULL,
@@ -45,16 +45,16 @@ CREATE TABLE "user" (
 	"role" text,
 	"banned" boolean,
 	"ban_reason" text,
-	"ban_expires" timestamp
+	"ban_expires" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "verification" (
 	"id" uuid PRIMARY KEY,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"identifier" text NOT NULL,
 	"value" text NOT NULL,
-	"expires_at" timestamp NOT NULL
+	"expires_at" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
 CREATE INDEX "account_user_id_index" ON "account" ("user_id");--> statement-breakpoint

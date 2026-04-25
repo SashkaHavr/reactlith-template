@@ -14,7 +14,7 @@ export const user = pgTable(
     role: text(),
     banned: boolean(),
     banReason: text(),
-    banExpires: timestamp(),
+    banExpires: timestamp({ withTimezone: true }),
   },
   (table) => [index().on(table.email)],
 );
@@ -23,7 +23,7 @@ export const session = pgTable(
   "session",
   {
     ...baseTable,
-    expiresAt: timestamp().notNull(),
+    expiresAt: timestamp({ withTimezone: true }).notNull(),
     token: text().notNull().unique(),
     ipAddress: text(),
     userAgent: text(),
@@ -43,8 +43,8 @@ export const account = pgTable(
     accessToken: text(),
     refreshToken: text(),
     idToken: text(),
-    accessTokenExpiresAt: timestamp(),
-    refreshTokenExpiresAt: timestamp(),
+    accessTokenExpiresAt: timestamp({ withTimezone: true }),
+    refreshTokenExpiresAt: timestamp({ withTimezone: true }),
     scope: text(),
     password: text(),
   },
@@ -57,7 +57,7 @@ export const verification = pgTable(
     ...baseTable,
     identifier: text().notNull(),
     value: text().notNull(),
-    expiresAt: timestamp().notNull(),
+    expiresAt: timestamp({ withTimezone: true }).notNull(),
   },
   (table) => [index().on(table.identifier)],
 );
