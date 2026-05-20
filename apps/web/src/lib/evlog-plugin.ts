@@ -1,5 +1,6 @@
-import type evlog from "evlog/nitro/v3";
+// oxlint-disable no-underscore-dangle
 // oxlint-disable node/no-process-env
+import type evlog from "evlog/nitro/v3";
 import { definePlugin } from "nitro";
 
 function evlogRuntimeConfigPlugin() {

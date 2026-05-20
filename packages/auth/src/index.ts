@@ -6,6 +6,7 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { logPlugin } from "#log-plugin.ts";
 import { ac, roles } from "#permissions.ts";
 import { db } from "@reactlith-template/db";
+import * as schema from "@reactlith-template/db/schema";
 import { envAuth } from "@reactlith-template/env/auth";
 
 export const auth = betterAuth({
@@ -23,6 +24,7 @@ export const auth = betterAuth({
   },
   database: drizzleAdapter(db, {
     provider: "pg",
+    schema: schema,
   }),
   plugins: [
     admin({ ac, roles }),

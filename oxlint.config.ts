@@ -58,6 +58,8 @@ export default defineConfig({
         ignore: "^*.gen.ts|\\$.*tsx$",
       },
     ],
+
+    "jsx-a11y/prefer-tag-over-role": "off",
   },
   overrides: [
     {

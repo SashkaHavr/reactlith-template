@@ -18,7 +18,7 @@
     "db:studio": "bunx --no-install --bun drizzle-kit studio"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.4.4",
+    "@electric-sql/pglite": "0.4.5",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",

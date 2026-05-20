@@ -11,7 +11,7 @@ import { migrateDb } from "#utils/migration.ts";
 
 export function createTestDb() {
   const client = new PGlite({ extensions: { pg_trgm } });
-  return drizzle({ client, schema, relations, casing: "snake_case" });
+  return drizzle({ client, relations });
 }
 
 let dbSaved: ReturnType<typeof createTestDb> | undefined;
