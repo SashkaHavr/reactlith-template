@@ -12,11 +12,8 @@
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
         "oxc.oxc-vscode",
-        "openai.chatgpt"
+        "-dbaeumer.vscode-eslint"
       ]
     }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   }
 }
