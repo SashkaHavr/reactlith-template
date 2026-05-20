@@ -31,6 +31,7 @@ export default defineConfig({
     "no-process-env": "error",
     "no-shadow": "off",
 
+    "typescript/no-misused-promises": "error",
     "typescript/consistent-type-imports": "error",
     "typescript/no-import-type-side-effects": "error",
     "typescript/no-unsafe-type-assertion": "off",
