@@ -8,9 +8,6 @@
     "dev": "bunx --no-install --bun vite dev",
     "start": "NODE_ENV=production bun run dist/server/index.mjs"
   },
-  "dependencies": {
-    "ufo": "^1.6.4"
-  },
   "devDependencies": {
     "@base-ui/react": "^1.4.1",
     "@fontsource-variable/geist": "5.2.9",
@@ -40,6 +37,7 @@
     "better-auth": "catalog:",
     "class-variance-authority": "catalog:tailwind",
     "clsx": "catalog:tailwind",
+    "effect": "4.0.0-beta.78",
     "evlog": "catalog:",
     "lucide-react": "catalog:",
     "nitro": "catalog:vite",
@@ -50,6 +48,7 @@
     "tailwindcss": "catalog:tailwind",
     "tw-animate-css": "catalog:tailwind",
     "typescript": "catalog:",
+    "ufo": "^1.6.4",
     "use-intl": "catalog:",
     "vite": "catalog:vite",
     "zod": "catalog:"
