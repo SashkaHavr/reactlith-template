@@ -8,6 +8,7 @@ import superjson from "superjson";
 import z from "zod";
 
 import { createContext } from "#context.ts";
+import type { ContextParam } from "#context.ts";
 import { createCallerFactory, publicProcedure, router } from "#init.ts";
 import { configRouter } from "#routers/config.ts";
 import { numbersRouter } from "#routers/numbers.ts";
@@ -27,27 +28,26 @@ const appRouter = router({
   numbers: numbersRouter,
 });
 
-export async function trpcHandler({ request }: { request: Request }) {
+export async function trpcHandler(context: ContextParam) {
   return await fetchRequestHandler({
-    req: request,
+    req: context.request,
     router: appRouter,
     endpoint: "/trpc",
-    createContext: (opts) => createContext({ request: opts.req }),
+    createContext: (opts) => createContext({ request: opts.req, context: context.context }),
   });
 }
 
 const trpcCallerFactory = createCallerFactory(appRouter);
-export function createTrpcCaller({ request }: { request: Request }) {
-  return trpcCallerFactory(createContext({ request }));
+export function createTrpcCaller(context: ContextParam) {
+  return trpcCallerFactory(createContext(context));
 }
 
-export function createLocalLink({ request }: { request: Request }) {
+export function createLocalLink(context: ContextParam) {
   return unstable_localLink({
     router: appRouter,
     // oxlint-disable-next-line require-await
     createContext: async () => {
-      // Create your context here
-      return createContext({ request });
+      return createContext(context);
     },
     transformer: superjson,
   });

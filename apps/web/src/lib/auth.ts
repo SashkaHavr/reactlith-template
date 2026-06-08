@@ -1,13 +1,12 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
-import { createIsomorphicFn } from "@tanstack/react-start";
+import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { genericOAuthClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
-import { auth } from "@reactlith-template/auth";
 import { ac, roles } from "@reactlith-template/auth/permissions";
 
 export const authClient = createAuthClient({
@@ -19,7 +18,10 @@ export const authClient = createAuthClient({
 });
 
 const getSession = createIsomorphicFn()
-  .server(async () => await auth.api.getSession({ headers: getRequest().headers }))
+  .server(
+    async () =>
+      await getGlobalStartContext()!.auth.api.getSession({ headers: getRequest().headers }),
+  )
   .client(async () => await authClient.getSession());
 
 export const baseAuthKey = "auth" as const;

@@ -20,3 +20,5 @@ export function identifyUser(
     identifyUserBase(log, session, { session: false, fields: ["email", "role"] });
   }
 }
+
+export type LogType = RequestLogger;

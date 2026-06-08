@@ -46,6 +46,14 @@ function RouteComponent() {
         <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
           {t("delete-all-numbers")}
         </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            throw new Error("Test error");
+          }}
+        >
+          Trow error
+        </Button>
       </div>
       <p className="text-xl font-bold">{JSON.stringify(numbers.data.numbers)}</p>
     </div>

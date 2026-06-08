@@ -1,6 +1,4 @@
-import { createIsomorphicFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
-import type { RequestLogger } from "evlog";
+import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { initLog, log } from "evlog/client";
 
 function getErrorData(error: unknown) {
@@ -66,7 +64,5 @@ export const setupClientLog = createIsomorphicFn().client(() => {
 });
 
 export const getServerLogger = createIsomorphicFn().server(() => {
-  // @ts-expect-error Types are not defined but logger is there
-  // oxlint-disable-next-line typescript/no-unsafe-member-access
-  return getRequest().context.log as RequestLogger | undefined;
+  return getGlobalStartContext()?.log;
 });
