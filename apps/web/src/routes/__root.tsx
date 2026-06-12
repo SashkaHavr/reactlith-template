@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { envNode } from "@reactlith-template/env/node";
-import { identifyUser } from "@reactlith-template/utils/logger";
+import { identifyUser } from "@reactlith-template/utils/log";
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";

@@ -6,14 +6,6 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  build: {
-    rolldownOptions: {
-      external: ["bun"],
-    },
-  },
-  dev: {
-    preTransformRequests: false,
-  },
   server: {
     port: 3000,
     host: "127.0.0.1",

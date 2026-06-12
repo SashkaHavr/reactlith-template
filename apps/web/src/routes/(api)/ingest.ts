@@ -10,9 +10,9 @@ export const Route = createFileRoute("/(api)/ingest")({
         const logEvent = (await request.json()) as DrainContext["event"];
         const enrich = createUserAgentEnricher();
         const userAgent = getRequestHeader("user-agent") ?? "";
-        if (logEvent.level === "error") {
-          enrich({ event: logEvent, headers: { "user-agent": userAgent } });
-          context.log.set(logEvent);
+        enrich({ event: logEvent, headers: { "user-agent": userAgent } });
+        context.log.set(logEvent);
+        if (logEvent.level === "error" && logEvent.error !== undefined) {
           context.log.error(logEvent.error as Error);
         }
         return new Response(undefined, {

@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/utils",
+  "name": "@reactlith-template/service",
   "private": true,
   "type": "module",
   "imports": {
@@ -10,12 +10,11 @@
   },
   "scripts": {},
   "devDependencies": {
-    "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
     "@types/bun": "catalog:",
     "effect": "catalog:",
     "evlog": "catalog:",
-    "typescript": "catalog:",
-    "use-intl": "catalog:"
+    "typescript": "catalog:"
   }
 }

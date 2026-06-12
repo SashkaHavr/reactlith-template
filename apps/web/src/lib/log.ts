@@ -56,7 +56,6 @@ export const setupClientLog = createIsomorphicFn().client(() => {
       enabled: true,
       endpoint: "/ingest",
     },
-    minLevel: "error",
   });
   window.addEventListener("error", (e) => {
     logError(e.error);

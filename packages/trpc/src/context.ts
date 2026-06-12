@@ -1,6 +1,6 @@
 import type { AuthType } from "@reactlith-template/auth";
 import type { DBType } from "@reactlith-template/db";
-import type { LogType } from "@reactlith-template/utils/logger";
+import type { LogType } from "@reactlith-template/utils/log";
 
 export function createContext({
   request,

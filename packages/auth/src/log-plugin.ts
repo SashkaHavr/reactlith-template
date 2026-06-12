@@ -1,7 +1,8 @@
 import type { BetterAuthPlugin, InternalLogger } from "better-auth";
 import { createAuthMiddleware, getSessionFromCtx } from "better-auth/api";
 
-import { getLogger, identifyUser } from "@reactlith-template/utils/logger";
+import { identifyUser } from "@reactlith-template/utils/log";
+import type { LogType } from "@reactlith-template/utils/log";
 
 export const logPlugin = {
   id: "log-plugin",
@@ -10,7 +11,8 @@ export const logPlugin = {
       {
         matcher: () => true,
         handler: createAuthMiddleware(async (ctx) => {
-          const log = getLogger(ctx.request);
+          const log =
+            ctx.request !== undefined ? (ctx.request as Request & { log: LogType }).log : undefined;
           log?.set({ package: "auth" });
           identifyUser(log, await getSessionFromCtx(ctx));
           return {
@@ -30,7 +32,8 @@ export const logPlugin = {
         matcher: () => true,
         // oxlint-disable-next-line require-await
         handler: createAuthMiddleware(async (ctx) => {
-          const log = getLogger(ctx.request);
+          const log =
+            ctx.request !== undefined ? (ctx.request as Request & { log: LogType }).log : undefined;
           if (
             ctx.context.returned instanceof Error &&
             (!("statusCode" in ctx.context.returned) ||
