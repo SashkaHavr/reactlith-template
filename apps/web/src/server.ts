@@ -1,6 +1,8 @@
+// oxlint-disable import/no-default-export
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { Effect, Layer } from "effect";
 import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/unstable/http";
+import { log } from "evlog";
 
 import { createAuth } from "@reactlith-template/auth";
 import type { AuthType } from "@reactlith-template/auth";
@@ -72,9 +74,13 @@ const ServerLive = HttpRouter.addAll([
 
 const effectWebFetch = HttpRouter.toWebHandler(ServerLive, { disableLogger: true });
 
-// oxlint-disable-next-line import/no-default-export
 export default createServerEntry({
   async fetch(request) {
-    return effectWebFetch.handler(request);
+    try {
+      return await effectWebFetch.handler(request);
+    } catch (error) {
+      log.error({ error: error });
+      return Response.json((error as Error).name, { status: 500 });
+    }
   },
 });

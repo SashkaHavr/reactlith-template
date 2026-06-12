@@ -6,7 +6,7 @@ export const ConfigNodeLive = Layer.effect(
   ConfigNode,
   Effect.gen(function* () {
     return {
-      NODE_ENV: yield* Config.literals(["development", "production", "test"]),
+      NODE_ENV: yield* Config.literals(["development", "production", "test"], "NODE_ENV"),
     };
   }),
 );
