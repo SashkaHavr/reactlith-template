@@ -1,23 +1,15 @@
 {
   "files.exclude": {
     "**/node_modules": true,
-    "**/.tanstack": true
+    "**/.tanstack": true,
+    "**/.pnpm-store": true,
+    ".vite-hooks": true,
   },
   "search.exclude": {
-    "bun.lock": true,
+    "pnpm-lock.yaml": true,
     "**/routeTree.gen.ts": true
   },
-  "json.schemas": [
-    {
-      "fileMatch": ["bun.lock"],
-      "schema": {
-        "allowTrailingCommas": true
-      }
-    }
-  ],
-  "editor.formatOnSave": true,
-  "remote.localPortHost": "allInterfaces",
-  "tailwindCSS.lint.suggestCanonicalClasses": "ignore",
+  "npm.scriptRunner": "vp",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
@@ -31,44 +23,11 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
-  "[json]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[vue-html]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[handlebars]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[less]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[graphql]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "oxc.oxc-vscode"
-  },
+  "oxc.fmt.configPath": "./vite.config.ts",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "always"
+    "source.fixAll.oxc": "explicit"
   },
   "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

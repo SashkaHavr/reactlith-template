@@ -1,5 +1,5 @@
-FROM mcr.microsoft.com/devcontainers/javascript-node:24-bookworm
-USER node
+FROM mcr.microsoft.com/devcontainers/base:bookworm
 
-RUN npm install -g bun@1.3.11
-ENV BUN_INSTALL_BIN=/home/node/.local/bin
+USER vscode
+
+RUN curl -fsSL https://vite.plus | bash

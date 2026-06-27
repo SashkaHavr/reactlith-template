@@ -2,16 +2,15 @@
   "name": "Dev Container",
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postCreateCommand": "bun install",
-  "remoteUser": "node",
+  "workspaceFolder": "/home/vscode/reactlith-template",
+  "postCreateCommand": "vp install",
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
-        "oxc.oxc-vscode",
-        "-dbaeumer.vscode-eslint"
+        "VoidZero.vite-plus-extension-pack"
       ]
     }
   }
