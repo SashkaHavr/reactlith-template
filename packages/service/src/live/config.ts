@@ -1,12 +1,23 @@
-import { Config, Effect, Layer } from "effect";
+import { Config, Layer, Schema } from "effect";
 
-import { ConfigNode } from "#config.ts";
+import { ConfigDB, ConfigNode } from "#config.ts";
 
 export const ConfigNodeLive = Layer.effect(
   ConfigNode,
-  Effect.gen(function* () {
-    return {
-      NODE_ENV: yield* Config.literals(["development", "production", "test"], "NODE_ENV"),
-    };
-  }),
+  Config.schema(
+    Schema.Struct({
+      ENV: Schema.Literals(["development", "production", "test"]),
+    }),
+    "NODE",
+  ),
+);
+
+export const ConfigDBLive = Layer.effect(
+  ConfigDB,
+  Config.schema(
+    Schema.Struct({
+      URL: Schema.String,
+    }),
+    "DATABASE",
+  ),
 );

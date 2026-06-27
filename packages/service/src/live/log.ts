@@ -26,12 +26,12 @@ export function LogMiddlewareLive(config: EvlogConfig) {
         ...config,
         env: {
           service: "reactlith-template-web-backend",
-          environment: configNode.NODE_ENV,
+          environment: configNode.ENV,
           ...config.env,
         },
         sampling: {
           rates: {
-            info: configNode.NODE_ENV === "development" ? 0 : 5,
+            info: configNode.ENV === "development" ? 0 : 5,
             warn: 0,
             debug: 0,
             error: 100,
