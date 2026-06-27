@@ -1,0 +1,16 @@
+{
+  "name": "@reactlith-template/services-live",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./src/*"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "@reactlith-template/services": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
+    "effect": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,17 +1,11 @@
 // oxlint-disable import/no-default-export
+
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
-import { Effect, Layer } from "effect";
-import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/unstable/http";
-import { log } from "evlog";
 
 import { createAuth } from "@reactlith-template/auth";
 import type { AuthType } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
 import type { DBType } from "@reactlith-template/db";
-import { ConfigNodeLive } from "@reactlith-template/service/live/config";
-import { LogMiddlewareLive } from "@reactlith-template/service/live/log";
-import { Log } from "@reactlith-template/service/log";
-import { trpcHandler } from "@reactlith-template/trpc";
 import type { LogType } from "@reactlith-template/utils/log";
 
 const db = createDB();
@@ -31,56 +25,10 @@ declare module "@tanstack/react-router" {
   }
 }
 
-const ServerLive = HttpRouter.addAll([
-  HttpRouter.route(
-    "*",
-    "/api/*",
-    Effect.gen(function* () {
-      const request = yield* HttpServerRequest.HttpServerRequest;
-      const webRequest = yield* HttpServerRequest.toWeb(request);
-      const log = yield* Log;
-      const response = yield* Effect.promise(async () =>
-        trpcHandler({ request: webRequest, context: { db, auth, log: log } }),
-      );
-      return HttpServerResponse.fromWeb(response);
-    }),
-  ),
-  HttpRouter.route(
-    "*",
-    "/auth/*",
-    Effect.gen(function* () {
-      const request = yield* HttpServerRequest.HttpServerRequest;
-      const webRequest = yield* HttpServerRequest.toWeb(request);
-      const log = yield* Log;
-      (webRequest as Request & { log: LogType }).log = log;
-      const response = yield* Effect.promise(async () => auth.handler(webRequest));
-      return HttpServerResponse.fromWeb(response);
-    }),
-  ),
-  HttpRouter.route(
-    "*",
-    "/*",
-    Effect.gen(function* () {
-      const request = yield* HttpServerRequest.HttpServerRequest;
-      const webRequest = yield* HttpServerRequest.toWeb(request);
-      const log = yield* Log;
-      const response = yield* Effect.promise(async () =>
-        handler.fetch(webRequest, { context: { db, auth, log } }),
-      );
-      return HttpServerResponse.fromWeb(response);
-    }),
-  ),
-]).pipe(Layer.provide(LogMiddlewareLive({})), Layer.provide(ConfigNodeLive));
-
-const effectWebFetch = HttpRouter.toWebHandler(ServerLive, { disableLogger: true });
-
 export default createServerEntry({
   async fetch(request) {
-    try {
-      return await effectWebFetch.handler(request);
-    } catch (error) {
-      log.error({ error: error });
-      return Response.json((error as Error).name, { status: 500 });
-    }
+    return handler.fetch(request, {
+      context: { db, auth, log: (request as any)["context"]["log"] as LogType },
+    });
   },
 });

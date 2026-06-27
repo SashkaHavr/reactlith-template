@@ -51,6 +51,7 @@
     "typescript": "catalog:",
     "use-intl": "catalog:",
     "zod": "catalog:",
-    "vite-plus": "catalog:"
+    "vite-plus": "catalog:",
+    "vite": "catalog:"
   }
 }
