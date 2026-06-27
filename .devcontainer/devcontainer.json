@@ -8,7 +8,6 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "lokalise.i18n-ally",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
         "oxc.oxc-vscode",
