@@ -4,8 +4,8 @@ import { initLogger } from "evlog";
 import { defineFrameworkIntegration } from "evlog/toolkit";
 import type { EvlogConfig } from "evlog/toolkit";
 
-import { ConfigNode } from "#config.ts";
-import { Log } from "#log.ts";
+import { ConfigNode } from "@reactlith-template/services/config";
+import { Log } from "@reactlith-template/services/log";
 import type { LogType } from "@reactlith-template/utils/log";
 
 const integration = defineFrameworkIntegration<HttpServerRequest.HttpServerRequest>({

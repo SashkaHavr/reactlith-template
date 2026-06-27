@@ -1,16 +1,20 @@
 {
-  "name": "@reactlith-template/empty",
+  "name": "@reactlith-template/services",
   "private": true,
   "type": "module",
   "imports": {
     "#*": "./src/*"
   },
   "exports": {
-    ".": "./src/index.ts"
+    "./*": "./src/*.ts"
   },
+  "scripts": {},
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
     "@types/bun": "catalog:",
+    "effect": "catalog:",
+    "evlog": "catalog:",
     "typescript": "catalog:"
   }
 }

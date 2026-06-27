@@ -167,9 +167,9 @@ importers:
       '@reactlith-template/env':
         specifier: workspace:*
         version: link:../../packages/env
-      '@reactlith-template/service':
+      '@reactlith-template/services':
         specifier: workspace:*
-        version: link:../../packages/service
+        version: link:../../packages/services
       '@reactlith-template/trpc':
         specifier: workspace:*
         version: link:../../packages/trpc
@@ -339,18 +339,6 @@ importers:
         specifier: 'catalog:'
         version: 4.4.3
 
-  packages/empty:
-    devDependencies:
-      '@reactlith-template/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      '@types/bun':
-        specifier: 'catalog:'
-        version: 1.3.14
-      typescript:
-        specifier: 'catalog:'
-        version: 7.0.1-rc
-
   packages/env:
     devDependencies:
       '@reactlith-template/typescript-config':
@@ -369,8 +357,32 @@ importers:
         specifier: 'catalog:'
         version: 4.4.3
 
-  packages/service:
+  packages/services:
     devDependencies:
+      '@reactlith-template/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@reactlith-template/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.3.14
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.0-beta.78
+      evlog:
+        specifier: 'catalog:'
+        version: 2.17.0(@tanstack/start-client-core@1.169.4)(nitro@3.0.260429-beta(@electric-sql/pglite@0.4.5)(jiti@2.7.0)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(yaml@2.9.0)))(ofetch@2.0.0-alpha.3)(react@19.2.6)(vite@8.1.0(@types/node@26.0.1)(jiti@2.7.0)(yaml@2.9.0))
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.1-rc
+
+  packages/services-live:
+    devDependencies:
+      '@reactlith-template/services':
+        specifier: workspace:*
+        version: link:../services
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

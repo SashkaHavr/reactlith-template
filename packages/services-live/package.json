@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/service",
+  "name": "@reactlith-template/services-live",
   "private": true,
   "type": "module",
   "imports": {
@@ -10,6 +10,7 @@
   },
   "scripts": {},
   "devDependencies": {
+    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@types/bun": "catalog:",
