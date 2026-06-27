@@ -5,7 +5,7 @@
   "scripts": {
     "build": "bunx --no-install --bun vite build",
     "component": "bunx --bun shadcn@latest add",
-    "dev": "bunx --bun vite dev",
+    "dev": "bunx --no-install --bun vite dev",
     "start": "NODE_ENV=production bun run dist/server/index.mjs"
   },
   "devDependencies": {
@@ -50,8 +50,7 @@
     "tw-animate-css": "catalog:tailwind",
     "typescript": "catalog:",
     "use-intl": "catalog:",
-    "zod": "catalog:",
-    "vite-plus": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:vite",
+    "zod": "catalog:"
   }
 }

@@ -1,4 +1,4 @@
-/// <reference types="vite-plus/client" />
+/// <reference types="vite/client" />
 
 import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
 import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
