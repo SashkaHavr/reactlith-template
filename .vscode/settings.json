@@ -1,7 +1,7 @@
 {
   "files.exclude": {
     "**/node_modules": true,
-    "**/.tanstack": true,
+    "**/.tanstack": true
   },
   "search.exclude": {
     "bun.lock": true,
