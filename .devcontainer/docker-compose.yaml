@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../:/home/vscode/reactlith-template:cached
+      - ~/.local/share/opencode-devcontainer:/home/vscode/.local/share/opencode
     networks:
       - db-network
     command: sleep infinity
