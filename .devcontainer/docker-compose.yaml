@@ -8,6 +8,7 @@ services:
       - ~/.local/share/opencode-devcontainer:/home/vscode/.local/share/opencode
     networks:
       - db-network
+      - devcontainer-proxy
     command: sleep infinity
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
@@ -19,6 +20,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.reactlith-template-web.rule=Host(`web.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-web.service=reactlith-template-web
+      - traefik.http.services.reactlith-template-web.loadbalancer.server.port=3000
+      - traefik.http.routers.reactlith-template-opencode.rule=Host(`opencode.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-opencode.service=reactlith-template-opencode
+      - traefik.http.services.reactlith-template-opencode.loadbalancer.server.port=4096
   db:
     image: postgres:17
     volumes:
@@ -35,6 +44,8 @@ services:
 
 networks:
   db-network:
+  devcontainer-proxy:
+    external: true
 
 volumes:
   db-data:

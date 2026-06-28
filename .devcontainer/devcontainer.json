@@ -1,11 +1,14 @@
 {
   "name": "Dev Container",
   "dockerComposeFile": "docker-compose.yaml",
-  "forwardPorts": [3000, 4096],
+
   "service": "devcontainer",
   "workspaceFolder": "/home/vscode/reactlith-template",
   "postCreateCommand": "nohup opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 & bun install",
   "remoteUser": "vscode",
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
