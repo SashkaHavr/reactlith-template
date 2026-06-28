@@ -13,10 +13,10 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
-      BETTER_AUTH_ALLOWED_HOSTS: '["localhost:*", "127.0.0.1:*"]'
+      BETTER_AUTH_ALLOWED_HOSTS: '["localhost:*", "127.0.0.1:*", "web.reactlith-template.localhost"]'
       GOOGLE_CLIENT_ID: my-client-id.apps.googleusercontent.com
       GOOGLE_CLIENT_SECRET: GOCSPX-secret
-      GOOGLE_EMULATE_URL: http://host.docker.internal:4000
+      GOOGLE_EMULATE_URL: http://emulate.localhost
     depends_on:
       db:
         condition: service_healthy
