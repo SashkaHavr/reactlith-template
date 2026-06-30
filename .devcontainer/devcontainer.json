@@ -3,7 +3,11 @@
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "workspaceFolder": "/home/vscode/reactlith-template",
-  "postCreateCommand": "nohup opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 & bun install",
+  "postCreateCommand": "bun install",
+  "postStartCommand": {
+    "opencode": "nohup bash -c 'opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 &' >/dev/null",
+    "t3": "nohup bash -c 't3 serve --host 0.0.0.0 --dev-url http://t3.reactlith-template.localhost > ~/t3.log 2>&1 &' >/dev/null"
+  },
   "remoteUser": "vscode",
   "otherPortsAttributes": {
     "onAutoForward": "ignore"

@@ -6,6 +6,8 @@ services:
     volumes:
       - ../:/home/vscode/reactlith-template:cached
       - ~/.local/share/opencode-devcontainer:/home/vscode/.local/share/opencode
+      - ~/.config/codex-devcontainer:/home/vscode/.codex
+      - ~/.config/t3-devcontainer:/home/vscode/.t3
     networks:
       - db-network
       - devcontainer-proxy
@@ -28,6 +30,9 @@ services:
       - traefik.http.routers.reactlith-template-opencode.rule=Host(`opencode.reactlith-template.localhost`)
       - traefik.http.routers.reactlith-template-opencode.service=reactlith-template-opencode
       - traefik.http.services.reactlith-template-opencode.loadbalancer.server.port=4096
+      - traefik.http.routers.reactlith-template-t3.rule=Host(`t3.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-t3.service=reactlith-template-t3
+      - traefik.http.services.reactlith-template-t3.loadbalancer.server.port=3773
   db:
     image: postgres:17
     volumes:
