@@ -171,6 +171,7 @@ yarn-error.*
 .nitro
 
 .codex
+.pnpm-store
 
 # .dockerignore specific
 README.md
@@ -178,6 +179,7 @@ Dockerfile
 .dockerignore
 docker-compose*.yaml
 .vscode
+.vite-hooks
 .github
 .devcontainer
 .gitignore

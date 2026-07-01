@@ -6,26 +6,19 @@ RUN bunx --bun @vscode/vsce package --no-dependencies --out /extensions/proxy-li
 
 FROM mcr.microsoft.com/devcontainers/base:debian
 
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends build-essential python3 pkg-config
+
 USER vscode
 
-RUN sudo apt update
-RUN sudo apt upgrade -y
-RUN sudo apt install -y build-essential python3
+RUN curl -fsSL https://vite.plus | bash
+ENV VP_HOME="/home/vscode/.vite-plus"
+ENV PATH="/home/vscode/.vite-plus/bin:$PATH"
 
-RUN curl -fsSL https://bun.sh/install | bash
-ENV BUN_INSTALL="/home/vscode/.bun"
-ENV PATH="$BUN_INSTALL/bin:$PATH"
-
-RUN curl -o- https://fnm.vercel.app/install | bash
-ENV FNM_PATH="/home/vscode/.local/share/fnm"
-ENV PATH="$FNM_PATH:$PATH"
-
-RUN fnm install 26
-
-COPY --from=build-extensions /extensions/proxy-links/proxy-links.vsix /extensions/proxy-links/
-
-RUN bun add -g opencode-ai
-RUN bun add -g @openai/codex
-RUN bun add -g t3@latest
+RUN vp add -g opencode-ai
+RUN vp add -g @openai/codex
+RUN vp add -g t3@latest
 
 RUN git clone https://github.com/Effect-TS/effect-smol.git /home/vscode/references/effect-smol
+
+COPY --from=build-extensions /extensions/proxy-links/proxy-links.vsix /extensions/proxy-links/

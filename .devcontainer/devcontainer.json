@@ -3,7 +3,7 @@
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "workspaceFolder": "/home/vscode/reactlith-template",
-  "postCreateCommand": "bun install",
+  "postCreateCommand": "vp install",
   "postStartCommand": {
     "opencode": "nohup bash -c 'opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 &' >/dev/null",
     "t3": "nohup bash -c 't3 serve --host 0.0.0.0 --dev-url http://t3.reactlith-template.localhost > ~/t3.log 2>&1 &' >/dev/null",
@@ -19,7 +19,7 @@
         "/extensions/proxy-links/proxy-links.vsix",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
-        "oxc.oxc-vscode"
+        "VoidZero.vite-plus-extension-pack"
       ]
     }
   }
