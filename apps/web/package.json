@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "component": "vpx shadcn@latest add",
-    "start": "NODE_ENV=production bun run dist/server/index.mjs"
+    "component": "vpx shadcn@latest add"
   },
   "devDependencies": {
     "@base-ui/react": "^1.4.1",
@@ -28,7 +27,7 @@
     "@trpc/client": "catalog:trpc",
     "@trpc/tanstack-react-query": "catalog:trpc",
     "@types/babel__core": "catalog:vite",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react": "catalog:vite",

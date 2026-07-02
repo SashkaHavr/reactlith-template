@@ -10,14 +10,14 @@
     "./permissions": "./src/permissions.ts"
   },
   "scripts": {
-    "generate-db-schema": "bunx auth@latest generate --config generated/config.ts --output ./generated/auth-schema.ts --yes"
+    "generate-db-schema": "vpx auth@latest generate --config generated/config.ts --output ./generated/auth-schema.ts --yes"
   },
   "devDependencies": {
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "better-auth": "catalog:",
     "typescript": "catalog:"
   }

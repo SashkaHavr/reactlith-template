@@ -5,19 +5,13 @@
   "scripts": {
     "clean": "git clean -xdfq 'node_modules/*' '**/node_modules/*' '**/dist/*'",
     "build": "vp run -r build",
-    "compose": "docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d"
+    "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d"
   },
-  "dependencies": {},
   "devDependencies": {
-    "bun": "1.3.14",
     "vite-plus": "catalog:"
   },
   "engines": {
-    "runtime": {
-      "name": "node",
-      "version": "^26.4.0",
-      "onFail": "download"
-    }
+    "node": ">=26"
   },
   "packageManager": "pnpm@11.9.0"
 }

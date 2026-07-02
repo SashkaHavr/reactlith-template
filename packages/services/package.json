@@ -12,7 +12,7 @@
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "effect": "catalog:",
     "evlog": "catalog:",
     "typescript": "catalog:"

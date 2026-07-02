@@ -18,7 +18,7 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
-      preset: "bun",
+      preset: "node-server",
       output: { dir: "dist" },
       compressPublicAssets: { brotli: true },
       experimental: {

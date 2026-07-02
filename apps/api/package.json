@@ -9,7 +9,7 @@
   "devDependencies": {
     "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "effect": "catalog:",
     "typescript": "catalog:"
   }

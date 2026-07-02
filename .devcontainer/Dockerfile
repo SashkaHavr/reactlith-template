@@ -1,8 +1,8 @@
-FROM oven/bun:1.3.11-alpine AS build-extensions
+FROM ghcr.io/voidzero-dev/vite-plus AS build-extensions
 
-COPY --chown=vscode:vscode proxy-links /extensions/proxy-links
+COPY --chown=vp:vp proxy-links /extensions/proxy-links
 WORKDIR /extensions/proxy-links
-RUN bunx --bun @vscode/vsce package --no-dependencies --out /extensions/proxy-links/proxy-links.vsix
+RUN vpx @vscode/vsce package --no-dependencies --out /extensions/proxy-links/proxy-links.vsix
 
 FROM mcr.microsoft.com/devcontainers/base:debian
 

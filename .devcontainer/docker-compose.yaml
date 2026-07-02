@@ -33,6 +33,9 @@ services:
       - traefik.http.routers.reactlith-template-t3.rule=Host(`t3.reactlith-template.localhost`)
       - traefik.http.routers.reactlith-template-t3.service=reactlith-template-t3
       - traefik.http.services.reactlith-template-t3.loadbalancer.server.port=3773
+      - traefik.http.routers.reactlith-template-db.rule=Host(`db.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-db.service=reactlith-template-db
+      - traefik.http.services.reactlith-template-db.loadbalancer.server.port=4983
   db:
     image: postgres:17
     volumes:

@@ -1,14 +1,20 @@
-FROM oven/bun:1.3.11-alpine AS base
+FROM ghcr.io/voidzero-dev/vite-plus AS base
+
+FROM base AS prepare
+RUN vp add -g turbo
+COPY --chown=vp:vp . .
+RUN turbo prune @reactlith-template/web --docker
 
 # Install and build
 FROM base AS build
-WORKDIR /app
-COPY . .
-RUN bun ci
-RUN bun run --filter @reactlith-template/web --filter @reactlith-template/db build
+COPY --from=prepare /app/out/json/ .
+RUN vp install --frozen-lockfile
+COPY --from=prepare /app/out/full/ .
+WORKDIR /app/apps/web
+RUN vp build
 
 # Run
-FROM base AS runner
+FROM node:26.4-alpine AS runner
 
 RUN apk --no-cache add curl
 HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
@@ -16,11 +22,8 @@ HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trp
 ENV NODE_ENV=production
 
 WORKDIR /app
-COPY /packages/db/drizzle ./packages/db/drizzle
-COPY --from=build /app/packages/db/dist ./packages/db
-COPY --from=build /app/apps/web/dist ./apps/web
+COPY --from=build /app/apps/web/dist .
 
-WORKDIR /app/apps/web
-USER bun
+USER node
 EXPOSE 3000
-CMD [ "bun", "run", "./server/index.mjs" ]
+CMD [ "node", "./server/index.mjs" ]

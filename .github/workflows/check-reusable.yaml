@@ -12,5 +12,5 @@ jobs:
         with:
           node-version: "26"
           cache: true
-      - run: vp install
+      - run: vp install --frozen-lockfile
       - run: vp check

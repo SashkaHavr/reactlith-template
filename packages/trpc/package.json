@@ -18,7 +18,7 @@
     "@tanstack/react-start": "catalog:vite",
     "@trpc/client": "catalog:trpc",
     "@trpc/server": "catalog:trpc",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "better-result": "catalog:",
     "drizzle-orm": "catalog:drizzle",
     "superjson": "catalog:",
