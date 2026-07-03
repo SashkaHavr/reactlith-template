@@ -35,6 +35,8 @@ export default defineConfig({
       suspicious: "error",
     },
     rules: {
+      "vite-plus/prefer-vite-plus-imports": "error",
+
       eqeqeq: "error",
       curly: ["error", "multi-line"],
       "func-style": ["error", "declaration", { allowArrowFunctions: true }],

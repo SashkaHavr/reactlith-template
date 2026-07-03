@@ -14,8 +14,8 @@ catalog:
   "uuid": "14.0.0"
   "zod": "4.4.3"
   "evlog": "2.19.2"
-  vite-plus: ^0.2.1
-  vite: 8.0.13
+  vite-plus: 0.2.2
+  vite: npm:@voidzero-dev/vite-plus-core@0.2.2
   "@types/node": 26.1.0
   "effect": "4.0.0-beta.78"
 catalogs:
@@ -55,3 +55,10 @@ catalogs:
 allowBuilds:
   esbuild: false
   msgpackr-extract: false
+overrides:
+  vite: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: "*"

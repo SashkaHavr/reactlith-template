@@ -4,7 +4,7 @@
   "compilerOptions": {
     "target": "es2025",
     "lib": ["ES2025", "DOM"],
-    "types": ["node"],
+    "types": ["node", "vite-plus/client"],
     "jsx": "react-jsx"
   }
 }
