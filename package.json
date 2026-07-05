@@ -8,11 +8,11 @@
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d"
   },
   "devDependencies": {
-    "vite": "catalog:",
-    "vite-plus": "catalog:"
+    "vite": "catalog:vite",
+    "vite-plus": "catalog:vite"
   },
   "engines": {
     "node": ">=26"
   },
-  "packageManager": "pnpm@11.9.0"
+  "packageManager": "pnpm@11.10.0"
 }

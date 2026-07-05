@@ -1,13 +1,11 @@
 import { Context } from "effect";
+import type { AuditableLogger } from "evlog";
 
-import type { LogType } from "@reactlith-template/utils/log";
+type LogService = AuditableLogger & {
+  identifyUser: (session: {
+    session: Record<string, unknown>;
+    user: Record<string, unknown>;
+  }) => void;
+};
 
-export class Log extends Context.Service<
-  Log,
-  {
-    readonly set: LogType["set"];
-    readonly error: LogType["error"];
-    readonly warn: LogType["warn"];
-    readonly audit: LogType["audit"];
-  }
->()("@reactlith-template/log") {}
+export class Log extends Context.Service<Log, LogService>()("@reactlith-template/log") {}
