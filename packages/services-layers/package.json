@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/services-live",
+  "name": "@reactlith-template/services-layers",
   "private": true,
   "type": "module",
   "imports": {
@@ -10,10 +10,13 @@
   },
   "scripts": {},
   "devDependencies": {
+    "@effect/sql-pg": "catalog:",
+    "@reactlith-template/db": "workspace:*",
     "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@types/node": "catalog:",
+    "drizzle-orm": "catalog:",
     "effect": "catalog:",
     "evlog": "catalog:",
     "typescript": "catalog:"

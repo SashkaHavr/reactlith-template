@@ -1,18 +1,18 @@
 import { environmentManager, QueryClient } from "@tanstack/react-query";
-import { createServerOnlyFn, getGlobalStartContext } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+// import { createServerOnlyFn, getGlobalStartContext } from "@tanstack/react-start";
+// import { getRequest } from "@tanstack/react-start/server";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
 
-import { createLocalLink } from "@reactlith-template/trpc";
+// import { createLocalLink } from "@reactlith-template/trpc";
 import type { TRPCRouter } from "@reactlith-template/trpc";
 
 import { baseAuthKey } from "./auth";
 
-const getLocalLink = createServerOnlyFn(() => {
-  return createLocalLink({ request: getRequest(), context: getGlobalStartContext()! });
-});
+// const getLocalLink = createServerOnlyFn(() => {
+//   return createLocalLink({ request: getRequest(), context: getGlobalStartContext()! });
+// });
 
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
@@ -35,7 +35,7 @@ export function createTRPCRouteContext() {
   });
   const trpcClient = createTRPCClient<TRPCRouter>({
     links: environmentManager.isServer()
-      ? [getLocalLink()]
+      ? []
       : [
           splitLink({
             // uses the httpSubscriptionLink for subscriptions

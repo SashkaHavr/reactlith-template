@@ -2,7 +2,7 @@ import { Config, Layer, Schema } from "effect";
 
 import { ConfigDB, ConfigNode } from "@reactlith-template/services/config";
 
-export const ConfigNodeLive = Layer.effect(
+export const layerConfigNode = Layer.effect(
   ConfigNode,
   Config.schema(
     Schema.Struct({
@@ -12,11 +12,11 @@ export const ConfigNodeLive = Layer.effect(
   ),
 );
 
-export const ConfigDBLive = Layer.effect(
+export const layerConfigDB = Layer.effect(
   ConfigDB,
   Config.schema(
     Schema.Struct({
-      URL: Schema.String,
+      URL: Schema.Redacted(Schema.String),
     }),
     "DATABASE",
   ),

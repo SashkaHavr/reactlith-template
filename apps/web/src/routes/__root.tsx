@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { envNode } from "@reactlith-template/env/node";
-import { identifyUser } from "@reactlith-template/utils/log";
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
@@ -44,7 +43,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     ]);
 
     if (auth.loggedIn) {
-      identifyUser(getServerLogger(), auth);
+      getServerLogger()?.identifyUser(auth);
     }
 
     return {

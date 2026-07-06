@@ -14,18 +14,21 @@
     "studio": "vp exec drizzle-kit studio"
   },
   "dependencies": {
-    "pg": "catalog:drizzle"
+    "pg": "catalog:"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "catalog:drizzle",
+    "@effect/sql-pg": "catalog:",
+    "@electric-sql/pglite": "catalog:",
     "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/node": "catalog:",
-    "@types/pg": "catalog:drizzle",
+    "@types/pg": "catalog:",
     "better-result": "catalog:",
-    "drizzle-kit": "catalog:drizzle",
-    "drizzle-orm": "catalog:drizzle",
-    "drizzle-seed": "catalog:drizzle",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzle-seed": "catalog:",
+    "effect": "catalog:",
     "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"

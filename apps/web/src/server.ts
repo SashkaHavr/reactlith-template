@@ -1,21 +1,16 @@
 // oxlint-disable import/no-default-export
 
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
+import type { AuditableLogger } from "evlog";
 
-import { createAuth } from "@reactlith-template/auth";
-import type { AuthType } from "@reactlith-template/auth";
-import { createDB } from "@reactlith-template/db";
-import type { DBType } from "@reactlith-template/db";
-import type { LogType } from "@reactlith-template/utils/log";
+import * as WideLog from "@reactlith-template/services-layers/wide-log";
+import type { WideLogType } from "@reactlith-template/services/wide-log";
 
-const db = createDB();
-const auth = createAuth(db);
+import { resources } from "./server-resources";
 
-interface RequestContext {
-  db: DBType;
-  auth: AuthType;
-  log: LogType;
-}
+type RequestContext = typeof resources & {
+  log: WideLogType;
+};
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -27,8 +22,11 @@ declare module "@tanstack/react-router" {
 
 export default createServerEntry({
   async fetch(request) {
+    const log = (request as any)["context"]["log"] as AuditableLogger;
+    const logService = WideLog.make(log);
+
     return handler.fetch(request, {
-      context: { db, auth, log: (request as any)["context"]["log"] as LogType },
+      context: { ...resources, log: logService },
     });
   },
 });

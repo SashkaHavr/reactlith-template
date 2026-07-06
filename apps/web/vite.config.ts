@@ -27,7 +27,6 @@ export default defineConfig({
       modules: [
         evlog({
           env: { service: "reactlith-template-web-backend" },
-          exclude: ["/.well-known/**", "/ingest"],
           sampling: {
             rates: {
               info: 0,

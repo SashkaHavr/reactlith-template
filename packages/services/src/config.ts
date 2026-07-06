@@ -1,3 +1,4 @@
+import type { Redacted } from "effect";
 import { Context } from "effect";
 
 export class ConfigNode extends Context.Service<
@@ -10,6 +11,6 @@ export class ConfigNode extends Context.Service<
 export class ConfigDB extends Context.Service<
   ConfigDB,
   {
-    readonly URL: string;
+    readonly URL: Redacted.Redacted;
   }
 >()("@reactlith-template/config-db") {}

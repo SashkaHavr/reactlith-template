@@ -8,8 +8,8 @@
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d"
   },
   "devDependencies": {
-    "vite": "catalog:vite",
-    "vite-plus": "catalog:vite"
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   },
   "engines": {
     "node": ">=26"

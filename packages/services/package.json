@@ -10,9 +10,11 @@
   },
   "scripts": {},
   "devDependencies": {
+    "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@types/node": "catalog:",
+    "drizzle-orm": "catalog:",
     "effect": "catalog:",
     "evlog": "catalog:",
     "typescript": "catalog:"
