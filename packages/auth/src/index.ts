@@ -3,7 +3,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
-import { logPlugin } from "#log-plugin.ts";
 import { ac, roles } from "#permissions.ts";
 import type { DBType } from "@reactlith-template/db";
 import * as schema from "@reactlith-template/db/schema";
@@ -29,7 +28,6 @@ export function createAuth(db: DBType) {
     }),
     plugins: [
       admin({ ac, roles }),
-      logPlugin,
       ...(envAuth.GOOGLE_EMULATE_URL
         ? [
             genericOAuth({

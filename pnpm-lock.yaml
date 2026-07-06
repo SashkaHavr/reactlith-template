@@ -375,6 +375,9 @@ importers:
 
   packages/services:
     devDependencies:
+      '@reactlith-template/auth':
+        specifier: workspace:*
+        version: link:../auth
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db
@@ -405,6 +408,9 @@ importers:
       '@effect/sql-pg':
         specifier: 'catalog:'
         version: 4.0.0-beta.93(effect@4.0.0-beta.93)
+      '@reactlith-template/auth':
+        specifier: workspace:*
+        version: link:../auth
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db

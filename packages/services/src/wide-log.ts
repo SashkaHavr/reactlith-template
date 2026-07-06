@@ -2,8 +2,6 @@ import { Context } from "effect";
 import type { AuditableLogger } from "evlog";
 import type { identifyUser } from "evlog/better-auth";
 
-export class Evlog extends Context.Service<Evlog, AuditableLogger>()("@reactlith-template/evlog") {}
-
 export class WideLog extends Context.Service<
   WideLog,
   {

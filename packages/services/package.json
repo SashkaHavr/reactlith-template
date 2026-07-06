@@ -10,6 +10,7 @@
   },
   "scripts": {},
   "devDependencies": {
+    "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",

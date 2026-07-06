@@ -1,9 +1,12 @@
 import { PgClient } from "@effect/sql-pg";
 import * as PgDrizzle from "drizzle-orm/effect-postgres";
-import { Effect, Layer } from "effect";
+import { Context, Effect, Layer } from "effect";
 
 import { relations } from "@reactlith-template/db";
-import { DB, Drizzle } from "@reactlith-template/services/db";
+import type { DBType } from "@reactlith-template/db";
+import { DB } from "@reactlith-template/services/db";
+
+export class Drizzle extends Context.Service<Drizzle, DBType>()("@reactlith-template/drizzle") {}
 
 export const pgClient = PgClient.layerFrom(
   Effect.gen(function* () {
