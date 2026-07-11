@@ -13,4 +13,4 @@ export function identifyUser(
   }
 }
 
-export type LogType = Pick<AuditableLogger, "set" | "error" | "warn" | "audit">;
+export type LogType = Pick<AuditableLogger, "set" | "error" | "audit">;
