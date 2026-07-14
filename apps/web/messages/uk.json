@@ -7,6 +7,7 @@
     "sign-in-with-google": "Увійти з Google",
     "logout": "Вийти",
     "trpc-health-response": "Відповідь /health від tRPC",
+    "update-number": "Оновити число",
     "user": "Користувач",
     "works": "Працює!"
   },

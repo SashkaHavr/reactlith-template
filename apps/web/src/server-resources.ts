@@ -5,6 +5,7 @@ import * as Api from "@reactlith-template/api/layers";
 import { createAuth } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
 import { ConfigDB } from "@reactlith-template/services/config";
+import * as Auth from "@reactlith-template/services/layers/auth";
 import * as Config from "@reactlith-template/services/layers/config";
 import * as DB from "@reactlith-template/services/layers/db";
 
@@ -22,6 +23,8 @@ const acquireResources = Effect.gen(function* () {
       HttpRouter.toWebHandler(
         Api.layer.pipe(
           Layer.provide(DB.layerWithDefaults),
+          Layer.provide(Auth.layer),
+          Layer.provide(Layer.succeed(Auth.BetterAuth, auth.api)),
           Layer.provide(Layer.succeed(DB.Drizzle, db)),
           Layer.provide(HttpServer.layerServices),
           Layer.provide(HttpRouter.disableLogger),

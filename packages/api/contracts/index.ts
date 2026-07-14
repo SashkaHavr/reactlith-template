@@ -1,6 +1,8 @@
 import { Schema } from "effect";
 import { HttpApi, HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
+import { NumbersApi } from "#numbers.ts";
+
 export class DatabaseConnectionError extends Schema.TaggedErrorClass<DatabaseConnectionError>()(
   "DatabaseConnectionError",
   {},
@@ -14,4 +16,4 @@ export class IndexApi extends HttpApiGroup.make("index").add(
   }),
 ) {}
 
-export class Api extends HttpApi.make("api").add(IndexApi).prefix("/api") {}
+export class Api extends HttpApi.make("api").add(IndexApi).add(NumbersApi).prefix("/api") {}

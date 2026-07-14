@@ -1,4 +1,5 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
+import { getRequest } from "@tanstack/react-start/server";
 import { Effect, Layer } from "effect";
 import { FetchHttpClient } from "effect/unstable/http";
 import { HttpApiClient } from "effect/unstable/httpapi";
@@ -10,7 +11,20 @@ const getApiBaseUrl = createIsomorphicFn()
   .server(() => "http://nitro.localhost")
   .client(() => "");
 const getFetch = createIsomorphicFn()
-  .server(() => serverFetch)
+  .server(() => async (input: RequestInfo | URL, init?: RequestInit) => {
+    const headers = new Headers(getRequest().headers);
+    if (input instanceof Request) {
+      for (const [name, value] of input.headers) {
+        headers.set(name, value);
+      }
+    }
+    if (init?.headers) {
+      for (const [name, value] of new Headers(init.headers)) {
+        headers.set(name, value);
+      }
+    }
+    return serverFetch(input, { ...init, headers });
+  })
   .client(() => fetch);
 
 const apiLayer = Layer.merge(

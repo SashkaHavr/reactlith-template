@@ -281,6 +281,9 @@ importers:
 
   packages/api:
     devDependencies:
+      '@reactlith-template/db':
+        specifier: workspace:*
+        version: link:../db
       '@reactlith-template/services':
         specifier: workspace:*
         version: link:../services

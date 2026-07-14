@@ -12,6 +12,7 @@
   },
   "scripts": {},
   "devDependencies": {
+    "@reactlith-template/db": "workspace:*",
     "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/node": "catalog:",

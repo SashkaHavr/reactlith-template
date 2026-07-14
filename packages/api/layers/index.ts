@@ -5,6 +5,8 @@ import { HttpApiBuilder } from "effect/unstable/httpapi";
 import { Api, DatabaseConnectionError } from "#index.ts";
 import { DB } from "@reactlith-template/services/db";
 
+import { NumbersApiHandlers } from "./numbers";
+
 const IndexApiHandlers = HttpApiBuilder.group(Api, "index", (handlers) =>
   Effect.gen(function* () {
     const db = yield* DB;
@@ -21,4 +23,6 @@ const IndexApiHandlers = HttpApiBuilder.group(Api, "index", (handlers) =>
   }),
 );
 
-export const layer = HttpApiBuilder.layer(Api).pipe(Layer.provide(IndexApiHandlers));
+export const layer = HttpApiBuilder.layer(Api).pipe(
+  Layer.provide([IndexApiHandlers, NumbersApiHandlers]),
+);

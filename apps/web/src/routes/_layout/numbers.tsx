@@ -4,7 +4,12 @@ import { useTranslations } from "use-intl";
 
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { useTRPC } from "~/lib/trpc";
+import {
+  addNumberMutationOptions,
+  deleteAllNumbersMutationOptions,
+  getAllNumbersQueryOptions,
+  updateNumberMutationOptions,
+} from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers")({
   beforeLoad: ({ context: { auth } }) => {
@@ -12,22 +17,22 @@ export const Route = createFileRoute("/_layout/numbers")({
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient, trpc } }) => {
-    await queryClient.ensureQueryData(trpc.numbers.getAll.queryOptions());
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(getAllNumbersQueryOptions());
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const trpc = useTRPC();
   const t = useTranslations("index");
 
   const auth = useLoggedInAuth();
 
-  const numbers = useSuspenseQuery(trpc.numbers.getAll.queryOptions());
+  const numbers = useSuspenseQuery(getAllNumbersQueryOptions());
 
-  const addNumber = useMutation(trpc.numbers.addNew.mutationOptions());
-  const deleteNumbers = useMutation(trpc.numbers.deleteAll.mutationOptions());
+  const addNumber = useMutation(addNumberMutationOptions());
+  const updateNumber = useMutation(updateNumberMutationOptions());
+  const deleteNumbers = useMutation(deleteAllNumbersMutationOptions());
   const signout = useSignout();
   return (
     <div className="flex flex-col items-center gap-4">
@@ -40,22 +45,31 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex gap-3">
-        <Button variant="outline" onClick={() => addNumber.mutate()}>
+        <Button variant="outline" onClick={() => addNumber.mutate(Math.floor(Math.random() * 100))}>
           {t("add-number")}
         </Button>
         <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
           {t("delete-all-numbers")}
         </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            throw new Error("Test error");
-          }}
-        >
-          Trow error
-        </Button>
       </div>
-      <p className="text-xl font-bold">{JSON.stringify(numbers.data.numbers)}</p>
+      <ul className="flex flex-col gap-3">
+        {numbers.data.map((item) => (
+          <li className="flex items-center justify-between gap-6" key={item.id}>
+            <span className="text-xl font-bold">{item.number}</span>
+            <Button
+              variant="outline"
+              onClick={() =>
+                updateNumber.mutate({
+                  id: item.id,
+                  number: Math.floor(Math.random() * 100),
+                })
+              }
+            >
+              {t("update-number")}
+            </Button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
