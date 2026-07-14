@@ -1,12 +1,10 @@
 import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
 import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { createIsomorphicFn } from "@tanstack/react-start";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 
-import { envNode } from "@reactlith-template/env/node";
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
@@ -19,23 +17,8 @@ import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
-const envRunHealthcheck = createIsomorphicFn()
-  .server(() => envNode.HEALTHCHECK_ON_SSR)
-  .client(() => false);
-
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
-    if (envRunHealthcheck()) {
-      await queryClient.ensureQueryData(
-        trpc.health.queryOptions(void 0, {
-          staleTime: "static",
-          gcTime: Infinity,
-          retry: 20,
-          retryDelay: 500,
-        }),
-      );
-    }
-
     const locale = await getLocale();
     const [config, auth] = await Promise.all([
       queryClient.ensureQueryData(trpc.config.general.queryOptions()),

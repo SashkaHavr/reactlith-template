@@ -1,9 +1,12 @@
-import { Effect, Exit, Redacted, Scope } from "effect";
+import { Effect, Exit, Layer, Redacted, Scope } from "effect";
+import { HttpRouter, HttpServer } from "effect/unstable/http";
 
+import * as Api from "@reactlith-template/api/layers";
 import { createAuth } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
 import { ConfigDB } from "@reactlith-template/services/config";
 import * as Config from "@reactlith-template/services/layers/config";
+import * as DB from "@reactlith-template/services/layers/db";
 
 const acquireResources = Effect.gen(function* () {
   const configDB = yield* ConfigDB;
@@ -14,8 +17,21 @@ const acquireResources = Effect.gen(function* () {
   );
 
   const auth = yield* Effect.sync(() => createAuth(db));
+  const { handler: apiHandler } = yield* Effect.acquireRelease(
+    Effect.sync(() =>
+      HttpRouter.toWebHandler(
+        Api.layer.pipe(
+          Layer.provide(DB.layerWithDefaults),
+          Layer.provide(Layer.succeed(DB.Drizzle, db)),
+          Layer.provide(HttpServer.layerServices),
+          Layer.provide(HttpRouter.disableLogger),
+        ),
+      ),
+    ),
+    ({ dispose }) => Effect.promise(dispose),
+  );
 
-  return { db, auth };
+  return { db, auth, apiHandler };
 });
 
 const scope = await Effect.runPromise(Scope.make());

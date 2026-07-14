@@ -9,6 +9,7 @@
     "@base-ui/react": "^1.4.1",
     "@fontsource-variable/geist": "5.2.9",
     "@fontsource-variable/geist-mono": "5.2.8",
+    "@reactlith-template/api": "workspace:*",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
