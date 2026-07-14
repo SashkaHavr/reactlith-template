@@ -16,8 +16,6 @@ ENV VP_HOME="/home/vscode/.vite-plus"
 ENV PATH="/home/vscode/.vite-plus/bin:$PATH"
 
 RUN vp add -g opencode-ai
-RUN vp add -g @openai/codex
-RUN vp add -g t3@latest
 
 RUN git clone https://github.com/Effect-TS/effect-smol.git /home/vscode/references/effect-smol
 
