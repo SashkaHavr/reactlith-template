@@ -2,9 +2,9 @@ import { Context, Effect, Layer } from "effect";
 import type { AuditableLogger } from "evlog";
 import { identifyUser } from "evlog/better-auth";
 
-import { WideLog } from "@reactlith-template/services/wide-log";
+import { WideLog } from "#wide-log.ts";
 
-export class Evlog extends Context.Service<Evlog, AuditableLogger>()("@reactlith-template/evlog") {}
+export class Evlog extends Context.Service<Evlog, AuditableLogger>()("services/Evlog") {}
 
 export function make(log: AuditableLogger) {
   return WideLog.of({

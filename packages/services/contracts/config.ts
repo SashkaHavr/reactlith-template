@@ -6,11 +6,11 @@ export class ConfigNode extends Context.Service<
   {
     readonly ENV: "development" | "production" | "test";
   }
->()("@reactlith-template/config-node") {}
+>()("services/ConfigNode") {}
 
 export class ConfigDB extends Context.Service<
   ConfigDB,
   {
     readonly URL: Redacted.Redacted;
   }
->()("@reactlith-template/config-db") {}
+>()("services/ConfigDB") {}

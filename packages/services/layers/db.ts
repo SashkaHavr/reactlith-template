@@ -2,9 +2,9 @@ import { PgClient } from "@effect/sql-pg";
 import * as PgDrizzle from "drizzle-orm/effect-postgres";
 import { Context, Effect, Layer } from "effect";
 
+import { DB } from "#db.ts";
 import { relations } from "@reactlith-template/db";
 import type { DBType } from "@reactlith-template/db";
-import { DB } from "@reactlith-template/services/db";
 
 export class Drizzle extends Context.Service<Drizzle, DBType>()("@reactlith-template/drizzle") {}
 

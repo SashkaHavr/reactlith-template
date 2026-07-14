@@ -11,6 +11,6 @@ export class WideLog extends Context.Service<
     fork: NonNullable<AuditableLogger["fork"]>;
     identifyUser: (session: Parameters<typeof identifyUser>[1] | null) => void;
   }
->()("@reactlith-template/wide-log") {}
+>()("services/WideLog") {}
 
 export type WideLogType = typeof WideLog.Service;

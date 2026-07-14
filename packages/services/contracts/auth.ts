@@ -13,4 +13,4 @@ export class Auth extends Context.Service<
       WebRequest
     >;
   }
->()("@reactlith-template/auth") {}
+>()("services/Auth") {}

@@ -1,6 +1,6 @@
 import { Config, Layer, Schema } from "effect";
 
-import { ConfigDB, ConfigNode } from "@reactlith-template/services/config";
+import { ConfigDB, ConfigNode } from "#config.ts";
 
 export const layerConfigNode = Layer.effect(
   ConfigNode,

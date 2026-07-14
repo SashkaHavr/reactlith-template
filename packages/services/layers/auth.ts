@@ -1,11 +1,11 @@
 import { Context, Effect, Layer } from "effect";
 
+import { Auth } from "#auth.ts";
+import { WebRequest } from "#web-request.ts";
 import type { AuthType } from "@reactlith-template/auth";
-import { Auth } from "@reactlith-template/services/auth";
-import { WebRequest } from "@reactlith-template/services/web-request";
 
 export class BetterAuth extends Context.Service<BetterAuth, AuthType["api"]>()(
-  "@reactlith-template/better-auth",
+  "services/BetterAuth",
 ) {}
 
 export const layer = Layer.effect(

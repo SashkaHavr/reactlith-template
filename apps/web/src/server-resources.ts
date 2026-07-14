@@ -2,8 +2,8 @@ import { Effect, Exit, Redacted, Scope } from "effect";
 
 import { createAuth } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
-import * as Config from "@reactlith-template/layers/config";
 import { ConfigDB } from "@reactlith-template/services/config";
+import * as Config from "@reactlith-template/services/layers/config";
 
 const acquireResources = Effect.gen(function* () {
   const configDB = yield* ConfigDB;

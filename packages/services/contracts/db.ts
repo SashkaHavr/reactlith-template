@@ -3,6 +3,4 @@ import { Context } from "effect";
 
 import type { relations } from "@reactlith-template/db";
 
-export class DB extends Context.Service<DB, EffectPgDatabase<typeof relations>>()(
-  "@reactlith-template/db",
-) {}
+export class DB extends Context.Service<DB, EffectPgDatabase<typeof relations>>()("services/DB") {}

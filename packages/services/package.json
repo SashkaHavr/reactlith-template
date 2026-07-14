@@ -3,13 +3,15 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#*": "./src/*"
+    "#*": "./contracts/*"
   },
   "exports": {
-    "./*": "./src/*.ts"
+    "./layers/*": "./layers/*.ts",
+    "./*": "./contracts/*.ts"
   },
   "scripts": {},
   "devDependencies": {
+    "@effect/sql-pg": "catalog:",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",

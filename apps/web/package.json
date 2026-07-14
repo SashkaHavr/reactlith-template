@@ -12,7 +12,6 @@
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
-    "@reactlith-template/layers": "workspace:*",
     "@reactlith-template/services": "workspace:*",
     "@reactlith-template/trpc": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
