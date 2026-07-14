@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/services-layers",
+  "name": "@reactlith-template/layers",
   "private": true,
   "type": "module",
   "imports": {

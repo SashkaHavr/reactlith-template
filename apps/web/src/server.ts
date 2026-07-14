@@ -3,7 +3,7 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import type { AuditableLogger } from "evlog";
 
-import * as WideLog from "@reactlith-template/services-layers/wide-log";
+import * as WideLog from "@reactlith-template/layers/wide-log";
 import type { WideLogType } from "@reactlith-template/services/wide-log";
 
 import { resources } from "./server-resources";
