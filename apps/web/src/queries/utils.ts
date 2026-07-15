@@ -1,3 +1,5 @@
+import { queryOptions } from "@tanstack/react-query";
+import type { UnusedSkipTokenOptions } from "@tanstack/react-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { Effect, Layer } from "effect";
@@ -56,11 +58,86 @@ type ApiInputArgs<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> =
 > extends never
   ? []
   : [inputs: ApiInputs<Group, Endpoint>];
+type ApiEndpointEffect<
+  Group extends ApiGroup,
+  Endpoint extends ApiEndpoint<Group>,
+> = ApiClient[Group][Endpoint] extends (...args: never[]) => infer Result ? Result : never;
+type ApiQueryKey<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = readonly [
+  typeof Api.identifier,
+  Group,
+  Endpoint,
+  ...ApiInputArgs<Group, Endpoint>,
+];
+type ApiQueryOptions<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>, Data> = Omit<
+  UnusedSkipTokenOptions<
+    Effect.Success<ApiEndpointEffect<Group, Endpoint>>,
+    Effect.Error<ApiEndpointEffect<Group, Endpoint>>,
+    Data,
+    ApiQueryKey<Group, Endpoint>
+  >,
+  "queryKey" | "queryFn"
+>;
+type ApiQueryKeyArgs<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = {
+  group: Group;
+  endpoint: Endpoint;
+} & (ApiInputArgs<Group, Endpoint> extends []
+  ? { inputs?: never }
+  : { inputs: ApiInputs<Group, Endpoint> });
 
-export function queryKey<const Group extends ApiGroup, const Endpoint extends ApiEndpoint<Group>>(
+function queryKey<const Group extends ApiGroup, const Endpoint extends ApiEndpoint<Group>>(
   group: Group,
   endpoint: Endpoint,
   ...inputs: ApiInputArgs<Group, Endpoint>
 ) {
   return [Api.identifier, group, endpoint, ...inputs] as const;
+}
+
+export function apiQueryOptions<
+  const Group extends ApiGroup,
+  const Endpoint extends ApiEndpoint<Group>,
+  Data = Effect.Success<ApiEndpointEffect<Group, Endpoint>>,
+>(keyArgs: ApiQueryKeyArgs<Group, Endpoint>, options?: ApiQueryOptions<Group, Endpoint, Data>) {
+  const { group, endpoint } = keyArgs;
+  const inputs = ("inputs" in keyArgs ? [keyArgs.inputs] : []) as ApiInputArgs<Group, Endpoint>;
+  const key = queryKey(group, endpoint, ...inputs);
+
+  return queryOptions<
+    Effect.Success<ApiEndpointEffect<Group, Endpoint>>,
+    Effect.Error<ApiEndpointEffect<Group, Endpoint>>,
+    Data,
+    ApiQueryKey<Group, Endpoint>
+  >({
+    ...options,
+    queryKey: key,
+    queryFn: async () =>
+      api((client) => {
+        const method = client[group][endpoint] as unknown as (
+          ...args: ApiInputArgs<Group, Endpoint>
+        ) => Effect.Effect<
+          Effect.Success<ApiEndpointEffect<Group, Endpoint>>,
+          Effect.Error<ApiEndpointEffect<Group, Endpoint>>
+        >;
+        return method(...inputs);
+      }),
+  });
+}
+
+export function partialQueryKey(): readonly [typeof Api.identifier];
+export function partialQueryKey<const Group extends ApiGroup>(
+  group: Group,
+): readonly [typeof Api.identifier, Group];
+export function partialQueryKey<
+  const Group extends ApiGroup,
+  const Endpoint extends ApiEndpoint<Group>,
+>(group: Group, endpoint: Endpoint): readonly [typeof Api.identifier, Group, Endpoint];
+export function partialQueryKey<
+  const Group extends ApiGroup,
+  const Endpoint extends ApiEndpoint<Group>,
+>(
+  group: Group,
+  endpoint: Endpoint,
+  ...inputs: ApiInputArgs<Group, Endpoint>
+): readonly [typeof Api.identifier, Group, Endpoint, ...ApiInputArgs<Group, Endpoint>];
+export function partialQueryKey(...parts: readonly unknown[]) {
+  return [Api.identifier, ...parts] as const;
 }

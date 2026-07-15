@@ -1,19 +1,13 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
+import { mutationOptions } from "@tanstack/react-query";
 
-import { api, queryKey } from "./utils";
+import { api, apiQueryOptions } from "./utils";
 
 export function getAllNumbersQueryOptions() {
-  return queryOptions({
-    queryKey: queryKey("numbers", "getAll"),
-    queryFn: async () => api((client) => client.numbers.getAll()),
-  });
+  return apiQueryOptions({ group: "numbers", endpoint: "getAll" });
 }
 
 export function getNumberQueryOptions(id: string) {
-  return queryOptions({
-    queryKey: queryKey("numbers", "get", { params: { id } }),
-    queryFn: async () => api((client) => client.numbers.get({ params: { id } })),
-  });
+  return apiQueryOptions({ group: "numbers", endpoint: "get", inputs: { params: { id } } });
 }
 
 export function addNumberMutationOptions() {
