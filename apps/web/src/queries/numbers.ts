@@ -1,14 +1,6 @@
 import { mutationOptions } from "@tanstack/react-query";
 
-import { api, apiQueryOptions } from "./utils";
-
-export function getAllNumbersQueryOptions() {
-  return apiQueryOptions({ group: "numbers", endpoint: "getAll" });
-}
-
-export function getNumberQueryOptions(id: string) {
-  return apiQueryOptions({ group: "numbers", endpoint: "get", inputs: { params: { id } } });
-}
+import { api } from "./utils";
 
 export function addNumberMutationOptions() {
   return mutationOptions({

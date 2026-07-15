@@ -7,9 +7,9 @@ import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import {
   addNumberMutationOptions,
   deleteAllNumbersMutationOptions,
-  getAllNumbersQueryOptions,
   updateNumberMutationOptions,
 } from "~/queries/numbers";
+import { apiQueryOptions } from "~/queries/utils";
 
 export const Route = createFileRoute("/_layout/numbers")({
   beforeLoad: ({ context: { auth } }) => {
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_layout/numbers")({
     }
   },
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(getAllNumbersQueryOptions());
+    await queryClient.ensureQueryData(apiQueryOptions({ group: "numbers", endpoint: "getAll" }));
   },
   component: RouteComponent,
 });
@@ -28,7 +28,7 @@ function RouteComponent() {
 
   const auth = useLoggedInAuth();
 
-  const numbers = useSuspenseQuery(getAllNumbersQueryOptions());
+  const numbers = useSuspenseQuery(apiQueryOptions({ group: "numbers", endpoint: "getAll" }));
 
   const addNumber = useMutation(addNumberMutationOptions());
   const updateNumber = useMutation(updateNumberMutationOptions());
