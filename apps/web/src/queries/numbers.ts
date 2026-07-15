@@ -18,7 +18,6 @@ export function getNumberQueryOptions(id: string) {
 
 export function addNumberMutationOptions() {
   return mutationOptions({
-    mutationKey: ["api", "numbers", "add"],
     mutationFn: async (number: number) =>
       api((client) => client.numbers.add({ payload: { number } })),
   });
@@ -26,7 +25,6 @@ export function addNumberMutationOptions() {
 
 export function updateNumberMutationOptions() {
   return mutationOptions({
-    mutationKey: ["api", "numbers", "update"],
     mutationFn: async ({ id, number }: { id: string; number: number }) =>
       api((client) => client.numbers.update({ params: { id }, payload: { number } })),
   });
@@ -34,7 +32,6 @@ export function updateNumberMutationOptions() {
 
 export function deleteAllNumbersMutationOptions() {
   return mutationOptions({
-    mutationKey: ["api", "numbers", "deleteAll"],
     mutationFn: async () => api((client) => client.numbers.deleteAll()),
   });
 }

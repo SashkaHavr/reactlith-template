@@ -5,6 +5,7 @@ import { HttpApiBuilder } from "effect/unstable/httpapi";
 import { Api, DatabaseConnectionError } from "#index.ts";
 import { DB } from "@reactlith-template/services/db";
 
+import { layerAuthMiddleware } from "./middleware/auth";
 import { NumbersApiHandlers } from "./numbers";
 
 const IndexApiHandlers = HttpApiBuilder.group(Api, "index", (handlers) =>
@@ -25,4 +26,5 @@ const IndexApiHandlers = HttpApiBuilder.group(Api, "index", (handlers) =>
 
 export const layer = HttpApiBuilder.layer(Api).pipe(
   Layer.provide([IndexApiHandlers, NumbersApiHandlers]),
+  Layer.provide(layerAuthMiddleware),
 );

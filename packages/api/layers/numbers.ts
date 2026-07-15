@@ -1,36 +1,12 @@
 import { and, eq } from "drizzle-orm";
-import { Effect, Layer } from "effect";
-import { HttpServerRequest } from "effect/unstable/http";
+import { Effect } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
 import { Api } from "#index.ts";
-import { CurrentUserId, NumberNotFound, NumbersAuthorization, Unauthorized } from "#numbers.ts";
+import { CurrentUserId } from "#middleware/auth.ts";
+import { NumberNotFound } from "#numbers.ts";
 import { number as numberTable } from "@reactlith-template/db/schema";
-import { Auth } from "@reactlith-template/services/auth";
 import { DB } from "@reactlith-template/services/db";
-import { WebRequest } from "@reactlith-template/services/web-request";
-
-const NumbersAuthorizationLayer = Layer.effect(
-  NumbersAuthorization,
-  Effect.gen(function* () {
-    const auth = yield* Auth;
-
-    return (httpEffect) =>
-      Effect.gen(function* () {
-        const request = yield* HttpServerRequest.HttpServerRequest;
-        const webRequest = yield* HttpServerRequest.toWeb(request).pipe(Effect.orDie);
-        const session = yield* auth
-          .getSession()
-          .pipe(Effect.provideService(WebRequest, webRequest));
-
-        if (!session) {
-          return yield* new Unauthorized();
-        }
-
-        return yield* httpEffect.pipe(Effect.provideService(CurrentUserId, session.user.id));
-      });
-  }),
-);
 
 export const NumbersApiHandlers = HttpApiBuilder.group(Api, "numbers", (handlers) =>
   Effect.gen(function* () {
@@ -98,4 +74,4 @@ export const NumbersApiHandlers = HttpApiBuilder.group(Api, "numbers", (handlers
         }),
       );
   }),
-).pipe(Layer.provide(NumbersAuthorizationLayer));
+);

@@ -23,9 +23,8 @@ const acquireResources = Effect.gen(function* () {
       HttpRouter.toWebHandler(
         Api.layer.pipe(
           Layer.provide(DB.layerWithDefaults),
-          Layer.provide(Auth.layer),
-          Layer.provide(Layer.succeed(Auth.BetterAuth, auth.api)),
-          Layer.provide(Layer.succeed(DB.Drizzle, db)),
+          Layer.provide(DB.pgClientLayerFromDrizzle(db)),
+          Layer.provide(Auth.layerFromBetterAuth(auth.api)),
           Layer.provide(HttpServer.layerServices),
           Layer.provide(HttpRouter.disableLogger),
         ),

@@ -1,25 +1,21 @@
-import { Context, Effect, Layer } from "effect";
+import { Effect, Layer } from "effect";
 
 import { Auth } from "#auth.ts";
-import { WebRequest } from "#web-request.ts";
 import type { AuthType } from "@reactlith-template/auth";
 
-export class BetterAuth extends Context.Service<BetterAuth, AuthType["api"]>()(
-  "services/BetterAuth",
-) {}
+export function layerFromBetterAuth(betterAuth: AuthType["api"]) {
+  return Layer.effect(
+    Auth,
+    Effect.gen(function* () {
+      const getSession = Effect.fn("Auth.getSession")(function* (request: Request) {
+        return yield* Effect.promise(async () =>
+          betterAuth.getSession({ headers: request.headers }),
+        );
+      });
 
-export const layer = Layer.effect(
-  Auth,
-  Effect.gen(function* () {
-    const betterAuth = yield* BetterAuth;
-
-    const getSession = Effect.fn("Auth.getSession")(function* () {
-      const request = yield* WebRequest;
-      return yield* Effect.promise(async () => betterAuth.getSession({ headers: request.headers }));
-    });
-
-    return Auth.of({
-      getSession,
-    });
-  }),
-);
+      return Auth.of({
+        getSession,
+      });
+    }),
+  );
+}

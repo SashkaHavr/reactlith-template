@@ -1,5 +1,7 @@
-import { Context, Schema } from "effect";
-import { HttpApiEndpoint, HttpApiGroup, HttpApiMiddleware } from "effect/unstable/httpapi";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
+
+import { AuthMiddleware } from "#middleware/auth.ts";
 
 export const NumberItem = Schema.Struct({
   id: Schema.String.check(Schema.isUUID()),
@@ -11,19 +13,6 @@ export class NumberNotFound extends Schema.TaggedErrorClass<NumberNotFound>()(
   {},
   { httpApiStatus: 404 },
 ) {}
-
-export class Unauthorized extends Schema.TaggedErrorClass<Unauthorized>()(
-  "Unauthorized",
-  {},
-  { httpApiStatus: 401 },
-) {}
-
-export class CurrentUserId extends Context.Service<CurrentUserId, string>()("api/CurrentUserId") {}
-
-export class NumbersAuthorization extends HttpApiMiddleware.Service<
-  NumbersAuthorization,
-  { provides: CurrentUserId }
->()("api/NumbersAuthorization", { error: Unauthorized }) {}
 
 const IdParams = {
   id: Schema.String.check(Schema.isUUID()),
@@ -53,4 +42,4 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
     HttpApiEndpoint.delete("deleteAll", "/"),
   )
   .prefix("/numbers")
-  .middleware(NumbersAuthorization) {}
+  .middleware(AuthMiddleware) {}
