@@ -7,7 +7,7 @@ import {
   CurrentUserId,
   Unauthorized,
   UserId,
-} from "#middleware/auth.ts";
+} from "#/middleware/auth";
 import { Auth } from "@reactlith-template/services/auth";
 
 export const layerAuthMiddleware = Layer.effect(

@@ -2,7 +2,7 @@ services:
   db-push:
     environment:
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
-      BETTER_AUTH_ALLOWED_HOSTS_0: http://web.staging.reactlith-template.localhost
+      BETTER_AUTH_HOSTS_0: http://web.staging.reactlith-template.localhost
   db-studio:
     networks:
       - devcontainer-proxy
@@ -16,7 +16,7 @@ services:
       - devcontainer-proxy
     environment:
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
-      BETTER_AUTH_ALLOWED_HOSTS_0: http://web.staging.reactlith-template.localhost
+      BETTER_AUTH_HOSTS_0: http://web.staging.reactlith-template.localhost
       GOOGLE_CLIENT_ID: my-client-id.apps.googleusercontent.com
       GOOGLE_CLIENT_SECRET: GOCSPX-secret
       GOOGLE_EMULATE_URL: http://emulate.localhost

@@ -1,6 +1,11 @@
 import { Config, Effect, Layer, Schema } from "effect";
 
-import { AuthConfig, ConfigDB, ConfigNode, GoogleAuthConfig } from "#config.ts";
+import {
+  AuthConfig,
+  ConfigDB,
+  ConfigNode,
+  GoogleAuthConfig,
+} from "@reactlith-template/services/config";
 
 export const layerConfigNode = Layer.effect(
   ConfigNode,
@@ -28,7 +33,7 @@ export const layerAuthConfig = Layer.effect(
     const configNode = yield* ConfigNode;
 
     const authSchema = Schema.Struct({
-      ALLOWED_HOSTS: Schema.Array(Schema.NonEmptyString),
+      HOSTS: Schema.Array(Schema.NonEmptyString),
       SECRET: Schema.Redacted(Schema.NonEmptyString),
     });
     const authPrefix = ["BETTER", "AUTH"];
@@ -42,7 +47,7 @@ export const layerAuthConfig = Layer.effect(
           authPrefix,
         ).pipe(
           Config.withDefault({
-            ALLOWED_HOSTS: ["localhost:*", "127.0.0.1:*"],
+            HOSTS: ["localhost:*", "127.0.0.1:*"],
             SECRET: undefined,
           }),
         )

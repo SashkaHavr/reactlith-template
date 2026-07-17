@@ -1,7 +1,7 @@
 import { Effect, Layer } from "effect";
 
-import { Auth } from "#auth.ts";
 import type { AuthType } from "@reactlith-template/auth";
+import { Auth } from "@reactlith-template/services/auth";
 
 export function layerFromBetterAuth(betterAuth: AuthType["api"]) {
   return Layer.effect(

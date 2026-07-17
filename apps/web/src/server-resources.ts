@@ -4,10 +4,10 @@ import { HttpRouter, HttpServer } from "effect/unstable/http";
 import * as Api from "@reactlith-template/api/layers";
 import { createAuth } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
+import * as Auth from "@reactlith-template/services-layers/auth";
+import * as Config from "@reactlith-template/services-layers/config";
+import * as DB from "@reactlith-template/services-layers/db";
 import { AuthConfig, ConfigDB, GoogleAuthConfig } from "@reactlith-template/services/config";
-import * as Auth from "@reactlith-template/services/layers/auth";
-import * as Config from "@reactlith-template/services/layers/config";
-import * as DB from "@reactlith-template/services/layers/db";
 
 const acquireResources = Effect.gen(function* () {
   const configDB = yield* ConfigDB;

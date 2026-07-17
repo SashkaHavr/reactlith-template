@@ -1,7 +1,7 @@
 import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
-import { AuthMiddleware } from "#middleware/auth.ts";
+import { AuthMiddleware } from "#/middleware/auth";
 import { idBranded } from "@reactlith-template/db/schema";
 
 export const NumberId = idBranded("number");

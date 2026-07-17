@@ -152,6 +152,9 @@ importers:
       '@reactlith-template/services':
         specifier: workspace:*
         version: link:../../packages/services
+      '@reactlith-template/services-layers':
+        specifier: workspace:*
+        version: link:../../packages/services-layers
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -269,6 +272,9 @@ importers:
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db
+      '@reactlith-template/services':
+        specifier: workspace:*
+        version: link:../services
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -330,6 +336,27 @@ importers:
 
   packages/services:
     devDependencies:
+      '@reactlith-template/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.1.0
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 1.0.0-rc.4(@effect/sql-pg@4.0.0-beta.98(effect@4.0.0-beta.98))(@electric-sql/pglite@0.5.4)(@types/pg@8.20.0)(effect@4.0.0-beta.98)(pg@8.22.0)(zod@4.4.3)
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.0-beta.98
+      evlog:
+        specifier: 'catalog:'
+        version: 2.19.2(@tanstack/start-client-core@1.170.13)(react@19.2.7)(vite@8.0.13(@types/node@26.1.0)(jiti@2.7.0)(yaml@2.9.0))
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.1-rc
+
+  packages/services-layers:
+    devDependencies:
       '@effect/sql-pg':
         specifier: 'catalog:'
         version: 4.0.0-beta.98(effect@4.0.0-beta.98)
@@ -339,6 +366,9 @@ importers:
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db
+      '@reactlith-template/services':
+        specifier: workspace:*
+        version: link:../services
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

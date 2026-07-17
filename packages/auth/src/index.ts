@@ -4,28 +4,22 @@ import { admin, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { Redacted } from "effect";
 
-import { ac, roles } from "#permissions.ts";
+import { ac, roles } from "#/permissions";
 import type { DBType } from "@reactlith-template/db";
 import * as schema from "@reactlith-template/db/schema";
+import type { AuthConfig, GoogleAuthConfig } from "@reactlith-template/services/config";
 
 export function createAuth(
   db: DBType,
-  authConfig: {
-    readonly ALLOWED_HOSTS: ReadonlyArray<string>;
-    readonly SECRET: Redacted.Redacted | undefined;
-  },
-  googleAuthConfig: {
-    readonly CLIENT_ID: string;
-    readonly CLIENT_SECRET: Redacted.Redacted;
-    readonly EMULATE_URL: string | undefined;
-  },
+  authConfig: AuthConfig["Service"],
+  googleAuthConfig: GoogleAuthConfig["Service"],
 ) {
   const googleClientSecret = Redacted.value(googleAuthConfig.CLIENT_SECRET);
 
   return betterAuth({
     basePath: "/auth",
     baseURL: {
-      allowedHosts: [...authConfig.ALLOWED_HOSTS],
+      allowedHosts: [...authConfig.HOSTS],
     },
     secret: authConfig.SECRET ? Redacted.value(authConfig.SECRET) : undefined,
     session: {

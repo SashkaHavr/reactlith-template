@@ -2,9 +2,9 @@ import { and, eq } from "drizzle-orm";
 import { Effect } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
-import { Api } from "#index.ts";
-import { CurrentUserId } from "#middleware/auth.ts";
-import { NumberNotFound } from "#numbers.ts";
+import { Api } from "#/index";
+import { CurrentUserId } from "#/middleware/auth";
+import { NumberNotFound } from "#/numbers";
 import { number as numberTable } from "@reactlith-template/db/schema";
 import { DB } from "@reactlith-template/services/db";
 

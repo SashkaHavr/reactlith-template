@@ -18,7 +18,7 @@ export class ConfigDB extends Context.Service<
 export class AuthConfig extends Context.Service<
   AuthConfig,
   {
-    readonly ALLOWED_HOSTS: ReadonlyArray<string>;
+    readonly HOSTS: ReadonlyArray<string>;
     readonly SECRET: Redacted.Redacted | undefined;
   }
 >()("services/AuthConfig") {}

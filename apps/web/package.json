@@ -13,6 +13,7 @@
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/services": "workspace:*",
+    "@reactlith-template/services-layers": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@rolldown/plugin-babel": "catalog:",
