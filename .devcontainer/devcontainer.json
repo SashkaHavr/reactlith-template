@@ -6,7 +6,7 @@
   "postCreateCommand": "vp install",
   "postStartCommand": {
     "opencode": "nohup bash -c 'opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 &' >/dev/null",
-    "effect-smol-update": "cd ~/references/effect-smol && git pull"
+    "effect-clone": "if [ -d ./references/effect/.git ]; then git -C ./references/effect pull; else mkdir -p ./references && git clone https://github.com/Effect-TS/effect.git ./references/effect; fi"
   },
   "remoteUser": "vscode",
   "otherPortsAttributes": {

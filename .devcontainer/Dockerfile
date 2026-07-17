@@ -17,6 +17,4 @@ ENV PATH="/home/vscode/.vite-plus/bin:$PATH"
 
 RUN vp add -g opencode-ai
 
-RUN git clone https://github.com/Effect-TS/effect-smol.git /home/vscode/references/effect-smol
-
 COPY --from=build-extensions /extensions/proxy-links/proxy-links.vsix /extensions/proxy-links/

@@ -1,4 +1,4 @@
 - Always use `vp` as the package manager and task runner.
 - Always run `vp check --fix` after making any changes. NEVER RUN ANY OTHER CHECK COMMANDS.
 - Never run `vp dev` unless explicitly requested.
-- When working with Effect code, always refer to the Effect source code at `~/references/effect-smol` for correct examples.
+- When working with Effect code, always refer to the Effect source code at `./references/effect` for correct examples.
