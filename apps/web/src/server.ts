@@ -12,7 +12,7 @@ type RequestContext = typeof resources & {
   log: WideLogType;
 };
 
-declare module "@tanstack/react-router" {
+declare module "@tanstack/react-start" {
   interface Register {
     server: {
       requestContext: RequestContext;
