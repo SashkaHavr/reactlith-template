@@ -2,26 +2,24 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
-import { Redacted } from "effect";
 
 import { ac, roles } from "#/permissions";
 import type { DBType } from "@reactlith-template/db";
 import * as schema from "@reactlith-template/db/schema";
-import type { AuthConfig, GoogleAuthConfig } from "@reactlith-template/services/config";
 
 export function createAuth(
   db: DBType,
-  authConfig: AuthConfig["Service"],
-  googleAuthConfig: GoogleAuthConfig["Service"],
+  authConfig: { secret: string | undefined; hosts: readonly string[] },
+  googleAuthConfig: { clientId: string; clientSecret: string; emulateUrl: string | undefined },
 ) {
-  const googleClientSecret = Redacted.value(googleAuthConfig.CLIENT_SECRET);
+  const googleClientSecret = googleAuthConfig.clientSecret;
 
   return betterAuth({
     basePath: "/auth",
     baseURL: {
-      allowedHosts: [...authConfig.HOSTS],
+      allowedHosts: [...authConfig.hosts],
     },
-    secret: authConfig.SECRET ? Redacted.value(authConfig.SECRET) : undefined,
+    secret: authConfig.secret ? authConfig.secret : undefined,
     session: {
       cookieCache: {
         enabled: true,
@@ -35,16 +33,16 @@ export function createAuth(
     }),
     plugins: [
       admin({ ac, roles }),
-      ...(googleAuthConfig.EMULATE_URL
+      ...(googleAuthConfig.emulateUrl
         ? [
             genericOAuth({
               config: [
                 {
                   providerId: "google-emulate",
-                  clientId: googleAuthConfig.CLIENT_ID,
+                  clientId: googleAuthConfig.clientId,
                   clientSecret: googleClientSecret,
-                  authorizationUrl: `${googleAuthConfig.EMULATE_URL}/o/oauth2/v2/auth`,
-                  tokenUrl: `${googleAuthConfig.EMULATE_URL}/oauth2/token`,
+                  authorizationUrl: `${googleAuthConfig.emulateUrl}/o/oauth2/v2/auth`,
+                  tokenUrl: `${googleAuthConfig.emulateUrl}/oauth2/token`,
                 },
               ],
             }),
@@ -58,10 +56,10 @@ export function createAuth(
       },
     },
     socialProviders: {
-      google: googleAuthConfig.EMULATE_URL
+      google: googleAuthConfig.emulateUrl
         ? undefined
         : {
-            clientId: googleAuthConfig.CLIENT_ID,
+            clientId: googleAuthConfig.clientId,
             clientSecret: googleClientSecret,
           },
     },

@@ -4,10 +4,10 @@ import { HttpRouter, HttpServer } from "effect/unstable/http";
 import * as Api from "@reactlith-template/api/layers";
 import { createAuth } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
-import * as Auth from "@reactlith-template/services-layers/auth";
-import * as Config from "@reactlith-template/services-layers/config";
-import * as DB from "@reactlith-template/services-layers/db";
 import { AuthConfig, ConfigDB, GoogleAuthConfig } from "@reactlith-template/services/config";
+import * as Auth from "@reactlith-template/services/layers/auth";
+import * as Config from "@reactlith-template/services/layers/config";
+import * as DB from "@reactlith-template/services/layers/db";
 
 const acquireResources = Effect.gen(function* () {
   const configDB = yield* ConfigDB;
@@ -19,7 +19,20 @@ const acquireResources = Effect.gen(function* () {
     (db) => Effect.promise(async () => db.$client.end()),
   );
 
-  const auth = yield* Effect.sync(() => createAuth(db, authConfig, googleAuthConfig));
+  const auth = yield* Effect.sync(() =>
+    createAuth(
+      db,
+      {
+        secret: authConfig.SECRET ? Redacted.value(authConfig.SECRET) : undefined,
+        hosts: authConfig.HOSTS,
+      },
+      {
+        clientId: googleAuthConfig.CLIENT_ID,
+        clientSecret: Redacted.value(googleAuthConfig.CLIENT_SECRET),
+        emulateUrl: googleAuthConfig.EMULATE_URL,
+      },
+    ),
+  );
   const { handler: apiHandler } = yield* Effect.acquireRelease(
     Effect.sync(() =>
       HttpRouter.toWebHandler(

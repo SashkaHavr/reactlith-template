@@ -1,31 +1,32 @@
 import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
 import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import type * as AtomRegistry from "effect/unstable/reactivity/AtomRegistry";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
-import { getSessionQueryOptions } from "~/lib/auth";
+import { preloadAtom } from "~/lib/atom";
+import { sessionAtom } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
 import { getServerLogger } from "~/lib/log";
-import type { createQueryClient } from "~/lib/query";
 import { cn } from "~/lib/utils";
-import { apiQueryOptions } from "~/queries/utils";
+import { configGeneralAtom } from "~/queries";
 import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
 export const Route = createRootRouteWithContext<{
-  queryClient: ReturnType<typeof createQueryClient>;
+  atomRegistry: AtomRegistry.AtomRegistry;
 }>()({
-  beforeLoad: async ({ context: { queryClient } }) => {
+  beforeLoad: async ({ context: { atomRegistry } }) => {
     const locale = await getLocale();
     const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(apiQueryOptions({ group: "index", endpoint: "configGeneral" })),
-      queryClient.ensureQueryData(getSessionQueryOptions),
+      preloadAtom(atomRegistry, configGeneralAtom),
+      preloadAtom(atomRegistry, sessionAtom),
     ]);
 
     if (auth.loggedIn) {

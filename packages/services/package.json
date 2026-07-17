@@ -3,14 +3,20 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#/*": "./src/*.ts"
+    "#/*": "./contracts/*.ts"
   },
   "exports": {
-    "./*": "./src/*.ts"
+    "./*": "./contracts/*.ts",
+    "./layers/*": "./layers/*.ts"
   },
   "scripts": {},
   "devDependencies": {
+    "@effect/sql-pg": "catalog:",
+    "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/db": "workspace:*",
+    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
     "@types/node": "catalog:",
     "drizzle-orm": "catalog:",
     "effect": "catalog:",

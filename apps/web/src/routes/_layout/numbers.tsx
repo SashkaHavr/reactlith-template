@@ -1,15 +1,11 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useTranslations } from "use-intl";
 
 import { Button } from "~/components/ui/button";
+import { preloadAtom } from "~/lib/atom";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import {
-  addNumberMutationOptions,
-  deleteAllNumbersMutationOptions,
-  updateNumberMutationOptions,
-} from "~/queries/numbers";
-import { apiQueryOptions } from "~/queries/utils";
+import { numbersAtom, useAddNumber, useDeleteAllNumbers, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers")({
   beforeLoad: ({ context: { auth } }) => {
@@ -17,8 +13,8 @@ export const Route = createFileRoute("/_layout/numbers")({
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(apiQueryOptions({ group: "numbers", endpoint: "getAll" }));
+  loader: async ({ context: { atomRegistry } }) => {
+    await preloadAtom(atomRegistry, numbersAtom);
   },
   component: RouteComponent,
 });
@@ -28,11 +24,11 @@ function RouteComponent() {
 
   const auth = useLoggedInAuth();
 
-  const numbers = useSuspenseQuery(apiQueryOptions({ group: "numbers", endpoint: "getAll" }));
+  const numbers = useAtomSuspense(numbersAtom);
 
-  const addNumber = useMutation(addNumberMutationOptions());
-  const updateNumber = useMutation(updateNumberMutationOptions());
-  const deleteNumbers = useMutation(deleteAllNumbersMutationOptions());
+  const addNumber = useAddNumber();
+  const updateNumber = useUpdateNumber();
+  const deleteNumbers = useDeleteAllNumbers();
   const signout = useSignout();
   return (
     <div className="flex flex-col items-center gap-4">
@@ -40,26 +36,26 @@ function RouteComponent() {
         <p>
           {t("user")}: {auth.user.email}
         </p>
-        <Button variant="outline" onClick={() => signout.mutate()}>
+        <Button variant="outline" onClick={() => void signout()}>
           {t("logout")}
         </Button>
       </div>
       <div className="flex gap-3">
-        <Button variant="outline" onClick={() => addNumber.mutate(Math.floor(Math.random() * 100))}>
+        <Button variant="outline" onClick={() => addNumber(Math.floor(Math.random() * 100))}>
           {t("add-number")}
         </Button>
-        <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
+        <Button variant="outline" onClick={() => deleteNumbers()}>
           {t("delete-all-numbers")}
         </Button>
       </div>
       <ul className="flex flex-col gap-3">
-        {numbers.data.map((item) => (
+        {numbers.value.map((item) => (
           <li className="flex items-center justify-between gap-6" key={item.id}>
             <span className="text-xl font-bold">{item.number}</span>
             <Button
               variant="outline"
               onClick={() =>
-                updateNumber.mutate({
+                updateNumber({
                   id: item.id,
                   number: Math.floor(Math.random() * 100),
                 })
