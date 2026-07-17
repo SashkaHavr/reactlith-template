@@ -10,7 +10,6 @@
   },
   "scripts": {},
   "devDependencies": {
-    "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "effect": "catalog:",

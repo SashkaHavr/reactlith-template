@@ -6,7 +6,7 @@ import { oneToManyCascadeOnDelete } from "#utils/foreign-keys.ts";
 export const user = snakeCase.table(
   "user",
   {
-    ...baseTable,
+    ...baseTable<"user">(),
     name: text().notNull(),
     email: text().notNull().unique(),
     emailVerified: boolean().default(false).notNull(),
@@ -22,7 +22,7 @@ export const user = snakeCase.table(
 export const session = snakeCase.table(
   "session",
   {
-    ...baseTable,
+    ...baseTable<"session">(),
     expiresAt: timestamp({ withTimezone: true }).notNull(),
     token: text().notNull().unique(),
     ipAddress: text(),
@@ -36,7 +36,7 @@ export const session = snakeCase.table(
 export const account = snakeCase.table(
   "account",
   {
-    ...baseTable,
+    ...baseTable<"account">(),
     accountId: text().notNull(),
     providerId: text().notNull(),
     userId: oneToManyCascadeOnDelete(() => user.id),
@@ -54,7 +54,7 @@ export const account = snakeCase.table(
 export const verification = snakeCase.table(
   "verification",
   {
-    ...baseTable,
+    ...baseTable<"verification">(),
     identifier: text().notNull(),
     value: text().notNull(),
     expiresAt: timestamp({ withTimezone: true }).notNull(),

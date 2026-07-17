@@ -81,10 +81,6 @@ export default defineConfig({
         rules: { "import/no-default-export": "off" },
       },
       {
-        files: ["packages/env/**"],
-        rules: { "no-process-env": "off" },
-      },
-      {
         files: ["packages/trpc/**"],
         rules: {
           "no-restricted-imports": [

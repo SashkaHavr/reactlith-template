@@ -11,17 +11,20 @@ import { getSessionQueryOptions } from "~/lib/auth";
 import { getLocale, getMessages } from "~/lib/intl";
 import { IntlProvider } from "~/lib/intl-provider";
 import { getServerLogger } from "~/lib/log";
-import type { TRPCRouteContext } from "~/lib/trpc";
+import type { createQueryClient } from "~/lib/query";
 import { cn } from "~/lib/utils";
+import { apiQueryOptions } from "~/queries/utils";
 import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
-export const Route = createRootRouteWithContext<TRPCRouteContext>()({
-  beforeLoad: async ({ context: { queryClient, trpc } }) => {
+export const Route = createRootRouteWithContext<{
+  queryClient: ReturnType<typeof createQueryClient>;
+}>()({
+  beforeLoad: async ({ context: { queryClient } }) => {
     const locale = await getLocale();
     const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(trpc.config.general.queryOptions()),
+      queryClient.ensureQueryData(apiQueryOptions({ group: "index", endpoint: "configGeneral" })),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 

@@ -2,9 +2,13 @@ import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 import { AuthMiddleware } from "#middleware/auth.ts";
+import { idBranded } from "@reactlith-template/db/schema";
+
+export const NumberId = idBranded("number");
+export type NumberId = typeof NumberId.Type;
 
 export const NumberItem = Schema.Struct({
-  id: Schema.String.check(Schema.isUUID()),
+  id: NumberId,
   number: Schema.Int,
 });
 
@@ -15,7 +19,7 @@ export class NumberNotFound extends Schema.TaggedErrorClass<NumberNotFound>()(
 ) {}
 
 const IdParams = {
-  id: Schema.String.check(Schema.isUUID()),
+  id: NumberId,
 };
 const NumberPayload = Schema.Struct({ number: Schema.Int });
 

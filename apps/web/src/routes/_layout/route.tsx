@@ -14,11 +14,11 @@ import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { localeToString, useSetLocale } from "~/lib/intl";
-import { useTRPC } from "~/lib/trpc";
+import { apiQueryOptions } from "~/queries/utils";
 
 export const Route = createFileRoute("/_layout")({
-  loader: async ({ context: { trpc, queryClient } }) => {
-    await queryClient.ensureQueryData(trpc.health.queryOptions());
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(apiQueryOptions({ group: "index", endpoint: "health" }));
   },
   component: RouteComponent,
 });
@@ -76,11 +76,10 @@ function LocaleSwitcher() {
 }
 
 function RouteComponent() {
-  const trpc = useTRPC();
   const t = useTranslations("index");
   const format = useFormatter();
 
-  const trpcHealth = useSuspenseQuery(trpc.health.queryOptions());
+  const health = useSuspenseQuery(apiQueryOptions({ group: "index", endpoint: "health" }));
 
   const now = useNow({ updateInterval: 1000 });
 
@@ -93,8 +92,8 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
-            {t("trpc-health-response")}
+          <p className={health.isSuccess ? "text-green-500" : "text-red-500"}>
+            {t("api-health-response")}
           </p>
           <p>
             {t("time-now")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>

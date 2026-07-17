@@ -14,11 +14,11 @@
   },
   "devDependencies": {
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@types/node": "catalog:",
     "better-auth": "catalog:",
+    "effect": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -12,9 +12,7 @@
     "@reactlith-template/api": "workspace:*",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/env": "workspace:*",
     "@reactlith-template/services": "workspace:*",
-    "@reactlith-template/trpc": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@rolldown/plugin-babel": "catalog:",
@@ -24,8 +22,6 @@
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-ssr-query": "catalog:",
     "@tanstack/react-start": "catalog:",
-    "@trpc/client": "catalog:",
-    "@trpc/tanstack-react-query": "catalog:",
     "@types/babel__core": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
@@ -41,12 +37,10 @@
     "nitro": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "superjson": "catalog:",
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
     "typescript": "catalog:",
-    "use-intl": "catalog:",
-    "zod": "catalog:"
+    "use-intl": "catalog:"
   }
 }

@@ -19,18 +19,14 @@
   "devDependencies": {
     "@effect/sql-pg": "catalog:",
     "@electric-sql/pglite": "catalog:",
-    "@reactlith-template/env": "workspace:*",
-    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "@types/pg": "catalog:",
-    "better-result": "catalog:",
     "drizzle-kit": "catalog:",
     "drizzle-orm": "catalog:",
     "drizzle-seed": "catalog:",
     "effect": "catalog:",
     "typescript": "catalog:",
-    "uuid": "catalog:",
-    "zod": "catalog:"
+    "uuid": "catalog:"
   }
 }

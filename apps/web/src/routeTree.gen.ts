@@ -13,7 +13,6 @@ import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutNumbersRouteImport } from './routes/_layout/numbers'
 import { Route as apiIngestRouteImport } from './routes/(api)/ingest'
-import { Route as apiTrpcSplatRouteImport } from './routes/(api)/trpc.$'
 import { Route as apiAuthSplatRouteImport } from './routes/(api)/auth.$'
 import { Route as apiApiSplatRouteImport } from './routes/(api)/api.$'
 
@@ -36,11 +35,6 @@ const apiIngestRoute = apiIngestRouteImport.update({
   path: '/ingest',
   getParentRoute: () => rootRouteImport,
 } as any)
-const apiTrpcSplatRoute = apiTrpcSplatRouteImport.update({
-  id: '/(api)/trpc/$',
-  path: '/trpc/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const apiAuthSplatRoute = apiAuthSplatRouteImport.update({
   id: '/(api)/auth/$',
   path: '/auth/$',
@@ -58,7 +52,6 @@ export interface FileRoutesByFullPath {
   '/numbers': typeof LayoutNumbersRoute
   '/api/$': typeof apiApiSplatRoute
   '/auth/$': typeof apiAuthSplatRoute
-  '/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRoutesByTo {
   '/ingest': typeof apiIngestRoute
@@ -66,7 +59,6 @@ export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/api/$': typeof apiApiSplatRoute
   '/auth/$': typeof apiAuthSplatRoute
-  '/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -76,13 +68,12 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/(api)/api/$': typeof apiApiSplatRoute
   '/(api)/auth/$': typeof apiAuthSplatRoute
-  '/(api)/trpc/$': typeof apiTrpcSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ingest' | '/numbers' | '/api/$' | '/auth/$' | '/trpc/$'
+  fullPaths: '/' | '/ingest' | '/numbers' | '/api/$' | '/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/ingest' | '/numbers' | '/' | '/api/$' | '/auth/$' | '/trpc/$'
+  to: '/ingest' | '/numbers' | '/' | '/api/$' | '/auth/$'
   id:
     | '__root__'
     | '/_layout'
@@ -91,7 +82,6 @@ export interface FileRouteTypes {
     | '/_layout/'
     | '/(api)/api/$'
     | '/(api)/auth/$'
-    | '/(api)/trpc/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -99,7 +89,6 @@ export interface RootRouteChildren {
   apiIngestRoute: typeof apiIngestRoute
   apiApiSplatRoute: typeof apiApiSplatRoute
   apiAuthSplatRoute: typeof apiAuthSplatRoute
-  apiTrpcSplatRoute: typeof apiTrpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,13 +119,6 @@ declare module '@tanstack/react-router' {
       path: '/ingest'
       fullPath: '/ingest'
       preLoaderRoute: typeof apiIngestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(api)/trpc/$': {
-      id: '/(api)/trpc/$'
-      path: '/trpc/$'
-      fullPath: '/trpc/$'
-      preLoaderRoute: typeof apiTrpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(api)/auth/$': {
@@ -175,7 +157,6 @@ const rootRouteChildren: RootRouteChildren = {
   apiIngestRoute: apiIngestRoute,
   apiApiSplatRoute: apiApiSplatRoute,
   apiAuthSplatRoute: apiAuthSplatRoute,
-  apiTrpcSplatRoute: apiTrpcSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

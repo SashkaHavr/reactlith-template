@@ -1,7 +1,13 @@
 import { Effect, Layer } from "effect";
 import { HttpServerRequest } from "effect/unstable/http";
 
-import { AuthMiddleware, CurrentUser, CurrentUserId, Unauthorized } from "#middleware/auth.ts";
+import {
+  AuthMiddleware,
+  CurrentUser,
+  CurrentUserId,
+  Unauthorized,
+  UserId,
+} from "#middleware/auth.ts";
 import { Auth } from "@reactlith-template/services/auth";
 
 export const layerAuthMiddleware = Layer.effect(
@@ -23,7 +29,7 @@ export const layerAuthMiddleware = Layer.effect(
 
         return yield* httpEffect.pipe(
           Effect.provideService(CurrentUser, session.user),
-          Effect.provideService(CurrentUserId, session.user.id),
+          Effect.provideService(CurrentUserId, UserId.make(session.user.id)),
         );
       });
   }),

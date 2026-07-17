@@ -5,7 +5,7 @@ import { useTranslations } from "use-intl";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { authClient, useResetAuth } from "~/lib/auth";
-import { useTRPC } from "~/lib/trpc";
+import { apiQueryOptions } from "~/queries/utils";
 
 export const Route = createFileRoute("/_layout/")({
   beforeLoad: ({ context: { auth } }) => {
@@ -17,10 +17,11 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function RouteComponent() {
-  const trpc = useTRPC();
   const t = useTranslations("index");
 
-  const authConfig = useSuspenseQuery(trpc.config.general.queryOptions()).data.auth;
+  const authConfig = useSuspenseQuery(
+    apiQueryOptions({ group: "index", endpoint: "configGeneral" }),
+  ).data.auth;
   const resetAuth = useResetAuth();
 
   const signInWithGoogle = useMutation({

@@ -1,5 +1,7 @@
 import { mutationOptions } from "@tanstack/react-query";
 
+import type { NumberId } from "@reactlith-template/api/numbers";
+
 import { api } from "./utils";
 
 export function addNumberMutationOptions() {
@@ -11,7 +13,7 @@ export function addNumberMutationOptions() {
 
 export function updateNumberMutationOptions() {
   return mutationOptions({
-    mutationFn: async ({ id, number }: { id: string; number: number }) =>
+    mutationFn: async ({ id, number }: { id: NumberId; number: number }) =>
       api((client) => client.numbers.update({ params: { id }, payload: { number } })),
   });
 }

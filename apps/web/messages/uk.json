@@ -6,7 +6,7 @@
     "time-now": "Час зараз",
     "sign-in-with-google": "Увійти з Google",
     "logout": "Вийти",
-    "trpc-health-response": "Відповідь /health від tRPC",
+    "api-health-response": "Відповідь /health від API",
     "update-number": "Оновити число",
     "user": "Користувач",
     "works": "Працює!"

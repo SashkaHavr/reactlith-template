@@ -19,7 +19,7 @@ export const NumbersApiHandlers = HttpApiBuilder.group(Api, "numbers", (handlers
           return yield* db.query.number
             .findMany({
               columns: { id: true, number: true },
-              where: { userId },
+              where: { userId: { eq: userId } },
             })
             .pipe(Effect.orDie);
         }),
@@ -30,7 +30,7 @@ export const NumbersApiHandlers = HttpApiBuilder.group(Api, "numbers", (handlers
           const item = yield* db.query.number
             .findFirst({
               columns: { id: true, number: true },
-              where: { id: params.id, userId },
+              where: { id: { eq: params.id }, userId: { eq: userId } },
             })
             .pipe(Effect.orDie);
 
