@@ -5,7 +5,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../:/home/vscode/reactlith-template:cached
-      - ~/.local/share/opencode-devcontainer:/home/vscode/.local/share/opencode
+      - devcontainer-opencode-config:/home/vscode/.config/opencode
+      - devcontainer-opencode-auth:/home/vscode/.local/share/opencode
     networks:
       - db-network
       - devcontainer-proxy
@@ -54,3 +55,7 @@ networks:
 
 volumes:
   db-data:
+  devcontainer-opencode-config:
+    external: true
+  devcontainer-opencode-auth:
+    external: true
