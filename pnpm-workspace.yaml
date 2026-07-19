@@ -38,14 +38,9 @@ catalog:
   "@tanstack/react-start": "1.168.27"
   "nitro": "3.0.260610-beta"
   vite-plus: 0.2.2
-  vite: npm:@voidzero-dev/vite-plus-core@0.2.2
+  vite: 8.1.5
+  vitest: 4.1.10
+  "@inlang/paraglide-js": 2.22.0
 allowBuilds:
   esbuild: false
   msgpackr-extract: false
-overrides:
-  vite: "catalog:"
-peerDependencyRules:
-  allowAny:
-    - vite
-  allowedVersions:
-    vite: "*"

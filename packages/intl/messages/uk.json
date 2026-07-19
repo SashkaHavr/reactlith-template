@@ -1,0 +1,28 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "add_number": "Додати число",
+  "auth_status": "Статус сервера автентифікації",
+  "delete_all_numbers": "Видалити усі числа",
+  "time_now": [
+    {
+      "declarations": [
+        "input date",
+        "local formattedDate = date: datetime dateStyle=long timeStyle=medium timeZone=UTC"
+      ],
+      "match": {
+        "date=*": "Час зараз: {formattedDate}"
+      }
+    }
+  ],
+  "sign_in_with_google": "Увійти з Google",
+  "logout": "Вийти",
+  "api_health_response": "Відповідь /health від API",
+  "update_number": "Оновити число",
+  "user": "Користувач",
+  "works": "Працює!",
+  "error": "Щось пішло не так",
+  "not_found": "Сторінка, яку ви шукаєте, не існує",
+  "not_found_description": "The page you're looking for doesn't exist.",
+  "return_to_home_page": "Повернутися на домашню сторінку",
+  "server_rendered": "Згенеровано на сервері"
+}

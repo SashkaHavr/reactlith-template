@@ -18,7 +18,8 @@
         "/extensions/proxy-links/proxy-links.vsix",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
-        "VoidZero.vite-plus-extension-pack"
+        "VoidZero.vite-plus-extension-pack",
+        "inlang.vs-code-extension"
       ]
     }
   }

@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "clean": "git clean -xdfq 'node_modules/*' '**/node_modules/*' '**/dist/*'",
-    "build": "vp run -r build",
-    "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d"
+    "postinstall": "vpr @reactlith-template/intl#build",
+    "build": "vpr -r build",
+    "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d",
+    "dev": "vpr -r --parallel dev"
   },
   "devDependencies": {
-    "vite": "catalog:",
     "vite-plus": "catalog:"
   },
   "engines": {

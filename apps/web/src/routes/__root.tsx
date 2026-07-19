@@ -6,12 +6,11 @@ import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 
+import { getLocale } from "@reactlith-template/intl/runtime";
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { preloadAtom } from "~/lib/atom";
 import { sessionAtom } from "~/lib/auth";
-import { getLocale, getMessages } from "~/lib/intl";
-import { IntlProvider } from "~/lib/intl-provider";
 import { getServerLogger } from "~/lib/log";
 import { cn } from "~/lib/utils";
 import { configGeneralAtom } from "~/queries";
@@ -23,7 +22,6 @@ export const Route = createRootRouteWithContext<{
   atomRegistry: AtomRegistry.AtomRegistry;
 }>()({
   beforeLoad: async ({ context: { atomRegistry } }) => {
-    const locale = await getLocale();
     const [config, auth] = await Promise.all([
       preloadAtom(atomRegistry, configGeneralAtom),
       preloadAtom(atomRegistry, sessionAtom),
@@ -33,13 +31,12 @@ export const Route = createRootRouteWithContext<{
       getServerLogger()?.identifyUser(auth);
     }
 
+    const locale = getLocale();
+
     return {
       auth,
       config,
-      intl: {
-        messages: await getMessages(locale),
-        locale: locale,
-      },
+      locale,
       theme: await getTheme(),
     };
   },
@@ -88,7 +85,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { locale, theme, auth } = Route.useRouteContext({
-    select: (s) => ({ locale: s.intl.locale, theme: s.theme, auth: s.auth }),
+    select: (s) => ({ locale: s.locale, theme: s.theme, auth: s.auth }),
   });
 
   useEffect(() => {
@@ -100,16 +97,19 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   }, [auth]);
 
   return (
-    <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
+    <html
+      key={locale}
+      lang={locale}
+      suppressHydrationWarning
+      className={cn(theme !== "system" && theme)}
+    >
       <head>
         <HeadContent />
         <ThemeScript />
       </head>
       <body>
         <ThemeProvider>
-          <IntlProvider>
-            <div className="isolate">{children}</div>
-          </IntlProvider>
+          <div className="isolate">{children}</div>
         </ThemeProvider>
         <Scripts />
       </body>

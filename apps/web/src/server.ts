@@ -3,6 +3,7 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import type { AuditableLogger } from "evlog";
 
+import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import * as WideLog from "@reactlith-template/services/layers/wide-log";
 import type { WideLogType } from "@reactlith-template/services/wide-log";
 
@@ -25,8 +26,10 @@ export default createServerEntry({
     const log = (request as any)["context"]["log"] as AuditableLogger;
     const logService = WideLog.make(log);
 
-    return handler.fetch(request, {
-      context: { ...resources, log: logService },
-    });
+    return paraglideMiddleware(request, async () =>
+      handler.fetch(request, {
+        context: { ...resources, log: logService },
+      }),
+    );
   },
 });

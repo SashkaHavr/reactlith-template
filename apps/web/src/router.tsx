@@ -16,6 +16,7 @@ export function getRouter() {
 
   const router = createRouter({
     context: { atomRegistry },
+
     dehydrate: () => ({ atomState: Hydration.dehydrate(atomRegistry) }),
     hydrate: ({ atomState }) => Hydration.hydrate(atomRegistry, atomState),
     routeTree,

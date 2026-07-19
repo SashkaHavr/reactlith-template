@@ -1,7 +1,8 @@
 import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useTranslations } from "use-intl";
+// import { useTranslations } from "use-intl";
 
+import { m } from "@reactlith-template/intl/messages";
 import { Button } from "~/components/ui/button";
 import { preloadAtom } from "~/lib/atom";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/_layout/numbers")({
 });
 
 function RouteComponent() {
-  const t = useTranslations("index");
+  // const t = useTranslations("index");
 
   const auth = useLoggedInAuth();
 
@@ -34,18 +35,18 @@ function RouteComponent() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <p>
-          {t("user")}: {auth.user.email}
+          {m.user()}: {auth.user.email}
         </p>
         <Button variant="outline" onClick={() => void signout()}>
-          {t("logout")}
+          {m.logout()}
         </Button>
       </div>
       <div className="flex gap-3">
         <Button variant="outline" onClick={() => addNumber(Math.floor(Math.random() * 100))}>
-          {t("add-number")}
+          {m.add_number()}
         </Button>
         <Button variant="outline" onClick={() => deleteNumbers()}>
-          {t("delete-all-numbers")}
+          {m.delete_all_numbers()}
         </Button>
       </div>
       <ul className="flex flex-col gap-3">
@@ -61,7 +62,7 @@ function RouteComponent() {
                 })
               }
             >
-              {t("update-number")}
+              {m.update_number()}
             </Button>
           </li>
         ))}

@@ -1,20 +1,21 @@
 import { useAtomSuspense } from "@effect/atom-react";
 import {
-  ClientOnly,
   createFileRoute,
   Outlet,
   useHydrated,
   useRouteContext,
+  useRouter,
 } from "@tanstack/react-router";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { useFormatter, useNow, useTranslations } from "use-intl";
+import { useEffect, useState } from "react";
 
-import { isLocale } from "@reactlith-template/utils/intl";
+import { m } from "@reactlith-template/intl/messages";
+import { isLocale, setLocale } from "@reactlith-template/intl/runtime";
+import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { preloadAtom } from "~/lib/atom";
-import { localeToString, useSetLocale } from "~/lib/intl";
 import { healthAtom } from "~/queries";
 
 export const Route = createFileRoute("/_layout")({
@@ -46,19 +47,24 @@ function ThemeSwitcher() {
   );
 }
 
+const localeToString: Record<Locale, string> = {
+  en: "English",
+  uk: "Українська",
+};
+
 function LocaleSwitcher() {
-  const locale = useRouteContext({
-    from: "__root__",
-    select: (s) => s.intl.locale,
-  });
-  const setLocale = useSetLocale();
+  const locale = useRouteContext({ from: "__root__", select: (r) => r.locale });
+  const router = useRouter();
 
   return (
     <Select
       value={locale}
       onValueChange={(value) => {
         if (isLocale(value)) {
-          void setLocale(value);
+          void (async () => {
+            await setLocale(value, { reload: false });
+            await router.invalidate();
+          })();
         }
       }}
     >
@@ -77,26 +83,31 @@ function LocaleSwitcher() {
 }
 
 function RouteComponent() {
-  const t = useTranslations("index");
-  const format = useFormatter();
+  // const t = useTranslations("index");
+  // const format = useFormatter();
 
   useAtomSuspense(healthAtom);
 
-  const now = useNow({ updateInterval: 1000 });
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
+  const hydrated = useHydrated();
+
+  // Intl.DateTimeFormat("en", {timeStyle: ""})
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
       <div className="flex w-100 flex-col items-center">
         <div className="flex w-fit flex-col gap-4">
           <div className="flex gap-3">
-            <p className="self-center font-heading text-xl">{t("works")}</p>
+            <p className="self-center font-heading text-xl">{m.works()}</p>
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className="text-green-500">{t("api-health-response")}</p>
-          <p>
-            {t("time-now")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
-          </p>
+          <p className="text-green-500">{m.api_health_response()}</p>
+          <p>{hydrated ? m.time_now({ date: now }) : m.server_rendered()}</p>
         </div>
       </div>
       <Outlet />

@@ -1,19 +1,21 @@
-import { useTranslations } from "use-intl";
+// import { useTranslations } from "use-intl";
+
+import { m } from "@reactlith-template/intl/messages";
 
 import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "../ui/empty";
 
 export function NotFoundComponent() {
-  const t = useTranslations();
+  // const t = useTranslations();
   return (
     <Empty>
       <EmptyHeader>
-        <EmptyTitle>{t("routeComponents.notFound")}</EmptyTitle>
+        <EmptyTitle>{m.not_found()}</EmptyTitle>
       </EmptyHeader>
-      <EmptyDescription>{t("routeComponents.notFoundDescription")}</EmptyDescription>
+      <EmptyDescription>{m.not_found_description()}</EmptyDescription>
       <EmptyContent>
         <div className="flex gap-2">
-          <LinkButton to="/">{t("routeComponents.returnToHomePage")}</LinkButton>
+          <LinkButton to="/">{m.return_to_home_page()}</LinkButton>
         </div>
       </EmptyContent>
     </Empty>

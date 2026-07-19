@@ -3,7 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "component": "vpx shadcn@latest add"
+    "component": "vpx shadcn@latest add",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node ./dist/server/index.mjs"
   },
   "devDependencies": {
     "@base-ui/react": "^1.4.1",
@@ -13,6 +17,7 @@
     "@reactlith-template/api": "workspace:*",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
+    "@reactlith-template/intl": "workspace:*",
     "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
@@ -40,6 +45,7 @@
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
     "typescript": "catalog:",
-    "use-intl": "catalog:"
+    "use-intl": "catalog:",
+    "vite": "catalog:"
   }
 }

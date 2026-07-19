@@ -1,8 +1,11 @@
-import { defineConfig } from "vite-plus";
+import { defineConfig, configDefaults } from "vite-plus";
 
 export default defineConfig({
   staged: {
     "*": "vp check --fix",
+  },
+  test: {
+    exclude: [...configDefaults.exclude, "references"],
   },
   fmt: {
     ignorePatterns: ["**/*.gen.ts", "**/drizzle", "**/generated", "**/dist"],
