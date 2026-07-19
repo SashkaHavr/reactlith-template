@@ -13,7 +13,6 @@
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "evlog": "catalog:",
-    "typescript": "catalog:",
-    "use-intl": "catalog:"
+    "typescript": "catalog:"
   }
 }

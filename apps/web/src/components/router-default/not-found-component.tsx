@@ -1,12 +1,9 @@
-// import { useTranslations } from "use-intl";
-
 import { m } from "@reactlith-template/intl/messages";
 
 import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from "../ui/empty";
 
 export function NotFoundComponent() {
-  // const t = useTranslations();
   return (
     <Empty>
       <EmptyHeader>

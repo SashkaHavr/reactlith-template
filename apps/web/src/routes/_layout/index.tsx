@@ -1,6 +1,5 @@
 import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-// import { useTranslations } from "use-intl";
 
 import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
@@ -18,8 +17,6 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function RouteComponent() {
-  // const t = useTranslations("index");
-
   const authConfig = useAtomSuspense(configGeneralAtom).value.auth;
   const signInWithGoogle = useSignInWithGoogle();
 

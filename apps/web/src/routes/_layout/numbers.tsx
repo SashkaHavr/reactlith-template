@@ -1,6 +1,5 @@
 import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-// import { useTranslations } from "use-intl";
 
 import { m } from "@reactlith-template/intl/messages";
 import { Button } from "~/components/ui/button";

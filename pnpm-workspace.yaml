@@ -7,7 +7,6 @@ catalog:
   "better-auth": "1.6.23"
   "lucide-react": "1.23.0"
   "typescript": "7.0.1-rc"
-  "use-intl": "4.13.1"
   "uuid": "14.0.1"
   "evlog": "2.19.2"
   "@types/node": 26.1.0
