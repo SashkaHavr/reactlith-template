@@ -2,7 +2,7 @@ import type { Effect } from "effect";
 import { Context, Schema } from "effect";
 import { HttpApiMiddleware } from "effect/unstable/httpapi";
 
-import { idBranded } from "@reactlith-template/db/schema";
+import { idBranded } from "@reactlith-template/db";
 import type { Auth } from "@reactlith-template/services/auth";
 
 export const UserId = idBranded("user");

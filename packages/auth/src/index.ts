@@ -5,7 +5,7 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import { ac, roles } from "#/permissions";
 import type { DBType } from "@reactlith-template/db";
-import * as schema from "@reactlith-template/db/schema";
+import { schema } from "@reactlith-template/db";
 
 export function createAuth(
   db: DBType,

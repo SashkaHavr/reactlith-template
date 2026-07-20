@@ -11,9 +11,9 @@ type AllIdBrands<S> = {
   [K in keyof S]: IdBrandOfTable<S[K]>;
 }[keyof S];
 
-export type SchemaIdBrands = AllIdBrands<typeof schema>;
+export type IdBrand = AllIdBrands<typeof schema>;
 
-export function idBranded<T extends SchemaIdBrands>(brand: T) {
+export function idBranded<T extends IdBrand>(brand: T) {
   return Schema.String.check(Schema.isUUID(7)).pipe(Schema.brand(brand));
 }
 

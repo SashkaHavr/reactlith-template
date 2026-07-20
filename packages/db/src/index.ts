@@ -1,6 +1,9 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 
-import { relations } from "#/relations";
+import { relations } from "./relations";
+import * as schema from "./schema";
+import { idBranded } from "./utils/id-branded";
+import type { IdBranded, IdBrand } from "./utils/id-branded";
 
 export function createDB(connectionString: string) {
   return drizzle({
@@ -11,4 +14,5 @@ export function createDB(connectionString: string) {
 
 export type DBType = ReturnType<typeof createDB>;
 
-export { relations };
+export { relations, schema, idBranded };
+export type { IdBranded, IdBrand };

@@ -6,8 +6,7 @@
     "#/*": "./src/*.ts"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "push": "vp exec drizzle-kit push",
