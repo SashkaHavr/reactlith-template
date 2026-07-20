@@ -166,7 +166,7 @@ export function createApiQueryUtils<
   ) {
     return mutationOptions({
       ...options,
-      mutationKey: [apiDefinition.identifier, group, endpoint],
+      mutationKey: partialQueryKey(group, endpoint),
       mutationFn:
         options?.mutationFn ??
         (async (inputs: Variables) => {
@@ -245,6 +245,19 @@ export function createApiQueryUtils<
     ),
   ) as unknown as ApiRouter;
 
+  function partialQueryKey(): readonly [Identifier];
+  function partialQueryKey<const Group extends ApiGroup>(
+    group: Group,
+  ): readonly [Identifier, Group];
+  function partialQueryKey<const Group extends ApiGroup, const Endpoint extends ApiEndpoint<Group>>(
+    group: Group,
+    endpoint: Endpoint,
+  ): readonly [Identifier, Group, Endpoint];
+  function partialQueryKey<const Group extends ApiGroup, const Endpoint extends ApiEndpoint<Group>>(
+    group: Group,
+    endpoint: Endpoint,
+    ...inputs: ApiInputArgs<Group, Endpoint>
+  ): ApiQueryKey<Group, Endpoint>;
   function partialQueryKey(...parts: readonly unknown[]) {
     return [apiDefinition.identifier, ...parts] as const;
   }
