@@ -1,4 +1,4 @@
-import { Context, Effect, Layer } from "effect";
+import { Context } from "effect";
 import type { AuditableLogger } from "evlog";
 import { identifyUser } from "evlog/better-auth";
 
@@ -22,11 +22,3 @@ export function make(log: AuditableLogger) {
     },
   });
 }
-
-export const layer = Layer.effect(
-  WideLog,
-  Effect.gen(function* () {
-    const evlog = yield* Evlog;
-    return make(evlog);
-  }),
-);
