@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "component": "vpx shadcn@latest add",
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
     "start": "node ./dist/server/index.mjs"
   },
   "devDependencies": {

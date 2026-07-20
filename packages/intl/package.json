@@ -6,8 +6,8 @@
     "./*": "./src/*.js"
   },
   "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build"
+    "dev": "vp build --watch",
+    "build": "vp build"
   },
   "devDependencies": {
     "@inlang/paraglide-js": "catalog:",

@@ -1,4 +1,4 @@
-FROM ghcr.io/voidzero-dev/vite-plus AS base
+FROM ghcr.io/voidzero-dev/vite-plus:0.2.5 AS base
 
 FROM base AS prepare
 RUN vp add -g turbo
