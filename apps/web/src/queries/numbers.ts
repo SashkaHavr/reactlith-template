@@ -1,33 +1,22 @@
-import { useAtomSet } from "@effect/atom-react";
+import { logError } from "~/lib/log";
+import { api } from "~/lib/query";
 
-import type { NumberId } from "@reactlith-template/api/numbers";
-import { ApiClient, atomParams, reactivityKeys, withQuerySWR } from "~/lib/atom";
-
-export const numbersAtom = ApiClient.query(
-  "numbers",
-  "getAll",
-  atomParams({
-    reactivityKeys: ["numbers"],
-    serializationKey: "all",
-  }),
-).pipe(withQuerySWR);
-
-const addNumberMutationAtom = ApiClient.mutation("numbers", "add");
-export function useAddNumber() {
-  const mutate = useAtomSet(addNumberMutationAtom);
-  return (number: number) =>
-    mutate({ payload: { number }, reactivityKeys: reactivityKeys(["numbers"]) });
+export function addNumberMutationOptions() {
+  return api.numbers.add.mutationOptions({
+    onError: (error) => logError(error),
+    onSuccess: (item, _variables, _onMutateResult, context) => {
+      context.client.setQueryData(api.numbers.getAll.queryOptions().queryKey, (items = []) => [
+        ...items,
+        item,
+      ]);
+    },
+  });
 }
 
-const updateNumberMutationAtom = ApiClient.mutation("numbers", "update");
-export function useUpdateNumber() {
-  const mutate = useAtomSet(updateNumberMutationAtom);
-  return ({ id, number }: { id: NumberId; number: number }) =>
-    mutate({ params: { id }, payload: { number }, reactivityKeys: reactivityKeys(["numbers"]) });
+export function updateNumberMutationOptions() {
+  return api.numbers.update.mutationOptions();
 }
 
-const deleteAllNumbersMutationAtom = ApiClient.mutation("numbers", "deleteAll");
-export function useDeleteAllNumbers() {
-  const mutate = useAtomSet(deleteAllNumbersMutationAtom);
-  return () => mutate({ reactivityKeys: reactivityKeys(["numbers"]) });
+export function deleteAllNumbersMutationOptions() {
+  return api.numbers.deleteAll.mutationOptions();
 }

@@ -1,4 +1,7 @@
 {
   "extends": "@reactlith-template/typescript-config/node",
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"]
+  },
   "include": ["src"]
 }

@@ -1,6 +1,6 @@
 import { createContext, use } from "react";
 
-import { getCookie, setCookie } from "~/utils/cookie";
+import { getCookie, setCookie } from "@reactlith-template/utils/cookie";
 
 export type ResolvedTheme = "light" | "dark";
 export type Theme = ResolvedTheme | "system";

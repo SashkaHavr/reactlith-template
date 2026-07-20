@@ -1,24 +1,21 @@
-import { RegistryContext } from "@effect/atom-react";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
-import * as Hydration from "effect/unstable/reactivity/Hydration";
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
 import { ErrorComponent } from "./components/router-default/error-component";
 import { NotFoundComponent } from "./components/router-default/not-found-component";
 import { PendingComponent } from "./components/router-default/pending-component";
-import { createAtomRegistry } from "./lib/atom";
 import { setupClientLog } from "./lib/log";
+import { createQueryClient } from "./lib/query";
 import { routeTree } from "./routeTree.gen";
 
 setupClientLog();
 
 export function getRouter() {
-  const atomRegistry = createAtomRegistry();
+  const queryClient = createQueryClient();
 
   const router = createRouter({
-    context: { atomRegistry },
-
-    dehydrate: () => ({ atomState: Hydration.dehydrate(atomRegistry) }),
-    hydrate: ({ atomState }) => Hydration.hydrate(atomRegistry, atomState),
+    context: { queryClient },
     routeTree,
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
@@ -27,11 +24,11 @@ export function getRouter() {
     defaultNotFoundComponent: NotFoundComponent,
     defaultErrorComponent: ErrorComponent,
     Wrap: (props) => {
-      return (
-        <RegistryContext.Provider value={atomRegistry}>{props.children}</RegistryContext.Provider>
-      );
+      return <QueryClientProvider client={queryClient}>{props.children}</QueryClientProvider>;
     },
   });
+
+  setupRouterSsrQueryIntegration({ router, queryClient });
 
   return router;
 }

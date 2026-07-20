@@ -1,4 +1,4 @@
-import { useAtomSuspense } from "@effect/atom-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
   Outlet,
@@ -15,12 +15,11 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { preloadAtom } from "~/lib/atom";
-import { healthAtom } from "~/queries";
+import { api } from "~/lib/query";
 
 export const Route = createFileRoute("/_layout")({
-  loader: async ({ context: { atomRegistry } }) => {
-    await preloadAtom(atomRegistry, healthAtom);
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(api.index.health.queryOptions());
   },
   component: RouteComponent,
 });
@@ -86,7 +85,7 @@ function RouteComponent() {
   // const t = useTranslations("index");
   // const format = useFormatter();
 
-  useAtomSuspense(healthAtom);
+  const health = useSuspenseQuery(api.index.health.queryOptions());
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -106,7 +105,9 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className="text-green-500">{m.api_health_response()}</p>
+          <p className={health.isSuccess ? "text-green-500" : "text-red-500"}>
+            {m.api_health_response()}
+          </p>
           <p>{hydrated ? m.time_now({ date: now }) : m.server_rendered()}</p>
         </div>
       </div>

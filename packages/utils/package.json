@@ -11,8 +11,13 @@
   "scripts": {},
   "devDependencies": {
     "@reactlith-template/typescript-config": "workspace:*",
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-start": "catalog:",
     "@types/node": "catalog:",
-    "evlog": "catalog:",
+    "clsx": "catalog:",
+    "effect": "catalog:",
+    "nitro": "catalog:",
+    "tailwind-merge": "catalog:",
     "typescript": "catalog:"
   }
 }

@@ -11,7 +11,6 @@
   },
   "devDependencies": {
     "@base-ui/react": "^1.4.1",
-    "@effect/atom-react": "catalog:",
     "@fontsource-variable/geist": "5.2.9",
     "@fontsource-variable/geist-mono": "5.2.8",
     "@reactlith-template/api": "workspace:*",
@@ -24,7 +23,9 @@
     "@rolldown/plugin-babel": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-form": "catalog:",
+    "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
+    "@tanstack/react-router-ssr-query": "catalog:",
     "@tanstack/react-start": "catalog:",
     "@types/babel__core": "catalog:",
     "@types/node": "catalog:",
