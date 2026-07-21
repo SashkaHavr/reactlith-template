@@ -1,5 +1,13 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query";
-import type { UnusedSkipTokenOptions, UseMutationOptions } from "@tanstack/react-query";
+import { mutationOptions, queryOptions, skipToken } from "@tanstack/react-query";
+import type {
+  DataTag,
+  MutationFilters,
+  QueryFilters,
+  QueryFunctionContext,
+  SkipToken,
+  UnusedSkipTokenOptions,
+  UseMutationOptions,
+} from "@tanstack/react-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { Effect, Layer } from "effect";
@@ -67,6 +75,24 @@ export function createApiQueryUtils<
     Endpoint,
     ...ApiInputArgs<Group, Endpoint>,
   ];
+  type ApiTaggedQueryKey<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = DataTag<
+    ApiQueryKey<Group, Endpoint>,
+    ApiEndpointSuccess<Group, Endpoint>,
+    ApiEndpointError<Group, Endpoint>
+  >;
+  type ApiQueryFilterKey<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = DataTag<
+    | readonly [Identifier, Group, Endpoint]
+    | (ApiInputArgs<Group, Endpoint> extends []
+        ? never
+        : readonly [Identifier, Group, Endpoint, inputs: Partial<ApiInputs<Group, Endpoint>>]),
+    ApiEndpointSuccess<Group, Endpoint>,
+    ApiEndpointError<Group, Endpoint>
+  >;
+  type ApiMutationKey<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = readonly [
+    Identifier,
+    Group,
+    Endpoint,
+  ];
   type ApiQueryOptions<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>, Data> = Omit<
     UnusedSkipTokenOptions<
       ApiEndpointSuccess<Group, Endpoint>,
@@ -74,7 +100,7 @@ export function createApiQueryUtils<
       Data,
       ApiQueryKey<Group, Endpoint>
     >,
-    "queryKey" | "queryFn"
+    "queryFn" | "queryHash" | "queryHashFn" | "queryKey"
   >;
   type ApiMutationOptions<
     Group extends ApiGroup,
@@ -108,12 +134,42 @@ export function createApiQueryUtils<
       ApiMutationOptions<Group, Endpoint, Variables, OnMutateResult>["mutationFn"]
     >;
   };
+  type ApiQueryFilter<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = Omit<
+    QueryFilters<ApiQueryFilterKey<Group, Endpoint>>,
+    "queryKey"
+  >;
+  type ApiQueryFilterResult<
+    Group extends ApiGroup,
+    Endpoint extends ApiEndpoint<Group>,
+  > = ApiQueryFilter<Group, Endpoint> & {
+    readonly queryKey: ApiQueryFilterKey<Group, Endpoint>;
+  };
+  type ApiMutationFilter<
+    Group extends ApiGroup,
+    Endpoint extends ApiEndpoint<Group>,
+    OnMutateResult,
+  > = Omit<
+    MutationFilters<
+      ApiEndpointSuccess<Group, Endpoint>,
+      ApiEndpointError<Group, Endpoint>,
+      ApiMutationVariables<Group, Endpoint>,
+      OnMutateResult
+    >,
+    "mutationKey"
+  >;
+  type ApiMutationFilterResult<
+    Group extends ApiGroup,
+    Endpoint extends ApiEndpoint<Group>,
+    OnMutateResult,
+  > = ApiMutationFilter<Group, Endpoint, OnMutateResult> & {
+    readonly mutationKey: ApiMutationKey<Group, Endpoint>;
+  };
   type ApiQueryKeyArgs<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = {
     group: Group;
     endpoint: Endpoint;
   } & (ApiInputArgs<Group, Endpoint> extends []
     ? { inputs?: never }
-    : { inputs: ApiInputs<Group, Endpoint> });
+    : { inputs: ApiInputs<Group, Endpoint> | SkipToken });
 
   const apiClient = Effect.runSync(
     HttpApiClient.make(apiDefinition, { baseUrl: getApiBaseUrl() }).pipe(
@@ -126,7 +182,10 @@ export function createApiQueryUtils<
     endpoint: Endpoint,
     ...inputs: ApiInputArgs<Group, Endpoint>
   ) {
-    return [apiDefinition.identifier, group, endpoint, ...inputs] as ApiQueryKey<Group, Endpoint>;
+    return [apiDefinition.identifier, group, endpoint, ...inputs] as unknown as ApiTaggedQueryKey<
+      Group,
+      Endpoint
+    >;
   }
 
   function apiQueryOptions<
@@ -135,8 +194,15 @@ export function createApiQueryUtils<
     Data = ApiEndpointSuccess<Group, Endpoint>,
   >(keyArgs: ApiQueryKeyArgs<Group, Endpoint>, options?: ApiQueryOptions<Group, Endpoint, Data>) {
     const { group, endpoint } = keyArgs;
-    const inputs = ("inputs" in keyArgs ? [keyArgs.inputs] : []) as ApiInputArgs<Group, Endpoint>;
-    const key = queryKey(group, endpoint, ...inputs);
+    const input = "inputs" in keyArgs ? keyArgs.inputs : undefined;
+    const isSkipped = input === skipToken;
+    const inputs = (input === undefined || isSkipped ? [] : [input]) as ApiInputArgs<
+      Group,
+      Endpoint
+    >;
+    const key = (
+      isSkipped ? partialQueryKey(group, endpoint) : queryKey(group, endpoint, ...inputs)
+    ) as ApiTaggedQueryKey<Group, Endpoint>;
 
     return queryOptions<
       ApiEndpointSuccess<Group, Endpoint>,
@@ -146,13 +212,23 @@ export function createApiQueryUtils<
     >({
       ...options,
       queryKey: key,
-      queryFn: async () => {
-        const method = apiClient[group][endpoint] as unknown as (
-          ...args: ApiInputArgs<Group, Endpoint>
-        ) => Effect.Effect<ApiEndpointSuccess<Group, Endpoint>, ApiEndpointError<Group, Endpoint>>;
-        return method(...inputs).pipe(Effect.runPromise);
-      },
-    });
+      queryFn: isSkipped
+        ? skipToken
+        : async ({ signal }: QueryFunctionContext<ApiQueryKey<Group, Endpoint>>) => {
+            const method = apiClient[group][endpoint] as unknown as (
+              ...args: ApiInputArgs<Group, Endpoint>
+            ) => Effect.Effect<
+              ApiEndpointSuccess<Group, Endpoint>,
+              ApiEndpointError<Group, Endpoint>
+            >;
+            return Effect.runPromise(method(...inputs), { signal });
+          },
+    } as unknown as UnusedSkipTokenOptions<
+      ApiEndpointSuccess<Group, Endpoint>,
+      ApiEndpointError<Group, Endpoint>,
+      Data,
+      ApiQueryKey<Group, Endpoint>
+    >);
   }
 
   function apiMutationOptions<
@@ -169,26 +245,44 @@ export function createApiQueryUtils<
       mutationKey: partialQueryKey(group, endpoint),
       mutationFn:
         options?.mutationFn ??
-        (async (inputs: Variables) => {
+        (async (variables: Variables) => {
           const method = apiClient[group][endpoint] as unknown as (
-            inputs: ApiMutationVariables<Group, Endpoint>,
+            ...args: ApiInputArgs<Group, Endpoint>
           ) => Effect.Effect<
             ApiEndpointSuccess<Group, Endpoint>,
             ApiEndpointError<Group, Endpoint>
           >;
-          return method(inputs as ApiMutationVariables<Group, Endpoint>).pipe(Effect.runPromise);
+          const inputs = (
+            variables === undefined ? [] : [variables as ApiMutationVariables<Group, Endpoint>]
+          ) as ApiInputArgs<Group, Endpoint>;
+          return Effect.runPromise(method(...inputs));
         }),
     });
   }
 
   type ApiQueryOptionsArgs<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>, Data> =
     ApiInputArgs<Group, Endpoint> extends []
-      ? [inputs?: undefined, options?: ApiQueryOptions<Group, Endpoint, Data>]
-      : [inputs: ApiInputs<Group, Endpoint>, options?: ApiQueryOptions<Group, Endpoint, Data>];
+      ?
+          | [options?: ApiQueryOptions<Group, Endpoint, Data>]
+          | [inputs: undefined | SkipToken, options?: ApiQueryOptions<Group, Endpoint, Data>]
+      : [
+          inputs: ApiInputs<Group, Endpoint> | SkipToken,
+          options?: ApiQueryOptions<Group, Endpoint, Data>,
+        ];
+  type ApiQueryFilterArgs<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> =
+    ApiInputArgs<Group, Endpoint> extends []
+      ? [filters?: ApiQueryFilter<Group, Endpoint>]
+      : [inputs?: Partial<ApiInputs<Group, Endpoint>>, filters?: ApiQueryFilter<Group, Endpoint>];
   type ApiQueryProcedure<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = {
     readonly queryOptions: <Data = ApiEndpointSuccess<Group, Endpoint>>(
       ...args: ApiQueryOptionsArgs<Group, Endpoint, Data>
     ) => ReturnType<typeof apiQueryOptions<Group, Endpoint, Data>>;
+    readonly queryKey: (
+      ...inputs: ApiInputArgs<Group, Endpoint>
+    ) => ApiTaggedQueryKey<Group, Endpoint>;
+    readonly queryFilter: (
+      ...args: ApiQueryFilterArgs<Group, Endpoint>
+    ) => ApiQueryFilterResult<Group, Endpoint>;
   };
   type ApiMutationProcedure<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = {
     readonly mutationOptions: {
@@ -206,6 +300,10 @@ export function createApiQueryUtils<
         >
       >;
     };
+    readonly mutationKey: () => ApiMutationKey<Group, Endpoint>;
+    readonly mutationFilter: <OnMutateResult = unknown>(
+      filters?: ApiMutationFilter<Group, Endpoint, OnMutateResult>,
+    ) => ApiMutationFilterResult<Group, Endpoint, OnMutateResult>;
   };
   type ApiEndpointDefinition<Group extends ApiGroup, Endpoint extends ApiEndpoint<Group>> = Extract<
     HttpApiGroup.Endpoints<HttpApiGroup.WithIdentifier<Groups, Extract<Group, string>>>,
@@ -226,20 +324,60 @@ export function createApiQueryUtils<
       ([group, groupDefinition]) => [
         group,
         Object.fromEntries(
-          Object.keys(groupDefinition.endpoints).map((endpoint) => [
-            endpoint,
-            {
-              queryOptions: (inputs?: unknown, options?: unknown) =>
-                apiQueryOptions(
-                  (inputs === undefined
-                    ? { group, endpoint }
-                    : { group, endpoint, inputs }) as never,
-                  options as never,
-                ),
-              mutationOptions: (options?: unknown) =>
-                apiMutationOptions({ group, endpoint } as never, options as never),
-            },
-          ]),
+          Object.entries(groupDefinition.endpoints).map(([endpoint, endpointDefinition]) => {
+            const endpointKey = [apiDefinition.identifier, group, endpoint] as const;
+
+            if (endpointDefinition.method !== "GET") {
+              return [
+                endpoint,
+                {
+                  mutationOptions: (options?: unknown) =>
+                    apiMutationOptions({ group, endpoint } as never, options as never),
+                  mutationKey: () => endpointKey,
+                  mutationFilter: (filters?: unknown) => ({
+                    ...(filters as object | undefined),
+                    mutationKey: endpointKey,
+                  }),
+                },
+              ];
+            }
+
+            const hasInputs =
+              endpointDefinition.params !== undefined ||
+              endpointDefinition.query !== undefined ||
+              endpointDefinition.headers !== undefined ||
+              endpointDefinition.payload.size > 0;
+            const getEndpointQueryKey = (inputs?: unknown) =>
+              inputs === undefined ? endpointKey : ([...endpointKey, inputs] as const);
+
+            return [
+              endpoint,
+              {
+                queryOptions: (inputOrOptions?: unknown, options?: unknown) => {
+                  const input =
+                    hasInputs || inputOrOptions === skipToken ? inputOrOptions : undefined;
+                  const normalizedOptions =
+                    hasInputs || inputOrOptions === skipToken || inputOrOptions === undefined
+                      ? options
+                      : inputOrOptions;
+                  return apiQueryOptions(
+                    (input === undefined
+                      ? { group, endpoint }
+                      : { group, endpoint, inputs: input }) as never,
+                    normalizedOptions as never,
+                  );
+                },
+                queryKey: getEndpointQueryKey,
+                queryFilter: (inputOrFilters?: unknown, filters?: unknown) => {
+                  const normalizedFilters = hasInputs ? filters : inputOrFilters;
+                  return {
+                    ...(normalizedFilters as object | undefined),
+                    queryKey: getEndpointQueryKey(hasInputs ? inputOrFilters : undefined),
+                  };
+                },
+              },
+            ];
+          }),
         ),
       ],
     ),
