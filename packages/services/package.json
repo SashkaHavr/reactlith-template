@@ -7,7 +7,8 @@
   },
   "exports": {
     "./*": "./contracts/*.ts",
-    "./layers/*": "./layers/*.ts"
+    "./layers/*": "./layers/*.ts",
+    "./repositories/*": "./repositories/*.ts"
   },
   "scripts": {},
   "devDependencies": {

@@ -3,24 +3,13 @@ import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 import { AuthMiddleware } from "#/middleware/auth";
 import { idBranded } from "@reactlith-template/db";
-
-export const NumberId = idBranded("number");
-export type NumberId = typeof NumberId.Type;
+import { NumberNotFound } from "@reactlith-template/services/repositories/numbers";
 
 export const NumberItem = Schema.Struct({
-  id: NumberId,
+  id: idBranded("number"),
   number: Schema.Int,
 });
 
-export class NumberNotFound extends Schema.TaggedErrorClass<NumberNotFound>()(
-  "NumberNotFound",
-  {},
-  { httpApiStatus: 404 },
-) {}
-
-const IdParams = {
-  id: NumberId,
-};
 const NumberPayload = Schema.Struct({ number: Schema.Int });
 
 export class NumbersApi extends HttpApiGroup.make("numbers")
@@ -29,7 +18,7 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
       success: Schema.Array(NumberItem),
     }),
     HttpApiEndpoint.get("get", "/:id", {
-      params: IdParams,
+      params: Schema.Struct({ id: idBranded("number") }),
       success: NumberItem,
       error: NumberNotFound,
     }),
@@ -38,9 +27,13 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
       success: NumberItem,
     }),
     HttpApiEndpoint.put("update", "/:id", {
-      params: IdParams,
+      params: Schema.Struct({ id: idBranded("number") }),
       payload: NumberPayload,
       success: NumberItem,
+      error: NumberNotFound,
+    }),
+    HttpApiEndpoint.delete("delete", "/:id", {
+      params: Schema.Struct({ id: idBranded("number") }),
       error: NumberNotFound,
     }),
     HttpApiEndpoint.delete("deleteAll", "/"),

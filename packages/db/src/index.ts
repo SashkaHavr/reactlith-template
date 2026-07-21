@@ -1,7 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 
-import { relations } from "./relations";
-import * as schema from "./schema";
+import { relations, schema } from "./relations";
 import { idBranded } from "./utils/id-branded";
 import type { IdBranded, IdBrand } from "./utils/id-branded";
 

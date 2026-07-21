@@ -1,12 +1,8 @@
-import type { Effect } from "effect";
-import { Context, Schema } from "effect";
+import { Schema } from "effect";
 import { HttpApiMiddleware } from "effect/unstable/httpapi";
 
-import { idBranded } from "@reactlith-template/db";
-import type { Auth } from "@reactlith-template/services/auth";
-
-export const UserId = idBranded("user");
-export type UserId = typeof UserId.Type;
+import type { CurrentUser, CurrentUserId } from "@reactlith-template/services/auth";
+import type { NumberRepoForUser } from "@reactlith-template/services/repositories/numbers";
 
 export class Unauthorized extends Schema.TaggedErrorClass<Unauthorized>()(
   "Unauthorized",
@@ -14,14 +10,7 @@ export class Unauthorized extends Schema.TaggedErrorClass<Unauthorized>()(
   { httpApiStatus: 401 },
 ) {}
 
-export class CurrentUser extends Context.Service<
-  CurrentUser,
-  NonNullable<Effect.Success<ReturnType<Auth["Service"]["getSession"]>>>["user"]
->()("api/CurrentUser") {}
-
-export class CurrentUserId extends Context.Service<CurrentUserId, UserId>()("api/CurrentUserId") {}
-
 export class AuthMiddleware extends HttpApiMiddleware.Service<
   AuthMiddleware,
-  { provides: CurrentUser | CurrentUserId }
+  { provides: CurrentUser | CurrentUserId | NumberRepoForUser }
 >()("api/AuthMiddleware", { error: Unauthorized }) {}

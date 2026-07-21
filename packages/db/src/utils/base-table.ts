@@ -1,14 +1,14 @@
 import { timestamp, uuid } from "drizzle-orm/pg-core";
 import { v7 as uuidv7 } from "uuid";
 
-import type { IdBranded } from "./id-branded";
+import type { IdBrandedInternal } from "./id-branded";
 
 export function baseTable<T extends string>() {
   return {
     id: uuid()
-      .$type<IdBranded<T>>()
+      .$type<IdBrandedInternal<T>>()
       .primaryKey()
-      .$defaultFn(() => uuidv7() as IdBranded<T>),
+      .$defaultFn(() => uuidv7() as IdBrandedInternal<T>),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp({ withTimezone: true })
       .notNull()

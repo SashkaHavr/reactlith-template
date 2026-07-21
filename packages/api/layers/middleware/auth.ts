@@ -1,19 +1,17 @@
 import { Effect, Layer } from "effect";
 import { HttpServerRequest } from "effect/unstable/http";
 
-import {
-  AuthMiddleware,
-  CurrentUser,
-  CurrentUserId,
-  Unauthorized,
-  UserId,
-} from "#/middleware/auth";
-import { Auth } from "@reactlith-template/services/auth";
+import { AuthMiddleware, Unauthorized } from "#/middleware/auth";
+import type { IdBranded } from "@reactlith-template/db";
+import { Auth, CurrentUser, CurrentUserId } from "@reactlith-template/services/auth";
+import { DB } from "@reactlith-template/services/db";
+import { NumberRepoForUser } from "@reactlith-template/services/repositories/numbers";
 
 export const layerAuthMiddleware = Layer.effect(
   AuthMiddleware,
   Effect.gen(function* () {
     const auth = yield* Auth;
+    const db = yield* DB;
 
     return (httpEffect) =>
       Effect.gen(function* () {
@@ -27,9 +25,13 @@ export const layerAuthMiddleware = Layer.effect(
           return yield* new Unauthorized();
         }
 
+        const currentUserId = session.user.id as IdBranded<"user">;
+
         return yield* httpEffect.pipe(
+          Effect.provide(NumberRepoForUser.layer),
           Effect.provideService(CurrentUser, session.user),
-          Effect.provideService(CurrentUserId, UserId.make(session.user.id)),
+          Effect.provideService(CurrentUserId, currentUserId),
+          Effect.provideService(DB, db),
         );
       });
   }),
