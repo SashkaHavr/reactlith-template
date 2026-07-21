@@ -1,15 +1,13 @@
 import { sql } from "drizzle-orm";
-import { Effect, Layer } from "effect";
+import { Effect } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
-import { Api, DatabaseConnectionError } from "#/index";
+import { Api } from "#/index";
+import { DatabaseConnectionError } from "#/index-route";
 import { GoogleAuthConfig } from "@reactlith-template/services/config";
 import { DB } from "@reactlith-template/services/db";
 
-import { layerAuthMiddleware } from "./middleware/auth";
-import { NumbersApiHandlers } from "./numbers";
-
-const IndexApiHandlers = HttpApiBuilder.group(Api, "index", (handlers) =>
+export const IndexRouteApiHandlers = HttpApiBuilder.group(Api, "indexRoute", (handlers) =>
   Effect.gen(function* () {
     const db = yield* DB;
     const googleAuthConfig = yield* GoogleAuthConfig;
@@ -33,9 +31,4 @@ const IndexApiHandlers = HttpApiBuilder.group(Api, "index", (handlers) =>
         }),
       );
   }),
-);
-
-export const layer = HttpApiBuilder.layer(Api).pipe(
-  Layer.provide([IndexApiHandlers, NumbersApiHandlers]),
-  Layer.provide(layerAuthMiddleware),
 );

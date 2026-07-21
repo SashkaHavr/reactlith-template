@@ -2,7 +2,7 @@ import { Effect } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
 import { Api } from "#/index";
-import { NumberRepoForUser } from "@reactlith-template/services/repositories/numbers";
+import { NumberRepoForUser } from "@reactlith-template/repositories/numbers";
 
 export const NumbersApiHandlers = HttpApiBuilder.group(Api, "numbers", (handlers) =>
   Effect.gen(function* () {

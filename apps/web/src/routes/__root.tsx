@@ -22,7 +22,7 @@ export const Route = createRootRouteWithContext<{
 }>()({
   beforeLoad: async ({ context: { queryClient } }) => {
     const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(api.index.configGeneral.queryOptions()),
+      queryClient.ensureQueryData(api.indexRoute.configGeneral.queryOptions()),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 

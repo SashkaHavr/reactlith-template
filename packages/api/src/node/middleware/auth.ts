@@ -3,9 +3,9 @@ import { HttpServerRequest } from "effect/unstable/http";
 
 import { AuthMiddleware, Unauthorized } from "#/middleware/auth";
 import type { IdBranded } from "@reactlith-template/db/utils";
+import * as NumberRepository from "@reactlith-template/repositories/node/numbers";
 import { Auth, CurrentUser, CurrentUserId } from "@reactlith-template/services/auth";
 import { DB } from "@reactlith-template/services/db";
-import { NumberRepoForUser } from "@reactlith-template/services/repositories/numbers";
 
 export const layerAuthMiddleware = Layer.effect(
   AuthMiddleware,
@@ -28,7 +28,7 @@ export const layerAuthMiddleware = Layer.effect(
         const currentUserId = session.user.id as IdBranded<"user">;
 
         return yield* httpEffect.pipe(
-          Effect.provide(NumberRepoForUser.layer),
+          Effect.provide(NumberRepository.layer),
           Effect.provideService(CurrentUser, session.user),
           Effect.provideService(CurrentUserId, currentUserId),
           Effect.provideService(DB, db),

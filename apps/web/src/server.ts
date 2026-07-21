@@ -5,7 +5,7 @@ import { Context } from "effect";
 import type { AuditableLogger } from "evlog";
 
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
-import * as WideLog from "@reactlith-template/services/layers/wide-log";
+import * as WideLog from "@reactlith-template/services/node/wide-log";
 import { WideLog as WideLogService } from "@reactlith-template/services/wide-log";
 import type { WideLogType } from "@reactlith-template/services/wide-log";
 

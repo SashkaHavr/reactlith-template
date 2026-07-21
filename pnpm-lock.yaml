@@ -248,6 +248,9 @@ importers:
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db
+      '@reactlith-template/repositories':
+        specifier: workspace:*
+        version: link:../repositories
       '@reactlith-template/services':
         specifier: workspace:*
         version: link:../services
@@ -346,6 +349,30 @@ importers:
         specifier: npm:@voidzero-dev/vite-plus-core@0.2.5
         version: '@voidzero-dev/vite-plus-core@0.2.5(@types/node@26.1.0)(jiti@2.7.0)(typescript@7.0.1-rc)(yaml@2.9.0)'
 
+  packages/repositories:
+    devDependencies:
+      '@reactlith-template/db':
+        specifier: workspace:*
+        version: link:../db
+      '@reactlith-template/services':
+        specifier: workspace:*
+        version: link:../services
+      '@reactlith-template/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.1.0
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 1.0.0-rc.4(@effect/sql-pg@4.0.0-beta.98(effect@4.0.0-beta.98))(@electric-sql/pglite@0.5.4)(@types/pg@8.20.0)(effect@4.0.0-beta.98)(pg@8.22.0)(zod@4.4.3)
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.0-beta.98
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.1-rc
+
   packages/services:
     devDependencies:
       '@effect/sql-pg':
@@ -357,9 +384,6 @@ importers:
       '@reactlith-template/db':
         specifier: workspace:*
         version: link:../db
-      '@reactlith-template/services':
-        specifier: workspace:*
-        version: 'link:'
       '@reactlith-template/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

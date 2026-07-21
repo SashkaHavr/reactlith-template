@@ -1,8 +1,8 @@
 import { Schema } from "effect";
 import { HttpApiMiddleware } from "effect/unstable/httpapi";
 
+import type { NumberRepoForUser } from "@reactlith-template/repositories/numbers";
 import type { CurrentUser, CurrentUserId } from "@reactlith-template/services/auth";
-import type { NumberRepoForUser } from "@reactlith-template/services/repositories/numbers";
 
 export class Unauthorized extends Schema.TaggedErrorClass<Unauthorized>()(
   "Unauthorized",

@@ -1,19 +1,17 @@
 {
-  "name": "@reactlith-template/api",
+  "name": "@reactlith-template/repositories",
   "private": true,
   "type": "module",
   "imports": {
     "#/*": "./src/*.ts"
   },
   "exports": {
-    "./node": "./src/node/index.ts",
     "./node/*": "./src/node/*.ts",
     "./*": "./src/*.ts"
   },
   "scripts": {},
   "devDependencies": {
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/repositories": "workspace:*",
     "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/node": "catalog:",

@@ -3,7 +3,7 @@ import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 import { AuthMiddleware } from "#/middleware/auth";
 import { idBranded } from "@reactlith-template/db/utils";
-import { NumberNotFound } from "@reactlith-template/services/repositories/numbers";
+import { NumberNotFound } from "@reactlith-template/repositories/numbers";
 
 export const NumberItem = Schema.Struct({
   id: idBranded("number"),
@@ -12,7 +12,7 @@ export const NumberItem = Schema.Struct({
 
 const NumberPayload = Schema.Struct({ number: Schema.Int });
 
-export class NumbersApi extends HttpApiGroup.make("numbers")
+export class NumbersGroup extends HttpApiGroup.make("numbers")
   .add(
     HttpApiEndpoint.get("getAll", "/", {
       success: Schema.Array(NumberItem),

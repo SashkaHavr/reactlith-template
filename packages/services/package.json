@@ -3,19 +3,17 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#/*": "./contracts/*.ts"
+    "#/*": "./src/*.ts"
   },
   "exports": {
-    "./*": "./contracts/*.ts",
-    "./layers/*": "./layers/*.ts",
-    "./repositories/*": "./repositories/*.ts"
+    "./node/*": "./src/node/*.ts",
+    "./*": "./src/*.ts"
   },
   "scripts": {},
   "devDependencies": {
     "@effect/sql-pg": "catalog:",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@types/node": "catalog:",

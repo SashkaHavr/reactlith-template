@@ -19,7 +19,7 @@ import { api } from "~/lib/query";
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(api.index.health.queryOptions());
+    await queryClient.ensureQueryData(api.indexRoute.health.queryOptions());
   },
   component: RouteComponent,
 });
@@ -85,7 +85,7 @@ function RouteComponent() {
   // const t = useTranslations("index");
   // const format = useFormatter();
 
-  const health = useSuspenseQuery(api.index.health.queryOptions());
+  const health = useSuspenseQuery(api.indexRoute.health.queryOptions());
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function RouteComponent() {
-  const authConfig = useSuspenseQuery(api.index.configGeneral.queryOptions()).data.auth;
+  const authConfig = useSuspenseQuery(api.indexRoute.configGeneral.queryOptions()).data.auth;
   const resetAuth = useResetAuth();
   const signInWithGoogle = useMutation({
     mutationFn: async () => {

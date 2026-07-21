@@ -1,4 +1,4 @@
 {
   "extends": "@reactlith-template/typescript-config/node",
-  "include": ["services", "layers"]
+  "include": ["src"]
 }

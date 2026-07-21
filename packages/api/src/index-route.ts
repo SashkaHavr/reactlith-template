@@ -1,7 +1,5 @@
 import { Schema } from "effect";
-import { HttpApi, HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
-
-import { NumbersApi } from "#/numbers";
+import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 export class DatabaseConnectionError extends Schema.TaggedErrorClass<DatabaseConnectionError>()(
   "DatabaseConnectionError",
@@ -9,7 +7,7 @@ export class DatabaseConnectionError extends Schema.TaggedErrorClass<DatabaseCon
   { httpApiStatus: 400 },
 ) {}
 
-export class IndexApi extends HttpApiGroup.make("index")
+export class IndexRouteGroup extends HttpApiGroup.make("indexRoute")
   .add(
     HttpApiEndpoint.get("health", "/health", {
       error: DatabaseConnectionError,
@@ -26,5 +24,3 @@ export class IndexApi extends HttpApiGroup.make("index")
       }),
     }),
   ) {}
-
-export class Api extends HttpApi.make("api").add(IndexApi).add(NumbersApi).prefix("/api") {}

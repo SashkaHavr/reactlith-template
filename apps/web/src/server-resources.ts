@@ -1,13 +1,13 @@
 import { Effect, Exit, Layer, Redacted, Scope } from "effect";
 import { HttpRouter, HttpServer } from "effect/unstable/http";
 
-import * as Api from "@reactlith-template/api/layers";
+import * as Api from "@reactlith-template/api/node";
 import { createAuth } from "@reactlith-template/auth";
 import { createDB } from "@reactlith-template/db";
 import { AuthConfig, ConfigDB, GoogleAuthConfig } from "@reactlith-template/services/config";
-import * as Auth from "@reactlith-template/services/layers/auth";
-import * as Config from "@reactlith-template/services/layers/config";
-import * as DB from "@reactlith-template/services/layers/db";
+import * as Auth from "@reactlith-template/services/node/auth";
+import * as Config from "@reactlith-template/services/node/config";
+import * as DB from "@reactlith-template/services/node/db";
 
 const acquireResources = Effect.gen(function* () {
   const configDB = yield* ConfigDB;
