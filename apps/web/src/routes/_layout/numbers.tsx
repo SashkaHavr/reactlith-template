@@ -99,8 +99,8 @@ function NumberValues({ id, listValue }: { id: IdBranded<"number">; listValue: n
   const number = useSuspenseQuery(api.numbers.get.queryOptions({ params: { id } }));
 
   return (
-    <span className="flex items-baseline gap-2 text-xl font-bold">
-      <span>{listValue}</span>
+    <span className="flex items-baseline gap-2 tabular-nums text-xl font-bold">
+      <span className="w-6 text-right">{listValue}</span>
       <span className="text-sm font-normal text-muted-foreground">GET: {number.data.number}</span>
     </span>
   );
