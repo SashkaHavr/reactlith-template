@@ -1,6 +1,8 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Pencil, Trash2 } from "lucide-react";
 
+import type { IdBranded } from "@reactlith-template/db/utils";
 import { m } from "@reactlith-template/intl/messages";
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
@@ -8,6 +10,7 @@ import { api } from "~/lib/query";
 import {
   addNumberMutationOptions,
   deleteAllNumbersMutationOptions,
+  deleteNumberMutationOptions,
   updateNumberMutationOptions,
 } from "~/queries/numbers";
 
@@ -32,6 +35,7 @@ function RouteComponent() {
 
   const addNumber = useMutation(addNumberMutationOptions());
   const updateNumber = useMutation(updateNumberMutationOptions());
+  const deleteNumber = useMutation(deleteNumberMutationOptions());
   const deleteNumbers = useMutation(deleteAllNumbersMutationOptions());
   const signout = useSignout();
   return (
@@ -58,21 +62,46 @@ function RouteComponent() {
       <ul className="flex flex-col gap-3">
         {numbers.data.map((item) => (
           <li className="flex items-center justify-between gap-6" key={item.id}>
-            <span className="text-xl font-bold">{item.number}</span>
-            <Button
-              variant="outline"
-              onClick={() =>
-                updateNumber.mutate({
-                  params: { id: item.id },
-                  payload: { number: Math.floor(Math.random() * 100) },
-                })
-              }
-            >
-              {m.update_number()}
-            </Button>
+            <NumberValues id={item.id} listValue={item.number} />
+            <div className="flex items-center gap-2">
+              <Button
+                aria-label={m.update_number()}
+                size="icon"
+                title={m.update_number()}
+                variant="outline"
+                onClick={() =>
+                  updateNumber.mutate({
+                    params: { id: item.id },
+                    payload: { number: Math.floor(Math.random() * 100) },
+                  })
+                }
+              >
+                <Pencil />
+              </Button>
+              <Button
+                aria-label="Delete number"
+                onClick={() => deleteNumber.mutate({ params: { id: item.id } })}
+                size="icon"
+                title="Delete number"
+                variant="destructive-outline"
+              >
+                <Trash2 />
+              </Button>
+            </div>
           </li>
         ))}
       </ul>
     </div>
+  );
+}
+
+function NumberValues({ id, listValue }: { id: IdBranded<"number">; listValue: number }) {
+  const number = useSuspenseQuery(api.numbers.get.queryOptions({ params: { id } }));
+
+  return (
+    <span className="flex items-baseline gap-2 text-xl font-bold">
+      <span>{listValue}</span>
+      <span className="text-sm font-normal text-muted-foreground">GET: {number.data.number}</span>
+    </span>
   );
 }

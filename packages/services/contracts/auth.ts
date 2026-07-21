@@ -2,7 +2,7 @@ import type { Effect } from "effect";
 import { Context } from "effect";
 
 import type { AuthType } from "@reactlith-template/auth";
-import type { IdBranded } from "@reactlith-template/db";
+import type { IdBranded } from "@reactlith-template/db/utils";
 
 export class Auth extends Context.Service<
   Auth,

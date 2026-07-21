@@ -37,13 +37,13 @@ export const NumbersApiHandlers = HttpApiBuilder.group(Api, "numbers", (handlers
       .handle("delete", ({ params }) =>
         Effect.gen(function* () {
           const numbers = yield* NumberRepoForUser;
-          yield* numbers.delete({ id: params.id });
+          return yield* numbers.delete({ id: params.id });
         }),
       )
       .handle("deleteAll", () =>
         Effect.gen(function* () {
           const numbers = yield* NumberRepoForUser;
-          yield* numbers.deleteAll();
+          return yield* numbers.deleteAll();
         }),
       );
   }),

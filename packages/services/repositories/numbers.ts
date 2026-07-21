@@ -3,8 +3,8 @@ import * as PgDrizzle from "drizzle-orm/effect-postgres";
 import { Context, Effect, Layer, Schema } from "effect";
 
 import { DB } from "#/db";
-import type { IdBranded } from "@reactlith-template/db";
 import { schema } from "@reactlith-template/db";
+import type { IdBranded } from "@reactlith-template/db/utils";
 
 import { CurrentUserId } from "../contracts/auth";
 
@@ -28,8 +28,10 @@ export class NumberRepoForUser extends Context.Service<
       id: IdBranded<"number">;
       data: Pick<typeof schema.number.$inferInsert, "number">;
     }) => Effect.Effect<NumberItem, NumberNotFound>;
-    readonly delete: (input: { id: IdBranded<"number"> }) => Effect.Effect<void, NumberNotFound>;
-    readonly deleteAll: () => Effect.Effect<void>;
+    readonly delete: (input: {
+      id: IdBranded<"number">;
+    }) => Effect.Effect<IdBranded<"number">, NumberNotFound>;
+    readonly deleteAll: () => Effect.Effect<ReadonlyArray<IdBranded<"number">>>;
   }
 >()("db/repositories/NumberRepoForUser") {
   static readonly layer = Layer.effect(
@@ -44,6 +46,7 @@ export class NumberRepoForUser extends Context.Service<
             .findMany({
               columns: { id: true, number: true },
               where: { userId: { eq: userId } },
+              orderBy: { createdAt: "asc" },
             })
             .pipe(Effect.orDie);
         }),
@@ -91,12 +94,15 @@ export class NumberRepoForUser extends Context.Service<
           if (!item) {
             return yield* new NumberNotFound();
           }
+          return item.id;
         }),
         deleteAll: Effect.fn("NumberRepoForUser.deleteAll")(function* () {
-          yield* db
+          const items = yield* db
             .delete(schema.number)
             .where(eq(schema.number.userId, userId))
+            .returning({ id: schema.number.id })
             .pipe(Effect.orDie);
+          return items.map((item) => item.id);
         }),
       });
     }),

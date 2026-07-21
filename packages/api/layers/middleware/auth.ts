@@ -2,7 +2,7 @@ import { Effect, Layer } from "effect";
 import { HttpServerRequest } from "effect/unstable/http";
 
 import { AuthMiddleware, Unauthorized } from "#/middleware/auth";
-import type { IdBranded } from "@reactlith-template/db";
+import type { IdBranded } from "@reactlith-template/db/utils";
 import { Auth, CurrentUser, CurrentUserId } from "@reactlith-template/services/auth";
 import { DB } from "@reactlith-template/services/db";
 import { NumberRepoForUser } from "@reactlith-template/services/repositories/numbers";

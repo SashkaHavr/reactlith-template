@@ -2,7 +2,7 @@ import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 import { AuthMiddleware } from "#/middleware/auth";
-import { idBranded } from "@reactlith-template/db";
+import { idBranded } from "@reactlith-template/db/utils";
 import { NumberNotFound } from "@reactlith-template/services/repositories/numbers";
 
 export const NumberItem = Schema.Struct({
@@ -34,9 +34,12 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
     }),
     HttpApiEndpoint.delete("delete", "/:id", {
       params: Schema.Struct({ id: idBranded("number") }),
+      success: idBranded("number"),
       error: NumberNotFound,
     }),
-    HttpApiEndpoint.delete("deleteAll", "/"),
+    HttpApiEndpoint.delete("deleteAll", "/", {
+      success: Schema.Array(idBranded("number")),
+    }),
   )
   .prefix("/numbers")
   .middleware(AuthMiddleware) {}

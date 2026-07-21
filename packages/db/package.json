@@ -7,7 +7,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./repositories/*": "./src/repositories/*.ts"
+    "./utils": "./src/utils.ts"
   },
   "scripts": {
     "push": "vp exec drizzle-kit push",
