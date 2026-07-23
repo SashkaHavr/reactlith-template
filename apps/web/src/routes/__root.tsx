@@ -13,7 +13,7 @@ import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
 import { getServerLogger } from "~/lib/log";
 import type { createQueryClient } from "~/lib/query";
-import { api } from "~/lib/query";
+import { queryOptions } from "~/lib/query";
 
 import indexCss from "../index.css?url";
 
@@ -22,7 +22,7 @@ export const Route = createRootRouteWithContext<{
 }>()({
   beforeLoad: async ({ context: { queryClient } }) => {
     const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(api.indexRoute.configGeneral.queryOptions()),
+      queryClient.ensureQueryData(queryOptions({ group: "indexRoute", endpoint: "configGeneral" })),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 

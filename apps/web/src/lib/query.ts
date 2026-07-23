@@ -14,4 +14,5 @@ export function createQueryClient() {
   });
 }
 
-export const { api, apiClient, partialQueryKey, queryKey } = createApiQueryUtils(Api);
+export const { apiClient, mutationOptions, partialQueryKey, queryKey, queryOptions } =
+  createApiQueryUtils(Api);

@@ -15,11 +15,11 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { api } from "~/lib/query";
+import { queryOptions } from "~/lib/query";
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(api.indexRoute.health.queryOptions());
+    await queryClient.ensureQueryData(queryOptions({ group: "indexRoute", endpoint: "health" }));
   },
   component: RouteComponent,
 });
@@ -85,7 +85,7 @@ function RouteComponent() {
   // const t = useTranslations("index");
   // const format = useFormatter();
 
-  const health = useSuspenseQuery(api.indexRoute.health.queryOptions());
+  const health = useSuspenseQuery(queryOptions({ group: "indexRoute", endpoint: "health" }));
 
   const [now, setNow] = useState(Date.now());
   useEffect(() => {

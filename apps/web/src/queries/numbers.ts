@@ -1,44 +1,77 @@
-import { api } from "~/lib/query";
+import { useMutation } from "@tanstack/react-query";
 
-export function addNumberMutationOptions() {
-  return api.numbers.add.mutationOptions({
-    onSuccess: (item, _variables, _onMutateResult, context) => {
-      context.client.setQueryData(api.numbers.getAll.queryKey(), (items = []) => [...items, item]);
-      context.client.setQueryData(api.numbers.get.queryKey({ params: { id: item.id } }), item);
-    },
-  });
+import { mutationOptions, partialQueryKey, queryKey } from "~/lib/query";
+
+export function useAddNumberMutationOptions() {
+  return useMutation(
+    mutationOptions(
+      { group: "numbers", endpoint: "add" },
+      {
+        onSuccess: (item, _variables, _onMutateResult, context) => {
+          context.client.setQueryData(queryKey("numbers", "getAll"), (items = []) => [
+            ...items,
+            item,
+          ]);
+          context.client.setQueryData(
+            queryKey("numbers", "get", { params: { id: item.id } }),
+            item,
+          );
+        },
+      },
+    ),
+  );
 }
 
-export function updateNumberMutationOptions() {
-  return api.numbers.update.mutationOptions({
-    onSuccess: (item, _variables, _onMutateResult, context) => {
-      context.client.setQueryData(api.numbers.getAll.queryKey(), (items = []) =>
-        items.map((current) => (current.id === item.id ? item : current)),
-      );
-      context.client.setQueryData(api.numbers.get.queryKey({ params: { id: item.id } }), item);
-    },
-  });
+export function useUpdateNumberMutationOptions() {
+  return useMutation(
+    mutationOptions(
+      { group: "numbers", endpoint: "update" },
+      {
+        onSuccess: (item, _variables, _onMutateResult, context) => {
+          context.client.setQueryData(queryKey("numbers", "getAll"), (items = []) =>
+            items.map((current) => (current.id === item.id ? item : current)),
+          );
+          context.client.setQueryData(
+            queryKey("numbers", "get", { params: { id: item.id } }),
+            item,
+          );
+        },
+      },
+    ),
+  );
 }
 
-export function deleteNumberMutationOptions() {
-  return api.numbers.delete.mutationOptions({
-    onSuccess: (id, _variables, _onMutateResult, context) => {
-      context.client.setQueryData(api.numbers.getAll.queryKey(), (items = []) =>
-        items.filter((item) => item.id !== id),
-      );
-      context.client.removeQueries(api.numbers.get.queryFilter({ params: { id } }));
-    },
-  });
+export function useDeleteNumberMutationOptions() {
+  return useMutation(
+    mutationOptions(
+      { group: "numbers", endpoint: "delete" },
+      {
+        onSuccess: (id, _variables, _onMutateResult, context) => {
+          context.client.setQueryData(queryKey("numbers", "getAll"), (items = []) =>
+            items.filter((item) => item.id !== id),
+          );
+          context.client.removeQueries({
+            queryKey: queryKey("numbers", "get", { params: { id } }),
+          });
+        },
+      },
+    ),
+  );
 }
 
-export function deleteAllNumbersMutationOptions() {
-  return api.numbers.deleteAll.mutationOptions({
-    onSuccess: (ids, _variables, _onMutateResult, context) => {
-      const deletedIds = new Set(ids);
-      context.client.setQueryData(api.numbers.getAll.queryKey(), (items = []) =>
-        items.filter((item) => !deletedIds.has(item.id)),
-      );
-      context.client.removeQueries(api.numbers.get.queryFilter());
-    },
-  });
+export function useDeleteAllNumbersMutationOptions() {
+  return useMutation(
+    mutationOptions(
+      { group: "numbers", endpoint: "deleteAll" },
+      {
+        onSuccess: (ids, _variables, _onMutateResult, context) => {
+          const deletedIds = new Set(ids);
+          context.client.setQueryData(queryKey("numbers", "getAll"), (items = []) =>
+            items.filter((item) => !deletedIds.has(item.id)),
+          );
+          context.client.removeQueries({ queryKey: partialQueryKey("numbers", "get") });
+        },
+      },
+    ),
+  );
 }

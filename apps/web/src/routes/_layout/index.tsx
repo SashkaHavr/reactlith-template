@@ -5,7 +5,7 @@ import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { authClient, useResetAuth } from "~/lib/auth";
-import { api } from "~/lib/query";
+import { queryOptions } from "~/lib/query";
 
 export const Route = createFileRoute("/_layout/")({
   beforeLoad: ({ context: { auth } }) => {
@@ -17,7 +17,9 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function RouteComponent() {
-  const authConfig = useSuspenseQuery(api.indexRoute.configGeneral.queryOptions()).data.auth;
+  const authConfig = useSuspenseQuery(
+    queryOptions({ group: "indexRoute", endpoint: "configGeneral" }),
+  ).data.auth;
   const resetAuth = useResetAuth();
   const signInWithGoogle = useMutation({
     mutationFn: async () => {

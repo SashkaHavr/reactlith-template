@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Pencil, Trash2 } from "lucide-react";
 
@@ -6,12 +6,12 @@ import type { IdBranded } from "@reactlith-template/db/utils";
 import { m } from "@reactlith-template/intl/messages";
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { api } from "~/lib/query";
+import { queryOptions } from "~/lib/query";
 import {
-  addNumberMutationOptions,
-  deleteAllNumbersMutationOptions,
-  deleteNumberMutationOptions,
-  updateNumberMutationOptions,
+  useAddNumberMutationOptions,
+  useDeleteAllNumbersMutationOptions,
+  useDeleteNumberMutationOptions,
+  useUpdateNumberMutationOptions,
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers")({
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_layout/numbers")({
     }
   },
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(api.numbers.getAll.queryOptions());
+    await queryClient.ensureQueryData(queryOptions({ group: "numbers", endpoint: "getAll" }));
   },
   component: RouteComponent,
 });
@@ -31,12 +31,12 @@ function RouteComponent() {
 
   const auth = useLoggedInAuth();
 
-  const numbers = useSuspenseQuery(api.numbers.getAll.queryOptions());
+  const numbers = useSuspenseQuery(queryOptions({ group: "numbers", endpoint: "getAll" }));
 
-  const addNumber = useMutation(addNumberMutationOptions());
-  const updateNumber = useMutation(updateNumberMutationOptions());
-  const deleteNumber = useMutation(deleteNumberMutationOptions());
-  const deleteNumbers = useMutation(deleteAllNumbersMutationOptions());
+  const addNumber = useAddNumberMutationOptions();
+  const updateNumber = useUpdateNumberMutationOptions();
+  const deleteNumber = useDeleteNumberMutationOptions();
+  const deleteNumbers = useDeleteAllNumbersMutationOptions();
   const signout = useSignout();
   return (
     <div className="flex flex-col items-center gap-4">
@@ -96,7 +96,9 @@ function RouteComponent() {
 }
 
 function NumberValues({ id, listValue }: { id: IdBranded<"number">; listValue: number }) {
-  const number = useSuspenseQuery(api.numbers.get.queryOptions({ params: { id } }));
+  const number = useSuspenseQuery(
+    queryOptions({ group: "numbers", endpoint: "get", inputs: { params: { id } } }),
+  );
 
   return (
     <span className="flex items-baseline gap-2 tabular-nums text-xl font-bold">
