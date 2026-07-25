@@ -7,11 +7,11 @@ import { protectedProcedure } from "./protected-procedure";
 const errors = defineErrorCatalog("adminProcedure", {
   NO_PERMISSIONS_SPECIFIED: {
     message: "No permissions specified for adminProcedure",
-    trpcCode: "INTERNAL_SERVER_ERROR",
+    status: 500,
   },
   FORBIDDEN: {
     message: "You don't have permissions to access this endpoint",
-    trpcCode: "FORBIDDEN",
+    status: 403,
   },
 });
 
@@ -47,4 +47,10 @@ export function adminProcedure(permissions: Permissions) {
 
     return await next();
   });
+}
+
+declare module "evlog" {
+  interface RegisteredErrorCatalogs {
+    adminProcedure: typeof errors;
+  }
 }

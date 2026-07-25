@@ -1,10 +1,11 @@
 import { initTRPC } from "@trpc/server";
-import type { TRPC_ERROR_CODE_KEY } from "@trpc/server";
+import { EvlogError } from "evlog";
 import superjson from "superjson";
 import z, { ZodError } from "zod";
 
 import { callInAppContext } from "./async-context/app";
 import type { Context } from "./context";
+import { TRPCEvlogError } from "./error";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -15,6 +16,7 @@ const t = initTRPC.context<Context>().create({
       data: {
         ...shape.data,
         zodError: error.cause instanceof ZodError ? z.prettifyError(error.cause) : null,
+        evlogError: error.cause instanceof EvlogError ? error.cause.toJSON() : null,
       },
     };
   },
@@ -34,11 +36,11 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
   const result = await callInAppContext(ctx, async () => await next());
 
   if (!result.ok) {
-    ctx.log?.set({
-      trpc: {
-        errorCode: result.error.code,
-      },
-    });
+    const evlogError = result.error.cause;
+    if (evlogError instanceof EvlogError) {
+      ctx.log?.error(evlogError);
+      throw new TRPCEvlogError(evlogError);
+    }
     ctx.log?.error(result.error);
   }
 
@@ -46,9 +48,3 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
 });
 
 export const createCallerFactory = t.createCallerFactory;
-
-declare module "evlog" {
-  interface ErrorCatalogEntry {
-    trpcCode: TRPC_ERROR_CODE_KEY;
-  }
-}

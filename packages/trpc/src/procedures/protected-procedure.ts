@@ -9,7 +9,7 @@ import { callInUserContext } from "../async-context/user";
 const errors = defineErrorCatalog("protectedProcedure", {
   UNAUTHORIZED: {
     message: "You must authenticate to use this endpoint",
-    trpcCode: "UNAUTHORIZED",
+    status: 401,
   },
 });
 
@@ -35,3 +35,9 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
       }),
   );
 });
+
+declare module "evlog" {
+  interface RegisteredErrorCatalogs {
+    protectedProcedure: typeof errors;
+  }
+}

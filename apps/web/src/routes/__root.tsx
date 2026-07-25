@@ -12,6 +12,7 @@ import { identifyUser } from "@reactlith-template/utils/log";
 import { seo } from "@reactlith-template/utils/seo";
 import { getTheme } from "~/components/theme/context";
 import { ThemeScript, ThemeProvider } from "~/components/theme/provider";
+import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
 import type { TRPCRouteContext } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
@@ -107,7 +108,11 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body>
         <ThemeProvider>
-          <div className="isolate">{children}</div>
+          <ToastProvider>
+            <AnchoredToastProvider>
+              <div className="isolate">{children}</div>
+            </AnchoredToastProvider>
+          </ToastProvider>
         </ThemeProvider>
         <Scripts />
       </body>

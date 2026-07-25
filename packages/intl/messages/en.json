@@ -16,6 +16,8 @@
   ],
   "example_signInWithGoogle": "Sign in with Google",
   "example_logout": "Logout",
+  "example_maxNumberCountReached": "Maximum number count reached",
+  "example_maxNumberCountReachedDescription": "You can add up to 10 numbers.",
   "example_apiHealthResponse": "API /health response",
   "example_updateNumber": "Update number",
   "example_user": "User",

@@ -16,6 +16,7 @@ import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { useTRPC } from "~/lib/trpc";
+import { cn } from "~/lib/utils";
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { trpc, queryClient } }) => {
@@ -100,7 +101,7 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
+          <p className={cn(trpcHealth.isSuccess ? "text-green-500" : "text-red-500", "font-mono")}>
             {m.example_apiHealthResponse()}
           </p>
           <p>{hydrated ? m.example_timeNow({ date: now }) : m.example_serverRendered()}</p>

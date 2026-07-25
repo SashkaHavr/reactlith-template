@@ -16,6 +16,8 @@
   ],
   "example_signInWithGoogle": "Увійти з Google",
   "example_logout": "Вийти",
+  "example_maxNumberCountReached": "Досягнуто максимальної кількості чисел",
+  "example_maxNumberCountReachedDescription": "Можна додати не більше 10 чисел.",
   "example_apiHealthResponse": "Відповідь /health від API",
   "example_updateNumber": "Оновити число",
   "example_user": "Користувач",
