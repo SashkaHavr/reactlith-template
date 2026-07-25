@@ -4,7 +4,6 @@
     "dockerfilePath": "/apps/web/Dockerfile"
   },
   "deploy": {
-    "preDeployCommand": "sh -c \"bun run --cwd /app/packages/db /app/packages/db/migrate.js\"",
     "healthcheckPath": "/trpc/health"
   }
 }

@@ -10,11 +10,8 @@
     "./id-branded": "./src/utils/id-branded.ts"
   },
   "scripts": {
-    "db:push": "bunx --no-install --bun drizzle-kit push",
-    "db:studio": "bunx --no-install --bun drizzle-kit studio"
-  },
-  "dependencies": {
-    "pg": "catalog:"
+    "push": "bunx --no-install --bun drizzle-kit push",
+    "studio": "bunx --no-install --bun drizzle-kit studio"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.5",

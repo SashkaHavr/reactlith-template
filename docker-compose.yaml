@@ -12,11 +12,10 @@ services:
       timeout: 10s
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
-  web-predeploy:
+  db-push:
     build:
       context: .
-      dockerfile: ./apps/web/Dockerfile
-    command: ["sh", "-c", "bun run --cwd /app/packages/db /app/packages/db/migrate.js"]
+      dockerfile: ./packages/db/Dockerfile
     networks:
       - db-network
     depends_on:
@@ -34,7 +33,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      web-predeploy:
+      db-push:
         condition: service_completed_successfully
     restart: unless-stopped
     environment:

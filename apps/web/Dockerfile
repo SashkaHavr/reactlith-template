@@ -1,26 +1,31 @@
-FROM oven/bun:1.3.11-alpine AS base
+FROM oven/bun:1.3.14-slim AS base
+WORKDIR /app
+
+FROM base AS prepare
+RUN bun add -g turbo@^2
+COPY . .
+RUN turbo prune @reactlith-template/web --docker
 
 # Install and build
 FROM base AS build
-WORKDIR /app
-COPY . .
+COPY --from=prepare /app/out/json/ .
 RUN bun ci
-RUN bun run --filter @reactlith-template/web --filter @reactlith-template/db build
+COPY --from=prepare /app/out/full/ .
+RUN bun run build
 
 # Run
 FROM base AS runner
 
-RUN apk --no-cache add curl
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends curl
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
 HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
 
 ENV NODE_ENV=production
 
-WORKDIR /app
-COPY /packages/db/drizzle ./packages/db/drizzle
-COPY --from=build /app/packages/db/dist ./packages/db
-COPY --from=build /app/apps/web/dist ./apps/web
+COPY --from=build /app/apps/web/dist .
 
-WORKDIR /app/apps/web
 USER bun
 EXPOSE 3000
 CMD [ "bun", "run", "./server/index.mjs" ]

@@ -1,4 +1,4 @@
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/bun-sql";
 
 import { getEnvDB } from "@reactlith-template/env";
 
@@ -6,7 +6,7 @@ import { relations, schema } from "./relations";
 
 export function createDB() {
   return drizzle({
-    connection: { connectionString: getEnvDB().DATABASE_URL },
+    connection: getEnvDB().DATABASE_URL,
     relations: relations,
   });
 }
