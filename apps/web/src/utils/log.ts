@@ -1,10 +1,6 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { getRequestHeader } from "@tanstack/react-start/server";
-import type { DrainContext } from "evlog";
-import { log as simpleLog } from "evlog";
 import { initLog, log as clientLog } from "evlog/client";
-import { createUserAgentEnricher } from "evlog/enrichers";
 
 import type { LogType } from "@reactlith-template/utils/log";
 
@@ -76,17 +72,4 @@ function getErrorDataWithCause(error: unknown) {
     };
   }
   return error;
-}
-
-export async function ingestClientError() {
-  const logEvent = (await getRequest().json()) as DrainContext["event"];
-  const enrich = createUserAgentEnricher();
-  const userAgent = getRequestHeader("user-agent") ?? "";
-  if (logEvent.level === "error") {
-    enrich({ event: logEvent, headers: { "user-agent": userAgent } });
-    simpleLog.error(logEvent);
-  }
-  return new Response(undefined, {
-    status: 204,
-  });
 }

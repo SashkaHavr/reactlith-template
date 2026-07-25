@@ -23,6 +23,7 @@
     "drizzle-orm": "catalog:",
     "superjson": "catalog:",
     "typescript": "catalog:",
+    "unctx": "catalog:",
     "zod": "catalog:"
   }
 }

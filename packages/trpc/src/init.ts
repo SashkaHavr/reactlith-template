@@ -3,6 +3,7 @@ import superjson from "superjson";
 import z, { ZodError } from "zod";
 
 import type { Context } from "./context";
+import { callInAppContext } from "./context/app";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -29,7 +30,7 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
     package: "trpc",
   });
 
-  const result = await next();
+  const result = await callInAppContext(ctx, async () => await next());
 
   if (!result.ok) {
     ctx.log?.set({
