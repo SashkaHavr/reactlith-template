@@ -1,5 +1,6 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_addCustomNumber": "Add custom number",
   "example_addNumber": "Add number",
   "example_authStatus": "Auth status",
   "example_deleteAllNumbers": "Delete all numbers",
@@ -18,6 +19,8 @@
   "example_logout": "Logout",
   "example_maxNumberCountReached": "Maximum number count reached",
   "example_maxNumberCountReachedDescription": "You can add up to 10 numbers.",
+  "example_number": "Number",
+  "example_submit": "Submit",
   "example_apiHealthResponse": "API /health response",
   "example_updateNumber": "Update number",
   "example_user": "User",

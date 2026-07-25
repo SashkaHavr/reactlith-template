@@ -1,5 +1,6 @@
 {
   "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_addCustomNumber": "Додати власне число",
   "example_addNumber": "Додати число",
   "example_authStatus": "Статус сервера автентифікації",
   "example_deleteAllNumbers": "Видалити усі числа",
@@ -18,6 +19,8 @@
   "example_logout": "Вийти",
   "example_maxNumberCountReached": "Досягнуто максимальної кількості чисел",
   "example_maxNumberCountReachedDescription": "Можна додати не більше 10 чисел.",
+  "example_number": "Число",
+  "example_submit": "Надіслати",
   "example_apiHealthResponse": "Відповідь /health від API",
   "example_updateNumber": "Оновити число",
   "example_user": "Користувач",

@@ -1,9 +1,29 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
+import z from "zod";
 
 import { m } from "@reactlith-template/intl/messages";
+import { numberInput } from "@reactlith-template/trpc/schema/numbers";
+import { FormForm } from "~/components/form/form";
+import { FormField } from "~/components/form/form-field";
+import { FormFieldError } from "~/components/form/form-field-error";
+import { FormFieldLabel } from "~/components/form/form-field-label";
+import { FormInput } from "~/components/form/form-input";
+import { FormSubmitButton } from "~/components/form/form-submit-button";
+import { useAppForm } from "~/components/form/use-app-form";
 import { Button, LinkButton } from "~/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import { useTRPC } from "~/lib/trpc";
 import {
@@ -26,8 +46,12 @@ export const Route = createFileRoute("/_layout/numbers/")({
 });
 
 const generateNumber = () => Math.floor(Math.random() * 100);
+const customNumberInput = numberInput.extend({
+  number: z.string().min(1).transform(Number).pipe(numberInput.shape.number),
+});
 
 function RouteComponent() {
+  const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
   const trpc = useTRPC();
   const auth = useLoggedInAuth();
   const numbers = useSuspenseQuery(trpc.numbers.getAll.queryOptions());
@@ -36,6 +60,15 @@ function RouteComponent() {
   const deleteNumber = useDeleteNumber();
   const deleteNumbers = useDeleteAllNumbers();
   const signout = useSignout();
+  const customNumberForm = useAppForm({
+    defaultValues: { number: "" },
+    validators: { onSubmit: customNumberInput },
+    onSubmit: async ({ value, formApi }) => {
+      await addNumber.mutateAsync(customNumberInput.parse(value));
+      setCustomNumberDialogOpen(false);
+      formApi.reset();
+    },
+  });
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -51,6 +84,35 @@ function RouteComponent() {
         <Button variant="outline" onClick={() => addNumber.mutate({ number: generateNumber() })}>
           {m.example_addNumber()}
         </Button>
+        <Dialog open={customNumberDialogOpen} onOpenChange={setCustomNumberDialogOpen}>
+          <DialogTrigger render={<Button variant="outline" />}>
+            {m.example_addCustomNumber()}
+          </DialogTrigger>
+          <DialogPopup>
+            <DialogHeader>
+              <DialogTitle>{m.example_addCustomNumber()}</DialogTitle>
+            </DialogHeader>
+            <customNumberForm.AppForm>
+              <FormForm className="contents">
+                <DialogPanel className="grid gap-4">
+                  <customNumberForm.AppField name="number">
+                    {() => (
+                      <FormField>
+                        <FormFieldLabel>{m.example_number()}</FormFieldLabel>
+                        <FormInput />
+                        <FormFieldError />
+                      </FormField>
+                    )}
+                  </customNumberForm.AppField>
+                </DialogPanel>
+                <DialogFooter>
+                  <DialogClose render={<Button variant="ghost" />}>Cancel</DialogClose>
+                  <FormSubmitButton>{m.example_submit()}</FormSubmitButton>
+                </DialogFooter>
+              </FormForm>
+            </customNumberForm.AppForm>
+          </DialogPopup>
+        </Dialog>
         <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
           {m.example_deleteAllNumbers()}
         </Button>
