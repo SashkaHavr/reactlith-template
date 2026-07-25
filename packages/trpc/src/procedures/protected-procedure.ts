@@ -4,7 +4,7 @@ import { publicProcedure } from "#/init";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { identifyUser } from "@reactlith-template/utils/log";
 
-import { callInUserContext } from "../context/user";
+import { callInUserContext } from "../async-context/user";
 
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const session = await ctx.auth.getSession({
