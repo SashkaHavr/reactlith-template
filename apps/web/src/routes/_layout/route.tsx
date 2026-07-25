@@ -61,7 +61,7 @@ function LocaleSwitcher() {
       onValueChange={(value) => {
         if (isLocale(value)) {
           void (async () => {
-            await setLocale(value);
+            await setLocale(value, { reload: false });
             await router.invalidate();
           })();
         }
