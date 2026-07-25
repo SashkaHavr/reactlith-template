@@ -12,8 +12,12 @@
   "devDependencies": {
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
     "@types/bun": "catalog:",
+    "@types/react": "catalog:",
     "evlog": "catalog:",
+    "react": "catalog:",
     "typescript": "catalog:",
     "use-intl": "catalog:"
   }

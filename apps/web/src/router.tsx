@@ -1,10 +1,11 @@
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
+import { setupClientLog } from "@reactlith-template/utils/log";
+
 import { ErrorComponent } from "./components/router-default/error-component";
 import { NotFoundComponent } from "./components/router-default/not-found-component";
 import { PendingComponent } from "./components/router-default/pending-component";
-import { setupClientLog } from "./lib/log";
 import { createTRPCRouteContext, TRPCProvider } from "./lib/trpc";
 import { routeTree } from "./routeTree.gen";
 

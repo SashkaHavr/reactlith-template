@@ -12,7 +12,7 @@ import { useFormatter, useNow, useTranslations } from "use-intl";
 
 import { isLocale, setLocale } from "@reactlith-template/intl/runtime";
 import type { Locale } from "@reactlith-template/intl/runtime";
-import { useTheme } from "~/components/theme/context";
+import { useTheme } from "@reactlith-template/utils/theme/index";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { useTRPC } from "~/lib/trpc";

@@ -8,14 +8,12 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { identifyUser } from "@reactlith-template/utils/log";
-import { getTheme } from "~/components/theme/context";
-import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
+import { cn } from "@reactlith-template/utils/cn";
+import { getServerLog, identifyUser } from "@reactlith-template/utils/log";
+import { seo } from "@reactlith-template/utils/seo";
+import { ThemeScript, ThemeProvider, getTheme } from "@reactlith-template/utils/theme/index";
 import { getSessionQueryOptions } from "~/lib/auth";
-import { getServerLogger } from "~/lib/log";
 import type { TRPCRouteContext } from "~/lib/trpc";
-import { cn } from "~/lib/utils";
-import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
@@ -28,7 +26,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     ]);
 
     if (auth.loggedIn) {
-      identifyUser(getServerLogger(), auth);
+      identifyUser(getServerLog(), auth);
     }
 
     return {
