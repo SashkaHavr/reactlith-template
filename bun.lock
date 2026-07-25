@@ -117,6 +117,7 @@
         "@types/bun": "catalog:",
         "better-result": "catalog:",
         "drizzle-orm": "catalog:",
+        "evlog": "catalog:",
         "superjson": "catalog:",
         "typescript": "catalog:",
         "unctx": "catalog:",

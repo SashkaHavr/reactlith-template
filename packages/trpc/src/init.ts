@@ -1,4 +1,5 @@
 import { initTRPC } from "@trpc/server";
+import type { TRPC_ERROR_CODE_KEY } from "@trpc/server";
 import superjson from "superjson";
 import z, { ZodError } from "zod";
 
@@ -45,3 +46,9 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
 });
 
 export const createCallerFactory = t.createCallerFactory;
+
+declare module "evlog" {
+  interface ErrorCatalogEntry {
+    trpcCode: TRPC_ERROR_CODE_KEY;
+  }
+}

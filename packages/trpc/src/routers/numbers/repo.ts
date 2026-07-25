@@ -1,10 +1,11 @@
-import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 
 import { getAppContext } from "#/async-context/app";
 import { getUserContext } from "#/async-context/user";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
+
+import { numberErrors } from "./errors";
 
 function getDependencies() {
   const { db } = getAppContext();
@@ -35,7 +36,7 @@ async function getById(id: IdBranded<"number">) {
   });
 
   if (!number) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "Number not found" });
+    throw numberErrors.NOT_FOUND();
   }
 
   return number;
@@ -49,22 +50,22 @@ async function addNew(value: number) {
     .returning({ id: schema.number.id, number: schema.number.number });
 
   if (!number) {
-    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to add number" });
+    throw numberErrors.ADD_FAILED();
   }
 
   return number;
 }
 
-async function update(id: IdBranded<"number">, value: number) {
+async function update(id: IdBranded<"number">, data: { number?: number }) {
   const { db, userId } = getDependencies();
   const [number] = await db
     .update(schema.number)
-    .set({ number: value })
+    .set(data)
     .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
     .returning({ id: schema.number.id, number: schema.number.number });
 
   if (!number) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "Number not found" });
+    throw numberErrors.NOT_FOUND();
   }
 
   return number;
@@ -78,7 +79,7 @@ async function deleteById(id: IdBranded<"number">) {
     .returning({ id: schema.number.id });
 
   if (!number) {
-    throw new TRPCError({ code: "NOT_FOUND", message: "Number not found" });
+    throw numberErrors.NOT_FOUND();
   }
 
   return number;

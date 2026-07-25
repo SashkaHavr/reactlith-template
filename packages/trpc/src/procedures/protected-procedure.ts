@@ -1,4 +1,4 @@
-import { TRPCError } from "@trpc/server";
+import { defineErrorCatalog } from "evlog";
 
 import { publicProcedure } from "#/init";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
@@ -6,15 +6,19 @@ import { identifyUser } from "@reactlith-template/utils/log";
 
 import { callInUserContext } from "../async-context/user";
 
+const errors = defineErrorCatalog("protectedProcedure", {
+  UNAUTHORIZED: {
+    message: "You must authenticate to use this endpoint",
+    trpcCode: "UNAUTHORIZED",
+  },
+});
+
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const session = await ctx.auth.getSession({
     headers: ctx.request.headers,
   });
   if (!session) {
-    throw new TRPCError({
-      message: "You must authenticate to use this endpoint",
-      code: "UNAUTHORIZED",
-    });
+    throw errors.UNAUTHORIZED();
   }
 
   identifyUser(ctx.log, session);

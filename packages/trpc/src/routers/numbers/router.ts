@@ -1,14 +1,12 @@
-import { TRPCError } from "@trpc/server";
 import z from "zod";
 
 import { router } from "#/init";
 import { protectedProcedure } from "#/procedures/protected-procedure";
-import { numberRepo } from "#/repositories/number-repo";
 import { idBranded } from "@reactlith-template/db/id-branded";
 
-const numberInput = z.object({ number: z.int() });
-const numberIdInput = z.object({ id: idBranded("number") });
-const numberOutput = z.object({ id: idBranded("number"), number: z.int() });
+import { numberErrors } from "./errors";
+import { numberRepo } from "./repo";
+import { numberInput, numberOutput } from "./schema";
 
 export const numbersRouter = router({
   getAll: protectedProcedure
@@ -17,7 +15,7 @@ export const numbersRouter = router({
       return { numbers: await numberRepo.getAll() };
     }),
   getById: protectedProcedure
-    .input(numberIdInput)
+    .input(z.object({ id: idBranded("number") }))
     .output(numberOutput)
     .query(async ({ input }) => {
       return await numberRepo.getById(input.id);
@@ -27,23 +25,20 @@ export const numbersRouter = router({
     .output(numberOutput)
     .mutation(async ({ input }) => {
       if ((await numberRepo.getCount()) >= 10) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Max numbers count is 10",
-        });
+        throw numberErrors.MAX_COUNT_REACHED();
       }
 
       return await numberRepo.addNew(input.number);
     }),
   update: protectedProcedure
-    .input(numberIdInput.extend(numberInput.shape))
+    .input(z.object({ id: idBranded("number"), data: numberInput.partial() }))
     .output(numberOutput)
     .mutation(async ({ input }) => {
-      return await numberRepo.update(input.id, input.number);
+      return await numberRepo.update(input.id, input.data);
     }),
   delete: protectedProcedure
-    .input(numberIdInput)
-    .output(numberIdInput)
+    .input(z.object({ id: idBranded("number") }))
+    .output(z.object({ id: idBranded("number") }))
     .mutation(async ({ input }) => {
       return await numberRepo.deleteById(input.id);
     }),

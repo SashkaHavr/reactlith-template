@@ -10,8 +10,9 @@ import z from "zod";
 import { createContext } from "#/context";
 import type { ContextParam } from "#/context";
 import { createCallerFactory, publicProcedure, router } from "#/init";
-import { configRouter } from "#/routers/config";
-import { numbersRouter } from "#/routers/numbers";
+import { configRouter } from "#/routers/config/router";
+import { numbersRouter } from "#/routers/numbers/router";
+
 const appRouter = router({
   health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
     const res = await Result.tryPromise(async () => await ctx.db.execute(sql`select 1`));

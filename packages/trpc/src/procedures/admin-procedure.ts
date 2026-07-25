@@ -1,8 +1,19 @@
-import { TRPCError } from "@trpc/server";
+import { defineErrorCatalog } from "evlog";
 
 import type { Permissions } from "@reactlith-template/auth";
 
 import { protectedProcedure } from "./protected-procedure";
+
+const errors = defineErrorCatalog("adminProcedure", {
+  NO_PERMISSIONS_SPECIFIED: {
+    message: "No permissions specified for adminProcedure",
+    trpcCode: "INTERNAL_SERVER_ERROR",
+  },
+  FORBIDDEN: {
+    message: "You don't have permissions to access this endpoint",
+    trpcCode: "FORBIDDEN",
+  },
+});
 
 export function adminProcedure(permissions: Permissions) {
   return protectedProcedure.use(async ({ ctx, next }) => {
@@ -24,20 +35,14 @@ export function adminProcedure(permissions: Permissions) {
     });
 
     if (requestPermissionsList.length === 0) {
-      throw new TRPCError({
-        message: "No permissions specified for adminProcedure",
-        code: "INTERNAL_SERVER_ERROR",
-      });
+      throw errors.NO_PERMISSIONS_SPECIFIED();
     }
 
     const hasPermission = await ctx.auth.userHasPermission({
       body: { userId: ctx.userId, permissions: permissions },
     });
     if (!hasPermission.success) {
-      throw new TRPCError({
-        message: "You don't have permissions to access this endpoint",
-        code: "FORBIDDEN",
-      });
+      throw errors.FORBIDDEN;
     }
 
     return await next();

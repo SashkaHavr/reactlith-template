@@ -62,7 +62,9 @@ function RouteComponent() {
             <Button
               size="icon"
               variant="outline"
-              onClick={() => updateNumber.mutate({ id: number.id, number: generateNumber() })}
+              onClick={() =>
+                updateNumber.mutate({ id: number.id, data: { number: generateNumber() } })
+              }
             >
               <PencilIcon />
             </Button>
