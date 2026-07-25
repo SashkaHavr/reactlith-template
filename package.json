@@ -51,7 +51,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "bun run --filter '*' build",
+    "build": "turbo build",
     "clean": "git clean -xdfq 'node_modules/*' '**/node_modules/*' '**/dist/*'",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
@@ -61,12 +61,13 @@
     "fix": "bunx --no-install oxlint --fix && bunx --no-install oxfmt",
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d",
     "deps": "bun update --interactive --recursive",
-    "dev": "bun run --filter '*' dev"
+    "dev": "turbo dev --env-mode=loose"
   },
   "devDependencies": {
     "oxfmt": "0.60.0",
     "oxlint": "1.75.0",
-    "oxlint-tsgolint": "7.0.2001"
+    "oxlint-tsgolint": "7.0.2001",
+    "turbo": "^2"
   },
   "packageManager": "bun@1.3.14"
 }
