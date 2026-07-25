@@ -55,7 +55,7 @@ export default defineConfig({
     "unicorn/filename-case": [
       "error",
       {
-        ignore: "^*.gen.ts|\\$.*tsx$",
+        ignore: ["^*.gen.ts", "\\$.*tsx$"],
       },
     ],
 

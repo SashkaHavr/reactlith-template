@@ -1,7 +1,7 @@
 import { ErrorComponent as DefaultErrorComponent } from "@tanstack/react-router";
 
 import { m } from "@reactlith-template/intl/messages";
-import { logError } from "@reactlith-template/utils/log";
+import { logError } from "~/utils/log";
 
 import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";

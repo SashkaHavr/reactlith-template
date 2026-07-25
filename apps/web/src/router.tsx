@@ -1,7 +1,7 @@
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
-import { setupClientLog } from "@reactlith-template/utils/log";
+import { setupClientLog } from "~/utils/log";
 
 import { ErrorComponent } from "./components/router-default/error-component";
 import { NotFoundComponent } from "./components/router-default/not-found-component";

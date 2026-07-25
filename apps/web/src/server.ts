@@ -5,8 +5,8 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import type { AuthType } from "@reactlith-template/auth";
 import type { DBType } from "@reactlith-template/db";
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
-import { getRequestLog } from "@reactlith-template/utils/log";
 import type { LogType } from "@reactlith-template/utils/log";
+import { getRequestLog } from "~/utils/log";
 
 import { auth, db } from "./server-resources";
 
@@ -27,9 +27,10 @@ declare module "@tanstack/react-start" {
 export default createServerEntry({
   async fetch(request) {
     const log = getRequestLog(request);
-    await paraglideMiddleware(request, () => {});
-    return handler.fetch(request, {
-      context: { db, auth: auth, log },
-    });
+    return await paraglideMiddleware(request, async () =>
+      handler.fetch(request, {
+        context: { db, auth: auth, log },
+      }),
+    );
   },
 });

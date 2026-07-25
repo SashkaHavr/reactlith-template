@@ -10,14 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
+import { Route as apiIngestRouteImport } from './routes/(api)/ingest'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
 import { Route as LayoutNumbersRouteImport } from './routes/_layout/numbers'
-import { Route as apiIngestRouteImport } from './routes/(api)/ingest'
-import { Route as apiTrpcSplatRouteImport } from './routes/(api)/trpc.$'
 import { Route as apiAuthSplatRouteImport } from './routes/(api)/auth.$'
+import { Route as apiTrpcSplatRouteImport } from './routes/(api)/trpc.$'
 
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const apiIngestRoute = apiIngestRouteImport.update({
+  id: '/(api)/ingest',
+  path: '/ingest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
@@ -30,19 +35,14 @@ const LayoutNumbersRoute = LayoutNumbersRouteImport.update({
   path: '/numbers',
   getParentRoute: () => LayoutRouteRoute,
 } as any)
-const apiIngestRoute = apiIngestRouteImport.update({
-  id: '/(api)/ingest',
-  path: '/ingest',
+const apiAuthSplatRoute = apiAuthSplatRouteImport.update({
+  id: '/(api)/auth/$',
+  path: '/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const apiTrpcSplatRoute = apiTrpcSplatRouteImport.update({
   id: '/(api)/trpc/$',
   path: '/trpc/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const apiAuthSplatRoute = apiAuthSplatRouteImport.update({
-  id: '/(api)/auth/$',
-  path: '/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -100,6 +100,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(api)/ingest': {
+      id: '/(api)/ingest'
+      path: '/ingest'
+      fullPath: '/ingest'
+      preLoaderRoute: typeof apiIngestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_layout/': {
       id: '/_layout/'
       path: '/'
@@ -114,11 +121,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutNumbersRouteImport
       parentRoute: typeof LayoutRouteRoute
     }
-    '/(api)/ingest': {
-      id: '/(api)/ingest'
-      path: '/ingest'
-      fullPath: '/ingest'
-      preLoaderRoute: typeof apiIngestRouteImport
+    '/(api)/auth/$': {
+      id: '/(api)/auth/$'
+      path: '/auth/$'
+      fullPath: '/auth/$'
+      preLoaderRoute: typeof apiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(api)/trpc/$': {
@@ -126,13 +133,6 @@ declare module '@tanstack/react-router' {
       path: '/trpc/$'
       fullPath: '/trpc/$'
       preLoaderRoute: typeof apiTrpcSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(api)/auth/$': {
-      id: '/(api)/auth/$'
-      path: '/auth/$'
-      fullPath: '/auth/$'
-      preLoaderRoute: typeof apiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
