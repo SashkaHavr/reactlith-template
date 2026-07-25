@@ -3,18 +3,15 @@
 import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
 import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
-import { createIsomorphicFn } from "@tanstack/react-start";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 
-import { envNode } from "@reactlith-template/env/node";
-import { identifyUser } from "@reactlith-template/utils/logger";
+import { getLocale } from "@reactlith-template/intl/runtime";
+import { identifyUser } from "@reactlith-template/utils/log";
 import { getTheme } from "~/components/theme/context";
 import { ThemeProvider, ThemeScript } from "~/components/theme/provider";
 import { getSessionQueryOptions } from "~/lib/auth";
-import { getLocale, getMessages } from "~/lib/intl";
-import { IntlProvider } from "~/lib/intl-provider";
 import { getServerLogger } from "~/lib/log";
 import type { TRPCRouteContext } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
@@ -22,24 +19,9 @@ import { seo } from "~/utils/seo";
 
 import indexCss from "../index.css?url";
 
-const envRunHealthcheck = createIsomorphicFn()
-  .server(() => envNode.HEALTHCHECK_ON_SSR)
-  .client(() => false);
-
 export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
-    if (envRunHealthcheck()) {
-      await queryClient.ensureQueryData(
-        trpc.health.queryOptions(void 0, {
-          staleTime: "static",
-          gcTime: Infinity,
-          retry: 20,
-          retryDelay: 500,
-        }),
-      );
-    }
-
-    const locale = await getLocale();
+    const locale = getLocale();
     const [config, auth] = await Promise.all([
       queryClient.ensureQueryData(trpc.config.general.queryOptions()),
       queryClient.ensureQueryData(getSessionQueryOptions),
@@ -52,10 +34,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     return {
       auth,
       config,
-      intl: {
-        messages: await getMessages(locale),
-        locale: locale,
-      },
+      locale: locale,
       theme: await getTheme(),
     };
   },
@@ -104,7 +83,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { locale, theme, auth } = Route.useRouteContext({
-    select: (s) => ({ locale: s.intl.locale, theme: s.theme, auth: s.auth }),
+    select: (s) => ({ locale: s.locale, theme: s.theme, auth: s.auth }),
   });
 
   useEffect(() => {
@@ -116,16 +95,19 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   }, [auth]);
 
   return (
-    <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
+    <html
+      key={locale}
+      suppressHydrationWarning
+      lang={locale}
+      className={cn(theme !== "system" && theme)}
+    >
       <head>
         <HeadContent />
         <ThemeScript />
       </head>
       <body>
         <ThemeProvider>
-          <IntlProvider>
-            <div className="isolate">{children}</div>
-          </IntlProvider>
+          <div className="isolate">{children}</div>
         </ThemeProvider>
         <Scripts />
       </body>

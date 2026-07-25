@@ -1,12 +1,12 @@
-import { boolean, index, snakeCase, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-import { baseTable } from "#utils/base-table.ts";
-import { oneToManyCascadeOnDelete } from "#utils/foreign-keys.ts";
+import { baseTable } from "#/utils/base-table";
+import { oneToManyCascadeOnDelete } from "#/utils/foreign-keys";
 
-export const user = snakeCase.table(
+export const user = pgTable(
   "user",
   {
-    ...baseTable,
+    ...baseTable<"user">(),
     name: text().notNull(),
     email: text().notNull().unique(),
     emailVerified: boolean().default(false).notNull(),
@@ -19,10 +19,10 @@ export const user = snakeCase.table(
   (table) => [index().on(table.email)],
 );
 
-export const session = snakeCase.table(
+export const session = pgTable(
   "session",
   {
-    ...baseTable,
+    ...baseTable<"session">(),
     expiresAt: timestamp({ withTimezone: true }).notNull(),
     token: text().notNull().unique(),
     ipAddress: text(),
@@ -33,10 +33,10 @@ export const session = snakeCase.table(
   (table) => [index().on(table.userId), index().on(table.token)],
 );
 
-export const account = snakeCase.table(
+export const account = pgTable(
   "account",
   {
-    ...baseTable,
+    ...baseTable<"account">(),
     accountId: text().notNull(),
     providerId: text().notNull(),
     userId: oneToManyCascadeOnDelete(() => user.id),
@@ -51,10 +51,10 @@ export const account = snakeCase.table(
   (table) => [index().on(table.userId)],
 );
 
-export const verification = snakeCase.table(
+export const verification = pgTable(
   "verification",
   {
-    ...baseTable,
+    ...baseTable<"verification">(),
     identifier: text().notNull(),
     value: text().notNull(),
     expiresAt: timestamp({ withTimezone: true }).notNull(),

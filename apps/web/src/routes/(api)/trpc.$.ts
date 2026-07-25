@@ -5,11 +5,8 @@ import { trpcHandler } from "@reactlith-template/trpc";
 export const Route = createFileRoute("/(api)/trpc/$")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        return await trpcHandler({ request });
-      },
-      POST: async ({ request }) => {
-        return await trpcHandler({ request });
+      ANY: async ({ request, context }) => {
+        return await trpcHandler({ request, context });
       },
     },
   },

@@ -1,7 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useTranslations } from "use-intl";
 
+import { m } from "@reactlith-template/intl/messages";
 import { Button } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import { useTRPC } from "~/lib/trpc";
@@ -20,7 +20,6 @@ export const Route = createFileRoute("/_layout/numbers")({
 
 function RouteComponent() {
   const trpc = useTRPC();
-  const t = useTranslations("index");
 
   const auth = useLoggedInAuth();
 
@@ -33,18 +32,18 @@ function RouteComponent() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <p>
-          {t("user")}: {auth.user.email}
+          {m.example_user()}: {auth.user.email}
         </p>
         <Button variant="outline" onClick={() => signout.mutate()}>
-          {t("logout")}
+          {m.example_logout()}
         </Button>
       </div>
       <div className="flex gap-3">
         <Button variant="outline" onClick={() => addNumber.mutate()}>
-          {t("add-number")}
+          {m.example_addNumber()}
         </Button>
         <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
-          {t("delete-all-numbers")}
+          {m.example_deleteAllNumbers()}
         </Button>
       </div>
       <p className="text-xl font-bold">{JSON.stringify(numbers.data.numbers)}</p>

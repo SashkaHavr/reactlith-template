@@ -3,19 +3,18 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#*": "./src/*"
+    "#/*": "./src/*.ts"
   },
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts",
-    "./test-utils": "./test/utils.ts"
+    "./id-branded": "./src/utils/id-branded.ts"
   },
   "scripts": {
-    "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
-    "db:generate": "bunx --no-install --bun drizzle-kit generate",
-    "db:migrate": "bun run ./src/migrate.ts",
     "db:push": "bunx --no-install --bun drizzle-kit push",
     "db:studio": "bunx --no-install --bun drizzle-kit studio"
+  },
+  "dependencies": {
+    "pg": "catalog:"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.4.5",
@@ -23,9 +22,9 @@
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "better-result": "catalog:",
-    "drizzle-kit": "catalog:drizzle",
-    "drizzle-orm": "catalog:drizzle",
-    "drizzle-seed": "catalog:drizzle",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzle-seed": "catalog:",
     "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"

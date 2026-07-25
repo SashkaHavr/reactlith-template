@@ -5,15 +5,16 @@ import {
   Outlet,
   useHydrated,
   useRouteContext,
+  useRouter,
 } from "@tanstack/react-router";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useFormatter, useNow, useTranslations } from "use-intl";
 
-import { isLocale } from "@reactlith-template/utils/intl";
+import { isLocale, setLocale } from "@reactlith-template/intl/runtime";
+import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { localeToString, useSetLocale } from "~/lib/intl";
 import { useTRPC } from "~/lib/trpc";
 
 export const Route = createFileRoute("/_layout")({
@@ -45,19 +46,24 @@ function ThemeSwitcher() {
   );
 }
 
+const localeToString: Record<Locale, string> = {
+  en: "English",
+  uk: "Українська",
+};
+
 function LocaleSwitcher() {
-  const locale = useRouteContext({
-    from: "__root__",
-    select: (s) => s.intl.locale,
-  });
-  const setLocale = useSetLocale();
+  const router = useRouter();
+  const locale = useRouteContext({ from: "__root__", select: (s) => s.locale });
 
   return (
     <Select
       value={locale}
       onValueChange={(value) => {
         if (isLocale(value)) {
-          void setLocale(value);
+          void (async () => {
+            await setLocale(value);
+            await router.invalidate();
+          })();
         }
       }}
     >

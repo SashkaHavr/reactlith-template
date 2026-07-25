@@ -1,7 +1,7 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
-import { envNode } from "#node.ts";
+import { getEnvNode } from "./node";
 
 const nonemptyStringToArray = z
   .string()
@@ -24,18 +24,25 @@ const allowedHosts = z.union([
 
 const secret = z.string().nonempty();
 
-export const envAuth = createEnv({
-  server: {
-    BETTER_AUTH_ALLOWED_HOSTS:
-      envNode.NODE_ENV === "development"
-        ? allowedHosts.default(["localhost:*", "127.0.0.1:*"])
-        : allowedHosts,
-    BETTER_AUTH_SECRET: envNode.NODE_ENV === "development" ? secret.optional() : secret,
+let instance: ReturnType<typeof create> | undefined;
+function create() {
+  return createEnv({
+    server: {
+      BETTER_AUTH_ALLOWED_HOSTS:
+        getEnvNode().NODE_ENV === "development"
+          ? allowedHosts.default(["localhost:*", "127.0.0.1:*"])
+          : allowedHosts,
+      BETTER_AUTH_SECRET: getEnvNode().NODE_ENV === "development" ? secret.optional() : secret,
 
-    GOOGLE_CLIENT_ID: z.string().nonempty(),
-    GOOGLE_CLIENT_SECRET: z.string().nonempty(),
-    GOOGLE_EMULATE_URL: z.string().nonempty().optional(),
-  },
-  runtimeEnv: process.env,
-  emptyStringAsUndefined: true,
-});
+      GOOGLE_CLIENT_ID: z.string().nonempty(),
+      GOOGLE_CLIENT_SECRET: z.string().nonempty(),
+      GOOGLE_EMULATE_URL: z.string().nonempty().optional(),
+    },
+    runtimeEnv: process.env,
+    emptyStringAsUndefined: true,
+  });
+}
+
+export function getEnvAuth() {
+  return instance ?? (instance = create());
+}

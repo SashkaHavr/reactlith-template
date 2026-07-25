@@ -1,5 +1,5 @@
 import { environmentManager, QueryClient } from "@tanstack/react-query";
-import { createServerOnlyFn } from "@tanstack/react-start";
+import { createServerOnlyFn, getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
@@ -11,7 +11,7 @@ import type { TRPCRouter } from "@reactlith-template/trpc";
 import { baseAuthKey } from "./auth";
 
 const getLocalLink = createServerOnlyFn(() => {
-  return createLocalLink({ request: getRequest() });
+  return createLocalLink({ request: getRequest(), context: getGlobalStartContext()! });
 });
 
 export function createTRPCRouteContext() {

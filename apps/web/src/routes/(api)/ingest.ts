@@ -7,7 +7,7 @@ import { createUserAgentEnricher } from "evlog/enrichers";
 export const Route = createFileRoute("/(api)/ingest")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
+      ANY: async ({ request }) => {
         const logEvent = (await request.json()) as DrainContext["event"];
         const enrich = createUserAgentEnricher();
         const userAgent = getRequestHeader("user-agent") ?? "";

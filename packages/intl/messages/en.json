@@ -1,0 +1,28 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_addNumber": "Add number",
+  "example_authStatus": "Auth status",
+  "example_deleteAllNumbers": "Delete all numbers",
+  "example_timeNow": [
+    {
+      "declarations": [
+        "input date",
+        "local formattedDate = date: datetime dateStyle=long timeStyle=medium timeZone=UTC"
+      ],
+      "match": {
+        "date=*": "Time now: {formattedDate}."
+      }
+    }
+  ],
+  "example_signInWithGoogle": "Sign in with Google",
+  "example_logout": "Logout",
+  "example_apiHealthResponse": "API /health response",
+  "example_updateNumber": "Update number",
+  "example_user": "User",
+  "example_works": "Works!",
+  "example_serverRendered": "Server rendered",
+  "routeDefault_error": "Something went wrong",
+  "routeDefault_notFound": "Not Found",
+  "routeDefault_notFoundDescription": "The page you're looking for doesn't exist.",
+  "routeDefault_returnToHomePage": "Return to Home page"
+}

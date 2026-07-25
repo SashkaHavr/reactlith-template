@@ -13,6 +13,17 @@ jobs:
   run-check:
     uses: ./.github/workflows/check-reusable.yaml
     secrets: inherit
+  db-push:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun ci
+      - run: bun --filter @reactlith-template/db push
   build-and-push:
     runs-on: ubuntu-latest
     needs: run-check

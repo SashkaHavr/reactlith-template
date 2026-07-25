@@ -1,4 +1,0 @@
-{
-  "extends": "@reactlith-template/typescript-config",
-  "include": ["./src"]
-}

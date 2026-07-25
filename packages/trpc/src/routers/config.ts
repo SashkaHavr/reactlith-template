@@ -1,7 +1,7 @@
 import z from "zod";
 
-import { publicProcedure, router } from "#init.ts";
-import { envAuth } from "@reactlith-template/env/auth";
+import { publicProcedure, router } from "#/init";
+import { getEnvAuth } from "@reactlith-template/env";
 
 export const configRouter = router({
   general: publicProcedure
@@ -13,8 +13,8 @@ export const configRouter = router({
     .query(() => {
       return {
         auth: {
-          google: !!envAuth.GOOGLE_CLIENT_ID && !!envAuth.GOOGLE_CLIENT_SECRET,
-          googleEmulate: !!envAuth.GOOGLE_EMULATE_URL,
+          google: !!getEnvAuth().GOOGLE_CLIENT_ID && !!getEnvAuth().GOOGLE_CLIENT_SECRET,
+          googleEmulate: !!getEnvAuth().GOOGLE_EMULATE_URL,
         },
       };
     }),

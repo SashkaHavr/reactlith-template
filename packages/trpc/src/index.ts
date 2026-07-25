@@ -7,10 +7,11 @@ import { sql } from "drizzle-orm";
 import superjson from "superjson";
 import z from "zod";
 
-import { createContext } from "#context.ts";
-import { createCallerFactory, publicProcedure, router } from "#init.ts";
-import { configRouter } from "#routers/config.ts";
-import { numbersRouter } from "#routers/numbers.ts";
+import { createContext } from "#/context";
+import type { ContextParam } from "#/context";
+import { createCallerFactory, publicProcedure, router } from "#/init";
+import { configRouter } from "#/routers/config";
+import { numbersRouter } from "#/routers/numbers";
 const appRouter = router({
   health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
     const res = await Result.tryPromise(async () => await ctx.db.execute(sql`select 1`));
@@ -27,27 +28,26 @@ const appRouter = router({
   numbers: numbersRouter,
 });
 
-export async function trpcHandler({ request }: { request: Request }) {
+export async function trpcHandler(context: ContextParam) {
   return await fetchRequestHandler({
-    req: request,
+    req: context.request,
     router: appRouter,
     endpoint: "/trpc",
-    createContext: (opts) => createContext({ request: opts.req }),
+    createContext: (opts) => createContext({ request: opts.req, context: context.context }),
   });
 }
 
 const trpcCallerFactory = createCallerFactory(appRouter);
-export function createTrpcCaller({ request }: { request: Request }) {
-  return trpcCallerFactory(createContext({ request }));
+export function createTrpcCaller(context: ContextParam) {
+  return trpcCallerFactory(createContext(context));
 }
 
-export function createLocalLink({ request }: { request: Request }) {
+export function createLocalLink(context: ContextParam) {
   return unstable_localLink({
     router: appRouter,
     // oxlint-disable-next-line require-await
     createContext: async () => {
-      // Create your context here
-      return createContext({ request });
+      return createContext(context);
     },
     transformer: superjson,
   });

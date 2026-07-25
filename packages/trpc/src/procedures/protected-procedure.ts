@@ -1,7 +1,8 @@
 import { TRPCError } from "@trpc/server";
 
-import { publicProcedure } from "#init.ts";
-import { identifyUser } from "@reactlith-template/utils/logger";
+import { publicProcedure } from "#/init";
+import type { IdBranded } from "@reactlith-template/db/id-branded";
+import { identifyUser } from "@reactlith-template/utils/log";
 
 export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const session = await ctx.auth.getSession({
@@ -19,7 +20,7 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   return await next({
     ctx: {
       session: session,
-      userId: session.user.id,
+      userId: session.user.id as IdBranded<"user">,
     },
   });
 });

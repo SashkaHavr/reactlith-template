@@ -2,17 +2,24 @@
   "name": "Dev Container",
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/home/vscode/reactlith-template",
   "postCreateCommand": "bun install",
-  "remoteUser": "node",
+  "postStartCommand": {
+    "opencode": "nohup bash -c 'opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 &' >/dev/null",
+    "effect-clone": "if [ -d ./references/effect/.git ]; then git -C ./references/effect pull; else mkdir -p ./references && git clone https://github.com/Effect-TS/effect.git ./references/effect; fi"
+  },
+  "remoteUser": "vscode",
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
-        "lokalise.i18n-ally",
+        "/extensions/proxy-links/proxy-links.vsix",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
         "oxc.oxc-vscode",
-        "-dbaeumer.vscode-eslint"
+        "inlang.vs-code-extension"
       ]
     }
   }

@@ -1,4 +1,4 @@
 {
-  "extends": "@reactlith-template/typescript-config",
+  "extends": "@reactlith-template/typescript-config/bun",
   "include": ["./src", "./test", "drizzle.config.ts"]
 }

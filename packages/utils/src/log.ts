@@ -1,15 +1,8 @@
-import type { RequestLogger } from "evlog";
+import type { AuditableLogger } from "evlog";
 import { identifyUser as identifyUserBase } from "evlog/better-auth";
 
-export function getLogger(request: Request | undefined) {
-  if (
-    request !== undefined &&
-    "context" in request &&
-    request.context instanceof Object &&
-    "log" in request.context
-  ) {
-    return request.context.log as RequestLogger;
-  }
+export function getRequestLogger(request: Request | undefined) {
+  return (request as any)?.context?.log as LogType;
 }
 
 export function identifyUser(
@@ -20,3 +13,5 @@ export function identifyUser(
     identifyUserBase(log, session, { session: false, fields: ["email", "role"] });
   }
 }
+
+export type LogType = AuditableLogger;

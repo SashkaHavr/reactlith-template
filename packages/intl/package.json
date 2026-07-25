@@ -1,0 +1,18 @@
+{
+  "name": "@reactlith-template/intl",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.js"
+  },
+  "scripts": {
+    "dev": "bunx --no-install vite build --watch",
+    "build": "bunx --no-install vite build"
+  },
+  "devDependencies": {
+    "@inlang/paraglide-js": "catalog:",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

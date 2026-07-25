@@ -1,8 +1,8 @@
 {
   "recommendations": [
-    "lokalise.i18n-ally",
     "ms-azuretools.vscode-containers",
     "bradlc.vscode-tailwindcss",
-    "oxc.oxc-vscode"
+    "oxc.oxc-vscode",
+    "inlang.vs-code-extension"
   ]
 }

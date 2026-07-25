@@ -1,7 +1,7 @@
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useTranslations } from "use-intl";
 
+import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
 import { authClient, useResetAuth } from "~/lib/auth";
@@ -18,7 +18,6 @@ export const Route = createFileRoute("/_layout/")({
 
 function RouteComponent() {
   const trpc = useTRPC();
-  const t = useTranslations("index");
 
   const authConfig = useSuspenseQuery(trpc.config.general.queryOptions()).data.auth;
   const resetAuth = useResetAuth();
@@ -44,7 +43,7 @@ function RouteComponent() {
       {authConfig.google && (
         <Button variant="outline" className="w-full" onClick={() => signInWithGoogle.mutate()}>
           <GoogleIcon />
-          <span>{t("sign-in-with-google")}</span>
+          <span>{m.example_signInWithGoogle()}</span>
         </Button>
       )}
     </div>
