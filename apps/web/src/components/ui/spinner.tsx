@@ -1,7 +1,7 @@
 import { Loader2Icon } from "lucide-react";
 import type React from "react";
 
-import { cn } from "@reactlith-template/utils/cn";
+import { cn } from "~/lib/utils";
 
 export function Spinner({
   className,

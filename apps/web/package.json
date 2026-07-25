@@ -48,7 +48,6 @@
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
     "typescript": "catalog:",
-    "use-intl": "catalog:",
     "vite": "catalog:",
     "zod": "catalog:"
   }

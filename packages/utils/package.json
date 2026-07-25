@@ -18,7 +18,6 @@
     "@types/react": "catalog:",
     "evlog": "catalog:",
     "react": "catalog:",
-    "typescript": "catalog:",
-    "use-intl": "catalog:"
+    "typescript": "catalog:"
   }
 }

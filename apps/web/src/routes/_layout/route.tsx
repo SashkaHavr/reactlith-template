@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
-  ClientOnly,
   createFileRoute,
   Outlet,
   useHydrated,
@@ -8,8 +7,9 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { useFormatter, useNow, useTranslations } from "use-intl";
+import { useEffect, useState } from "react";
 
+import { m } from "@reactlith-template/intl/messages";
 import { isLocale, setLocale } from "@reactlith-template/intl/runtime";
 import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "@reactlith-template/utils/theme/index";
@@ -83,28 +83,27 @@ function LocaleSwitcher() {
 
 function RouteComponent() {
   const trpc = useTRPC();
-  const t = useTranslations("index");
-  const format = useFormatter();
-
   const trpcHealth = useSuspenseQuery(trpc.health.queryOptions());
-
-  const now = useNow({ updateInterval: 1000 });
+  const hydrated = useHydrated();
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
       <div className="flex w-100 flex-col items-center">
         <div className="flex w-fit flex-col gap-4">
           <div className="flex gap-3">
-            <p className="self-center font-heading text-xl">{t("works")}</p>
+            <p className="self-center font-heading text-xl">{m.example_works()}</p>
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
           <p className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
-            {t("trpc-health-response")}
+            {m.example_apiHealthResponse()}
           </p>
-          <p>
-            {t("time-now")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
-          </p>
+          <p>{hydrated ? m.example_timeNow({ date: now }) : m.example_serverRendered()}</p>
         </div>
       </div>
       <Outlet />

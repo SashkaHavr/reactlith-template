@@ -8,12 +8,12 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { cn } from "@reactlith-template/utils/cn";
 import { getServerLog, identifyUser } from "@reactlith-template/utils/log";
 import { seo } from "@reactlith-template/utils/seo";
 import { ThemeScript, ThemeProvider, getTheme } from "@reactlith-template/utils/theme/index";
 import { getSessionQueryOptions } from "~/lib/auth";
 import type { TRPCRouteContext } from "~/lib/trpc";
+import { cn } from "~/lib/utils";
 
 import indexCss from "../index.css?url";
 
