@@ -1,7 +1,7 @@
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-import { baseTable } from "#/utils/base-table";
-import { oneToManyCascadeOnDelete } from "#/utils/foreign-keys";
+import { baseTable } from "../utils/base-table";
+import { oneToManyCascadeOnDelete } from "../utils/foreign-keys";
 
 export const user = pgTable(
   "user",

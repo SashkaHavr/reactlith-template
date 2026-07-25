@@ -2,16 +2,13 @@
   "name": "@reactlith-template/db",
   "private": true,
   "type": "module",
-  "imports": {
-    "#/*": "./src/*.ts"
-  },
   "exports": {
     ".": "./src/index.ts",
     "./id-branded": "./src/utils/id-branded.ts"
   },
   "scripts": {
-    "push": "bunx --no-install drizzle-kit push",
-    "studio": "bunx --no-install drizzle-kit studio --host 0.0.0.0"
+    "push": "bunx --no-install --bun drizzle-kit push",
+    "studio": "bunx --no-install --bun drizzle-kit studio --host 0.0.0.0"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.4",

@@ -59,7 +59,7 @@
     "lint:fix": "bunx --no-install oxlint --fix",
     "check": " bunx --no-install oxlint && bunx --no-install oxfmt --check",
     "fix": "bunx --no-install oxlint --fix && bunx --no-install oxfmt",
-    "compose": "docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build -d",
+    "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d",
     "deps": "bun update --interactive --recursive",
     "dev": "bun run --filter '*' dev"
   },
