@@ -8,8 +8,6 @@ import superjson from "superjson";
 import { createLocalLink } from "@reactlith-template/trpc";
 import type { TRPCRouter } from "@reactlith-template/trpc";
 
-import { baseAuthKey } from "./auth";
-
 const getLocalLink = createServerOnlyFn(() => {
   return createLocalLink({ request: getRequest(), context: getGlobalStartContext()! });
 });
@@ -22,14 +20,6 @@ export function createTRPCRouteContext() {
       queries: {
         // Do not refetch preloaded data on mount (30 seconds stale time)
         staleTime: 30000,
-      },
-      mutations: {
-        onSettled: async (data, error, variables, onMutateResult, context) => {
-          // Invalidate all queries except auth-related by default after mutations
-          await context.client.invalidateQueries({
-            predicate: (query) => query.queryKey.length > 0 && query.queryKey[0] !== baseAuthKey,
-          });
-        },
       },
     },
   });
