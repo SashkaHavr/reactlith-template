@@ -18,14 +18,15 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   }
 
   identifyUser(ctx.log, session);
+  const userId = session.user.id as IdBranded<"user">;
 
   return await callInUserContext(
-    session.user,
+    { session, userId },
     async () =>
       await next({
         ctx: {
-          session: session,
-          userId: session.user.id as IdBranded<"user">,
+          session,
+          userId,
         },
       }),
   );
