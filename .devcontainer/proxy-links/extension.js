@@ -4,16 +4,26 @@ const vscode = require("vscode");
 
 const localhostUrlPattern =
   /https?:\/\/(?:localhost|127\.0\.0\.1|0\.0\.0\.0):(\d+)(?:\/[^\s\])>'"]*)?/g;
+const drizzleStudioUrlPattern = /https:\/\/local\.drizzle\.studio\?host=0\.0\.0\.0/g;
+const drizzleStudioForwardedUrl =
+  "https://local.drizzle.studio/?port=80&host=db.reactlith-template.localhost";
 
 function activate(context) {
   context.subscriptions.push(
     vscode.window.registerTerminalLinkProvider({
       provideTerminalLinks(context) {
         const mappings = getComposeMappings();
-        if (mappings.size === 0) return [];
-
         const links = [];
         const line = context.line;
+
+        for (const match of line.matchAll(drizzleStudioUrlPattern)) {
+          links.push({
+            startIndex: match.index,
+            length: match[0].length,
+            tooltip: `Open ${drizzleStudioForwardedUrl}`,
+            forwardedUrl: drizzleStudioForwardedUrl,
+          });
+        }
 
         for (const match of line.matchAll(localhostUrlPattern)) {
           const port = match[1];
