@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/bun-sql";
 
 import { getEnvDB } from "@reactlith-template/env";
@@ -12,4 +13,9 @@ export function createDB() {
 }
 
 export type DBType = ReturnType<typeof createDB>;
+
+export async function checkDbReady(db: DBType) {
+  await db.execute(sql`select 1`);
+}
+
 export { relations, schema };

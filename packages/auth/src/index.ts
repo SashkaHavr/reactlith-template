@@ -21,6 +21,8 @@ export function createAuth(db: DBType) {
         // 5 minutes
         maxAge: 5 * 60,
       },
+      // 1 year
+      expiresIn: 60 * 60 * 24 * 365,
     },
     database: drizzleAdapter(db, {
       provider: "pg",

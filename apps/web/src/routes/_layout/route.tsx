@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
   Outlet,
@@ -6,7 +6,9 @@ import {
   useRouteContext,
   useRouter,
 } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { MoonIcon, SunIcon } from "lucide-react";
+import { fetch } from "nitro";
 import { useEffect, useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
@@ -15,12 +17,24 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { useTRPC } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
 
+const checkHealth = createServerFn().handler(async () => await fetch("/health/ready"));
+
+const healthQueryOptions = queryOptions({
+  queryKey: ["health", "ready"],
+  queryFn: async () => {
+    const response = await checkHealth();
+    if (!response.ok) {
+      throw new Error("API is not ready");
+    }
+    return null;
+  },
+});
+
 export const Route = createFileRoute("/_layout")({
-  loader: async ({ context: { trpc, queryClient } }) => {
-    await queryClient.ensureQueryData(trpc.health.queryOptions());
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(healthQueryOptions);
   },
   component: RouteComponent,
 });
@@ -83,8 +97,7 @@ function LocaleSwitcher() {
 }
 
 function RouteComponent() {
-  const trpc = useTRPC();
-  const trpcHealth = useSuspenseQuery(trpc.health.queryOptions());
+  const health = useSuspenseQuery(healthQueryOptions);
   const hydrated = useHydrated();
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -101,7 +114,7 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className={cn(trpcHealth.isSuccess ? "text-green-500" : "text-red-500", "font-mono")}>
+          <p className={cn(health.isSuccess ? "text-green-500" : "text-red-500", "font-mono")}>
             {m.example_apiHealthResponse()}
           </p>
           <p>{hydrated ? m.example_timeNow({ date: now }) : m.example_serverRendered()}</p>

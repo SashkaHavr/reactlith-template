@@ -20,7 +20,8 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends curl
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD [ "curl", "--fail", "--silent", "--show-error", "http://localhost:3000/health/live" ]
 
 ENV NODE_ENV=production
 

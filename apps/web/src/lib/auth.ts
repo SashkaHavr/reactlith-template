@@ -1,4 +1,9 @@
-import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  environmentManager,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import {
   createIsomorphicFn,
@@ -31,24 +36,24 @@ const getSession = createIsomorphicFn()
 
 export const baseAuthKey = "auth" as const;
 
+function toAuth(session: Awaited<ReturnType<typeof getSession>>) {
+  if (session === null) {
+    return {
+      loggedIn: false as const,
+    };
+  }
+  return {
+    loggedIn: true as const,
+    ...session,
+  };
+}
+
 export const getSessionQueryOptions = queryOptions({
   queryKey: [baseAuthKey, "getSession"] as const,
-  queryFn: async () => {
-    const session = await getSession();
-    if (session === null) {
-      return {
-        loggedIn: false as const,
-      };
-    }
-    return {
-      loggedIn: true as const,
-      ...session,
-    };
-  },
-  retry: 20,
-  retryDelay: 500,
-  gcTime: Infinity,
-  staleTime: Infinity,
+  queryFn: async () => toAuth(await getSession()),
+  retry: environmentManager.isServer() ? false : 1,
+  staleTime: 5 * 60 * 1000,
+  refetchOnWindowFocus: environmentManager.isServer() ? false : "always",
 });
 
 export function useAuth() {
@@ -68,8 +73,12 @@ export function useResetAuth() {
   const router = useRouter();
 
   return async () => {
-    await authClient.getSession({ query: { disableCookieCache: true } });
-    queryClient.clear();
+    const session = await authClient.getSession({ query: { disableCookieCache: true } });
+    const auth = toAuth(session);
+    queryClient.setQueryData(getSessionQueryOptions.queryKey, auth);
+    queryClient.removeQueries({
+      predicate: (query) => query.queryKey[0] !== baseAuthKey,
+    });
     await router.invalidate();
   };
 }

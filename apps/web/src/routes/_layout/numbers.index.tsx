@@ -116,6 +116,14 @@ function RouteComponent() {
         <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
           {m.example_deleteAllNumbers()}
         </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            throw new Error("Intentional test error");
+          }}
+        >
+          {m.example_throwError()}
+        </Button>
       </div>
       <div className="flex flex-col gap-2">
         {numbers.data.numbers.map((number) => (

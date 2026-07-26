@@ -42,7 +42,7 @@ export function adminProcedure(permissions: Permissions) {
       body: { userId: ctx.userId, permissions: permissions },
     });
     if (!hasPermission.success) {
-      throw errors.FORBIDDEN;
+      throw errors.FORBIDDEN();
     }
 
     return await next();

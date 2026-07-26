@@ -6,7 +6,7 @@ import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { useTRPC } from "~/lib/trpc";
+import { parseTRPCError, useTRPC } from "~/lib/trpc";
 import { useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
@@ -19,8 +19,10 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     const numberId = params.numberId as IdBranded<"number">;
     try {
       await queryClient.ensureQueryData(trpc.numbers.getById.queryOptions({ id: numberId }));
-    } catch {
-      throw notFound();
+    } catch (e) {
+      if (parseTRPCError(e).code === "numbers.NOT_FOUND") {
+        throw notFound();
+      }
     }
     return { numberId };
   },

@@ -21,10 +21,11 @@ export default defineConfig({
         ],
       },
     ],
+    "typescript/only-throw-error": "off",
   },
   overrides: [
     {
-      files: ["src/components/ui/**", "src/utils/cookie.ts"],
+      files: ["src/components/ui/**"],
       rules: {
         "no-restricted-imports": "off",
       },

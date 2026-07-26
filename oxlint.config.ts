@@ -30,6 +30,7 @@ export default defineConfig({
     "no-var": "error",
     "no-process-env": "error",
     "no-shadow": "off",
+    "typescript/only-throw-error": "error",
 
     "typescript/no-misused-promises": "error",
     "typescript/consistent-type-imports": "error",

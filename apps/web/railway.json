@@ -4,6 +4,6 @@
     "dockerfilePath": "/apps/web/Dockerfile"
   },
   "deploy": {
-    "healthcheckPath": "/trpc/health"
+    "healthcheckPath": "/health/ready"
   }
 }

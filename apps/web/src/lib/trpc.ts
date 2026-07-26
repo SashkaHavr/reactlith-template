@@ -1,8 +1,15 @@
 import { environmentManager, QueryClient } from "@tanstack/react-query";
 import { createServerOnlyFn, getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
+import {
+  createTRPCClient,
+  httpBatchLink,
+  httpSubscriptionLink,
+  splitLink,
+  TRPCClientError,
+} from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
+import { parseError } from "evlog";
 import superjson from "superjson";
 
 import { createLocalLink } from "@reactlith-template/trpc";
@@ -50,3 +57,10 @@ export function createTRPCRouteContext() {
 
 export type TRPCRouteContext = ReturnType<typeof createTRPCRouteContext>;
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRouter>();
+type TRPCClientErrorInfered = TRPCClientError<TRPCRouter>;
+export function parseTRPCError(error: any) {
+  if (error instanceof TRPCClientError) {
+    return parseError((error as TRPCClientErrorInfered).data?.evlogError);
+  }
+  return parseError(undefined);
+}

@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
 import { getAppContext } from "#/async-context/app";
+import { getTransactionContext } from "#/async-context/transaction";
 import { getUserContext } from "#/async-context/user";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
@@ -10,8 +11,9 @@ import { numberErrors } from "./errors";
 function getDependencies() {
   const { db } = getAppContext();
   const { userId } = getUserContext();
+  const txContext = getTransactionContext();
 
-  return { db, userId };
+  return { db: txContext ? txContext.tx : db, userId };
 }
 
 async function getAll() {
