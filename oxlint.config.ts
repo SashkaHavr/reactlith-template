@@ -2,7 +2,7 @@ import { defineConfig } from "oxlint";
 
 export default defineConfig({
   $schema: "./node_modules/oxlint/configuration_schema.json",
-  ignorePatterns: ["**/generated/**", "*.gen.ts"],
+  ignorePatterns: ["**/generated/**", "*.gen.ts", "*.js"],
   plugins: [
     "eslint",
     "typescript",
@@ -12,7 +12,7 @@ export default defineConfig({
     "jsdoc",
     "node",
     "promise",
-    "jest",
+    "vitest",
     "react",
     "jsx-a11y",
   ],

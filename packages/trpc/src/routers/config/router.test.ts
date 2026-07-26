@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Context } from "#/context";
+import type { getEnvAuth } from "@reactlith-template/env";
 
-const getEnvAuth = vi.hoisted(() => vi.fn());
+const getEnvAuthMock = vi.hoisted(() => vi.fn<typeof getEnvAuth>());
 
-vi.mock("@reactlith-template/env", () => ({ getEnvAuth }));
+vi.mock("@reactlith-template/env", () => ({ getEnvAuth: getEnvAuthMock }));
 
 import { configRouter } from "./router";
 
@@ -20,7 +21,8 @@ beforeEach(() => {
 
 describe("configRouter", () => {
   it("reports enabled authentication providers", async () => {
-    getEnvAuth.mockReturnValue({
+    getEnvAuthMock.mockReturnValue({
+      BETTER_AUTH_ALLOWED_HOSTS: [],
       GOOGLE_CLIENT_ID: "client-id",
       GOOGLE_CLIENT_SECRET: "client-secret",
       GOOGLE_EMULATE_URL: "http://localhost:8080",
@@ -32,7 +34,8 @@ describe("configRouter", () => {
   });
 
   it("reports disabled authentication providers", async () => {
-    getEnvAuth.mockReturnValue({
+    getEnvAuthMock.mockReturnValue({
+      BETTER_AUTH_ALLOWED_HOSTS: [],
       GOOGLE_CLIENT_ID: "",
       GOOGLE_CLIENT_SECRET: "",
       GOOGLE_EMULATE_URL: undefined,
