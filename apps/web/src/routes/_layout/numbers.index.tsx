@@ -6,13 +6,15 @@ import z from "zod";
 
 import { m } from "@reactlith-template/intl/messages";
 import { numberInput } from "@reactlith-template/trpc/schema/numbers";
-import { FormForm } from "~/components/form/form";
-import { FormField } from "~/components/form/form-field";
-import { FormFieldError } from "~/components/form/form-field-error";
-import { FormFieldLabel } from "~/components/form/form-field-label";
-import { FormInput } from "~/components/form/form-input";
-import { FormSubmitButton } from "~/components/form/form-submit-button";
-import { useAppForm } from "~/components/form/use-app-form";
+import {
+  FormField,
+  FormFieldError,
+  FormFieldLabel,
+  FormForm,
+  FormInput,
+  FormSubmitButton,
+  useAppForm,
+} from "~/components/form";
 import { Button, LinkButton } from "~/components/ui/button";
 import {
   Dialog,
