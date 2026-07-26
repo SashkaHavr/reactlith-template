@@ -4,7 +4,8 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./id-branded": "./src/utils/id-branded.ts"
+    "./id-branded": "./src/utils/id-branded.ts",
+    "./test-db": "./src/test-db.ts"
   },
   "scripts": {
     "push": "bunx --no-install --bun drizzle-kit push",
