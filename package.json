@@ -39,14 +39,12 @@
       "@tanstack/react-router": "1.170.18",
       "@tanstack/react-router-ssr-query": "1.167.1",
       "@tanstack/react-start": "1.168.32",
-      "@tanstack/router-plugin": "1.168.23",
       "@vitejs/plugin-react": "6.0.4",
       "@types/babel__core": "7.20.5",
       "vite": "8.1.5",
       "@rolldown/plugin-babel": "0.2.3",
       "nitro": "3.0.260610-beta",
-      "@inlang/paraglide-js": "2.22.0",
-      "unctx": "3.0.0"
+      "@inlang/paraglide-js": "2.22.0"
     }
   },
   "type": "module",

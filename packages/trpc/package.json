@@ -17,16 +17,13 @@
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
-    "@tanstack/react-start": "catalog:",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "@types/bun": "catalog:",
-    "better-result": "catalog:",
     "drizzle-orm": "catalog:",
     "evlog": "catalog:",
     "superjson": "catalog:",
     "typescript": "catalog:",
-    "unctx": "catalog:",
     "zod": "catalog:"
   }
 }

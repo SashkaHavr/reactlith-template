@@ -16,7 +16,6 @@
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
-    "better-result": "catalog:",
     "drizzle-kit": "catalog:",
     "drizzle-orm": "catalog:",
     "drizzle-seed": "catalog:",

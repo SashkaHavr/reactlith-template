@@ -1,13 +1,17 @@
-import { createContext } from "unctx";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 import type { createContext as createTrpcContext } from "#/context";
 
-const ctx = createContext<{
+type TransactionContext = {
   tx: Parameters<Parameters<ReturnType<typeof createTrpcContext>["db"]["transaction"]>[0]>[0];
-}>({ asyncContext: true });
+};
+
+const storage = new AsyncLocalStorage<TransactionContext>();
 
 export function getTransactionContext() {
-  return ctx.tryUse();
+  return storage.getStore();
 }
 
-export const callInTransactionContext = ctx.callAsync;
+export function callInTransactionContext<T>(context: TransactionContext, callback: () => T) {
+  return storage.run(context, callback);
+}

@@ -10,9 +10,7 @@ vi.mock("@reactlith-template/env", () => ({ getEnvAuth: getEnvAuthMock }));
 import { configRouter } from "./router";
 
 function createCaller() {
-  return configRouter.createCaller({
-    request: new Request("http://localhost/trpc"),
-  } as Context);
+  return configRouter.createCaller({} as Context);
 }
 
 beforeEach(() => {

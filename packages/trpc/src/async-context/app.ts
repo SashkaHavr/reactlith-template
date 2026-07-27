@@ -1,11 +1,19 @@
-import { createContext } from "unctx";
+import { AsyncLocalStorage } from "node:async_hooks";
 
 import type { createContext as createTrpcContext } from "#/context";
 
-const ctx = createContext<ReturnType<typeof createTrpcContext>>({ asyncContext: true });
+type AppContext = ReturnType<typeof createTrpcContext>;
+
+const storage = new AsyncLocalStorage<AppContext>();
 
 export function getAppContext() {
-  return ctx.use();
+  const context = storage.getStore();
+  if (!context) {
+    throw new Error("App context is not available");
+  }
+  return context;
 }
 
-export const callInAppContext = ctx.callAsync;
+export function callInAppContext<T>(context: AppContext, callback: () => T) {
+  return storage.run(context, callback);
+}

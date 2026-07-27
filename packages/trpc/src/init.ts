@@ -1,11 +1,11 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
+import { getStatusKeyFromCode } from "@trpc/server/unstable-core-do-not-import";
 import { EvlogError } from "evlog";
 import superjson from "superjson";
 import z, { ZodError } from "zod";
 
 import { callInAppContext } from "./async-context/app";
 import type { Context } from "./context";
-import { TRPCEvlogError } from "./error";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -39,7 +39,11 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
     const evlogError = result.error.cause;
     if (evlogError instanceof EvlogError) {
       ctx.log?.error(evlogError);
-      throw new TRPCEvlogError(evlogError);
+      throw new TRPCError({
+        code: getStatusKeyFromCode(evlogError.status),
+        message: evlogError.message,
+        cause: evlogError,
+      });
     }
     ctx.log?.error(result.error);
   }

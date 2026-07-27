@@ -16,7 +16,6 @@
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@reactlith-template/utils": "workspace:*",
     "@types/bun": "catalog:",
     "better-auth": "catalog:",
     "typescript": "catalog:"

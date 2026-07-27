@@ -37,7 +37,7 @@ function createCaller({ authenticated = true } = {}) {
   const caller = numbersRouter.createCaller({
     auth: { getSession },
     db: { transaction },
-    request: new Request("http://localhost/trpc"),
+    request: { headers: {} },
   } as unknown as Context);
 
   return { caller, getSession, transaction };
