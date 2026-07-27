@@ -10,9 +10,9 @@
       "@t3-oss/env-core": "0.13.11",
       "@tanstack/react-form": "1.33.2",
       "@types/bun": "1.3.14",
-      "better-auth": "1.6.24",
+      "better-auth": "1.6.25",
       "better-result": "2.10.0",
-      "lucide-react": "1.25.0",
+      "lucide-react": "1.26.0",
       "superjson": "2.2.6",
       "typescript": "7.0.2",
       "uuid": "14.0.1",
@@ -67,8 +67,8 @@
     "oxfmt": "0.60.0",
     "oxlint": "1.75.0",
     "oxlint-tsgolint": "7.0.2001",
-    "turbo": "^2",
-    "vitest": "^4"
+    "turbo": "2.10.6",
+    "vitest": "^4.1.10"
   },
   "packageManager": "bun@1.3.14"
 }
