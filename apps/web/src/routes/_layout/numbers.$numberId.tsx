@@ -56,7 +56,7 @@ function RouteComponent() {
       <div className="flex flex-wrap justify-center gap-3">
         <LinkButton to="/numbers" variant="outline">
           <ArrowLeftIcon />
-          Back to numbers
+          {m.example_backToNumbers()}
         </LinkButton>
         <Button
           variant="outline"

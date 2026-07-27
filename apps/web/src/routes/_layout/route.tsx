@@ -12,7 +12,7 @@ import { fetch } from "nitro";
 import { useEffect, useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
-import { isLocale, setLocale } from "@reactlith-template/intl/runtime";
+import { isLocale, localizeUrl, setLocale } from "@reactlith-template/intl/runtime";
 import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
@@ -77,7 +77,11 @@ function LocaleSwitcher() {
         if (isLocale(value)) {
           void (async () => {
             await setLocale(value, { reload: false });
-            await router.invalidate();
+            const url = localizeUrl(window.location.href, { locale: value });
+            router.history.replace(
+              `${url.pathname}${url.search}${url.hash}`,
+              router.history.location.state,
+            );
           })();
         }
       }}

@@ -1,6 +1,7 @@
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
+import { deLocalizeUrl, localizeUrl } from "@reactlith-template/intl/runtime";
 import { setupClientLog } from "~/utils/log";
 
 import { ErrorComponent } from "./components/router-default/error-component";
@@ -23,6 +24,10 @@ export function getRouter() {
     defaultPendingComponent: PendingComponent,
     defaultNotFoundComponent: NotFoundComponent,
     defaultErrorComponent: ErrorComponent,
+    rewrite: {
+      input: ({ url }) => deLocalizeUrl(url),
+      output: ({ url }) => localizeUrl(url),
+    },
     Wrap: (props) => {
       return (
         <TRPCProvider

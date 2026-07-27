@@ -8,7 +8,7 @@ export default defineConfig({
       outdir: "./src",
       outputStructure: "locale-modules",
       cookieName: "locale",
-      strategy: ["cookie", "preferredLanguage", "baseLocale"],
+      strategy: ["cookie", "preferredLanguage", "url", "baseLocale"],
     }),
   ],
 });
