@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug apps/web in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://web.reactlith-template.localhost",
+      "webRoot": "${workspaceFolder}/apps/web"
+    }
+  ]
+}
