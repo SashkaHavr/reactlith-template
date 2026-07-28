@@ -11,7 +11,9 @@ export const Route = createFileRoute("/(api)/ingest")({
       POST: async ({ request }) => {
         const logEvent = (await request.json()) as DrainContext["event"];
         enrich({ event: logEvent, headers: request.headers.toJSON() });
-        simpleLog.info(logEvent);
+        if (logEvent.level === "error") {
+          simpleLog.error(logEvent);
+        }
         return new Response(undefined, {
           status: 204,
         });
