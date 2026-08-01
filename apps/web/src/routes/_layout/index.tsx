@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_layout/")({
 function RouteComponent() {
   const trpc = useTRPC();
 
-  const authConfig = useSuspenseQuery(trpc.config.general.queryOptions()).data.auth;
+  const authConfig = useSuspenseQuery(trpc.config.auth.queryOptions()).data;
   const resetAuth = useResetAuth();
 
   const signInWithGoogle = useMutation({

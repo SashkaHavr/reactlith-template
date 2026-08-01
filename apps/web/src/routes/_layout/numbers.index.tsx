@@ -5,7 +5,7 @@ import { useState } from "react";
 import z from "zod";
 
 import { m } from "@reactlith-template/intl/messages";
-import { numberInput } from "@reactlith-template/trpc/schema/numbers";
+import { addNewInput } from "@reactlith-template/trpc/schema/numbers";
 import {
   FormField,
   FormFieldError,
@@ -48,8 +48,8 @@ export const Route = createFileRoute("/_layout/numbers/")({
 });
 
 const generateNumber = () => Math.floor(Math.random() * 100);
-const customNumberInput = numberInput.extend({
-  number: z.string().min(1).transform(Number).pipe(numberInput.shape.number),
+const customNumberInput = addNewInput.extend({
+  number: z.string().min(1).transform(Number).pipe(addNewInput.shape.number),
 });
 
 function RouteComponent() {

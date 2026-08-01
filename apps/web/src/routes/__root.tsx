@@ -24,7 +24,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
     const locale = getLocale();
     const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(trpc.config.general.queryOptions()),
+      queryClient.ensureQueryData(trpc.config.auth.queryOptions()),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 

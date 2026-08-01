@@ -1,30 +1,36 @@
-import z from "zod";
-
 import { callInTransactionContext } from "#/async-context/transaction";
 import { router } from "#/init";
 import { protectedProcedure } from "#/procedures/protected-procedure";
 import { userRepo } from "#/routers/users/repo";
-import { idBranded } from "@reactlith-template/db/id-branded";
 
 import { numberErrors } from "./errors";
 import { numberRepo } from "./repo";
-import { numberInput, numberOutput, numberUpdateInput } from "./schema";
+import {
+  addNewInput,
+  addNewOutput,
+  deleteAllOutput,
+  deleteInput,
+  deleteOutput,
+  getAllOutput,
+  getByIdInput,
+  getByIdOutput,
+  updateInput,
+  updateOutput,
+} from "./schema";
 
 export const numbersRouter = router({
-  getAll: protectedProcedure
-    .output(z.object({ numbers: z.array(numberOutput) }))
-    .query(async () => {
-      return { numbers: await numberRepo.getAll() };
-    }),
+  getAll: protectedProcedure.output(getAllOutput).query(async () => {
+    return { numbers: await numberRepo.getAll() };
+  }),
   getById: protectedProcedure
-    .input(z.object({ id: idBranded("number") }))
-    .output(numberOutput)
+    .input(getByIdInput)
+    .output(getByIdOutput)
     .query(async ({ input }) => {
       return await numberRepo.getById(input.id);
     }),
   addNew: protectedProcedure
-    .input(numberInput)
-    .output(numberOutput)
+    .input(addNewInput)
+    .output(addNewOutput)
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.transaction(async (tx) => {
         return await callInTransactionContext({ tx }, async () => {
@@ -39,23 +45,18 @@ export const numbersRouter = router({
       });
     }),
   update: protectedProcedure
-    .input(
-      z.object({
-        id: idBranded("number"),
-        data: numberUpdateInput,
-      }),
-    )
-    .output(numberOutput)
+    .input(updateInput)
+    .output(updateOutput)
     .mutation(async ({ input }) => {
       return await numberRepo.update(input.id, input.data);
     }),
   delete: protectedProcedure
-    .input(z.object({ id: idBranded("number") }))
-    .output(z.object({ id: idBranded("number") }))
+    .input(deleteInput)
+    .output(deleteOutput)
     .mutation(async ({ input }) => {
       return await numberRepo.deleteById(input.id);
     }),
-  deleteAll: protectedProcedure.output(z.undefined()).mutation(async () => {
+  deleteAll: protectedProcedure.output(deleteAllOutput).mutation(async () => {
     await numberRepo.deleteAll();
   }),
 });

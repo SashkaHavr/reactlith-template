@@ -26,9 +26,7 @@ describe("configRouter", () => {
       GOOGLE_EMULATE_URL: "http://localhost:8080",
     });
 
-    await expect(createCaller().general()).resolves.toEqual({
-      auth: { google: true, googleEmulate: true },
-    });
+    await expect(createCaller().auth()).resolves.toEqual({ google: true, googleEmulate: true });
   });
 
   it("reports disabled authentication providers", async () => {
@@ -39,8 +37,6 @@ describe("configRouter", () => {
       GOOGLE_EMULATE_URL: undefined,
     });
 
-    await expect(createCaller().general()).resolves.toEqual({
-      auth: { google: false, googleEmulate: false },
-    });
+    await expect(createCaller().auth()).resolves.toEqual({ google: false, googleEmulate: false });
   });
 });
