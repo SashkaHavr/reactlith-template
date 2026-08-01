@@ -12,30 +12,35 @@ const testContext = setupRepoTest();
 
 describe("userRepo", () => {
   it("requires a transaction", async () => {
-    await expect(
-      testContext.inUserContext(testContext.userId, userRepo.getUserLock),
-    ).rejects.toThrow("getUserLock must be called within a transaction");
+    const { userId } = testContext;
+
+    const result = testContext.inUserContext(userId, userRepo.getUserLock);
+
+    await expect(result).rejects.toThrow("getUserLock must be called within a transaction");
   });
 
   it("locks and returns the current user", async () => {
-    await expect(
-      testContext.db.transaction(async (tx) =>
-        testContext.inUserContext(testContext.userId, async () =>
-          callInTransactionContext({ tx } as unknown as TransactionContext, userRepo.getUserLock),
-        ),
+    const { userId } = testContext;
+
+    const result = await testContext.db.transaction(async (tx) =>
+      testContext.inUserContext(userId, async () =>
+        callInTransactionContext({ tx } as unknown as TransactionContext, userRepo.getUserLock),
       ),
-    ).resolves.toEqual({ id: testContext.userId });
+    );
+
+    expect(result).toEqual({ id: userId });
   });
 
   it("rejects a missing current user", async () => {
+    const { userId } = testContext;
     await testContext.db.delete(schema.user);
 
-    await expect(
-      testContext.db.transaction(async (tx) =>
-        testContext.inUserContext(testContext.userId, async () =>
-          callInTransactionContext({ tx } as unknown as TransactionContext, userRepo.getUserLock),
-        ),
+    const result = testContext.db.transaction(async (tx) =>
+      testContext.inUserContext(userId, async () =>
+        callInTransactionContext({ tx } as unknown as TransactionContext, userRepo.getUserLock),
       ),
-    ).rejects.toThrow("User not found");
+    );
+
+    await expect(result).rejects.toThrow("User not found");
   });
 });

@@ -61,23 +61,29 @@ describe("numbersRouter", () => {
   it("requires authentication", async () => {
     const { caller } = createCaller({ authenticated: false });
 
-    await expect(caller.getAll()).rejects.toThrow("You must authenticate to use this endpoint");
+    const result = caller.getAll();
+
+    await expect(result).rejects.toThrow("You must authenticate to use this endpoint");
     expect(numberRepoMock.getAll).not.toHaveBeenCalled();
   });
 
   it("gets all numbers from the repository", async () => {
     numberRepoMock.getAll.mockResolvedValue([number]);
+    const { caller } = createCaller();
 
-    await expect(createCaller().caller.getAll()).resolves.toEqual({ numbers: [number] });
+    const result = await caller.getAll();
+
+    expect(result).toEqual({ numbers: [number] });
     expect(numberRepoMock.getAll).toHaveBeenCalledOnce();
   });
 
   it("gets a number by id", async () => {
     numberRepoMock.getById.mockResolvedValue(numberFull);
+    const { caller } = createCaller();
 
-    await expect(createCaller().caller.getById({ id: numberId })).resolves.toEqual(
-      numberFullOutput,
-    );
+    const result = await caller.getById({ id: numberId });
+
+    expect(result).toEqual(numberFullOutput);
     expect(numberRepoMock.getById).toHaveBeenCalledWith(numberId);
   });
 
@@ -86,7 +92,9 @@ describe("numbersRouter", () => {
     numberRepoMock.addNew.mockResolvedValue(number);
     const { caller, transaction } = createCaller();
 
-    await expect(caller.addNew({ number: 42 })).resolves.toEqual(number);
+    const result = await caller.addNew({ number: 42 });
+
+    expect(result).toEqual(number);
     expect(transaction).toHaveBeenCalledOnce();
     expect(userRepoMock.getUserLock).toHaveBeenCalledOnce();
     expect(numberRepoMock.getCount).toHaveBeenCalledOnce();
@@ -95,34 +103,42 @@ describe("numbersRouter", () => {
 
   it("rejects adding more than ten numbers", async () => {
     numberRepoMock.getCount.mockResolvedValue(10);
+    const { caller } = createCaller();
 
-    await expect(createCaller().caller.addNew({ number: 42 })).rejects.toThrow(
-      "Max numbers count is 10",
-    );
+    const result = caller.addNew({ number: 42 });
+
+    await expect(result).rejects.toThrow("Max numbers count is 10");
     expect(userRepoMock.getUserLock).toHaveBeenCalledOnce();
     expect(numberRepoMock.addNew).not.toHaveBeenCalled();
   });
 
   it("updates a number", async () => {
     numberRepoMock.update.mockResolvedValue(numberFull);
+    const { caller } = createCaller();
 
-    await expect(
-      createCaller().caller.update({ id: numberId, data: { number: 42 } }),
-    ).resolves.toEqual(numberFullOutput);
+    const result = await caller.update({ id: numberId, data: { number: 42 } });
+
+    expect(result).toEqual(numberFullOutput);
     expect(numberRepoMock.update).toHaveBeenCalledWith(numberId, { number: 42 });
   });
 
   it("deletes a number", async () => {
     numberRepoMock.deleteById.mockResolvedValue({ id: numberId });
+    const { caller } = createCaller();
 
-    await expect(createCaller().caller.delete({ id: numberId })).resolves.toEqual({ id: numberId });
+    const result = await caller.delete({ id: numberId });
+
+    expect(result).toEqual({ id: numberId });
     expect(numberRepoMock.deleteById).toHaveBeenCalledWith(numberId);
   });
 
   it("deletes all numbers", async () => {
     numberRepoMock.deleteAll.mockResolvedValue(undefined);
+    const { caller } = createCaller();
 
-    await expect(createCaller().caller.deleteAll()).resolves.toBeUndefined();
+    const result = await caller.deleteAll();
+
+    expect(result).toBeUndefined();
     expect(numberRepoMock.deleteAll).toHaveBeenCalledOnce();
   });
 });
