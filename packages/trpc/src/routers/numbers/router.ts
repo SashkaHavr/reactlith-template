@@ -3,7 +3,6 @@ import { router } from "#/init";
 import { protectedProcedure } from "#/procedures/protected-procedure";
 import { userRepo } from "#/routers/users/repo";
 
-import { numberErrors } from "./errors";
 import { numberRepo } from "./repo";
 import {
   addNewInput,
@@ -16,6 +15,7 @@ import {
   getByIdOutput,
   updateInput,
   updateOutput,
+  errors,
 } from "./schema";
 
 export const numbersRouter = router({
@@ -37,7 +37,7 @@ export const numbersRouter = router({
           await userRepo.getUserLock();
 
           if ((await numberRepo.getCount()) >= 10) {
-            throw numberErrors.MAX_COUNT_REACHED();
+            throw errors.MAX_COUNT_REACHED();
           }
 
           return await numberRepo.addNew(input.number);

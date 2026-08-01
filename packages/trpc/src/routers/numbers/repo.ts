@@ -6,7 +6,7 @@ import { getUserContext } from "#/async-context/user";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
-import { numberErrors } from "./errors";
+import { errors } from "./schema";
 
 function getDependencies() {
   const { db } = getAppContext();
@@ -38,7 +38,7 @@ async function getById(id: IdBranded<"number">) {
   });
 
   if (!number) {
-    throw numberErrors.NOT_FOUND();
+    throw errors.NOT_FOUND();
   }
 
   return number;
@@ -52,7 +52,7 @@ async function addNew(value: number) {
     .returning({ id: schema.number.id, number: schema.number.number });
 
   if (!number) {
-    throw numberErrors.ADD_FAILED();
+    throw errors.ADD_FAILED();
   }
 
   return number;
@@ -67,7 +67,7 @@ async function update(id: IdBranded<"number">, data: { number?: number }) {
     .returning({ id: schema.number.id, number: schema.number.number });
 
   if (!number) {
-    throw numberErrors.NOT_FOUND();
+    throw errors.NOT_FOUND();
   }
 
   return number;
@@ -81,7 +81,7 @@ async function deleteById(id: IdBranded<"number">) {
     .returning({ id: schema.number.id });
 
   if (!number) {
-    throw numberErrors.NOT_FOUND();
+    throw errors.NOT_FOUND();
   }
 
   return number;
