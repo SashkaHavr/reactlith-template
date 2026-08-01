@@ -22,7 +22,6 @@
     "@types/bun": "catalog:",
     "drizzle-orm": "catalog:",
     "evlog": "catalog:",
-    "superjson": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"
   }

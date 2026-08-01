@@ -47,7 +47,6 @@ export const Route = createFileRoute("/_layout/numbers/")({
   component: RouteComponent,
 });
 
-const generateNumber = () => Math.floor(Math.random() * 100);
 const customNumberInput = addNewInput.extend({
   number: z.string().min(1).transform(Number).pipe(addNewInput.shape.number),
 });
@@ -83,7 +82,10 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex flex-wrap justify-center gap-3">
-        <Button variant="outline" onClick={() => addNumber.mutate({ number: generateNumber() })}>
+        <Button
+          variant="outline"
+          onClick={() => addNumber.mutate({ number: Math.floor(Math.random() * 100) })}
+        >
           {m.example_addNumber()}
         </Button>
         <Dialog open={customNumberDialogOpen} onOpenChange={setCustomNumberDialogOpen}>
@@ -135,7 +137,10 @@ function RouteComponent() {
               size="icon"
               variant="outline"
               onClick={() =>
-                updateNumber.mutate({ id: number.id, data: { number: generateNumber() } })
+                updateNumber.mutate({
+                  id: number.id,
+                  data: { number: Math.floor(Math.random() * 100) },
+                })
               }
             >
               <PencilIcon />

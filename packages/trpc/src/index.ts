@@ -1,7 +1,6 @@
 import { unstable_localLink } from "@trpc/client";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import superjson from "superjson";
 
 import { createContext } from "#/context";
 import type { ContextParam } from "#/context";
@@ -35,7 +34,6 @@ export function createLocalLink(context: ContextParam) {
     createContext: async () => {
       return createContext(context);
     },
-    transformer: superjson,
   });
 }
 

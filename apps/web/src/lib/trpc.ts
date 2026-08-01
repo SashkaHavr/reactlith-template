@@ -10,7 +10,6 @@ import {
 } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { parseError } from "evlog";
-import superjson from "superjson";
 
 import { createLocalLink } from "@reactlith-template/trpc";
 import type { TRPCRouter } from "@reactlith-template/trpc";
@@ -22,8 +21,6 @@ const getLocalLink = createServerOnlyFn(() => {
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
     defaultOptions: {
-      dehydrate: { serializeData: superjson.serialize },
-      hydrate: { deserializeData: superjson.deserialize },
       queries: {
         // Do not refetch preloaded data on mount (30 seconds stale time)
         staleTime: 30000,
@@ -38,11 +35,9 @@ export function createTRPCRouteContext() {
             // uses the httpSubscriptionLink for subscriptions
             condition: (op) => op.type === "subscription",
             true: httpSubscriptionLink({
-              transformer: superjson,
               url: `/trpc`,
             }),
             false: httpBatchLink({
-              transformer: superjson,
               url: "/trpc",
             }),
           }),

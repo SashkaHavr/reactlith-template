@@ -1,14 +1,12 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { getStatusKeyFromCode } from "@trpc/server/unstable-core-do-not-import";
 import { EvlogError } from "evlog";
-import superjson from "superjson";
 import z, { ZodError } from "zod";
 
 import { callInAppContext } from "./async-context/app";
 import type { Context } from "./context";
 
 const t = initTRPC.context<Context>().create({
-  transformer: superjson,
   errorFormatter(opts) {
     const { shape, error } = opts;
     return {

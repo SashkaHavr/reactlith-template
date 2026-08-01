@@ -26,6 +26,16 @@ import { numbersRouter } from "./router";
 const numberId = "00000000-0000-7000-8000-000000000001" as IdBranded<"number">;
 const userId = "00000000-0000-7000-8000-000000000002" as IdBranded<"user">;
 const number = { id: numberId, number: 42 };
+const numberFull = {
+  ...number,
+  createdAt: new Date("2025-01-01T00:00:00.000Z"),
+  updatedAt: new Date("2025-01-02T00:00:00.000Z"),
+};
+const numberFullOutput = {
+  ...number,
+  createdAt: "2025-01-01T00:00:00.000Z",
+  updatedAt: "2025-01-02T00:00:00.000Z",
+};
 
 function createCaller({ authenticated = true } = {}) {
   const getSession = vi.fn<() => Promise<{ user: { id: typeof userId } } | null>>(async () =>
@@ -63,9 +73,11 @@ describe("numbersRouter", () => {
   });
 
   it("gets a number by id", async () => {
-    numberRepoMock.getById.mockResolvedValue(number);
+    numberRepoMock.getById.mockResolvedValue(numberFull);
 
-    await expect(createCaller().caller.getById({ id: numberId })).resolves.toEqual(number);
+    await expect(createCaller().caller.getById({ id: numberId })).resolves.toEqual(
+      numberFullOutput,
+    );
     expect(numberRepoMock.getById).toHaveBeenCalledWith(numberId);
   });
 
@@ -92,11 +104,11 @@ describe("numbersRouter", () => {
   });
 
   it("updates a number", async () => {
-    numberRepoMock.update.mockResolvedValue(number);
+    numberRepoMock.update.mockResolvedValue(numberFull);
 
     await expect(
       createCaller().caller.update({ id: numberId, data: { number: 42 } }),
-    ).resolves.toEqual(number);
+    ).resolves.toEqual(numberFullOutput);
     expect(numberRepoMock.update).toHaveBeenCalledWith(numberId, { number: 42 });
   });
 

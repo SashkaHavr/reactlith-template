@@ -29,8 +29,6 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
   component: RouteComponent,
 });
 
-const generateNumber = () => Math.floor(Math.random() * 100);
-
 function RouteComponent() {
   const { numberId } = Route.useLoaderData();
   const navigate = useNavigate();
@@ -60,7 +58,9 @@ function RouteComponent() {
         </LinkButton>
         <Button
           variant="outline"
-          onClick={() => updateNumber.mutate({ id: numberId, data: { number: generateNumber() } })}
+          onClick={() =>
+            updateNumber.mutate({ id: numberId, data: { number: Math.floor(Math.random() * 100) } })
+          }
         >
           <PencilIcon />
           {m.example_updateNumber()}
@@ -70,8 +70,10 @@ function RouteComponent() {
           Delete number
         </Button>
       </div>
-      <div className="w-full max-w-md text-center">
-        <p className="text-4xl font-bold">{number.data.number}</p>
+      <div className="flex w-full max-w-md flex-col gap-2 text-center">
+        <p className="mb-4 text-4xl font-bold">{number.data.number}</p>
+        <p>Created at: {number.data.createdAt}</p>
+        <p>Updated at: {number.data.updatedAt}</p>
       </div>
     </div>
   );

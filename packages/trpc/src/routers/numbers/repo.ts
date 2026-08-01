@@ -33,7 +33,7 @@ async function getCount() {
 async function getById(id: IdBranded<"number">) {
   const { db, userId } = getDependencies();
   const number = await db.query.number.findFirst({
-    columns: { id: true, number: true },
+    columns: { id: true, number: true, createdAt: true, updatedAt: true },
     where: { id: { eq: id }, userId: { eq: userId } },
   });
 
@@ -64,7 +64,12 @@ async function update(id: IdBranded<"number">, data: { number?: number }) {
     .update(schema.number)
     .set(data)
     .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-    .returning({ id: schema.number.id, number: schema.number.number });
+    .returning({
+      id: schema.number.id,
+      number: schema.number.number,
+      createdAt: schema.number.createdAt,
+      updatedAt: schema.number.updatedAt,
+    });
 
   if (!number) {
     throw errors.NOT_FOUND();

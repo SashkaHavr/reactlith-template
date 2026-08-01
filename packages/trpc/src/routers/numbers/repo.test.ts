@@ -46,9 +46,11 @@ describe("numberRepo", () => {
     const owned = await insertNumber(testContext.userId, 1);
     const other = await insertNumber(testContext.otherUserId, 2);
 
-    await expect(
-      testContext.inUserContext(testContext.userId, async () => numberRepo.getById(owned.id)),
-    ).resolves.toEqual(owned);
+    const result = await testContext.inUserContext(testContext.userId, async () =>
+      numberRepo.getById(owned.id),
+    );
+
+    expect(result).toMatchObject(owned);
     await expect(
       testContext.inUserContext(testContext.userId, async () => numberRepo.getById(other.id)),
     ).rejects.toThrow("Number not found");
@@ -72,11 +74,11 @@ describe("numberRepo", () => {
     const owned = await insertNumber(testContext.userId, 1);
     const other = await insertNumber(testContext.otherUserId, 2);
 
-    await expect(
-      testContext.inUserContext(testContext.userId, async () =>
-        numberRepo.update(owned.id, { number: 10 }),
-      ),
-    ).resolves.toEqual({ id: owned.id, number: 10 });
+    const result = await testContext.inUserContext(testContext.userId, async () =>
+      numberRepo.update(owned.id, { number: 10 }),
+    );
+
+    expect(result).toMatchObject({ id: owned.id, number: 10 });
     await expect(
       testContext.inUserContext(testContext.userId, async () =>
         numberRepo.update(other.id, { number: 20 }),
