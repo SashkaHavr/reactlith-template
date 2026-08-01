@@ -1,9 +1,9 @@
-import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, index, snakeCase, text, timestamp } from "drizzle-orm/pg-core";
 
 import { baseTable } from "../utils/base-table";
 import { oneToManyCascadeOnDelete } from "../utils/foreign-keys";
 
-export const user = pgTable(
+export const user = snakeCase.table(
   "user",
   {
     ...baseTable<"user">(),
@@ -19,7 +19,7 @@ export const user = pgTable(
   (table) => [index().on(table.email)],
 );
 
-export const session = pgTable(
+export const session = snakeCase.table(
   "session",
   {
     ...baseTable<"session">(),
@@ -33,7 +33,7 @@ export const session = pgTable(
   (table) => [index().on(table.userId), index().on(table.token)],
 );
 
-export const account = pgTable(
+export const account = snakeCase.table(
   "account",
   {
     ...baseTable<"account">(),
@@ -51,7 +51,7 @@ export const account = pgTable(
   (table) => [index().on(table.userId)],
 );
 
-export const verification = pgTable(
+export const verification = snakeCase.table(
   "verification",
   {
     ...baseTable<"verification">(),
