@@ -35,10 +35,10 @@ export function createTRPCRouteContext() {
             // uses the httpSubscriptionLink for subscriptions
             condition: (op) => op.type === "subscription",
             true: httpSubscriptionLink({
-              url: `/trpc`,
+              url: "/api/trpc",
             }),
             false: httpBatchLink({
-              url: "/trpc",
+              url: "/api/trpc",
             }),
           }),
         ],

@@ -10,7 +10,7 @@ import { getEnvAuth } from "@reactlith-template/env";
 
 export function createAuth(db: DBType) {
   return betterAuth({
-    basePath: "/auth",
+    basePath: "/api/auth",
     baseURL: {
       allowedHosts: getEnvAuth().BETTER_AUTH_ALLOWED_HOSTS,
     },

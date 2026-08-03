@@ -19,7 +19,7 @@ import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
 
-const checkHealth = createServerFn().handler(async () => await fetch("/health/ready"));
+const checkHealth = createServerFn().handler(async () => await fetch("/api/health/ready"));
 
 const healthQueryOptions = queryOptions({
   queryKey: ["health", "ready"],

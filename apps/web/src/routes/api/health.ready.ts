@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { checkDbReady } from "@reactlith-template/db";
 
-export const Route = createFileRoute("/(api)/health/ready")({
+export const Route = createFileRoute("/api/health/ready")({
   server: {
     handlers: {
       GET: async ({ context }) => {

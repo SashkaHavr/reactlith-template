@@ -19,7 +19,7 @@ import type { AuthType } from "@reactlith-template/auth";
 import { ac, roles } from "@reactlith-template/auth/permissions";
 
 export const authClient = createAuthClient({
-  basePath: "/auth",
+  basePath: "/api/auth",
   plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles }), genericOAuthClient()],
   fetchOptions: {
     throw: true,

@@ -14,7 +14,7 @@
   "example_number": "Число",
   "example_submit": "Надіслати",
   "example_throwError": "Викинути помилку",
-  "example_apiHealthResponse": "Відповідь /health/ready від API",
+  "example_apiHealthResponse": "Відповідь /api/health/ready від API",
   "example_updateNumber": "Оновити число",
   "example_updatedAt": "Оновлено",
   "example_user": "Користувач",

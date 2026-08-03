@@ -9,6 +9,7 @@ export default defineConfig({
       outputStructure: "locale-modules",
       cookieName: "locale",
       strategy: ["cookie", "preferredLanguage", "url", "baseLocale"],
+      routeStrategies: [{ match: "/api/:path(.*)?", exclude: true }],
     }),
   ],
 });

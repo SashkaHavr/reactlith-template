@@ -17,7 +17,7 @@ export async function trpcHandler(context: ContextParam) {
   return await fetchRequestHandler({
     req: context.request,
     router: appRouter,
-    endpoint: "/trpc",
+    endpoint: "/api/trpc",
     createContext: (opts) => createContext({ request: opts.req, context: context.context }),
   });
 }

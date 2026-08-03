@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(api)/health/live")({
+export const Route = createFileRoute("/api/health/live")({
   server: {
     handlers: {
       GET: () => new Response(undefined, { status: 204 }),

@@ -28,13 +28,13 @@ const userId = "00000000-0000-7000-8000-000000000002" as IdBranded<"user">;
 const number = { id: numberId, number: 42 };
 const numberFull = {
   ...number,
-  createdAt: new Date("2025-01-01T00:00:00.000Z"),
-  updatedAt: new Date("2025-01-02T00:00:00.000Z"),
+  createdAt: new Date(1_000),
+  updatedAt: new Date(2_000),
 };
 const numberFullOutput = {
   ...number,
-  createdAt: "2025-01-01T00:00:00.000Z",
-  updatedAt: "2025-01-02T00:00:00.000Z",
+  createdAt: 1_000,
+  updatedAt: 2_000,
 };
 
 function createCaller({ authenticated = true } = {}) {

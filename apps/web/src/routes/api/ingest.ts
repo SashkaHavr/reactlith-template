@@ -5,7 +5,7 @@ import { createUserAgentEnricher } from "evlog/enrichers";
 
 const enrich = createUserAgentEnricher();
 
-export const Route = createFileRoute("/(api)/ingest")({
+export const Route = createFileRoute("/api/ingest")({
   server: {
     handlers: {
       POST: async ({ request }) => {
