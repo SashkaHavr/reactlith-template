@@ -4,18 +4,9 @@
   "example_addNumber": "Додати число",
   "example_authStatus": "Статус сервера автентифікації",
   "example_backToNumbers": "Назад до чисел",
+  "example_createdAt": "Створено",
   "example_deleteAllNumbers": "Видалити усі числа",
-  "example_timeNow": [
-    {
-      "declarations": [
-        "input date",
-        "local formattedDate = date: datetime dateStyle=long timeStyle=medium timeZone=UTC"
-      ],
-      "match": {
-        "date=*": "Час зараз: {formattedDate}"
-      }
-    }
-  ],
+  "example_timeNow": "Час зараз",
   "example_signInWithGoogle": "Увійти з Google",
   "example_logout": "Вийти",
   "example_maxNumberCountReached": "Досягнуто максимальної кількості чисел",
@@ -25,9 +16,9 @@
   "example_throwError": "Викинути помилку",
   "example_apiHealthResponse": "Відповідь /health/ready від API",
   "example_updateNumber": "Оновити число",
+  "example_updatedAt": "Оновлено",
   "example_user": "Користувач",
   "example_works": "Працює!",
-  "example_serverRendered": "Згенеровано на сервері",
   "routeDefault_error": "Щось пішло не так",
   "routeDefault_notFound": "Сторінка, яку ви шукаєте, не існує",
   "routeDefault_notFoundDescription": "The page you're looking for doesn't exist.",

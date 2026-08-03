@@ -1,9 +1,16 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  redirect,
+  useHydrated,
+  useNavigate,
+} from "@tanstack/react-router";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
+import { getLocale } from "@reactlith-template/intl/runtime";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import { parseTRPCError, useTRPC } from "~/lib/trpc";
@@ -34,12 +41,17 @@ function RouteComponent() {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const auth = useLoggedInAuth();
+  const hydrated = useHydrated();
   const number = useSuspenseQuery(trpc.numbers.getById.queryOptions({ id: numberId }));
   const updateNumber = useUpdateNumber();
   const deleteNumber = useDeleteNumber({
     onSuccess: async () => await navigate({ to: "/numbers" }),
   });
   const signout = useSignout();
+  const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
+    dateStyle: "long",
+    timeStyle: "medium",
+  });
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -70,10 +82,16 @@ function RouteComponent() {
           Delete number
         </Button>
       </div>
-      <div className="flex w-full max-w-md flex-col gap-2 text-center">
-        <p className="mb-4 text-4xl font-bold">{number.data.number}</p>
-        <p>Created at: {number.data.createdAt}</p>
-        <p>Updated at: {number.data.updatedAt}</p>
+      <div className="flex w-full max-w-md flex-col gap-6">
+        <p className="text-center text-4xl font-bold">{number.data.number}</p>
+        <div className="flex flex-col gap-2 text-left">
+          <p>
+            {m.example_createdAt()}: {hydrated && dateFormatter.format(number.data.createdAt)}
+          </p>
+          <p>
+            {m.example_updatedAt()}: {hydrated && dateFormatter.format(number.data.updatedAt)}
+          </p>
+        </div>
       </div>
     </div>
   );

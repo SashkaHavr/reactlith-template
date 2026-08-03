@@ -12,7 +12,7 @@ import { fetch } from "nitro";
 import { useEffect, useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
-import { isLocale, localizeUrl, setLocale } from "@reactlith-template/intl/runtime";
+import { getLocale, isLocale, localizeUrl, setLocale } from "@reactlith-template/intl/runtime";
 import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
@@ -104,6 +104,10 @@ function RouteComponent() {
   const health = useSuspenseQuery(healthQueryOptions);
   const hydrated = useHydrated();
   const [now, setNow] = useState(Date.now());
+  const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
+    dateStyle: "long",
+    timeStyle: "medium",
+  });
   useEffect(() => {
     const interval = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(interval);
@@ -121,7 +125,9 @@ function RouteComponent() {
           <p className={cn(health.isSuccess ? "text-green-500" : "text-red-500", "font-mono")}>
             {m.example_apiHealthResponse()}
           </p>
-          <p>{hydrated ? m.example_timeNow({ date: now }) : m.example_serverRendered()}</p>
+          <p>
+            {m.example_timeNow()}: {hydrated && dateFormatter.format(now)}
+          </p>
         </div>
       </div>
       <Outlet />
