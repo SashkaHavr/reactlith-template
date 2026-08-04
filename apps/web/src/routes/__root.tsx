@@ -96,12 +96,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   }, [auth]);
 
   return (
-    <html
-      key={locale}
-      suppressHydrationWarning
-      lang={locale}
-      className={cn(theme !== "system" && theme)}
-    >
+    <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
       <head>
         <HeadContent />
         <ThemeScript />

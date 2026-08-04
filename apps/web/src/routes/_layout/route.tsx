@@ -76,7 +76,7 @@ function LocaleSwitcher() {
       onValueChange={(value) => {
         if (isLocale(value)) {
           void (async () => {
-            await setLocale(value, { reload: false });
+            await setLocale(value);
             const url = localizeUrl(window.location.href, { locale: value });
             router.history.replace(
               `${url.pathname}${url.search}${url.hash}`,
