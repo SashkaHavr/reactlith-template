@@ -6,11 +6,9 @@ import { createContext } from "#context";
 import type { ContextParam } from "#context";
 import { createCallerFactory, router } from "#init";
 import { configRouter } from "#routers/config/router";
-import { numbersRouter } from "#routers/numbers/router";
 
 const appRouter = router({
   config: configRouter,
-  numbers: numbersRouter,
 });
 
 export async function trpcHandler(context: ContextParam) {

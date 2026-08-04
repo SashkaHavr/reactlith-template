@@ -9,39 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
-import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiIngestRouteImport } from './routes/api/ingest'
-import { Route as LayoutNumbersIndexRouteImport } from './routes/_layout/numbers.index'
-import { Route as LayoutNumbersNumberIdRouteImport } from './routes/_layout/numbers.$numberId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as ApiHealthLiveRouteImport } from './routes/api/health.live'
 import { Route as ApiHealthReadyRouteImport } from './routes/api/health.ready'
 import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc.$'
 
-const LayoutRouteRoute = LayoutRouteRouteImport.update({
-  id: '/_layout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutIndexRoute = LayoutIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRouteRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiIngestRoute = ApiIngestRouteImport.update({
   id: '/api/ingest',
   path: '/api/ingest',
   getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutNumbersIndexRoute = LayoutNumbersIndexRouteImport.update({
-  id: '/numbers/',
-  path: '/numbers/',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
-const LayoutNumbersNumberIdRoute = LayoutNumbersNumberIdRouteImport.update({
-  id: '/numbers/$numberId',
-  path: '/numbers/$numberId',
-  getParentRoute: () => LayoutRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -65,73 +48,59 @@ const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
   '/api/ingest': typeof ApiIngestRoute
-  '/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/health/live': typeof ApiHealthLiveRoute
   '/api/health/ready': typeof ApiHealthReadyRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/numbers/': typeof LayoutNumbersIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/api/ingest': typeof ApiIngestRoute
-  '/': typeof LayoutIndexRoute
-  '/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/health/live': typeof ApiHealthLiveRoute
   '/api/health/ready': typeof ApiHealthReadyRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/numbers': typeof LayoutNumbersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_layout': typeof LayoutRouteRouteWithChildren
+  '/': typeof IndexRoute
   '/api/ingest': typeof ApiIngestRoute
-  '/_layout/': typeof LayoutIndexRoute
-  '/_layout/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/health/live': typeof ApiHealthLiveRoute
   '/api/health/ready': typeof ApiHealthReadyRoute
   '/api/trpc/$': typeof ApiTrpcSplatRoute
-  '/_layout/numbers/': typeof LayoutNumbersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/api/ingest'
-    | '/numbers/$numberId'
     | '/api/auth/$'
     | '/api/health/live'
     | '/api/health/ready'
     | '/api/trpc/$'
-    | '/numbers/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/api/ingest'
     | '/'
-    | '/numbers/$numberId'
+    | '/api/ingest'
     | '/api/auth/$'
     | '/api/health/live'
     | '/api/health/ready'
     | '/api/trpc/$'
-    | '/numbers'
   id:
     | '__root__'
-    | '/_layout'
+    | '/'
     | '/api/ingest'
-    | '/_layout/'
-    | '/_layout/numbers/$numberId'
     | '/api/auth/$'
     | '/api/health/live'
     | '/api/health/ready'
     | '/api/trpc/$'
-    | '/_layout/numbers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  IndexRoute: typeof IndexRoute
   ApiIngestRoute: typeof ApiIngestRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiHealthLiveRoute: typeof ApiHealthLiveRoute
@@ -141,19 +110,12 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof LayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexRouteImport
-      parentRoute: typeof LayoutRouteRoute
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/ingest': {
       id: '/api/ingest'
@@ -161,20 +123,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/ingest'
       preLoaderRoute: typeof ApiIngestRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_layout/numbers/': {
-      id: '/_layout/numbers/'
-      path: '/numbers'
-      fullPath: '/numbers/'
-      preLoaderRoute: typeof LayoutNumbersIndexRouteImport
-      parentRoute: typeof LayoutRouteRoute
-    }
-    '/_layout/numbers/$numberId': {
-      id: '/_layout/numbers/$numberId'
-      path: '/numbers/$numberId'
-      fullPath: '/numbers/$numberId'
-      preLoaderRoute: typeof LayoutNumbersNumberIdRouteImport
-      parentRoute: typeof LayoutRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -207,24 +155,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LayoutRouteRouteChildren {
-  LayoutIndexRoute: typeof LayoutIndexRoute
-  LayoutNumbersNumberIdRoute: typeof LayoutNumbersNumberIdRoute
-  LayoutNumbersIndexRoute: typeof LayoutNumbersIndexRoute
-}
-
-const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
-  LayoutIndexRoute: LayoutIndexRoute,
-  LayoutNumbersNumberIdRoute: LayoutNumbersNumberIdRoute,
-  LayoutNumbersIndexRoute: LayoutNumbersIndexRoute,
-}
-
-const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
-  LayoutRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  IndexRoute: IndexRoute,
   ApiIngestRoute: ApiIngestRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiHealthLiveRoute: ApiHealthLiveRoute,

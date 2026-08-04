@@ -1,7 +1,5 @@
 /// <reference types="vite/client" />
 
-import fontHeadingHref from "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url";
-import fontSansHref from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
@@ -14,7 +12,6 @@ import { identifyUser } from "@reactlith-template/utils/log";
 import { seo } from "@reactlith-template/utils/seo";
 import { getTheme } from "~/components/theme/context";
 import { ThemeScript, ThemeProvider } from "~/components/theme/provider";
-import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
 import type { TRPCRouteContext } from "~/lib/trpc";
 import { cn } from "~/lib/utils";
@@ -58,20 +55,6 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
     links: [
       { rel: "stylesheet", href: indexCss },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      {
-        rel: "preload",
-        href: fontSansHref,
-        as: "font",
-        type: "font/woff2",
-        crossOrigin: "anonymous",
-      },
-      {
-        rel: "preload",
-        href: fontHeadingHref,
-        as: "font",
-        type: "font/woff2",
-        crossOrigin: "anonymous",
-      },
     ],
   }),
 });
@@ -102,9 +85,6 @@ const loadByLocale: Record<Locale, () => Promise<void>> = {
   en: async () => {
     z.config((await import("zod/v4/locales/en.js")).default());
   },
-  uk: async () => {
-    z.config((await import("zod/v4/locales/uk.js")).default());
-  },
 };
 
 function useSetupZodLocale() {
@@ -133,11 +113,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body>
         <ThemeProvider>
-          <ToastProvider>
-            <AnchoredToastProvider>
-              <div className="isolate">{children}</div>
-            </AnchoredToastProvider>
-          </ToastProvider>
+          <div className="isolate">{children}</div>
         </ThemeProvider>
         <Scripts />
       </body>

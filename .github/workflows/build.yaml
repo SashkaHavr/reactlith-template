@@ -1,9 +1,6 @@
 name: Run check and push db schema
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - example
 
 jobs:
   run-check:
