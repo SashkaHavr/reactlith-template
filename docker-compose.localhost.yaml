@@ -6,6 +6,7 @@ services:
   db-studio:
     networks:
       - devcontainer-proxy
+      - db-network
     labels:
       - traefik.enable=true
       - traefik.http.routers.reactlith-template-db-staging.rule=Host(`db.staging.reactlith-template.localhost`)
