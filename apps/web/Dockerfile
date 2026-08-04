@@ -6,7 +6,6 @@ COPY . .
 RUN bun ci --filter '.'
 RUN bunx --no-install turbo prune @reactlith-template/web --docker
 
-# Install and build
 FROM base AS build
 COPY --from=prepare /app/out/json/ .
 RUN bun ci
@@ -17,8 +16,7 @@ FROM base AS production-dependencies
 COPY --from=prepare /app/out/json/ .
 RUN bun ci --production
 
-# Run
-FROM base AS runner
+FROM base
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD [ "bun", "-e", "fetch('http://localhost:3000/api/health/live').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))" ]

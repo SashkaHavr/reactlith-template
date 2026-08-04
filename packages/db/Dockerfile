@@ -6,7 +6,7 @@ COPY . .
 RUN bun ci --filter '.'
 RUN bunx --no-install turbo prune @reactlith-template/db --docker
 
-FROM base AS build
+FROM base
 
 COPY --from=prepare /app/out/json/ .
 RUN bun ci
