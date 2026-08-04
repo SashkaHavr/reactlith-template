@@ -13,7 +13,7 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError: error.cause instanceof ZodError ? z.prettifyError(error.cause) : null,
+        zodError: error.cause instanceof ZodError ? z.flattenError(error.cause) : null,
         evlogError: error.cause instanceof EvlogError ? error.cause.toJSON() : null,
       },
     };

@@ -13,7 +13,7 @@ export function FormFieldError(props: Omit<React.ComponentProps<typeof FieldErro
   return (
     <FieldError match={!field.state.meta.isValid} {...props}>
       {field.state.meta.errors.map((_error, index) => {
-        const error = _error as { message?: string } | string;
+        const error = _error as { code: string; message: string } | string;
         return (
           <p key={`fielderror-${field.name}-${index}`}>
             {typeof error === "string" ? error : error.message}
