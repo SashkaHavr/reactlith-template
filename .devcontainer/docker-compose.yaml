@@ -4,20 +4,34 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ../..:/workspaces:cached
+      - ../:/home/vscode/reactlith-template:cached
+      - devcontainer-opencode-config:/home/vscode/.config/opencode
+      - devcontainer-opencode-auth:/home/vscode/.local/share/opencode
     networks:
       - db-network
+      - devcontainer-proxy
     command: sleep infinity
     environment:
       DATABASE_URL: postgresql://postgres:mysecretpassword@db:5432/postgres
       BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
-      BETTER_AUTH_ALLOWED_HOSTS: '["localhost:*", "127.0.0.1:*"]'
+      BETTER_AUTH_ALLOWED_HOSTS: '["localhost:*", "127.0.0.1:*", "web.reactlith-template.localhost"]'
       GOOGLE_CLIENT_ID: my-client-id.apps.googleusercontent.com
       GOOGLE_CLIENT_SECRET: GOCSPX-secret
-      GOOGLE_EMULATE_URL: http://host.docker.internal:4000
+      GOOGLE_EMULATE_URL: http://emulate.localhost
     depends_on:
       db:
         condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.reactlith-template-web.rule=Host(`web.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-web.service=reactlith-template-web
+      - traefik.http.services.reactlith-template-web.loadbalancer.server.port=3000
+      - traefik.http.routers.reactlith-template-opencode.rule=Host(`opencode.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-opencode.service=reactlith-template-opencode
+      - traefik.http.services.reactlith-template-opencode.loadbalancer.server.port=4096
+      - traefik.http.routers.reactlith-template-db.rule=Host(`db.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-db.service=reactlith-template-db
+      - traefik.http.services.reactlith-template-db.loadbalancer.server.port=4983
   db:
     image: postgres:17
     volumes:
@@ -34,6 +48,12 @@ services:
 
 networks:
   db-network:
+  devcontainer-proxy:
+    external: true
 
 volumes:
   db-data:
+  devcontainer-opencode-config:
+    external: true
+  devcontainer-opencode-auth:
+    external: true

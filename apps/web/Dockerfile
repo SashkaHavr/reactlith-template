@@ -1,26 +1,32 @@
-FROM oven/bun:1.3.11-alpine AS base
-
-# Install and build
-FROM base AS build
+FROM oven/bun:1.3.14-slim AS base
 WORKDIR /app
+
+FROM base AS prepare
 COPY . .
+RUN bun ci --filter '.'
+RUN bunx --no-install turbo prune @reactlith-template/web --docker
+
+FROM base AS build
+COPY --from=prepare /app/out/json/ .
 RUN bun ci
-RUN bun run --filter @reactlith-template/web --filter @reactlith-template/db build
+COPY --from=prepare /app/out/full/ .
+RUN bun run build
 
-# Run
-FROM base AS runner
+FROM base AS production-dependencies
+COPY --from=prepare /app/out/json/ .
+RUN bun ci --production
 
-RUN apk --no-cache add curl
-HEALTHCHECK --interval=1s --timeout=10s CMD [ "curl", "http://localhost:3000/trpc/health" ]
+FROM base
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD [ "bun", "-e", "fetch('http://localhost:3000/api/health/live').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))" ]
 
 ENV NODE_ENV=production
 
-WORKDIR /app
-COPY /packages/db/drizzle ./packages/db/drizzle
-COPY --from=build /app/packages/db/dist ./packages/db
+COPY --exclude=**/package.json --exclude=**/bunfig.toml --exclude=**/bun.lock --from=production-dependencies /app .
 COPY --from=build /app/apps/web/dist ./apps/web
 
-WORKDIR /app/apps/web
 USER bun
 EXPOSE 3000
+WORKDIR /app/apps/web
 CMD [ "bun", "run", "./server/index.mjs" ]

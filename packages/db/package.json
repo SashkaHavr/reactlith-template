@@ -2,30 +2,26 @@
   "name": "@reactlith-template/db",
   "private": true,
   "type": "module",
-  "imports": {
-    "#*": "./src/*"
-  },
   "exports": {
     ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts",
-    "./test-utils": "./test/utils.ts"
+    "./id-branded": "./src/utils/id-branded.ts",
+    "./test-db": "./src/test-db.ts"
   },
   "scripts": {
-    "build": "bun build --entrypoints ./src/migrate.ts --outdir ./dist --target bun",
-    "db:generate": "bunx --no-install --bun drizzle-kit generate",
-    "db:migrate": "bun run ./src/migrate.ts",
-    "db:push": "bunx --no-install --bun drizzle-kit push",
-    "db:studio": "bunx --no-install --bun drizzle-kit studio"
+    "push": "bunx --no-install --bun drizzle-kit push",
+    "studio": "bunx --no-install --bun drizzle-kit studio --host 0.0.0.0"
+  },
+  "dependencies": {
+    "pg": "catalog:"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.4.5",
+    "@electric-sql/pglite": "0.5.4",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
-    "better-result": "catalog:",
-    "drizzle-kit": "catalog:drizzle",
-    "drizzle-orm": "catalog:drizzle",
-    "drizzle-seed": "catalog:drizzle",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzle-seed": "catalog:",
     "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"

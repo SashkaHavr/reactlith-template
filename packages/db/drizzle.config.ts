@@ -1,10 +1,10 @@
 import { defineConfig } from "drizzle-kit";
 
-import { envDB } from "@reactlith-template/env/db";
+import { getEnvDB } from "@reactlith-template/env";
 
 export default defineConfig({
   out: "./drizzle",
   schema: "./src/schema/index.ts",
   dialect: "postgresql",
-  dbCredentials: { url: envDB.DATABASE_URL },
+  dbCredentials: { url: getEnvDB().DATABASE_URL },
 });

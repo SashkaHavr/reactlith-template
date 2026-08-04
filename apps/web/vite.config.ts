@@ -7,17 +7,10 @@ import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  build: {
-    rolldownOptions: {
-      external: ["bun"],
-    },
-  },
-  dev: {
-    preTransformRequests: false,
-  },
   server: {
     port: 3000,
-    host: "127.0.0.1",
+    host: "0.0.0.0",
+    strictPort: true,
   },
   resolve: {
     tsconfigPaths: true,
@@ -27,14 +20,27 @@ export default defineConfig({
     tanstackStart(),
     nitro({
       preset: "bun",
+      plugins: ["src/server-shutdown"],
       output: { dir: "dist" },
-      compressPublicAssets: { brotli: true },
+      compressPublicAssets: { gzip: true, brotli: true },
       experimental: {
         asyncContext: true,
-        vite: {},
       },
-      plugins: ["src/lib/evlog-plugin"],
-      modules: [evlog()],
+      modules: [
+        evlog({
+          exclude: ["**/.well-known/**"],
+          env: { service: "reactlith-template-web-backend" },
+          sampling: {
+            rates: {
+              info: 0,
+              warn: 0,
+              debug: 0,
+              error: 100,
+            },
+            keep: [{ status: 400 }, { duration: 500 }],
+          },
+        }),
+      ],
     }),
     react(),
     babel({

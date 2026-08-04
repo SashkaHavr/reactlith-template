@@ -1,3 +1,4 @@
+// oxlint-disable no-restricted-imports
 import { createIsomorphicFn } from "@tanstack/react-start";
 import {
   getCookie as getServerCookie,

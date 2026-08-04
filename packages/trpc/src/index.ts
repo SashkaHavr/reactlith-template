@@ -1,55 +1,39 @@
 import { unstable_localLink } from "@trpc/client";
-import { TRPCError } from "@trpc/server";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { Result } from "better-result";
-import { sql } from "drizzle-orm";
-import superjson from "superjson";
-import z from "zod";
 
-import { createContext } from "#context.ts";
-import { createCallerFactory, publicProcedure, router } from "#init.ts";
-import { configRouter } from "#routers/config.ts";
-import { numbersRouter } from "#routers/numbers.ts";
+import { createContext } from "#/context";
+import type { ContextParam } from "#/context";
+import { createCallerFactory, router } from "#/init";
+import { configRouter } from "#/routers/config/router";
+import { numbersRouter } from "#/routers/numbers/router";
+
 const appRouter = router({
-  health: publicProcedure.output(z.null()).query(async ({ ctx }) => {
-    const res = await Result.tryPromise(async () => await ctx.db.execute(sql`select 1`));
-    if (res.isErr()) {
-      throw new TRPCError({
-        message: "Healthcheck: DB connection failed",
-        code: "INTERNAL_SERVER_ERROR",
-        cause: res.error,
-      });
-    }
-    return null;
-  }),
   config: configRouter,
   numbers: numbersRouter,
 });
 
-export async function trpcHandler({ request }: { request: Request }) {
+export async function trpcHandler(context: ContextParam) {
   return await fetchRequestHandler({
-    req: request,
+    req: context.request,
     router: appRouter,
-    endpoint: "/trpc",
-    createContext: (opts) => createContext({ request: opts.req }),
+    endpoint: "/api/trpc",
+    createContext: (opts) => createContext({ request: opts.req, context: context.context }),
   });
 }
 
 const trpcCallerFactory = createCallerFactory(appRouter);
-export function createTrpcCaller({ request }: { request: Request }) {
-  return trpcCallerFactory(createContext({ request }));
+export function createTrpcCaller(context: ContextParam) {
+  return trpcCallerFactory(createContext(context));
 }
 
-export function createLocalLink({ request }: { request: Request }) {
+export function createLocalLink(context: ContextParam) {
   return unstable_localLink({
     router: appRouter,
     // oxlint-disable-next-line require-await
     createContext: async () => {
-      // Create your context here
-      return createContext({ request });
+      return createContext(context);
     },
-    transformer: superjson,
   });
 }
 

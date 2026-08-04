@@ -1,24 +1,40 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
-  ClientOnly,
   createFileRoute,
   Outlet,
   useHydrated,
   useRouteContext,
+  useRouter,
 } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { useFormatter, useNow, useTranslations } from "use-intl";
+import { fetch } from "nitro";
+import { useEffect, useState } from "react";
 
-import { isLocale } from "@reactlith-template/utils/intl";
+import { m } from "@reactlith-template/intl/messages";
+import { getLocale, isLocale, localizeUrl, setLocale } from "@reactlith-template/intl/runtime";
+import type { Locale } from "@reactlith-template/intl/runtime";
 import { useTheme } from "~/components/theme/context";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { localeToString, useSetLocale } from "~/lib/intl";
-import { useTRPC } from "~/lib/trpc";
+import { cn } from "~/lib/utils";
+
+const checkHealth = createServerFn().handler(async () => await fetch("/api/health/ready"));
+
+const healthQueryOptions = queryOptions({
+  queryKey: ["health", "ready"],
+  queryFn: async () => {
+    const response = await checkHealth();
+    if (!response.ok) {
+      throw new Error("API is not ready");
+    }
+    return null;
+  },
+});
 
 export const Route = createFileRoute("/_layout")({
-  loader: async ({ context: { trpc, queryClient } }) => {
-    await queryClient.ensureQueryData(trpc.health.queryOptions());
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(healthQueryOptions);
   },
   component: RouteComponent,
 });
@@ -45,19 +61,28 @@ function ThemeSwitcher() {
   );
 }
 
+const localeToString: Record<Locale, string> = {
+  en: "English",
+  uk: "Українська",
+};
+
 function LocaleSwitcher() {
-  const locale = useRouteContext({
-    from: "__root__",
-    select: (s) => s.intl.locale,
-  });
-  const setLocale = useSetLocale();
+  const router = useRouter();
+  const locale = useRouteContext({ from: "__root__", select: (s) => s.locale });
 
   return (
     <Select
       value={locale}
       onValueChange={(value) => {
         if (isLocale(value)) {
-          void setLocale(value);
+          void (async () => {
+            await setLocale(value);
+            const url = localizeUrl(window.location.href, { locale: value });
+            router.history.replace(
+              `${url.pathname}${url.search}${url.hash}`,
+              router.history.location.state,
+            );
+          })();
         }
       }}
     >
@@ -76,28 +101,32 @@ function LocaleSwitcher() {
 }
 
 function RouteComponent() {
-  const trpc = useTRPC();
-  const t = useTranslations("index");
-  const format = useFormatter();
-
-  const trpcHealth = useSuspenseQuery(trpc.health.queryOptions());
-
-  const now = useNow({ updateInterval: 1000 });
+  const health = useSuspenseQuery(healthQueryOptions);
+  const hydrated = useHydrated();
+  const [now, setNow] = useState(Date.now());
+  const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
+    dateStyle: "long",
+    timeStyle: "medium",
+  });
+  useEffect(() => {
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
       <div className="flex w-100 flex-col items-center">
         <div className="flex w-fit flex-col gap-4">
           <div className="flex gap-3">
-            <p className="self-center font-heading text-xl">{t("works")}</p>
+            <p className="self-center font-heading text-xl">{m.example_works()}</p>
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className={trpcHealth.isSuccess ? "text-green-500" : "text-red-500"}>
-            {t("trpc-health-response")}
+          <p className={cn(health.isSuccess ? "text-green-500" : "text-red-500", "font-mono")}>
+            {m.example_apiHealthResponse()}
           </p>
           <p>
-            {t("time-now")}: <ClientOnly>{format.dateTime(now, "full")}</ClientOnly>
+            {m.example_timeNow()}: {hydrated && dateFormatter.format(now)}
           </p>
         </div>
       </div>

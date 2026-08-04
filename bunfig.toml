@@ -1,5 +1,2 @@
 [install]
 minimumReleaseAge = 259200
-
-[test]
-preload = ["./packages/db/test/preload.ts"]

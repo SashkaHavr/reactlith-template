@@ -1,6 +1,6 @@
 import { defineConfig } from "oxlint";
 
-import baseConfig from "../../oxlint.config";
+import baseConfig from "../../oxlint.config.ts";
 
 export default defineConfig({
   extends: [baseConfig],
@@ -21,10 +21,11 @@ export default defineConfig({
         ],
       },
     ],
+    "typescript/only-throw-error": "off",
   },
   overrides: [
     {
-      files: ["src/components/ui/**", "src/utils/cookie.ts"],
+      files: ["src/components/ui/**"],
       rules: {
         "no-restricted-imports": "off",
       },

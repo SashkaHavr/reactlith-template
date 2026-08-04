@@ -3,18 +3,16 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#*": "./src/*"
+    "#/*": "./src/*.ts"
   },
   "exports": {
     "./*": "./src/*.ts"
   },
   "scripts": {},
   "devDependencies": {
-    "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "evlog": "catalog:",
-    "typescript": "catalog:",
-    "use-intl": "catalog:"
+    "typescript": "catalog:"
   }
 }

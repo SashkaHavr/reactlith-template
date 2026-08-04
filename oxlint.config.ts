@@ -2,7 +2,7 @@ import { defineConfig } from "oxlint";
 
 export default defineConfig({
   $schema: "./node_modules/oxlint/configuration_schema.json",
-  ignorePatterns: ["**/generated/**", "*.gen.ts"],
+  ignorePatterns: ["**/generated/**", "*.gen.ts", "*.js"],
   plugins: [
     "eslint",
     "typescript",
@@ -12,7 +12,7 @@ export default defineConfig({
     "jsdoc",
     "node",
     "promise",
-    "jest",
+    "vitest",
     "react",
     "jsx-a11y",
   ],
@@ -30,6 +30,7 @@ export default defineConfig({
     "no-var": "error",
     "no-process-env": "error",
     "no-shadow": "off",
+    "typescript/only-throw-error": "error",
 
     "typescript/no-misused-promises": "error",
     "typescript/consistent-type-imports": "error",
@@ -55,7 +56,15 @@ export default defineConfig({
     "unicorn/filename-case": [
       "error",
       {
-        ignore: "^*.gen.ts|\\$.*tsx$",
+        ignore: ["^*.gen.ts", "\\$.*tsx$"],
+      },
+    ],
+    "unicorn/import-style": [
+      "error",
+      {
+        styles: {
+          zod: { default: false, namespace: true, named: true },
+        },
       },
     ],
 

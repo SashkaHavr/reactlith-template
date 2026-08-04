@@ -1,0 +1,32 @@
+services:
+  db-push:
+    environment:
+      BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
+      BETTER_AUTH_HOSTS_0: http://web.staging.reactlith-template.localhost
+  db-studio:
+    networks:
+      - devcontainer-proxy
+      - db-network
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.reactlith-template-db-staging.rule=Host(`db.staging.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-db-staging.service=reactlith-template-db-staging
+      - traefik.http.services.reactlith-template-db-staging.loadbalancer.server.port=4983
+  web:
+    networks:
+      - devcontainer-proxy
+    environment:
+      BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
+      BETTER_AUTH_ALLOWED_HOSTS: '["http://web.staging.reactlith-template.localhost"]'
+      GOOGLE_CLIENT_ID: my-client-id.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET: GOCSPX-secret
+      GOOGLE_EMULATE_URL: http://emulate.localhost
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.reactlith-template-web-staging.rule=Host(`web.staging.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-web-staging.service=reactlith-template-web-staging
+      - traefik.http.services.reactlith-template-web-staging.loadbalancer.server.port=3000
+
+networks:
+  devcontainer-proxy:
+    external: true
