@@ -1,4 +1,3 @@
-import { callInTransactionContext } from "#/async-context/transaction";
 import { router } from "#/init";
 import { protectedProcedure } from "#/procedures/protected-procedure";
 import { userRepo } from "#/routers/users/repo";
@@ -32,16 +31,14 @@ export const numbersRouter = router({
     .input(addNewInput)
     .output(addNewOutput)
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.transaction(async (tx) => {
-        return await callInTransactionContext({ tx }, async () => {
-          await userRepo.getUserLock();
+      return await ctx.transaction(async () => {
+        await userRepo.getUserLock();
 
-          if ((await numberRepo.getCount()) >= 10) {
-            throw errors.MAX_COUNT_REACHED();
-          }
+        if ((await numberRepo.getCount()) >= 10) {
+          throw errors.MAX_COUNT_REACHED();
+        }
 
-          return await numberRepo.addNew(input.number);
-        });
+        return await numberRepo.addNew(input.number);
       });
     }),
   update: protectedProcedure
