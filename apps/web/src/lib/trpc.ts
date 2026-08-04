@@ -1,5 +1,5 @@
-import { environmentManager, QueryClient } from "@tanstack/react-query";
-import { createServerOnlyFn, getGlobalStartContext } from "@tanstack/react-start";
+import { QueryClient } from "@tanstack/react-query";
+import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import {
   createTRPCClient,
@@ -11,12 +11,22 @@ import {
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { parseError } from "evlog";
 
-import { createLocalLink } from "@reactlith-template/trpc";
 import type { TRPCRouter } from "@reactlith-template/trpc";
+import { createLocalLink } from "@reactlith-template/trpc";
 
-const getLocalLink = createServerOnlyFn(() => {
-  return createLocalLink({ request: getRequest(), context: getGlobalStartContext()! });
-});
+const getLinks = createIsomorphicFn()
+  .server(() => [createLocalLink({ request: getRequest(), context: getGlobalStartContext()! })])
+  .client(() => [
+    splitLink({
+      condition: (op) => op.type === "subscription",
+      true: httpSubscriptionLink({
+        url: "/api/trpc",
+      }),
+      false: httpBatchLink({
+        url: "/api/trpc",
+      }),
+    }),
+  ]);
 
 export function createTRPCRouteContext() {
   const queryClient = new QueryClient({
@@ -28,20 +38,7 @@ export function createTRPCRouteContext() {
     },
   });
   const trpcClient = createTRPCClient<TRPCRouter>({
-    links: environmentManager.isServer()
-      ? [getLocalLink()]
-      : [
-          splitLink({
-            // uses the httpSubscriptionLink for subscriptions
-            condition: (op) => op.type === "subscription",
-            true: httpSubscriptionLink({
-              url: "/api/trpc",
-            }),
-            false: httpBatchLink({
-              url: "/api/trpc",
-            }),
-          }),
-        ],
+    links: getLinks(),
   });
   const trpc = createTRPCOptionsProxy({
     client: trpcClient,

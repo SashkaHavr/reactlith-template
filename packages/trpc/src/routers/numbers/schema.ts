@@ -1,5 +1,5 @@
 import { defineErrorCatalog } from "evlog";
-import z from "zod";
+import * as z from "zod";
 
 import { dateOutput } from "#/utils/codecs";
 import { idBranded } from "@reactlith-template/db/id-branded";

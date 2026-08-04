@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import z from "zod";
+import * as z from "zod";
 
 import { m } from "@reactlith-template/intl/messages";
 import { addNewInput } from "@reactlith-template/trpc/schema/numbers";

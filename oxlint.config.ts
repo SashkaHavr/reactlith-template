@@ -59,6 +59,14 @@ export default defineConfig({
         ignore: ["^*.gen.ts", "\\$.*tsx$"],
       },
     ],
+    "unicorn/import-style": [
+      "error",
+      {
+        styles: {
+          zod: { default: false, namespace: true, named: true },
+        },
+      },
+    ],
 
     "jsx-a11y/prefer-tag-over-role": "off",
   },

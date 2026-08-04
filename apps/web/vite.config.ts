@@ -22,7 +22,7 @@ export default defineConfig({
       preset: "bun",
       plugins: ["src/server-shutdown"],
       output: { dir: "dist" },
-      compressPublicAssets: { brotli: true },
+      compressPublicAssets: { gzip: true, brotli: true },
       experimental: {
         asyncContext: true,
       },

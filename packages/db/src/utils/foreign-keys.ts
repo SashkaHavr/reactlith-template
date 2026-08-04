@@ -1,6 +1,6 @@
 import type { pgTable } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
-import type z from "zod";
+import type * as z from "zod";
 
 import type { baseTable } from "./base-table";
 

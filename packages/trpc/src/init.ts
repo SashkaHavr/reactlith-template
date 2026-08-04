@@ -1,7 +1,7 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { getStatusKeyFromCode } from "@trpc/server/unstable-core-do-not-import";
 import { EvlogError } from "evlog";
-import z, { ZodError } from "zod";
+import * as z from "zod";
 
 import { callInAppContext } from "./async-context/app";
 import type { Context } from "./context";
@@ -13,7 +13,7 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError: error.cause instanceof ZodError ? z.flattenError(error.cause) : null,
+        zodError: error.cause instanceof z.ZodError ? z.flattenError(error.cause) : null,
         evlogError: error.cause instanceof EvlogError ? error.cause.toJSON() : null,
       },
     };

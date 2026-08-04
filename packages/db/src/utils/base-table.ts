@@ -1,6 +1,6 @@
 import { timestamp, uuid } from "drizzle-orm/pg-core";
 import { v7 as uuidv7 } from "uuid";
-import type z from "zod";
+import type * as z from "zod";
 
 export function baseTable<T extends string>() {
   return {

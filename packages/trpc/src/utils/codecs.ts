@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 
 export const dateInput = z.codec(z.int().min(0), z.date(), {
   decode: (millis) => new Date(millis),
