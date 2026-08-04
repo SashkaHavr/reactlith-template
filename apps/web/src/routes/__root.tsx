@@ -6,8 +6,10 @@ import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanst
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
+import * as z from "zod";
 
 import { getLocale } from "@reactlith-template/intl/runtime";
+import type { Locale } from "@reactlith-template/intl/runtime";
 import { identifyUser } from "@reactlith-template/utils/log";
 import { seo } from "@reactlith-template/utils/seo";
 import { getTheme } from "~/components/theme/context";
@@ -82,9 +84,9 @@ function RootComponent() {
   );
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { locale, theme, auth } = Route.useRouteContext({
-    select: (s) => ({ locale: s.locale, theme: s.theme, auth: s.auth }),
+function useSetLogIdentity() {
+  const auth = Route.useRouteContext({
+    select: (s) => s.auth,
   });
 
   useEffect(() => {
@@ -94,6 +96,34 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       clearIdentity();
     }
   }, [auth]);
+}
+
+const loadByLocale: Record<Locale, () => Promise<void>> = {
+  en: async () => {
+    z.config((await import("zod/v4/locales/en.js")).default());
+  },
+  uk: async () => {
+    z.config((await import("zod/v4/locales/uk.js")).default());
+  },
+};
+
+function useSetupZodLocale() {
+  const locale = Route.useRouteContext({
+    select: (s) => s.locale,
+  });
+
+  useEffect(() => {
+    void loadByLocale[locale]();
+  }, [locale]);
+}
+
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const { locale, theme } = Route.useRouteContext({
+    select: (s) => ({ locale: s.locale, theme: s.theme, auth: s.auth }),
+  });
+
+  useSetLogIdentity();
+  useSetupZodLocale();
 
   return (
     <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
