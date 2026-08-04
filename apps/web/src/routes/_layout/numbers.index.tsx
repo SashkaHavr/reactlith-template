@@ -88,7 +88,15 @@ function RouteComponent() {
         >
           {m.example_addNumber()}
         </Button>
-        <Dialog open={customNumberDialogOpen} onOpenChange={setCustomNumberDialogOpen}>
+        <Dialog
+          open={customNumberDialogOpen}
+          onOpenChange={(open) => {
+            if (open) {
+              customNumberForm.reset();
+            }
+            setCustomNumberDialogOpen(open);
+          }}
+        >
           <DialogTrigger render={<Button variant="outline" />}>
             {m.example_addCustomNumber()}
           </DialogTrigger>
