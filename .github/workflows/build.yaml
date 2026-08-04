@@ -2,7 +2,7 @@ name: Run check and push db schema
 on:
   push:
     branches:
-      - main
+      - example
 
 jobs:
   run-check:
