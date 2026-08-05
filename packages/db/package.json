@@ -11,9 +11,6 @@
     "push": "bunx --no-install --bun drizzle-kit push",
     "studio": "bunx --no-install --bun drizzle-kit studio --host 0.0.0.0"
   },
-  "dependencies": {
-    "pg": "catalog:"
-  },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.4",
     "@reactlith-template/env": "workspace:*",
@@ -22,6 +19,7 @@
     "drizzle-kit": "catalog:",
     "drizzle-orm": "catalog:",
     "drizzle-seed": "catalog:",
+    "pg": "catalog:",
     "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"

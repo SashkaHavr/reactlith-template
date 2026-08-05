@@ -7,9 +7,10 @@ services:
       - db-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres", "-t", "10"]
-      interval: 1s
-      timeout: 10s
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      start_period: 10s
+      start_interval: 1s
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mysecretpassword}
   db-push:
