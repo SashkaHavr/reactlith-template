@@ -39,6 +39,7 @@ export default defineConfig({
             },
             keep: [{ status: 400 }, { duration: 500 }],
           },
+          redact: false,
         }),
       ],
     }),

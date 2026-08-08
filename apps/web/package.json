@@ -9,7 +9,7 @@
     "start": "NODE_ENV=production bun run dist/server/index.mjs"
   },
   "devDependencies": {
-    "@base-ui/react": "^1.6.0",
+    "@base-ui/react": "^1.7.0",
     "@fontsource-variable/geist": "5.3.0",
     "@fontsource-variable/geist-mono": "5.3.0",
     "@reactlith-template/auth": "workspace:*",

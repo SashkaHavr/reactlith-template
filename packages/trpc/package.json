@@ -20,6 +20,7 @@
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "@types/bun": "catalog:",
+    "better-result": "catalog:",
     "drizzle-orm": "catalog:",
     "evlog": "catalog:",
     "typescript": "catalog:",
