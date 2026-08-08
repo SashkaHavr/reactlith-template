@@ -5,7 +5,7 @@
   "scripts": {
     "build": "bunx --no-install --bun vite build",
     "component": "bunx --bun shadcn@latest add",
-    "dev": "bunx --no-install --bun vite dev",
+    "dev": "bun run ../../.devcontainer/localhost.js && bunx --no-install --bun vite dev",
     "start": "NODE_ENV=production bun run dist/server/index.mjs"
   },
   "devDependencies": {

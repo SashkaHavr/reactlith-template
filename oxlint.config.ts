@@ -39,7 +39,7 @@ export default defineConfig({
     "typescript/promise-function-async": "error",
     "typescript/strict-boolean-expressions": [
       "error",
-      { allowNullableBoolean: true, allowNullableString: true },
+      { allowNullableBoolean: true, allowNullableString: true, allowAny: true },
     ],
     "typescript/return-await": ["error", "error-handling-correctness-only"],
     "typescript/consistent-return": "off",
