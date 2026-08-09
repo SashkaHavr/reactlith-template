@@ -14,6 +14,7 @@ const numberRepoMock = vi.hoisted(() => ({
   getAll: vi.fn<typeof numberRepo.getAll>(),
   getById: vi.fn<typeof numberRepo.getById>(),
   getCount: vi.fn<typeof numberRepo.getCount>(),
+  getCountAbove: vi.fn<typeof numberRepo.getCountAbove>(),
   update: vi.fn<typeof numberRepo.update>(),
 }));
 const userRepoMock = vi.hoisted(() => ({
@@ -62,6 +63,17 @@ beforeEach(() => {
 });
 
 describe("numbersRouter", () => {
+  it("publicly gets the count of numbers above 50", async () => {
+    numberRepoMock.getCountAbove.mockResolvedValue(3);
+    const { caller, getSession } = createCaller({ authenticated: false });
+
+    const result = await caller.getCountAbove50();
+
+    expect(result).toEqual({ count: 3 });
+    expect(numberRepoMock.getCountAbove).toHaveBeenCalledWith(50);
+    expect(getSession).not.toHaveBeenCalled();
+  });
+
   it("requires authentication", async () => {
     const { caller } = createCaller({ authenticated: false });
 

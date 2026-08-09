@@ -12,6 +12,7 @@ const numberIdInput = z.object({ id: idBranded("number") });
 const numberFullOutput = numberOutput.extend({ createdAt: dateOutput, updatedAt: dateOutput });
 
 export const getAllOutput = z.object({ numbers: z.array(numberOutput) });
+export const getCountAbove50Output = z.object({ count: z.int().nonnegative() });
 export const getByIdInput = numberIdInput;
 export const getByIdOutput = numberFullOutput;
 export const addNewInput = numberInput;

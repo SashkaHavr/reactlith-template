@@ -1,5 +1,5 @@
 import { TRPCError } from "#/context";
-import { router } from "#/init";
+import { publicProcedure, router } from "#/init";
 import { protectedProcedure } from "#/procedures/protected-procedure";
 import { userRepo } from "#/routers/users/repo";
 
@@ -12,6 +12,7 @@ import {
   deleteInput,
   deleteOutput,
   getAllOutput,
+  getCountAbove50Output,
   getByIdInput,
   getByIdOutput,
   updateInput,
@@ -19,6 +20,9 @@ import {
 } from "./schema";
 
 export const numbersRouter = router({
+  getCountAbove50: publicProcedure.output(getCountAbove50Output).query(async () => {
+    return { count: await numberRepo.getCountAbove(50) };
+  }),
   getAll: protectedProcedure.output(getAllOutput).query(async () => {
     return { numbers: await numberRepo.getAll() };
   }),

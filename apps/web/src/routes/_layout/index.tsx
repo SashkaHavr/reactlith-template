@@ -13,6 +13,9 @@ export const Route = createFileRoute("/_layout/")({
       throw redirect({ to: "/numbers" });
     }
   },
+  loader: async ({ context: { queryClient, trpc } }) => {
+    await queryClient.ensureQueryData(trpc.numbers.getCountAbove50.queryOptions());
+  },
   component: RouteComponent,
 });
 
@@ -20,6 +23,7 @@ function RouteComponent() {
   const trpc = useTRPC();
 
   const authConfig = useSuspenseQuery(trpc.config.auth.queryOptions()).data;
+  const numbersAbove50 = useSuspenseQuery(trpc.numbers.getCountAbove50.queryOptions()).data;
   const resetAuth = useResetAuth();
 
   const signInWithGoogle = useMutation({
@@ -39,13 +43,16 @@ function RouteComponent() {
   });
 
   return (
-    <div className="max-w-80">
+    <div className="flex max-w-80 flex-col gap-3">
       {authConfig.google && (
         <Button variant="outline" className="w-full" onClick={() => signInWithGoogle.mutate()}>
           <GoogleIcon />
           <span>{m.example_signInWithGoogle()}</span>
         </Button>
       )}
+      <p className="text-center text-sm text-muted-foreground">
+        {m.example_numbersAbove50Count({ count: numbersAbove50.count })}
+      </p>
     </div>
   );
 }

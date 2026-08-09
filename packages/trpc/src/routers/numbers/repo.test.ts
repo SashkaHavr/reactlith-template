@@ -43,6 +43,18 @@ describe("numberRepo", () => {
     expect(result).toBe(2);
   });
 
+  it("counts numbers above a value across all users", async () => {
+    await insertNumber(testContext.userId, 50);
+    await insertNumber(testContext.userId, 51);
+    await insertNumber(testContext.otherUserId, 100);
+
+    const result = await testContext.inUserContext(testContext.userId, async () =>
+      numberRepo.getCountAbove(50),
+    );
+
+    expect(result).toBe(2);
+  });
+
   it("gets an owned number by id and rejects another user's number", async () => {
     const owned = await insertNumber(testContext.userId, 1);
     const other = await insertNumber(testContext.otherUserId, 2);

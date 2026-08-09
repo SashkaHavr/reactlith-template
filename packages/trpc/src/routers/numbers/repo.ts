@@ -1,5 +1,5 @@
 import { panic, Result } from "better-result";
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 
 import { getAppContext } from "#/async-context/app";
 import { getTransactionContext } from "#/async-context/transaction";
@@ -15,6 +15,11 @@ function getDependencies() {
   const txContext = getTransactionContext();
 
   return { db: txContext ? txContext.tx : db, userId };
+}
+
+async function getCountAbove(value: number) {
+  const { db } = getAppContext();
+  return await db.$count(schema.number, gt(schema.number.number, value));
 }
 
 async function getAll() {
@@ -102,6 +107,7 @@ export const numberRepo = {
   getAll,
   getById,
   getCount,
+  getCountAbove,
   addNew,
   update,
   deleteById,

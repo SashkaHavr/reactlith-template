@@ -12,6 +12,7 @@
   "example_maxNumberCountReached": "Досягнуто максимальної кількості чисел",
   "example_maxNumberCountReachedDescription": "Можна додати не більше {maxCount} чисел.",
   "example_number": "Число",
+  "example_numbersAbove50Count": "Чисел понад 50 серед усіх користувачів: {count}",
   "example_submit": "Надіслати",
   "example_throwError": "Викинути помилку",
   "example_apiHealthResponse": "Відповідь /api/health/ready від API",
