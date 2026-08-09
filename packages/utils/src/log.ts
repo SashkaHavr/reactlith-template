@@ -6,7 +6,7 @@ export function identifyUser(
   session: Parameters<typeof identifyUserBase>[1] | null,
 ) {
   if (log && session) {
-    identifyUserBase(log, session, { session: false, fields: ["email", "role"] });
+    identifyUserBase(log, session, { session: false, fields: ["role"] });
   }
 }
 
