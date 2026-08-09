@@ -1,7 +1,9 @@
+import { Result } from "better-result";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Context } from "#/context";
 import type { numberRepo } from "#/routers/numbers/repo";
+import { UserNotFound } from "#/routers/users/errors";
 import type { userRepo } from "#/routers/users/repo";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
@@ -21,6 +23,8 @@ const userRepoMock = vi.hoisted(() => ({
 vi.mock("./repo", () => ({ numberRepo: numberRepoMock }));
 vi.mock("#/routers/users/repo", () => ({ userRepo: userRepoMock }));
 
+import { ProtectedProcedureUnauthorized } from "../../procedures/protected-procedure";
+import { MaxCountReached } from "./errors";
 import { numbersRouter } from "./router";
 
 const numberId = "00000000-0000-7000-8000-000000000001" as IdBranded<"number">;
@@ -63,7 +67,9 @@ describe("numbersRouter", () => {
 
     const result = caller.getAll();
 
-    await expect(result).rejects.toThrow("You must authenticate to use this endpoint");
+    await expect(result).rejects.toMatchObject({
+      cause: expect.any(ProtectedProcedureUnauthorized),
+    });
     expect(numberRepoMock.getAll).not.toHaveBeenCalled();
   });
 
@@ -78,7 +84,7 @@ describe("numbersRouter", () => {
   });
 
   it("gets a number by id", async () => {
-    numberRepoMock.getById.mockResolvedValue(numberFull);
+    numberRepoMock.getById.mockResolvedValue(Result.ok(numberFull));
     const { caller } = createCaller();
 
     const result = await caller.getById({ id: numberId });
@@ -90,6 +96,7 @@ describe("numbersRouter", () => {
   it("adds a number within a locked transaction", async () => {
     numberRepoMock.getCount.mockResolvedValue(9);
     numberRepoMock.addNew.mockResolvedValue(number);
+    userRepoMock.getUserLock.mockResolvedValue(Result.ok({ id: userId }));
     const { caller, transaction } = createCaller();
 
     const result = await caller.addNew({ number: 42 });
@@ -103,17 +110,29 @@ describe("numbersRouter", () => {
 
   it("rejects adding more than ten numbers", async () => {
     numberRepoMock.getCount.mockResolvedValue(10);
+    userRepoMock.getUserLock.mockResolvedValue(Result.ok({ id: userId }));
     const { caller } = createCaller();
 
     const result = caller.addNew({ number: 42 });
 
-    await expect(result).rejects.toThrow("Max numbers count is 10");
+    await expect(result).rejects.toMatchObject({ cause: expect.any(MaxCountReached) });
     expect(userRepoMock.getUserLock).toHaveBeenCalledOnce();
     expect(numberRepoMock.addNew).not.toHaveBeenCalled();
   });
 
+  it("rejects adding a number when the current user is missing", async () => {
+    userRepoMock.getUserLock.mockResolvedValue(Result.err(new UserNotFound({ userId })));
+    const { caller } = createCaller();
+
+    const result = caller.addNew({ number: 42 });
+
+    await expect(result).rejects.toMatchObject({ cause: expect.any(UserNotFound) });
+    expect(numberRepoMock.getCount).not.toHaveBeenCalled();
+    expect(numberRepoMock.addNew).not.toHaveBeenCalled();
+  });
+
   it("updates a number", async () => {
-    numberRepoMock.update.mockResolvedValue(numberFull);
+    numberRepoMock.update.mockResolvedValue(Result.ok(numberFull));
     const { caller } = createCaller();
 
     const result = await caller.update({ id: numberId, data: { number: 42 } });
@@ -123,7 +142,7 @@ describe("numbersRouter", () => {
   });
 
   it("deletes a number", async () => {
-    numberRepoMock.deleteById.mockResolvedValue({ id: numberId });
+    numberRepoMock.deleteById.mockResolvedValue(Result.ok({ id: numberId }));
     const { caller } = createCaller();
 
     const result = await caller.delete({ id: numberId });
@@ -133,7 +152,7 @@ describe("numbersRouter", () => {
   });
 
   it("deletes all numbers", async () => {
-    numberRepoMock.deleteAll.mockResolvedValue(undefined);
+    numberRepoMock.deleteAll.mockResolvedValue();
     const { caller } = createCaller();
 
     const result = await caller.deleteAll();

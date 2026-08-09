@@ -1,5 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
+import { panic } from "better-result";
+
 import type { AuthType } from "@reactlith-template/auth";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
@@ -10,7 +12,7 @@ const storage = new AsyncLocalStorage<UserContext>();
 export function getUserContext() {
   const context = storage.getStore();
   if (!context) {
-    throw new Error("User context is not available");
+    panic("User context is not available");
   }
   return context;
 }

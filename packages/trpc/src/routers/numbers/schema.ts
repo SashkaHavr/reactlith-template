@@ -1,4 +1,3 @@
-import { defineErrorCatalog } from "evlog";
 import * as z from "zod";
 
 import { dateOutput } from "#/utils/codecs";
@@ -22,24 +21,3 @@ export const updateOutput = numberFullOutput;
 export const deleteInput = numberIdInput;
 export const deleteOutput = numberIdInput;
 export const deleteAllOutput = z.undefined();
-
-export const errors = defineErrorCatalog("numbers", {
-  NOT_FOUND: {
-    message: "Number not found",
-    status: 404,
-  },
-  ADD_FAILED: {
-    message: "Failed to add number",
-    status: 500,
-  },
-  MAX_COUNT_REACHED: {
-    message: "Max numbers count is 10",
-    status: 400,
-  },
-});
-
-declare module "evlog" {
-  interface RegisteredErrorCatalogs {
-    numbers: typeof errors;
-  }
-}

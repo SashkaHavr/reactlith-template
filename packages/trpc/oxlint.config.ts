@@ -10,25 +10,12 @@ export default defineConfig({
       {
         paths: [
           {
-            name: "@reactlith-template/db",
-            importNames: ["db"],
-            allowTypeImports: true,
-          },
-          {
-            name: "@reactlith-template/auth",
-            importNames: ["auth"],
-            allowTypeImports: true,
+            name: "@trpc/server",
+            importNames: ["TRPCError"],
+            message: 'Use `import { TRPCError } from "#/context"` instead',
           },
         ],
       },
     ],
   },
-  overrides: [
-    {
-      files: ["src/context.ts"],
-      rules: {
-        "no-restricted-imports": "off",
-      },
-    },
-  ],
 });

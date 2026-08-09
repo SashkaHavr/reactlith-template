@@ -1,3 +1,4 @@
+import { panic, Result } from "better-result";
 import { and, eq } from "drizzle-orm";
 
 import { getAppContext } from "#/async-context/app";
@@ -6,7 +7,7 @@ import { getUserContext } from "#/async-context/user";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
-import { errors } from "./schema";
+import { NumberNotFound } from "./errors";
 
 function getDependencies() {
   const { db } = getAppContext();
@@ -38,10 +39,10 @@ async function getById(id: IdBranded<"number">) {
   });
 
   if (!number) {
-    throw errors.NOT_FOUND();
+    return Result.err(new NumberNotFound({ numberId: id }));
   }
 
-  return number;
+  return Result.ok(number);
 }
 
 async function addNew(value: number) {
@@ -52,7 +53,7 @@ async function addNew(value: number) {
     .returning({ id: schema.number.id, number: schema.number.number });
 
   if (!number) {
-    throw errors.ADD_FAILED();
+    panic("Failed to add number");
   }
 
   return number;
@@ -72,10 +73,10 @@ async function update(id: IdBranded<"number">, data: { number?: number }) {
     });
 
   if (!number) {
-    throw errors.NOT_FOUND();
+    return Result.err(new NumberNotFound({ numberId: id }));
   }
 
-  return number;
+  return Result.ok(number);
 }
 
 async function deleteById(id: IdBranded<"number">) {
@@ -86,10 +87,10 @@ async function deleteById(id: IdBranded<"number">) {
     .returning({ id: schema.number.id });
 
   if (!number) {
-    throw errors.NOT_FOUND();
+    return Result.err(new NumberNotFound({ numberId: id }));
   }
 
-  return number;
+  return Result.ok(number);
 }
 
 async function deleteAll() {

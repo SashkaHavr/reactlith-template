@@ -1,6 +1,5 @@
-import { initTRPC, TRPCError } from "@trpc/server";
-import { getStatusKeyFromCode } from "@trpc/server/unstable-core-do-not-import";
-import { EvlogError } from "evlog";
+import { initTRPC } from "@trpc/server";
+import { isTaggedError } from "better-result";
 import * as z from "zod";
 
 import { callInAppContext } from "./async-context/app";
@@ -15,7 +14,7 @@ const t = initTRPC.context<Context>().create({
       data: {
         ...shape.data,
         zodError: error.cause instanceof z.ZodError ? z.flattenError(error.cause) : null,
-        evlogError: error.cause instanceof EvlogError ? error.cause.toJSON() : null,
+        resultError: isTaggedError(error.cause) ? error.cause.toJSON() : null,
       },
     };
   },
@@ -45,19 +44,6 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
         },
       }),
   );
-
-  if (!result.ok) {
-    const evlogError = result.error.cause;
-    if (evlogError instanceof EvlogError) {
-      ctx.log?.error(evlogError);
-      throw new TRPCError({
-        code: getStatusKeyFromCode(evlogError.status),
-        message: evlogError.message,
-        cause: evlogError,
-      });
-    }
-    ctx.log?.error(result.error);
-  }
 
   return result;
 });

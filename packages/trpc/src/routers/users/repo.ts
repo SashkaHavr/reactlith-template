@@ -1,17 +1,18 @@
+import { panic, Result } from "better-result";
 import { eq } from "drizzle-orm";
 
 import { getTransactionContext } from "#/async-context/transaction";
 import { getUserContext } from "#/async-context/user";
 import { schema } from "@reactlith-template/db";
 
-import { userErrors } from "./errors";
+import { UserNotFound } from "./errors";
 
 async function getUserLock() {
   const { userId } = getUserContext();
   const transactionContext = getTransactionContext();
 
   if (!transactionContext) {
-    throw new Error("getUserLock must be called within a transaction");
+    panic("getUserLock must be called within a transaction");
   }
 
   const [user] = await transactionContext.tx
@@ -21,10 +22,10 @@ async function getUserLock() {
     .for("update");
 
   if (!user) {
-    throw userErrors.NOT_FOUND();
+    return Result.err(new UserNotFound({ userId }));
   }
 
-  return user;
+  return Result.ok(user);
 }
 
 export const userRepo = {

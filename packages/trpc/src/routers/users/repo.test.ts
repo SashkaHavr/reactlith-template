@@ -1,9 +1,11 @@
+import { Panic } from "better-result";
 import { describe, expect, it } from "vitest";
 
 import { callInTransactionContext } from "#/async-context/transaction";
 import { schema } from "@reactlith-template/db";
 
 import { setupRepoTest } from "../../test-utils/repo";
+import { UserNotFound } from "./errors";
 import { userRepo } from "./repo";
 
 type TransactionContext = Parameters<typeof callInTransactionContext>[0];
@@ -16,7 +18,7 @@ describe("userRepo", () => {
 
     const result = testContext.inUserContext(userId, userRepo.getUserLock);
 
-    await expect(result).rejects.toThrow("getUserLock must be called within a transaction");
+    await expect(result).rejects.toThrow(Panic);
   });
 
   it("locks and returns the current user", async () => {
@@ -28,19 +30,19 @@ describe("userRepo", () => {
       ),
     );
 
-    expect(result).toEqual({ id: userId });
+    expect(result.unwrap()).toMatchObject({ id: userId });
   });
 
   it("rejects a missing current user", async () => {
     const { userId } = testContext;
     await testContext.db.delete(schema.user);
 
-    const result = testContext.db.transaction(async (tx) =>
+    const result = await testContext.db.transaction(async (tx) =>
       testContext.inUserContext(userId, async () =>
         callInTransactionContext({ tx } as unknown as TransactionContext, userRepo.getUserLock),
       ),
     );
 
-    await expect(result).rejects.toThrow("User not found");
+    expect(result).toMatchObject({ error: expect.any(UserNotFound) });
   });
 });

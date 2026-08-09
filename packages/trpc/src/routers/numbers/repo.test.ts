@@ -4,6 +4,7 @@ import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
 import { setupRepoTest } from "../../test-utils/repo";
+import { NumberNotFound } from "./errors";
 import { numberRepo } from "./repo";
 
 const testContext = setupRepoTest();
@@ -49,12 +50,12 @@ describe("numberRepo", () => {
     const result = await testContext.inUserContext(testContext.userId, async () =>
       numberRepo.getById(owned.id),
     );
-    const otherResult = testContext.inUserContext(testContext.userId, async () =>
+    const otherResult = await testContext.inUserContext(testContext.userId, async () =>
       numberRepo.getById(other.id),
     );
 
-    expect(result).toMatchObject(owned);
-    await expect(otherResult).rejects.toThrow("Number not found");
+    expect(result.unwrap()).toMatchObject(owned);
+    expect(otherResult).toMatchObject({ error: expect.any(NumberNotFound) });
   });
 
   it("adds a number for the current user", async () => {
@@ -66,7 +67,7 @@ describe("numberRepo", () => {
     const userNumbers = await testContext.inUserContext(userId, numberRepo.getAll);
     const otherUserNumbers = await testContext.inUserContext(otherUserId, numberRepo.getAll);
 
-    expect(added.number).toBe(42);
+    expect(added).toMatchObject({ number: 42 });
     expect(userNumbers).toEqual([added]);
     expect(otherUserNumbers).toEqual([]);
   });
@@ -82,8 +83,8 @@ describe("numberRepo", () => {
       numberRepo.update(other.id, { number: 20 }),
     );
 
-    expect(result).toMatchObject({ id: owned.id, number: 10 });
-    await expect(otherResult).rejects.toThrow("Number not found");
+    expect(result.unwrap()).toMatchObject({ id: owned.id, number: 10 });
+    await expect(otherResult).resolves.toMatchObject({ error: expect.any(NumberNotFound) });
   });
 
   it("deletes an owned number by id and rejects another user's number", async () => {
@@ -97,8 +98,8 @@ describe("numberRepo", () => {
       numberRepo.deleteById(other.id),
     );
 
-    expect(result).toEqual({ id: owned.id });
-    await expect(otherResult).rejects.toThrow("Number not found");
+    expect(result.unwrap()).toMatchObject({ id: owned.id });
+    await expect(otherResult).resolves.toMatchObject({ error: expect.any(NumberNotFound) });
   });
 
   it("deletes all numbers owned by the current user", async () => {

@@ -10,7 +10,7 @@
   "example_signInWithGoogle": "Увійти з Google",
   "example_logout": "Вийти",
   "example_maxNumberCountReached": "Досягнуто максимальної кількості чисел",
-  "example_maxNumberCountReachedDescription": "Можна додати не більше 10 чисел.",
+  "example_maxNumberCountReachedDescription": "Можна додати не більше {maxCount} чисел.",
   "example_number": "Число",
   "example_submit": "Надіслати",
   "example_throwError": "Викинути помилку",

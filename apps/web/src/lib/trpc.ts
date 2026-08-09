@@ -1,15 +1,8 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import {
-  createTRPCClient,
-  httpBatchLink,
-  httpSubscriptionLink,
-  splitLink,
-  TRPCClientError,
-} from "@trpc/client";
+import { createTRPCClient, httpBatchLink, httpSubscriptionLink, splitLink } from "@trpc/client";
 import { createTRPCContext, createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { parseError } from "evlog";
 
 import type { TRPCRouter } from "@reactlith-template/trpc";
 import { createLocalLink } from "@reactlith-template/trpc";
@@ -49,10 +42,12 @@ export function createTRPCRouteContext() {
 
 export type TRPCRouteContext = ReturnType<typeof createTRPCRouteContext>;
 export const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<TRPCRouter>();
-type TRPCClientErrorInfered = TRPCClientError<TRPCRouter>;
-export function parseTRPCError(error: any) {
-  if (error instanceof TRPCClientError) {
-    return parseError((error as TRPCClientErrorInfered).data?.evlogError);
+export function matchError<T>(
+  error: any,
+  errorClass: (abstract new (...args: never[]) => T) & { name: string },
+): error is { data: { resultError: T } } {
+  if (errorClass.name === error["data"]["resultError"]["_tag"]) {
+    return true;
   }
-  return parseError(undefined);
+  return false;
 }

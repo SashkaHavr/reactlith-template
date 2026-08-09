@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { m } from "@reactlith-template/intl/messages";
+import { MaxCountReached } from "@reactlith-template/trpc/errors/numbers";
 import { toastManager } from "~/components/ui/toast";
-import { parseTRPCError, useTRPC } from "~/lib/trpc";
+import { matchError, useTRPC } from "~/lib/trpc";
 
 export function useAddNumber() {
   const trpc = useTRPC();
@@ -11,10 +12,12 @@ export function useAddNumber() {
   return useMutation(
     trpc.numbers.addNew.mutationOptions({
       onError: async (error) => {
-        if (parseTRPCError(error).code === "numbers.MAX_COUNT_REACHED") {
+        if (matchError(error, MaxCountReached)) {
           toastManager.add({
             title: m.example_maxNumberCountReached(),
-            description: m.example_maxNumberCountReachedDescription(),
+            description: m.example_maxNumberCountReachedDescription({
+              maxCount: error.data.resultError.maxCount,
+            }),
             type: "error",
           });
         }

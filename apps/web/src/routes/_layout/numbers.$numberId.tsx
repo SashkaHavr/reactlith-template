@@ -11,9 +11,10 @@ import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
+import { NumberNotFound } from "@reactlith-template/trpc/errors/numbers";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { parseTRPCError, useTRPC } from "~/lib/trpc";
+import { matchError, useTRPC } from "~/lib/trpc";
 import { useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     try {
       await queryClient.ensureQueryData(trpc.numbers.getById.queryOptions({ id: numberId }));
     } catch (e) {
-      if (parseTRPCError(e).code === "numbers.NOT_FOUND") {
+      if (matchError(e, NumberNotFound)) {
         throw notFound();
       }
     }

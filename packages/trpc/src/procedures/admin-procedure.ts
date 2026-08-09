@@ -1,19 +1,19 @@
-import { defineErrorCatalog } from "evlog";
+import { panic, TaggedError } from "better-result";
 
+import { TRPCError } from "#/context";
 import type { Permissions } from "@reactlith-template/auth";
 
 import { protectedProcedure } from "./protected-procedure";
 
-const errors = defineErrorCatalog("adminProcedure", {
-  NO_PERMISSIONS_SPECIFIED: {
-    message: "No permissions specified for adminProcedure",
-    status: 500,
-  },
-  FORBIDDEN: {
-    message: "You don't have permissions to access this endpoint",
-    status: 403,
-  },
-});
+export class AdminProcedureForbidden extends TaggedError("AdminProcedureForbidden")<{
+  message: string;
+}> {
+  constructor() {
+    super({
+      message: "You don't have permissions to access this endpoint",
+    });
+  }
+}
 
 export function adminProcedure(permissions: Permissions) {
   return protectedProcedure.use(async ({ ctx, next }) => {
@@ -35,22 +35,16 @@ export function adminProcedure(permissions: Permissions) {
     });
 
     if (requestPermissionsList.length === 0) {
-      throw errors.NO_PERMISSIONS_SPECIFIED();
+      panic("No permissions specified for adminProcedure");
     }
 
     const hasPermission = await ctx.auth.userHasPermission({
       body: { userId: ctx.userId, permissions: permissions },
     });
     if (!hasPermission.success) {
-      throw errors.FORBIDDEN();
+      throw new TRPCError({ code: "FORBIDDEN", error: new AdminProcedureForbidden() });
     }
 
     return await next();
   });
-}
-
-declare module "evlog" {
-  interface RegisteredErrorCatalogs {
-    adminProcedure: typeof errors;
-  }
 }
