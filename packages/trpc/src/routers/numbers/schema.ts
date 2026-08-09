@@ -20,4 +20,4 @@ export const updateInput = z.object({ id: idBranded("number"), data: numberUpdat
 export const updateOutput = numberFullOutput;
 export const deleteInput = numberIdInput;
 export const deleteOutput = numberIdInput;
-export const deleteAllOutput = z.undefined();
+export const deleteAllOutput = z.null();

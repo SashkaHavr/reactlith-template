@@ -85,5 +85,6 @@ export const numbersRouter = router({
     }),
   deleteAll: protectedProcedure.output(deleteAllOutput).mutation(async () => {
     await numberRepo.deleteAll();
+    return null;
   }),
 });

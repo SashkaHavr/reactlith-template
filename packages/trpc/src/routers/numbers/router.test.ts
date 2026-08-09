@@ -157,7 +157,7 @@ describe("numbersRouter", () => {
 
     const result = await caller.deleteAll();
 
-    expect(result).toBeUndefined();
+    expect(result).toBeNull();
     expect(numberRepoMock.deleteAll).toHaveBeenCalledOnce();
   });
 });
