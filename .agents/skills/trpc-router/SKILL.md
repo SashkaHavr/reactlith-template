@@ -35,6 +35,7 @@ Register the router in `packages/trpc/src/index.ts`.
 - Use `panic` for broken invariants that should produce a 5xx error.
 - Return the value directly when no expected errors exist.
 - When expected errors are possible, return `Result.err(TaggedError)` for errors and `Result.ok(value)` for success.
+- Service functions may call repository methods directly when doing so keeps the service's public API smaller.
 
 ## Router Tests
 
