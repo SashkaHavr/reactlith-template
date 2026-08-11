@@ -22,6 +22,8 @@ Register the router in `packages/trpc/src/index.ts`.
 
 - Use an appropriate procedure from `src/procedures/*`.
 - Define every procedure output explicitly, including `z.null()` for void mutations.
+- tRPC output schemas already apply their transformations, including removing extra fields; do not repeat them in the procedure handler.
+- tRPC input schemas already remove extra fields before passing the input to the procedure handler; do not remove them again in the handler.
 - Use `dateInput` and `dateOutput` for date input and output schemas.
 - Create reusable unexported schema parts when needed.
 - Put race-sensitive checks inside `ctx.transaction`. Repositories automatically use the active transaction through async context.
