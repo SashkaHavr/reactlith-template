@@ -1,8 +1,8 @@
 import { panic, Result } from "better-result";
 import { eq } from "drizzle-orm";
 
-import { getTransactionContext } from "#/async-context/transaction";
-import { getUserContext } from "#/async-context/user";
+import { getTransactionContext } from "#async-context/transaction";
+import { getUserContext } from "#async-context/user";
 import { schema } from "@reactlith-template/db";
 
 import { UserNotFound } from "./errors";

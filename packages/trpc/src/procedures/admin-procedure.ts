@@ -1,6 +1,6 @@
 import { panic, TaggedError } from "better-result";
 
-import { TRPCError } from "#/context";
+import { TRPCError } from "#context";
 import type { Permissions } from "@reactlith-template/auth";
 
 import { protectedProcedure } from "./protected-procedure";

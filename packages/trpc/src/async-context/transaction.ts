@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
-import type { createContext as createTrpcContext } from "#/context";
+import type { createContext as createTrpcContext } from "#context";
 
 type TransactionContext = {
   tx: Parameters<Parameters<ReturnType<typeof createTrpcContext>["db"]["transaction"]>[0]>[0];

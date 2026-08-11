@@ -1,10 +1,10 @@
 import { Result } from "better-result";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { Context } from "#/context";
-import type { numberRepo } from "#/routers/numbers/repo";
-import { UserNotFound } from "#/routers/users/errors";
-import type { userRepo } from "#/routers/users/repo";
+import type { Context } from "#context";
+import type { numberRepo } from "#routers/numbers/repo";
+import { UserNotFound } from "#routers/users/errors";
+import type { userRepo } from "#routers/users/repo";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
 const numberRepoMock = vi.hoisted(() => ({
@@ -24,7 +24,8 @@ const userRepoMock = vi.hoisted(() => ({
 vi.mock("./repo", () => ({ numberRepo: numberRepoMock }));
 vi.mock("#/routers/users/repo", () => ({ userRepo: userRepoMock }));
 
-import { ProtectedProcedureUnauthorized } from "../../procedures/protected-procedure";
+import { ProtectedProcedureUnauthorized } from "#procedures/protected-procedure";
+
 import { MaxCountReached } from "./errors";
 import { numbersRouter } from "./router";
 

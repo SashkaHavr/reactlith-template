@@ -2,11 +2,11 @@ import { unstable_localLink } from "@trpc/client";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-import { createContext } from "#/context";
-import type { ContextParam } from "#/context";
-import { createCallerFactory, router } from "#/init";
-import { configRouter } from "#/routers/config/router";
-import { numbersRouter } from "#/routers/numbers/router";
+import { createContext } from "#context";
+import type { ContextParam } from "#context";
+import { createCallerFactory, router } from "#init";
+import { configRouter } from "#routers/config/router";
+import { numbersRouter } from "#routers/numbers/router";
 
 const appRouter = router({
   config: configRouter,

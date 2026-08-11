@@ -1,4 +1,4 @@
-import { publicProcedure, router } from "#/init";
+import { publicProcedure, router } from "#init";
 import { getEnvAuth } from "@reactlith-template/env";
 
 import { authOutput } from "./schema";

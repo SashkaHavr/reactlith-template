@@ -1,7 +1,7 @@
-import { TRPCError } from "#/context";
-import { publicProcedure, router } from "#/init";
-import { protectedProcedure } from "#/procedures/protected-procedure";
-import { userRepo } from "#/routers/users/repo";
+import { TRPCError } from "#context";
+import { publicProcedure, router } from "#init";
+import { protectedProcedure } from "#procedures/protected-procedure";
+import { userRepo } from "#routers/users/repo";
 
 import { MaxCountReached } from "./errors";
 import { numberRepo } from "./repo";

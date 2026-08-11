@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 
 import { panic } from "better-result";
 
-import type { createContext as createTrpcContext } from "#/context";
+import type { createContext as createTrpcContext } from "#context";
 
 type AppContext = ReturnType<typeof createTrpcContext>;
 

@@ -1,10 +1,10 @@
 import { Panic } from "better-result";
 import { describe, expect, it } from "vitest";
 
-import { callInTransactionContext } from "#/async-context/transaction";
+import { callInTransactionContext } from "#async-context/transaction";
+import { setupRepoTest } from "#test-utils/repo";
 import { schema } from "@reactlith-template/db";
 
-import { setupRepoTest } from "../../test-utils/repo";
 import { UserNotFound } from "./errors";
 import { userRepo } from "./repo";
 

@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach } from "vitest";
 
-import { callInAppContext } from "#/async-context/app";
-import { callInUserContext } from "#/async-context/user";
+import { callInAppContext } from "#async-context/app";
+import { callInUserContext } from "#async-context/user";
 import type { DBType } from "@reactlith-template/db";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";

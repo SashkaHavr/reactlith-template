@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
+import { setupRepoTest } from "#test-utils/repo";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
-import { setupRepoTest } from "../../test-utils/repo";
 import { NumberNotFound } from "./errors";
 import { numberRepo } from "./repo";
 

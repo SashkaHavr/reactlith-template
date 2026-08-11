@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-import type * as schema from "../schema";
+import type { schema } from "#relations";
 
 type BrandOf<T> = T extends { [z.core.$brand]: infer B } ? keyof B : never;
 

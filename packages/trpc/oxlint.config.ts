@@ -12,7 +12,7 @@ export default defineConfig({
           {
             name: "@trpc/server",
             importNames: ["TRPCError"],
-            message: 'Use `import { TRPCError } from "#/context"` instead',
+            message: 'Use `import { TRPCError } from "#context"` instead',
           },
         ],
       },

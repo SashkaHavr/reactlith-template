@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { Context } from "#/context";
+import type { Context } from "#context";
 import type { getEnvAuth } from "@reactlith-template/env";
 
 const getEnvAuthMock = vi.hoisted(() => vi.fn<typeof getEnvAuth>());
