@@ -71,6 +71,7 @@
       "name": "@reactlith-template/db",
       "devDependencies": {
         "@electric-sql/pglite": "0.5.4",
+        "@electric-sql/pglite-prepopulatedfs": "0.5.4",
         "@reactlith-template/env": "workspace:*",
         "@reactlith-template/typescript-config": "workspace:*",
         "@types/bun": "catalog:",
@@ -267,6 +268,8 @@
     "@drizzle-team/brocli": ["@drizzle-team/brocli@0.12.0", "", {}, "sha512-mlUE+rZ8CatQekLhnaiN91Iemdd+e2gFKooGlnRB3oPTL3VghLfX24dx7HrzMNeC1JrIB/0kpsfyty3f5HNfxQ=="],
 
     "@electric-sql/pglite": ["@electric-sql/pglite@0.5.4", "", {}, "sha512-yYZUyyXrHU7tPlCjwZQJ6hIG9DscdCCn7Uk0mYKwC1FeHX286AbcmFveMiRBEak8e9iPupjsoVImN3yJZVed2g=="],
+
+    "@electric-sql/pglite-prepopulatedfs": ["@electric-sql/pglite-prepopulatedfs@0.5.4", "", { "peerDependencies": { "@electric-sql/pglite": "0.5.4" } }, "sha512-N6OmCmGKkmPmjfNmydhdX+YTSwO5ww2LIHxPHQt9DPMmD6+UOxvGBajsGMBP4OcYHXA79xiFrGI/kNxAghXdiw=="],
 
     "@emnapi/core": ["@emnapi/core@1.11.2", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.2", "tslib": "^2.4.0" } }, "sha512-TC8MkTuZUtcTSiFeuC0ksCh9QIJ5+F21MvZ4Wn4ORfYaFJ/0dsiudv5tVkejgwZlwQ39jL9WWDe2lz8x0WglOA=="],
 
