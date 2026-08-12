@@ -1,3 +1,4 @@
+import { callInTransaction } from "#async-context/transaction";
 import { TRPCError } from "#context";
 import { publicProcedure, router } from "#init";
 import { protectedProcedure } from "#procedures/protected-procedure";
@@ -42,8 +43,8 @@ export const numbersRouter = router({
   addNew: protectedProcedure
     .input(addNewInput)
     .output(addNewOutput)
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.transaction(async () => {
+    .mutation(async ({ input }) => {
+      return await callInTransaction(async () => {
         const userLock = await userRepo.getUserLock();
         if (userLock.isErr()) {
           throw userLock.error.match({

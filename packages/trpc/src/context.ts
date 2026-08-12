@@ -14,7 +14,12 @@ export function createContext({
   request: Request;
   context: { db: DBType; auth: AuthType; log?: LogType };
 }) {
-  return { request, db: context.db, auth: context.auth.api, log: context.log };
+  return {
+    request,
+    db: context.db,
+    auth: context.auth.api,
+    log: context.log,
+  };
 }
 
 export type Context = Awaited<ReturnType<typeof createContext>>;

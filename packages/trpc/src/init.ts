@@ -3,7 +3,6 @@ import { isTaggedError } from "better-result";
 import * as z from "zod";
 
 import { callInAppContext } from "./async-context/app";
-import { callInTransactionContext } from "./async-context/transaction";
 import type { Context } from "./context";
 
 const t = initTRPC.context<Context>().create({
@@ -37,10 +36,6 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
       await next({
         ctx: {
           db: {},
-          transaction: async <T>(fn: () => T) =>
-            ctx.db.transaction(async (tx) => {
-              return await callInTransactionContext<T>({ tx }, fn);
-            }),
         },
       }),
   );
