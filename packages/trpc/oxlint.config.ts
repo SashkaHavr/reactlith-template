@@ -4,6 +4,7 @@ import baseConfig from "../../oxlint.config.ts";
 
 export default defineConfig({
   extends: [baseConfig],
+  jsPlugins: ["../../oxlint.plugins.js"],
   rules: {
     "no-restricted-imports": [
       "error",
@@ -18,4 +19,13 @@ export default defineConfig({
       },
     ],
   },
+  overrides: [
+    {
+      files: ["src/routers/*/service.ts", "src/routers/*/repo.ts"],
+      rules: {
+        "local/no-catch": "error",
+        "local/no-throw": "error",
+      },
+    },
+  ],
 });
