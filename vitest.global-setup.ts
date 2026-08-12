@@ -6,7 +6,7 @@ export async function setup(project: TestProject) {
   const db = await createTestDBForDump();
   try {
     const dump = await db.$client.dumpDataDir("none");
-    project.provide("pgliteDump", new Uint8Array(await dump.arrayBuffer()));
+    project.provide("pgliteDump", await dump.arrayBuffer());
   } finally {
     await db.$client.close();
   }

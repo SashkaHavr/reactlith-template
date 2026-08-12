@@ -7,11 +7,11 @@ import { relations, schema } from "./relations";
 
 declare module "vitest" {
   export interface ProvidedContext {
-    pgliteDump: Uint8Array;
+    pgliteDump: ArrayBuffer;
   }
 }
 
-function openTestDB(loadDataDir: Blob | File) {
+function openTestDB(loadDataDir: Blob) {
   const client = new PGlite({ loadDataDir });
   const db = drizzle({ client, relations });
 
@@ -20,7 +20,7 @@ function openTestDB(loadDataDir: Blob | File) {
 
 export async function createTestDB() {
   const dump = inject("pgliteDump");
-  const db = openTestDB(new Blob([Uint8Array.from(dump)]));
+  const db = openTestDB(new Blob([dump]));
 
   await db.$client.waitReady;
 
