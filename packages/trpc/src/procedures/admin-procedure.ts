@@ -39,6 +39,7 @@ export function adminProcedure(permissions: Permissions) {
     }
 
     const hasPermission = await ctx.auth.userHasPermission({
+      headers: ctx.request.headers,
       body: { userId: ctx.userId, permissions: permissions },
     });
     if (!hasPermission.success) {
