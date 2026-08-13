@@ -1,11 +1,11 @@
 ---
 name: trpc-router
-description: Use when creating or changing tRPC routers.
+description: Use when working with tRPC routers or their related schemas, repositories, services, domain errors, and tests.
 ---
 
 ## Files
 
-Keep each feature in `/src/routers/<feature>/`:
+Keep each feature in `src/routers/<feature>/`:
 
 - `errors.ts`: Tagged domain errors. Export each error class by name.
 - `repo.ts`: Database operations. Export one `<feature>Repo` object containing all operations.
@@ -16,7 +16,7 @@ Keep each feature in `/src/routers/<feature>/`:
 - `router.test.ts`: Router unit tests.
 - `schema.ts`: Procedure schemas. Export only `<operation>Input` and `<operation>Output` schemas.
 
-Register the router in `packages/trpc/src/index.ts`.
+Register the router in `src/index.ts`.
 
 ## Router and Schema
 
@@ -60,16 +60,20 @@ const result = await Result.tryPromise({
 - Test routers through `featureRouter.createCaller(...)`, not by invoking handlers directly.
 - Declare dependency mocks with `vi.hoisted` and `vi.fn<typeof repo.method>()`, call `vi.mock` before importing the router, and reset mocks in `beforeEach`.
 - Assert errors as `await expect(result).rejects.toMatchObject({ cause: expect.any(<ErrorClass>) });`
+- Never test `INTERNAL_SERVER_ERROR`.
 
 ## Repository Tests
 
 - Use `setupRepoTest()` and its real database. Execute repository calls through `testContext.inUserContext(...)` so app and user async contexts exist.
 - Use `expect(result.unwrap()).toMatchObject(<value>)` to test successful values.
 - Use `expect(result).toMatchObject({ error: expect.any(<ErrorClass>) });` to test errors.
+- Use `expect(result).rejects.toThrow(Panic);` to test panics.
+- Never test errors that are not defined by either `panic` or a tagged error class.
 
 ## Error Classes
 
 - Define a domain error class for every 4xx error.
+- Define a separate tagged error class for each error reason.
 - Throw domain errors from routers as `throw new TRPCError({ code: "<TRPC_ERROR_CODE>", error: new <ErrorClass>() });`.
 - Map errors returned by repositories and services in routers:
 
