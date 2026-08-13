@@ -2,4 +2,4 @@
 minimumReleaseAge = 259200
 
 [test]
-pathIgnorePatterns = ["apps/**", "packages/**", "references/**"]
+pathIgnorePatterns = ["references/**"]

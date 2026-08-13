@@ -1,5 +1,6 @@
+import { describe, expect, it } from "bun:test";
+
 import { Panic } from "better-result";
-import { describe, expect, it } from "vitest";
 
 import { callInTransaction } from "#async-context/transaction";
 import { setupRepoTest } from "#test-utils/repo";

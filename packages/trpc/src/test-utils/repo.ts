@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach } from "vitest";
+import { afterAll, beforeAll, beforeEach } from "bun:test";
 
 import { callInAppContext } from "#async-context/app";
 import { callInUserContext } from "#async-context/user";
