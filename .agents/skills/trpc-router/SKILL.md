@@ -57,7 +57,7 @@ const result = await Result.tryPromise({
 ## Router Tests
 
 - Test routers through `featureRouter.createCaller(...)`, not by invoking handlers directly.
-- Declare dependency mocks with `mock<typeof repo.method>()`, call `mock.module` before importing the router, and clear mocks in `beforeEach`.
+- Declare dependency mocks with `vi.hoisted` and `vi.fn<typeof repo.method>()`, call `vi.mock` before importing the router, and reset mocks in `beforeEach`.
 - Assert errors as `await expect(result).rejects.toMatchObject({ cause: expect.any(<ErrorClass>) });`
 
 ## Repository Tests

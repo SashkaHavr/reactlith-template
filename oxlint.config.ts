@@ -12,7 +12,7 @@ export default defineConfig({
     "jsdoc",
     "node",
     "promise",
-    "jest",
+    "vitest",
     "react",
     "jsx-a11y",
   ],
@@ -74,10 +74,6 @@ export default defineConfig({
     {
       files: ["*.config.ts"],
       rules: { "import/no-default-export": "off" },
-    },
-    {
-      files: ["**/*.{test,spec}.{js,jsx,ts,tsx}"],
-      rules: { "typescript/await-thenable": "off" },
     },
   ],
   options: {

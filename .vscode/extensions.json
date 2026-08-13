@@ -3,6 +3,7 @@
     "ms-azuretools.vscode-containers",
     "bradlc.vscode-tailwindcss",
     "oxc.oxc-vscode",
-    "inlang.vs-code-extension"
+    "inlang.vs-code-extension",
+    "vitest.explorer"
   ]
 }

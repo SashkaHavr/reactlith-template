@@ -1,11 +1,11 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Context } from "#context";
 import type { getEnvAuth } from "@reactlith-template/env";
 
-const getEnvAuthMock = mock<typeof getEnvAuth>();
+const getEnvAuthMock = vi.hoisted(() => vi.fn<typeof getEnvAuth>());
 
-await mock.module("@reactlith-template/env", () => ({ getEnvAuth: getEnvAuthMock }));
+vi.mock("@reactlith-template/env", () => ({ getEnvAuth: getEnvAuthMock }));
 
 import { configRouter } from "./router";
 
@@ -14,7 +14,7 @@ function createCaller() {
 }
 
 beforeEach(() => {
-  mock.clearAllMocks();
+  vi.resetAllMocks();
 });
 
 describe("configRouter", () => {

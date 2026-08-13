@@ -1,10 +1,15 @@
 import { PGlite } from "@electric-sql/pglite";
 import { dataDir } from "@electric-sql/pglite-prepopulatedfs";
 import { drizzle } from "drizzle-orm/pglite";
+import { inject } from "vitest";
 
 import { relations, schema } from "./relations";
 
-let dump: ArrayBuffer | undefined;
+declare module "vitest" {
+  export interface ProvidedContext {
+    pgliteDump: ArrayBuffer;
+  }
+}
 
 function openTestDB(loadDataDir: Blob) {
   const client = new PGlite({ loadDataDir });
@@ -14,7 +19,7 @@ function openTestDB(loadDataDir: Blob) {
 }
 
 export async function createTestDB() {
-  dump ??= await createTestDBDump();
+  const dump = inject("pgliteDump");
   const db = openTestDB(new Blob([dump]));
 
   await db.$client.waitReady;
@@ -22,18 +27,14 @@ export async function createTestDB() {
   return db;
 }
 
-async function createTestDBDump() {
+export async function createTestDBForDump() {
   const { pushSchema } = await import("drizzle-kit/api-postgres");
   const db = openTestDB(await dataDir());
-  try {
-    const { apply } = await pushSchema(schema, db);
-    await apply();
+  const { apply } = await pushSchema(schema, db);
 
-    const dump = await db.$client.dumpDataDir("none");
-    return await dump.arrayBuffer();
-  } finally {
-    await db.$client.close();
-  }
+  await apply();
+
+  return db;
 }
 
 export type TestDBType = Awaited<ReturnType<typeof createTestDB>>;

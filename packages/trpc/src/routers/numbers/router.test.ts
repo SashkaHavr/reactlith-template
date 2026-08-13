@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
-
 import { Result } from "better-result";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Context } from "#context";
 import type { numberRepo } from "#routers/numbers/repo";
@@ -8,22 +7,22 @@ import { UserNotFound } from "#routers/users/errors";
 import type { userRepo } from "#routers/users/repo";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
-const numberRepoMock = {
-  addNew: mock<typeof numberRepo.addNew>(),
-  deleteAll: mock<typeof numberRepo.deleteAll>(),
-  deleteById: mock<typeof numberRepo.deleteById>(),
-  getAll: mock<typeof numberRepo.getAll>(),
-  getById: mock<typeof numberRepo.getById>(),
-  getCount: mock<typeof numberRepo.getCount>(),
-  getCountAbove: mock<typeof numberRepo.getCountAbove>(),
-  update: mock<typeof numberRepo.update>(),
-};
-const userRepoMock = {
-  getUserLock: mock<typeof userRepo.getUserLock>(),
-};
+const numberRepoMock = vi.hoisted(() => ({
+  addNew: vi.fn<typeof numberRepo.addNew>(),
+  deleteAll: vi.fn<typeof numberRepo.deleteAll>(),
+  deleteById: vi.fn<typeof numberRepo.deleteById>(),
+  getAll: vi.fn<typeof numberRepo.getAll>(),
+  getById: vi.fn<typeof numberRepo.getById>(),
+  getCount: vi.fn<typeof numberRepo.getCount>(),
+  getCountAbove: vi.fn<typeof numberRepo.getCountAbove>(),
+  update: vi.fn<typeof numberRepo.update>(),
+}));
+const userRepoMock = vi.hoisted(() => ({
+  getUserLock: vi.fn<typeof userRepo.getUserLock>(),
+}));
 
-await mock.module("./repo", () => ({ numberRepo: numberRepoMock }));
-await mock.module("#routers/users/repo", () => ({ userRepo: userRepoMock }));
+vi.mock("./repo", () => ({ numberRepo: numberRepoMock }));
+vi.mock("#routers/users/repo", () => ({ userRepo: userRepoMock }));
 
 import { ProtectedProcedureUnauthorized } from "#procedures/protected-procedure";
 
@@ -45,10 +44,10 @@ const numberFullOutput = {
 };
 
 function createCaller({ authenticated = true } = {}) {
-  const getSession = mock<() => Promise<{ user: { id: typeof userId } } | null>>(async () =>
+  const getSession = vi.fn<() => Promise<{ user: { id: typeof userId } } | null>>(async () =>
     authenticated ? { user: { id: userId } } : null,
   );
-  const transaction = mock<(callback: (tx: unknown) => Promise<unknown>) => Promise<unknown>>(
+  const transaction = vi.fn<(callback: (tx: unknown) => Promise<unknown>) => Promise<unknown>>(
     async (callback) => callback({}),
   );
   const caller = numbersRouter.createCaller({
@@ -61,7 +60,7 @@ function createCaller({ authenticated = true } = {}) {
 }
 
 beforeEach(() => {
-  mock.clearAllMocks();
+  vi.resetAllMocks();
 });
 
 describe("numbersRouter", () => {
@@ -94,7 +93,7 @@ describe("numbersRouter", () => {
     const result = await caller.getAll();
 
     expect(result).toEqual({ numbers: [number] });
-    expect(numberRepoMock.getAll).toHaveBeenCalledTimes(1);
+    expect(numberRepoMock.getAll).toHaveBeenCalledOnce();
   });
 
   it("gets a number by id", async () => {
@@ -116,9 +115,9 @@ describe("numbersRouter", () => {
     const result = await caller.addNew({ number: 42 });
 
     expect(result).toEqual(number);
-    expect(transaction).toHaveBeenCalledTimes(1);
-    expect(userRepoMock.getUserLock).toHaveBeenCalledTimes(1);
-    expect(numberRepoMock.getCount).toHaveBeenCalledTimes(1);
+    expect(transaction).toHaveBeenCalledOnce();
+    expect(userRepoMock.getUserLock).toHaveBeenCalledOnce();
+    expect(numberRepoMock.getCount).toHaveBeenCalledOnce();
     expect(numberRepoMock.addNew).toHaveBeenCalledWith(42);
   });
 
@@ -130,7 +129,7 @@ describe("numbersRouter", () => {
     const result = caller.addNew({ number: 42 });
 
     await expect(result).rejects.toMatchObject({ cause: expect.any(MaxCountReached) });
-    expect(userRepoMock.getUserLock).toHaveBeenCalledTimes(1);
+    expect(userRepoMock.getUserLock).toHaveBeenCalledOnce();
     expect(numberRepoMock.addNew).not.toHaveBeenCalled();
   });
 
@@ -172,6 +171,6 @@ describe("numbersRouter", () => {
     const result = await caller.deleteAll();
 
     expect(result).toBeNull();
-    expect(numberRepoMock.deleteAll).toHaveBeenCalledTimes(1);
+    expect(numberRepoMock.deleteAll).toHaveBeenCalledOnce();
   });
 });

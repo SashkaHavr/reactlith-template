@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { describe, expect, it } from "vitest";
 
 import { setupRepoTest } from "#test-utils/repo";
 import { schema } from "@reactlith-template/db";
