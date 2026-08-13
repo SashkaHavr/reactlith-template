@@ -22,7 +22,8 @@ Register the router in `packages/trpc/src/index.ts`.
 
 - Use an appropriate procedure from `src/procedures/*`.
 - Define every procedure output explicitly, including `z.null()` for void mutations.
-- Put single-field transformations and defaults in the procedure output schema. Output schemas apply their transformations and remove extra fields, so do not repeat either operation in the procedure handler.
+- Schema transforms must not encode business logic. Keep business logic in the application layer and use schemas only for validation, coercion, and serialization.
+- Output schemas apply field-level transformations and remove extra fields, so do not repeat either operation in the procedure handler.
 - tRPC input schemas already remove extra fields before passing the input to the procedure handler; do not remove them again in the handler.
 - Use `dateInput` and `dateOutput` for date input and output schemas.
 - Create reusable unexported schema parts when needed.
