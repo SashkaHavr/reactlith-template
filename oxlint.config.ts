@@ -48,6 +48,7 @@ export default defineConfig({
     "import/no-default-export": "error",
     "import/no-named-as-default-member": "off",
     "import/no-named-as-default": "off",
+    "import/namespace": ["error", { allowComputed: true }],
 
     "react/react-in-jsx-scope": "off",
 
