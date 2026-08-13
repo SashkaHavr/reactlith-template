@@ -6,8 +6,8 @@
     "./*": "./src/*.js"
   },
   "scripts": {
-    "dev": "bunx --no-install vite build --watch",
-    "build": "bunx --no-install vite build"
+    "dev": "bun --bun vite build --watch",
+    "build": "bun --bun vite build"
   },
   "devDependencies": {
     "@inlang/paraglide-js": "catalog:",

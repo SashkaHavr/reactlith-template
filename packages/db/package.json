@@ -12,8 +12,8 @@
   },
   "scripts": {
     "dev": "bun run studio",
-    "push": "bunx --no-install --bun drizzle-kit push",
-    "studio": "bun run ../../.devcontainer/localhost.js && bunx --no-install --bun drizzle-kit studio --host 0.0.0.0"
+    "push": "bun --bun drizzle-kit push",
+    "studio": "bun run ../../.devcontainer/localhost.js && bun --bun drizzle-kit studio --host 0.0.0.0"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.4",

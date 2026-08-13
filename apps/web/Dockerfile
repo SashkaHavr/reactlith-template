@@ -4,7 +4,7 @@ WORKDIR /app
 FROM base AS prepare
 COPY . .
 RUN bun ci --filter '.'
-RUN bunx --no-install turbo prune @reactlith-template/web --docker
+RUN bun turbo prune @reactlith-template/web --docker
 
 FROM base AS build
 COPY --from=prepare /app/out/json/ .
