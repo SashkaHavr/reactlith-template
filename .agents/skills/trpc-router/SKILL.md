@@ -10,8 +10,8 @@ Keep each feature in `/src/routers/<feature>/`:
 - `errors.ts`: Tagged domain errors. Export each error class by name.
 - `repo.ts`: Database operations. Export one `<feature>Repo` object containing all operations.
 - `repo.test.ts`: Repository integration tests.
-- `service.ts`: Complex domain logic. Export one `<feature>Service` object containing all operations.
-- `service.test.ts`: Service unit tests.
+- `service.ts`: Complex domain logic, when needed. Export one `<feature>Service` object containing all operations.
+- `service.test.ts`: Service unit tests, when a service exists.
 - `router.ts`: tRPC procedures. Export one `<feature>Router`.
 - `router.test.ts`: Router unit tests.
 - `schema.ts`: Procedure schemas. Export only `<operation>Input` and `<operation>Output` schemas.
@@ -22,16 +22,19 @@ Register the router in `packages/trpc/src/index.ts`.
 
 - Use an appropriate procedure from `src/procedures/*`.
 - Define every procedure output explicitly, including `z.null()` for void mutations.
-- tRPC output schemas already apply their transformations, including removing extra fields; do not repeat them in the procedure handler.
+- Put single-field transformations and defaults in the procedure output schema. Output schemas apply their transformations and remove extra fields, so do not repeat either operation in the procedure handler.
 - tRPC input schemas already remove extra fields before passing the input to the procedure handler; do not remove them again in the handler.
 - Use `dateInput` and `dateOutput` for date input and output schemas.
 - Create reusable unexported schema parts when needed.
+- Routers may contain straightforward logic and should call repositories directly when a service boundary is not justified.
 - Put race-sensitive checks inside `callInTransaction`. Repositories automatically use the active transaction through async context.
 
 ## Repository and Service
 
 - Each repository method should perform exactly one query. Perform database queries only in repositories.
-- Put complex domain logic in service functions.
+- Return query results unchanged from repository methods. Do not map fields, add defaults, or derive values after the query.
+- Services are optional and reserved for complex logic with a clear boundary. Never create a service that only delegates to a repository.
+- Preserve repository output in services unless combining multiple results or replacing a field completely, such as replacing `imageKey` with an `imageUrl`.
 - Resolve dependencies through async context.
 - Always use the transaction DB when `getTransactionContext()` is present.
 - Use `panic` for broken invariants that should produce a 5xx error.
@@ -50,8 +53,6 @@ const result = await Result.tryPromise({
   catch: (cause) => new <ErrorClass>({ cause }),
 });
 ```
-
-- Service functions may call repository methods directly when doing so keeps the service's public API smaller.
 
 ## Router Tests
 
