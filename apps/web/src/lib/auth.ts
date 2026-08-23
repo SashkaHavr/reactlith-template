@@ -27,7 +27,7 @@ export const authClient = createAuthClient({
 });
 
 const getServerAuthApi = createServerOnlyFn(() => {
-  return getGlobalStartContext()?.auth.api!;
+  return getGlobalStartContext()!.auth.api;
 });
 
 const getSession = createIsomorphicFn()
