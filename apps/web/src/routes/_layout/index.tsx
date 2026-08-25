@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_layout/")({
     }
   },
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(numbersAbove50QueryOptions);
+    await queryClient.query({ ...numbersAbove50QueryOptions, staleTime: "static" });
   },
   component: RouteComponent,
 });

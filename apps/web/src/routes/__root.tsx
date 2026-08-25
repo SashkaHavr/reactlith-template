@@ -27,8 +27,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context: { queryClient } }) => {
     const locale = getLocale();
     const [authConfig, auth] = await Promise.all([
-      queryClient.ensureQueryData(authConfigQueryOptions),
-      queryClient.ensureQueryData(getSessionQueryOptions),
+      queryClient.query({ ...authConfigQueryOptions, staleTime: "static" }),
+      queryClient.query({ ...getSessionQueryOptions, staleTime: "static" }),
     ]);
 
     if (auth.loggedIn) {

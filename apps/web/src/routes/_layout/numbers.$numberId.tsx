@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     const numberId = params.numberId as IdBranded<"number">;
 
     try {
-      await queryClient.ensureQueryData(getNumberQueryOptions({ id: numberId }));
+      await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
     } catch (e) {
       if (matchError(e, NumberNotFound)) {
         throw notFound();

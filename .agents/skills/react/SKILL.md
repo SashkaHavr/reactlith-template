@@ -45,7 +45,7 @@ const form = useAppForm({
 - Put all RPC query options and mutations in `/src/queries`.
 - Define RPC queries with TanStack Query's `queryOptions`. Use a stable query key and call the procedure through `getRPC()` in `queryFn`.
 - Always pass the `queryFn` abort signal to RPC queries: `queryFn: async ({ signal }) => getRPC().someQuery.query(input, { signal })`.
-- Preload queries by importing their options and using `await context.queryClient.ensureQueryData(someQueryOptions)` in the route's `loader`.
+- Preload queries by importing their options and using `await context.queryClient.query({...someQueryOptions, staleTime: "static" })` in the route's `loader`.
 - Use `useSuspenseQuery(someQueryOptions)` for unconditional queries and `useQuery({ ...someQueryOptions, enabled })` for conditional queries.
 - Implement RPC mutations with `useMutation({ mutationFn: async (input) => getRPC().someMutation.mutate(input) })` in `/src/queries`.
 - Reuse exported query options' `.queryKey` for cache updates and invalidation.

@@ -34,7 +34,7 @@ const healthQueryOptions = queryOptions({
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(healthQueryOptions);
+    await queryClient.query({ ...healthQueryOptions, staleTime: "static" });
   },
   component: RouteComponent,
 });

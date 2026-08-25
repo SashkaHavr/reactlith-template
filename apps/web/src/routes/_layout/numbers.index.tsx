@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_layout/numbers/")({
     }
   },
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(allNumbersQueryOptions);
+    await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
   },
   component: RouteComponent,
 });
