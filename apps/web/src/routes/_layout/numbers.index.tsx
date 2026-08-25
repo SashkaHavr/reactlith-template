@@ -27,8 +27,8 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { useTRPC } from "~/lib/trpc";
 import {
+  allNumbersQueryOptions,
   useAddNumber,
   useDeleteAllNumbers,
   useDeleteNumber,
@@ -41,8 +41,8 @@ export const Route = createFileRoute("/_layout/numbers/")({
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient, trpc } }) => {
-    await queryClient.ensureQueryData(trpc.numbers.getAll.queryOptions());
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.ensureQueryData(allNumbersQueryOptions);
   },
   component: RouteComponent,
 });
@@ -53,9 +53,8 @@ const customNumberInput = addNewInput.extend({
 
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
-  const trpc = useTRPC();
   const auth = useLoggedInAuth();
-  const numbers = useSuspenseQuery(trpc.numbers.getAll.queryOptions());
+  const numbers = useSuspenseQuery(allNumbersQueryOptions);
   const addNumber = useAddNumber();
   const updateNumber = useUpdateNumber();
   const deleteNumber = useDeleteNumber();

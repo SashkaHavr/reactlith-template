@@ -42,9 +42,12 @@ const form = useAppForm({
 - When creating subroutes, always create a `src/routes/<route>/` folder. Use `src/routes/<route>/index.tsx` for the index route and `src/routes/<route>/route.tsx` for the layout.
 - Perform access checks and redirects in a route's `beforeLoad`, not in component effects.
 - Use TanStack Router's `Link`, `useNavigate`, or the shared `LinkButton` for internal navigation instead of raw anchors or `window.location`.
-- Preload queries with `await context.queryClient.ensureQueryData(context.trpc.someQuery.queryOptions())` in the route's `loader`.
-- Use `useTRPC()` and `useSuspenseQuery(trpc.someQuery.queryOptions())` for unconditional tRPC queries in React components.
-- Use `useTRPC()` and `useQuery(trpc.someQuery.queryOptions())` for conditional tRPC queries in React components.
-- Use the second parameter of `.queryOptions()` to specify options such as `enabled` or `select` when needed, for example, `trpc.someQuery.queryOptions(input, { enabled: false })`.
-- Put all mutations and non-obvious queries in `/src/queries`.
+- Put all RPC query options and mutations in `/src/queries`.
+- Define RPC queries with TanStack Query's `queryOptions`. Use a stable query key and call the procedure through `getRPC()` in `queryFn`.
+- Always pass the `queryFn` abort signal to RPC queries: `queryFn: async ({ signal }) => getRPC().someQuery.query(input, { signal })`. Pass `undefined` as the input for procedures without input.
+- Type RPC inputs with `TRPCInput`, for example `TRPCInput["numbers"]["getById"]`.
+- Preload queries by importing their options and using `await context.queryClient.ensureQueryData(someQueryOptions)` in the route's `loader`.
+- Use `useSuspenseQuery(someQueryOptions)` for unconditional queries and `useQuery({ ...someQueryOptions, enabled })` for conditional queries.
+- Implement RPC mutations with `useMutation({ mutationFn: async (input) => getRPC().someMutation.mutate(input) })` in `/src/queries`.
+- Reuse exported query options' `.queryKey` for cache updates and invalidation. Keep shared prefix keys beside their query options when cache operations target a group of queries.
 - Use `matchError(error, <ErrorClass>)` to match domain errors from the backend.

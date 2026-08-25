@@ -31,6 +31,7 @@ export default defineConfig({
     "no-process-env": "error",
     "no-shadow": "off",
     "typescript/only-throw-error": "error",
+    "no-underscore-dangle": "off",
 
     "typescript/no-misused-promises": "error",
     "typescript/consistent-type-imports": "error",

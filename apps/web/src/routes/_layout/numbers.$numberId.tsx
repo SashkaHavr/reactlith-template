@@ -14,8 +14,8 @@ import { getLocale } from "@reactlith-template/intl/runtime";
 import { NumberNotFound } from "@reactlith-template/trpc/errors/numbers";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { matchError, useTRPC } from "~/lib/trpc";
-import { useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
+import { matchError } from "~/lib/rpc";
+import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
   beforeLoad: ({ context: { auth } }) => {
@@ -23,10 +23,11 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient, trpc }, params }) => {
+  loader: async ({ context: { queryClient }, params }) => {
     const numberId = params.numberId as IdBranded<"number">;
+
     try {
-      await queryClient.ensureQueryData(trpc.numbers.getById.queryOptions({ id: numberId }));
+      await queryClient.ensureQueryData(getNumberQueryOptions({ id: numberId }));
     } catch (e) {
       if (matchError(e, NumberNotFound)) {
         throw notFound();
@@ -40,10 +41,9 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
 function RouteComponent() {
   const { numberId } = Route.useLoaderData();
   const navigate = useNavigate();
-  const trpc = useTRPC();
   const auth = useLoggedInAuth();
   const hydrated = useHydrated();
-  const number = useSuspenseQuery(trpc.numbers.getById.queryOptions({ id: numberId }));
+  const number = useSuspenseQuery(getNumberQueryOptions({ id: numberId }));
   const updateNumber = useUpdateNumber();
   const deleteNumber = useDeleteNumber({
     onSuccess: async () => await navigate({ to: "/numbers" }),

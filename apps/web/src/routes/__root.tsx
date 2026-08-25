@@ -16,17 +16,18 @@ import { getTheme } from "~/components/theme/context";
 import { ThemeScript, ThemeProvider } from "~/components/theme/provider";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
-import type { TRPCRouteContext } from "~/lib/trpc";
+import type { RouterContext } from "~/lib/context";
 import { cn } from "~/lib/utils";
+import { authConfigQueryOptions } from "~/queries/config";
 import { getServerLog } from "~/utils/log";
 
 import indexCss from "../index.css?url";
 
-export const Route = createRootRouteWithContext<TRPCRouteContext>()({
-  beforeLoad: async ({ context: { queryClient, trpc } }) => {
+export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async ({ context: { queryClient } }) => {
     const locale = getLocale();
-    const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(trpc.config.auth.queryOptions()),
+    const [authConfig, auth] = await Promise.all([
+      queryClient.ensureQueryData(authConfigQueryOptions),
       queryClient.ensureQueryData(getSessionQueryOptions),
     ]);
 
@@ -36,7 +37,7 @@ export const Route = createRootRouteWithContext<TRPCRouteContext>()({
 
     return {
       auth,
-      config,
+      authConfig,
       locale: locale,
       theme: await getTheme(),
     };
@@ -119,7 +120,7 @@ function useSetupZodLocale() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { locale, theme } = Route.useRouteContext({
-    select: (s) => ({ locale: s.locale, theme: s.theme, auth: s.auth }),
+    select: (s) => ({ locale: s.locale, theme: s.theme }),
   });
 
   useSetLogIdentity();
