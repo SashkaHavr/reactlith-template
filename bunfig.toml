@@ -1,5 +1,5 @@
 [install]
-minimumReleaseAge = 259200
+minimumReleaseAge = 86400
 
 [test]
 pathIgnorePatterns = "**"

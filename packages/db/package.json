@@ -16,8 +16,8 @@
     "studio": "bun run ../../.devcontainer/localhost.js && bun --bun drizzle-kit studio --host 0.0.0.0"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.5.5",
-    "@electric-sql/pglite-prepopulatedfs": "0.5.5",
+    "@electric-sql/pglite": "0.5.7",
+    "@electric-sql/pglite-prepopulatedfs": "0.5.7",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
