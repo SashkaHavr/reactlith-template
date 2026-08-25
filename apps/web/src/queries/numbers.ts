@@ -1,5 +1,6 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 
+import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import type { TRPCInput } from "@reactlith-template/trpc";
 import { MaxCountReached } from "@reactlith-template/trpc/errors/numbers";
@@ -16,11 +17,14 @@ export const numbersAbove50QueryOptions = queryOptions({
   queryFn: async ({ signal }) => getRPC().numbers.getCountAbove50.query(undefined, { signal }),
 });
 
-const numberQueryKey = ["numbers", "getById"] as const;
+export const numberQueryKey = {
+  all: () => ["numbers", "getById"] as const,
+  byId: (id: IdBranded<"number">) => ["numbers", "getById", id] as const,
+};
 
 export function getNumberQueryOptions(input: TRPCInput["numbers"]["getById"]) {
   return queryOptions({
-    queryKey: [...numberQueryKey, input],
+    queryKey: numberQueryKey.byId(input.id),
     queryFn: async ({ signal }) => getRPC().numbers.getById.query(input, { signal }),
   });
 }
@@ -93,7 +97,7 @@ export function useDeleteAllNumbers() {
     mutationFn: async () => getRPC().numbers.deleteAll.mutate(),
     onSuccess: () => {
       queryClient.setQueryData(allNumbersQueryOptions.queryKey, { numbers: [] });
-      queryClient.removeQueries({ queryKey: numberQueryKey });
+      queryClient.removeQueries({ queryKey: numberQueryKey.all() });
     },
   });
 }

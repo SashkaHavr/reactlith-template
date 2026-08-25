@@ -44,10 +44,10 @@ const form = useAppForm({
 - Use TanStack Router's `Link`, `useNavigate`, or the shared `LinkButton` for internal navigation instead of raw anchors or `window.location`.
 - Put all RPC query options and mutations in `/src/queries`.
 - Define RPC queries with TanStack Query's `queryOptions`. Use a stable query key and call the procedure through `getRPC()` in `queryFn`.
-- Always pass the `queryFn` abort signal to RPC queries: `queryFn: async ({ signal }) => getRPC().someQuery.query(input, { signal })`. Pass `undefined` as the input for procedures without input.
-- Type RPC inputs with `TRPCInput`, for example `TRPCInput["numbers"]["getById"]`.
+- Always pass the `queryFn` abort signal to RPC queries: `queryFn: async ({ signal }) => getRPC().someQuery.query(input, { signal })`.
 - Preload queries by importing their options and using `await context.queryClient.ensureQueryData(someQueryOptions)` in the route's `loader`.
 - Use `useSuspenseQuery(someQueryOptions)` for unconditional queries and `useQuery({ ...someQueryOptions, enabled })` for conditional queries.
 - Implement RPC mutations with `useMutation({ mutationFn: async (input) => getRPC().someMutation.mutate(input) })` in `/src/queries`.
-- Reuse exported query options' `.queryKey` for cache updates and invalidation. Keep shared prefix keys beside their query options when cache operations target a group of queries.
+- Reuse exported query options' `.queryKey` for cache updates and invalidation.
+- Export query-key factory objects beside their query options when cache operations need both exact and prefix keys. Prefer named methods, for example `someQueryKey.all()` and `someQueryKey.byId(id)`.
 - Use `matchError(error, <ErrorClass>)` to match domain errors from the backend.
