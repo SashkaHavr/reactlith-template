@@ -2,7 +2,7 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { TRPCInput } from "@reactlith-template/trpc";
+import type { TRPCInput, TRPCOutput } from "@reactlith-template/trpc";
 import { MaxCountReached } from "@reactlith-template/trpc/errors/numbers";
 import { toastManager } from "~/components/ui/toast";
 import { getRPC, matchError } from "~/lib/rpc";
@@ -61,6 +61,36 @@ export function useUpdateNumber() {
   return useMutation({
     mutationFn: async (input: TRPCInput["numbers"]["update"]) =>
       getRPC().numbers.update.mutate(input),
+    onMutate: async (input) => {
+      const detailQueryKey = getNumberQueryOptions({ id: input.id }).queryKey;
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: allNumbersQueryOptions.queryKey }),
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+      ]);
+
+      const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
+      const previousNumber = queryClient.getQueryData(detailQueryKey);
+
+      queryClient.setQueryData(detailQueryKey, (number) =>
+        number ? { ...number, ...input.data } : number,
+      );
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
+        data
+          ? {
+              numbers: data.numbers.map((number) =>
+                number.id === input.id ? { ...number, ...input.data } : number,
+              ),
+            }
+          : data,
+      );
+
+      return { detailQueryKey, previousAllNumbers, previousNumber };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, context.previousAllNumbers);
+      queryClient.setQueryData(context.detailQueryKey, context.previousNumber);
+    },
     onSuccess: async (number) => {
       queryClient.setQueryData(getNumberQueryOptions({ id: number.id }).queryKey, number);
       queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
@@ -74,17 +104,37 @@ export function useUpdateNumber() {
   });
 }
 
-export function useDeleteNumber(options?: { onSuccess?: () => Promise<void> | void }) {
+export function useDeleteNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (input: TRPCInput["numbers"]["delete"]) =>
       getRPC().numbers.delete.mutate(input),
-    onSuccess: async ({ id }) => {
+    onMutate: async ({ id }) => {
+      const detailQueryKey = getNumberQueryOptions({ id }).queryKey;
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: allNumbersQueryOptions.queryKey }),
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+      ]);
+
+      const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
+      const previousNumber = queryClient.getQueryData(detailQueryKey);
+
       queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
         data ? { numbers: data.numbers.filter((number) => number.id !== id) } : data,
       );
-      await options?.onSuccess?.();
+      queryClient.removeQueries({ queryKey: detailQueryKey });
+
+      return { detailQueryKey, previousAllNumbers, previousNumber };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, context.previousAllNumbers);
+      if (context.previousNumber) {
+        queryClient.setQueryData(context.detailQueryKey, context.previousNumber);
+      }
+    },
+    onSuccess: async ({ id }) => {
       queryClient.removeQueries({ queryKey: getNumberQueryOptions({ id }).queryKey });
     },
   });
@@ -95,8 +145,32 @@ export function useDeleteAllNumbers() {
 
   return useMutation({
     mutationFn: async () => getRPC().numbers.deleteAll.mutate(),
+    onMutate: async () => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: allNumbersQueryOptions.queryKey }),
+        queryClient.cancelQueries({ queryKey: numberQueryKey.all() }),
+      ]);
+
+      const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
+      const previousNumbers = queryClient.getQueriesData<TRPCOutput["numbers"]["getById"]>({
+        queryKey: numberQueryKey.all(),
+      });
+
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
+        data ? { numbers: [] } : data,
+      );
+      queryClient.removeQueries({ queryKey: numberQueryKey.all() });
+
+      return { previousAllNumbers, previousNumbers };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, context.previousAllNumbers);
+      for (const [queryKey, number] of context.previousNumbers) {
+        queryClient.setQueryData(queryKey, number);
+      }
+    },
     onSuccess: () => {
-      queryClient.setQueryData(allNumbersQueryOptions.queryKey, { numbers: [] });
       queryClient.removeQueries({ queryKey: numberQueryKey.all() });
     },
   });

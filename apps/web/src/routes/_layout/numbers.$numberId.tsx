@@ -45,9 +45,7 @@ function RouteComponent() {
   const hydrated = useHydrated();
   const number = useSuspenseQuery(getNumberQueryOptions({ id: numberId }));
   const updateNumber = useUpdateNumber();
-  const deleteNumber = useDeleteNumber({
-    onSuccess: async () => await navigate({ to: "/numbers" }),
-  });
+  const deleteNumber = useDeleteNumber();
   const signout = useSignout();
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
     dateStyle: "long",
@@ -78,7 +76,12 @@ function RouteComponent() {
           <PencilIcon />
           {m.example_updateNumber()}
         </Button>
-        <Button variant="destructive-outline" onClick={() => deleteNumber.mutate({ id: numberId })}>
+        <Button
+          variant="destructive-outline"
+          onClick={() =>
+            void navigate({ to: "/numbers" }).then(() => deleteNumber.mutate({ id: numberId }))
+          }
+        >
           <Trash2Icon />
           Delete number
         </Button>
