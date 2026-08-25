@@ -2,7 +2,6 @@ import { afterAll, beforeAll, beforeEach } from "vitest";
 
 import { callInAppContext } from "#async-context/app";
 import { callInUserContext } from "#async-context/user";
-import type { DBType } from "@reactlith-template/db";
 import { schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { createTestDB } from "@reactlith-template/db/test-db";
@@ -53,7 +52,7 @@ export function setupRepoTest() {
       return otherUserId;
     },
     async inUserContext<T>(id: IdBranded<"user">, callback: () => Promise<T>) {
-      return callInAppContext({ db: db as unknown as DBType } as AppContext, async () =>
+      return callInAppContext({ db: db } as AppContext, async () =>
         callInUserContext({ userId: id } as UserContext, callback),
       );
     },

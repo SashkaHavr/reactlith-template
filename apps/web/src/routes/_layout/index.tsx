@@ -29,8 +29,8 @@ function RouteComponent() {
   const signInWithGoogle = useMutation({
     mutationFn: async () => {
       if (authConfig.googleEmulate) {
-        await authClient.signIn.oauth2({
-          providerId: "google-emulate",
+        await authClient.signIn.social({
+          provider: "google-emulate",
           callbackURL: window.location.href,
         });
       } else {

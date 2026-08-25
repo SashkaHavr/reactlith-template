@@ -1,23 +1,19 @@
-import { boolean, index, snakeCase, text, timestamp } from "drizzle-orm/pg-core";
+import { snakeCase, text, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
 
 import { baseTable } from "#utils/base-table";
 import { oneToManyCascadeOnDelete } from "#utils/foreign-keys";
 
-export const user = snakeCase.table(
-  "user",
-  {
-    ...baseTable<"user">(),
-    name: text().notNull(),
-    email: text().notNull().unique(),
-    emailVerified: boolean().default(false).notNull(),
-    image: text(),
-    role: text(),
-    banned: boolean(),
-    banReason: text(),
-    banExpires: timestamp({ withTimezone: true }),
-  },
-  (table) => [index().on(table.email)],
-);
+export const user = snakeCase.table("user", {
+  ...baseTable<"user">(),
+  name: text().notNull(),
+  email: text().notNull().unique(),
+  emailVerified: boolean().default(false).notNull(),
+  image: text(),
+  role: text(),
+  banned: boolean().default(false),
+  banReason: text(),
+  banExpires: timestamp({ withTimezone: true }),
+});
 
 export const session = snakeCase.table(
   "session",
@@ -30,13 +26,14 @@ export const session = snakeCase.table(
     userId: oneToManyCascadeOnDelete(() => user.id),
     impersonatedBy: text(),
   },
-  (table) => [index().on(table.userId), index().on(table.token)],
+  (table) => [index().on(table.userId)],
 );
 
 export const account = snakeCase.table(
   "account",
   {
     ...baseTable<"account">(),
+    issuer: text().notNull(),
     accountId: text().notNull(),
     providerId: text().notNull(),
     userId: oneToManyCascadeOnDelete(() => user.id),
@@ -48,7 +45,7 @@ export const account = snakeCase.table(
     scope: text(),
     password: text(),
   },
-  (table) => [index().on(table.userId)],
+  (table) => [uniqueIndex().on(table.issuer, table.accountId), index().on(table.userId)],
 );
 
 export const verification = snakeCase.table(

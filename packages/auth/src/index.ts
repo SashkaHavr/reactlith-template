@@ -1,11 +1,11 @@
+import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import { ac, roles } from "#permissions";
-import type { DBType } from "@reactlith-template/db";
 import { schema } from "@reactlith-template/db";
+import type { DBType } from "@reactlith-template/db";
 import { getEnvAuth } from "@reactlith-template/env";
 
 export function createAuth(db: DBType) {

@@ -47,6 +47,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const media = window.matchMedia(MEDIA);
     media.addEventListener("change", handleMediaQuery);
+    // oxlint-disable-next-line react/set-state-in-effect
     handleMediaQuery(media);
     return () => media.removeEventListener("change", handleMediaQuery);
   }, []);

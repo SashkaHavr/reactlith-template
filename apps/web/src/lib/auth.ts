@@ -12,7 +12,6 @@ import {
 } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
-import { genericOAuthClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
@@ -20,7 +19,7 @@ import { ac, roles } from "@reactlith-template/auth/permissions";
 
 export const authClient = createAuthClient({
   basePath: "/api/auth",
-  plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles }), genericOAuthClient()],
+  plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
   fetchOptions: {
     throw: true,
   },

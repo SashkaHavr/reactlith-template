@@ -10,9 +10,10 @@
     "./permissions": "./src/permissions.ts"
   },
   "scripts": {
-    "generate-db-schema": "bunx auth@latest generate --config generated/config.ts --output ./generated/auth-schema.ts --yes"
+    "generate-db-schema": "NODE_ENV=development bunx auth@latest generate --config ./generated/config.ts --output ./generated/auth-schema.ts --yes"
   },
   "devDependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.1",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/env": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
