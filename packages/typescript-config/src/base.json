@@ -14,6 +14,13 @@
     "noEmit": true,
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "diagnostics": false
+      }
+    ]
   }
 }

@@ -60,9 +60,11 @@
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d",
     "deps": "bun update --interactive --recursive",
     "dev": "turbo dev --env-mode=loose",
-    "postinstall": "if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then bun run --filter @reactlith-template/intl build; fi"
+    "postinstall": "effect-tsgo patch --oxlint",
+    "prepare": "if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then bun run --filter @reactlith-template/intl build; fi"
   },
   "devDependencies": {
+    "@effect/tsgo": "^0.37.0",
     "oxfmt": "0.65.0",
     "oxlint": "1.80.0",
     "oxlint-tsgolint": "7.0.2001",

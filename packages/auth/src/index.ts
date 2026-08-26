@@ -57,12 +57,11 @@ export function createAuth(db: DBType) {
       },
     },
     socialProviders: {
-      google: googleEmulateUrl
-        ? undefined
-        : {
-            clientId: config.googleClientId,
-            clientSecret: Redacted.value(config.googleClientSecret),
-          },
+      google: {
+        clientId: config.googleClientId,
+        clientSecret: Redacted.value(config.googleClientSecret),
+        enabled: googleEmulateUrl === undefined,
+      },
     },
   });
 }

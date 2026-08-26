@@ -1,3 +1,5 @@
+import effectAntipattern from "@effect/tsgo/oxlint-presets/antipattern.json" with { type: "json" };
+import effectCorrectness from "@effect/tsgo/oxlint-presets/correctness.json" with { type: "json" };
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
@@ -15,6 +17,7 @@ export default defineConfig({
     "vitest",
     "react",
     "jsx-a11y",
+    "effecttsgo",
   ],
   env: {
     browser: true,
@@ -71,6 +74,9 @@ export default defineConfig({
     ],
 
     "jsx-a11y/prefer-tag-over-role": "off",
+
+    ...Object.fromEntries(Object.keys(effectCorrectness.rules).map((k) => [k, "error" as const])),
+    ...Object.fromEntries(Object.keys(effectAntipattern.rules).map((k) => [k, "error" as const])),
   },
   overrides: [
     {
