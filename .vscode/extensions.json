@@ -4,6 +4,7 @@
     "bradlc.vscode-tailwindcss",
     "oxc.oxc-vscode",
     "inlang.vs-code-extension",
-    "vitest.explorer"
+    "vitest.explorer",
+    "typescriptteam.native-preview"
   ]
 }

@@ -24,7 +24,6 @@
     "drizzle-orm": "catalog:",
     "effect": "catalog:",
     "evlog": "catalog:",
-    "typescript": "catalog:",
     "zod": "catalog:"
   }
 }

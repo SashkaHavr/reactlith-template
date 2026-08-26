@@ -19,7 +19,6 @@
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "better-auth": "catalog:",
-    "effect": "catalog:",
-    "typescript": "catalog:"
+    "effect": "catalog:"
   }
 }

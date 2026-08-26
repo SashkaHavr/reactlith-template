@@ -44,7 +44,6 @@
     "tailwind-merge": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
-    "typescript": "catalog:",
     "vite": "catalog:",
     "zod": "catalog:"
   }

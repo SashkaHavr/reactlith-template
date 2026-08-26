@@ -26,7 +26,6 @@
     "drizzle-seed": "catalog:",
     "effect": "catalog:",
     "pg": "catalog:",
-    "typescript": "catalog:",
     "uuid": "catalog:",
     "zod": "catalog:"
   }
