@@ -14,7 +14,7 @@
   "devDependencies": {
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/env": "workspace:*",
+    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@trpc/client": "catalog:",
@@ -22,6 +22,7 @@
     "@types/bun": "catalog:",
     "better-result": "catalog:",
     "drizzle-orm": "catalog:",
+    "effect": "catalog:",
     "evlog": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"

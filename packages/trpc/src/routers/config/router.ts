@@ -1,13 +1,17 @@
+import { Effect, Option, Redacted } from "effect";
+
 import { publicProcedure, router } from "#init";
-import { getEnvAuth } from "@reactlith-template/env";
+import { AuthConfig } from "@reactlith-template/services/auth-config";
 
 import { authOutput } from "./schema";
 
 export const configRouter = router({
   auth: publicProcedure.output(authOutput).query(() => {
+    const config = Effect.runSync(AuthConfig.make);
+
     return {
-      google: !!getEnvAuth().GOOGLE_CLIENT_ID && !!getEnvAuth().GOOGLE_CLIENT_SECRET,
-      googleEmulate: !!getEnvAuth().GOOGLE_EMULATE_URL,
+      google: !!config.googleClientId && !!Redacted.value(config.googleClientSecret),
+      googleEmulate: Option.isSome(config.googleEmulateUrl),
     };
   }),
 });

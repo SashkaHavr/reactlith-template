@@ -1,13 +1,16 @@
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { Effect, Redacted } from "effect";
 
-import { getEnvDB } from "@reactlith-template/env";
+import { DBConfig } from "@reactlith-template/services/db-config";
 
 import { relations, schema } from "./relations";
 
 export function createDB() {
+  const config = Effect.runSync(DBConfig.make);
+
   return drizzle({
-    connection: getEnvDB().DATABASE_URL,
+    connection: Redacted.value(config.databaseUrl),
     relations: relations,
   });
 }
