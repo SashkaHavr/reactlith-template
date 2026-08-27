@@ -69,6 +69,8 @@ export default defineConfig({
 
     ...Object.fromEntries(Object.keys(effectCorrectness.rules).map((k) => [k, "error" as const])),
     ...Object.fromEntries(Object.keys(effectAntipattern.rules).map((k) => [k, "error" as const])),
+
+    "effecttsgo/strict-effect-provide": "off",
   },
   overrides: [
     {

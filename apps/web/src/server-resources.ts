@@ -1,7 +1,9 @@
-import { createAuth } from "@reactlith-template/auth";
-import { createDB } from "@reactlith-template/db";
+import { Effect } from "effect";
 
-const db = createDB();
+import { createAuth } from "@reactlith-template/auth";
+import { DrizzlePostgresClient } from "@reactlith-template/db";
+
+const db = Effect.runSync(DrizzlePostgresClient.pipe(Effect.provide(DrizzlePostgresClient.layer)));
 const auth = createAuth(db);
 
 export async function dispose() {
