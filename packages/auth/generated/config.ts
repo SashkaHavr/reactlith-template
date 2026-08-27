@@ -1,5 +1,4 @@
-import {createAuth} from "../src/index"
+import { createAuth } from "#/index";
 import { createDB } from "@reactlith-template/db";
 
-export const auth = createAuth(createDB())
-
+export const auth = createAuth(createDB());

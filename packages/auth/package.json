@@ -10,7 +10,7 @@
     "./permissions": "./src/permissions.ts"
   },
   "scripts": {
-    "generate-db-schema": "NODE_ENV=development bunx auth@latest generate --config ./generated/config.ts --output ./generated/auth-schema.ts --yes"
+    "generate": "NODE_ENV=development bunx auth@latest generate --config ./generated/config.ts --output ./generated/auth-schema.ts --yes"
   },
   "devDependencies": {
     "@better-auth/drizzle-adapter": "^1.7.1",
