@@ -39,8 +39,8 @@ const numberFull = {
 };
 const numberFullOutput = {
   ...number,
-  createdAt: 1_000,
-  updatedAt: 2_000,
+  createdAt: "1970-01-01T00:00:01.000Z",
+  updatedAt: "1970-01-01T00:00:02.000Z",
 };
 
 function createCaller({ authenticated = true } = {}) {

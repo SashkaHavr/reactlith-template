@@ -1,8 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import * as z from "zod";
 
 import { m } from "@reactlith-template/intl/messages";
 import { addNewInput } from "@reactlith-template/trpc/schema/numbers";
@@ -47,9 +47,12 @@ export const Route = createFileRoute("/_layout/numbers/")({
   component: RouteComponent,
 });
 
-const customNumberInput = addNewInput.extend({
-  number: z.string().min(1).transform(Number).pipe(addNewInput.shape.number),
-});
+const customNumberInput = Schema.toStandardSchemaV1(
+  Schema.Struct({
+    ...addNewInput.fields,
+    number: Schema.FiniteFromString.pipe(Schema.decodeTo(addNewInput.fields.number)),
+  }),
+);
 
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
@@ -64,7 +67,7 @@ function RouteComponent() {
     defaultValues: { number: "" },
     validators: { onSubmit: customNumberInput },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber.mutateAsync(customNumberInput.parse(value));
+      await addNumber.mutateAsync(Schema.decodeUnknownSync(customNumberInput)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },

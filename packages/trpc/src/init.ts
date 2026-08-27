@@ -1,6 +1,5 @@
 import { initTRPC } from "@trpc/server";
 import { isTaggedError } from "better-result";
-import * as z from "zod";
 
 import { callInAppContext } from "./async-context/app";
 import type { Context } from "./context";
@@ -12,7 +11,6 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError: error.cause instanceof z.ZodError ? z.flattenError(error.cause) : null,
         resultError: isTaggedError(error.cause) ? error.cause.toJSON() : null,
       },
     };

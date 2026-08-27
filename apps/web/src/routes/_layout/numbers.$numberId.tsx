@@ -90,10 +90,12 @@ function RouteComponent() {
         <p className="text-center text-4xl font-bold">{number.data.number}</p>
         <div className="flex flex-col gap-2 text-left">
           <p>
-            {m.example_createdAt()}: {hydrated && dateFormatter.format(number.data.createdAt)}
+            {m.example_createdAt()}:{" "}
+            {hydrated && dateFormatter.format(new Date(number.data.createdAt))}
           </p>
           <p>
-            {m.example_updatedAt()}: {hydrated && dateFormatter.format(number.data.updatedAt)}
+            {m.example_updatedAt()}:{" "}
+            {hydrated && dateFormatter.format(new Date(number.data.updatedAt))}
           </p>
         </div>
       </div>

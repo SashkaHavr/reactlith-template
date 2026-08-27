@@ -23,7 +23,6 @@
     "better-result": "catalog:",
     "drizzle-orm": "catalog:",
     "effect": "catalog:",
-    "evlog": "catalog:",
-    "zod": "catalog:"
+    "evlog": "catalog:"
   }
 }

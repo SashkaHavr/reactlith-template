@@ -1,24 +1,35 @@
-import * as z from "zod";
+import { Schema } from "effect";
 
-import { dateOutput } from "#utils/codecs";
-import { idBranded } from "@reactlith-template/db/id-branded";
+import { IdBranded } from "@reactlith-template/db/id-branded";
 
-const numberValue = z.int().min(0).max(100);
+const numberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
 
-const numberInput = z.object({ number: numberValue });
-const numberUpdateInput = numberInput.partial().refine((data) => Object.keys(data).length > 0);
-const numberOutput = z.object({ id: idBranded("number"), number: numberValue });
-const numberIdInput = z.object({ id: idBranded("number") });
-const numberFullOutput = numberOutput.extend({ createdAt: dateOutput, updatedAt: dateOutput });
+const numberInput = Schema.Struct({ number: numberValue });
+const numberUpdateInput = Schema.Struct({ number: Schema.optionalKey(numberValue) }).check(
+  Schema.makeFilter((data) => Object.keys(data).length > 0),
+);
+const numberOutput = Schema.Struct({ id: IdBranded("number"), number: numberValue });
+const numberIdInput = Schema.Struct({ id: IdBranded("number") });
+const numberFullOutput = Schema.Struct({
+  ...numberOutput.fields,
+  createdAt: Schema.flip(Schema.DateFromString),
+  updatedAt: Schema.flip(Schema.DateFromString),
+});
 
-export const getAllOutput = z.object({ numbers: z.array(numberOutput) });
-export const getCountAbove50Output = z.object({ count: z.int().nonnegative() });
-export const getByIdInput = numberIdInput;
-export const getByIdOutput = numberFullOutput;
-export const addNewInput = numberInput;
-export const addNewOutput = numberOutput;
-export const updateInput = z.object({ id: idBranded("number"), data: numberUpdateInput });
-export const updateOutput = numberFullOutput;
-export const deleteInput = numberIdInput;
-export const deleteOutput = numberIdInput;
-export const deleteAllOutput = z.null();
+export const getAllOutput = Schema.toStandardSchemaV1(
+  Schema.Struct({ numbers: Schema.Array(numberOutput) }),
+);
+export const getCountAbove50Output = Schema.toStandardSchemaV1(
+  Schema.Struct({ count: Schema.Natural }),
+);
+export const getByIdInput = Schema.toStandardSchemaV1(numberIdInput);
+export const getByIdOutput = Schema.toStandardSchemaV1(numberFullOutput);
+export const addNewInput = Schema.toStandardSchemaV1(numberInput);
+export const addNewOutput = Schema.toStandardSchemaV1(numberOutput);
+export const updateInput = Schema.toStandardSchemaV1(
+  Schema.Struct({ id: IdBranded("number"), data: numberUpdateInput }),
+);
+export const updateOutput = Schema.toStandardSchemaV1(numberFullOutput);
+export const deleteInput = Schema.toStandardSchemaV1(numberIdInput);
+export const deleteOutput = Schema.toStandardSchemaV1(numberIdInput);
+export const deleteAllOutput = Schema.toStandardSchemaV1(Schema.Null);
