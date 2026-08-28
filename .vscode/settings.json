@@ -20,6 +20,7 @@
   "remote.autoForwardPorts": false,
   "remote.forwardOnOpen": false,
   "remote.restoreForwardedPorts": false,
+  "git.repositoryScanIgnoredFolders": ["node_modules", "references"],
   "js/ts.experimental.useTsgo": true,
   "js/ts.tsdk.path": "./node_modules/typescript/bin",
   "js/ts.tsdk.promptToUseWorkspaceVersion": true,
