@@ -7,20 +7,17 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./errors/*": "./src/routers/*/errors.ts",
-    "./schema/*": "./src/routers/*/schema.ts"
+    "./schema/*": "./src/features/*/schema.ts"
   },
   "scripts": {},
   "devDependencies": {
+    "@effect/vitest": "catalog:",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
-    "@trpc/client": "catalog:",
-    "@trpc/server": "catalog:",
     "@types/bun": "catalog:",
-    "better-result": "catalog:",
     "drizzle-orm": "catalog:",
     "effect": "catalog:",
     "evlog": "catalog:"

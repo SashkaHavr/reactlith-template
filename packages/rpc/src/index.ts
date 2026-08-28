@@ -1,42 +1,28 @@
-import { unstable_localLink } from "@trpc/client";
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import { Layer } from "effect";
+import * as RpcGroup from "effect/unstable/rpc/RpcGroup";
 
-import { createContext } from "#context";
-import type { ContextParam } from "#context";
-import { createCallerFactory, router } from "#init";
-import { configRouter } from "#routers/config/router";
-import { numbersRouter } from "#routers/numbers/router";
+import { ConfigRpcsLive } from "#features/config/layer";
+import { ConfigRpcs } from "#features/config/schema";
+import { NumbersRpcsLive } from "#features/numbers/layer";
+import { NumberRepo } from "#features/numbers/repo";
+import { NumbersRpcs } from "#features/numbers/schema";
+import { UserRepo } from "#features/users/repo";
+import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
+import { GlobalMiddlewareLive } from "#middleware/global/layer";
+import { GlobalMiddleware } from "#middleware/global/schema";
+import { DrizzlePostgresClient } from "@reactlith-template/db";
 
-const appRouter = router({
-  config: configRouter,
-  numbers: numbersRouter,
-});
+export const AppRpcs = RpcGroup.make().merge(ConfigRpcs, NumbersRpcs).middleware(GlobalMiddleware);
 
-export async function trpcHandler(context: ContextParam) {
-  return await fetchRequestHandler({
-    req: context.request,
-    router: appRouter,
-    endpoint: "/api/rpc",
-    createContext: (opts) => createContext({ request: opts.req, context: context.context }),
-  });
-}
+export const AppRpcsLive = Layer.mergeAll(
+  ConfigRpcsLive,
+  NumbersRpcsLive,
+  AuthenticationMiddlewareLive,
+  GlobalMiddlewareLive,
+).pipe(
+  Layer.provideMerge(NumberRepo.layer),
+  Layer.provideMerge(UserRepo.layer),
+  Layer.provideMerge(DrizzlePostgresClient.layer),
+);
 
-const trpcCallerFactory = createCallerFactory(appRouter);
-export function createTrpcCaller(context: ContextParam) {
-  return trpcCallerFactory(createContext(context));
-}
-
-export function createLocalLink(context: ContextParam) {
-  return unstable_localLink({
-    router: appRouter,
-    // oxlint-disable-next-line require-await
-    createContext: async () => {
-      return createContext(context);
-    },
-  });
-}
-
-export type TRPCRouter = typeof appRouter;
-export type TRPCInput = inferRouterInputs<TRPCRouter>;
-export type TRPCOutput = inferRouterOutputs<TRPCRouter>;
+export { CurrentUser, RpcLogger } from "#context";

@@ -1,32 +1,15 @@
-// oxlint-disable-next-line no-restricted-imports
-import { TRPCError as DefaultTRPCError } from "@trpc/server";
-import type { TRPC_ERROR_CODE_KEY } from "@trpc/server";
-import type { AnyTaggedError } from "better-result";
+import { Context } from "effect";
 
 import type { AuthType } from "@reactlith-template/auth";
-import type { DBType } from "@reactlith-template/db";
+import type { IdBranded } from "@reactlith-template/db/id-branded";
 import type { LogType } from "@reactlith-template/utils/log";
 
-export function createContext({
-  request,
-  context,
-}: {
-  request: Request;
-  context: { db: DBType; auth: AuthType; log?: LogType };
-}) {
-  return {
-    request,
-    db: context.db,
-    auth: context.auth.api,
-    log: context.log,
-  };
-}
+export class RpcLogger extends Context.Service<RpcLogger, LogType | undefined>()("rpc/RpcLogger") {}
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
-export type ContextParam = Parameters<typeof createContext>[0];
-
-export class TRPCError extends DefaultTRPCError {
-  constructor(args: { code: TRPC_ERROR_CODE_KEY; error: AnyTaggedError }) {
-    super({ code: args.code, cause: args.error });
+export class CurrentUser extends Context.Service<
+  CurrentUser,
+  {
+    readonly session: AuthType["$Infer"]["Session"];
+    readonly userId: IdBranded<"user">;
   }
-}
+>()("rpc/CurrentUser") {}

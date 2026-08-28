@@ -1,13 +1,11 @@
-import { afterAll, beforeAll, beforeEach } from "vitest";
+import { afterAll, beforeAll, beforeEach } from "@effect/vitest";
+import { Effect } from "effect";
 
-import { callInAppContext } from "#async-context/app";
-import { callInUserContext } from "#async-context/user";
-import { schema } from "@reactlith-template/db";
+import { CurrentUser } from "#context";
+import type { AuthType } from "@reactlith-template/auth";
+import { DrizzlePostgresClient, schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { createTestDB } from "@reactlith-template/db/test-db";
-
-type AppContext = Parameters<typeof callInAppContext>[0];
-type UserContext = Parameters<typeof callInUserContext>[0];
 
 export function setupRepoTest() {
   let db: Awaited<ReturnType<typeof createTestDB>>;
@@ -20,7 +18,6 @@ export function setupRepoTest() {
 
   beforeEach(async () => {
     await db.delete(schema.user);
-
     const users = await db
       .insert(schema.user)
       .values([
@@ -28,11 +25,9 @@ export function setupRepoTest() {
         { name: "Other User", email: "other@example.com" },
       ])
       .returning({ id: schema.user.id });
-
     if (!users[0] || !users[1]) {
       throw new Error("Failed to seed users");
     }
-
     userId = users[0].id;
     otherUserId = users[1].id;
   });
@@ -51,9 +46,13 @@ export function setupRepoTest() {
     get otherUserId() {
       return otherUserId;
     },
-    async inUserContext<T>(id: IdBranded<"user">, callback: () => Promise<T>) {
-      return callInAppContext({ db: db } as AppContext, async () =>
-        callInUserContext({ userId: id } as UserContext, callback),
+    provideUser<A, E, R>(id: IdBranded<"user">, effect: Effect.Effect<A, E, R>) {
+      return effect.pipe(
+        Effect.provideService(CurrentUser, {
+          userId: id,
+          session: {} as AuthType["$Infer"]["Session"],
+        }),
+        Effect.provideService(DrizzlePostgresClient, db),
       );
     },
   };

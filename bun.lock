@@ -6,6 +6,7 @@
       "name": "reactlith-template",
       "devDependencies": {
         "@effect/tsgo": "^0.37.0",
+        "@effect/vitest": "4.0.0-rc.112",
         "oxfmt": "0.65.0",
         "oxlint": "1.80.0",
         "oxlint-tsgolint": "7.0.2001",
@@ -242,6 +243,8 @@
     "@effect/tsgo-win32-arm64": ["@effect/tsgo-win32-arm64@0.37.0", "", { "os": "win32", "cpu": "arm64" }, "sha512-ipmWCTitf6CYn4sAqOxwvv48JlE46SfvDq1I912OPnPHBP3ZnYF1b18RqiOCiL4Z1aQ6pC5NTeyulfW8g9cM7Q=="],
 
     "@effect/tsgo-win32-x64": ["@effect/tsgo-win32-x64@0.37.0", "", { "os": "win32", "cpu": "x64" }, "sha512-h2UGN9UN+wyQ3KxyShOFyCy0CcgxvC9AoKv1OpZACWqw0ewU4ga6kyN5cmOY94JWXolcTgwhd/DUqN3IaEyoPw=="],
+
+    "@effect/vitest": ["@effect/vitest@4.0.0-rc.112", "", { "peerDependencies": { "effect": "^4.0.0-rc.112", "vitest": ">=4.1.0 <5.0.0" } }, "sha512-mEKh/FI64mt8JK1/v9mpOrJYdnp+UFZdRUBMEdZMiKz7klg6NPqVgg/oeAGH6wOOQc2iAPcfc2H9BbAv1KyzMQ=="],
 
     "@electric-sql/pglite": ["@electric-sql/pglite@0.5.7", "", {}, "sha512-6WBks0NFO6YUhGP03mCNkbJuVFWwrZPrzZ/vsnAPnsCD28pybdZ+yoTrlLlWFoZst3kdaju5pxIslV/jrr36nQ=="],
 
