@@ -25,7 +25,7 @@ export const publicProcedure = t.procedure.use(async ({ next, path, type, ctx })
       type: type,
       path: path,
     },
-    package: "trpc",
+    package: "rpc",
   });
 
   const result = await callInAppContext(

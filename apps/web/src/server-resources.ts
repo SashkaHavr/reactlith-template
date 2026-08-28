@@ -1,9 +1,9 @@
 import { Effect, Exit, Layer, Scope } from "effect";
 
 import { BetterAuthServerClient } from "@reactlith-template/auth";
+import { AuthConfig } from "@reactlith-template/config/auth-config";
+import { DBConfig } from "@reactlith-template/config/db-config";
 import { DrizzlePostgresClient } from "@reactlith-template/db";
-import { AuthConfig } from "@reactlith-template/services/auth-config";
-import { DBConfig } from "@reactlith-template/services/db-config";
 
 const scope = Scope.makeUnsafe();
 

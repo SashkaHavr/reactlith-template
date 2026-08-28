@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/trpc",
+  "name": "@reactlith-template/rpc",
   "private": true,
   "type": "module",
   "imports": {
@@ -13,8 +13,8 @@
   "scripts": {},
   "devDependencies": {
     "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@reactlith-template/utils": "workspace:*",
     "@trpc/client": "catalog:",

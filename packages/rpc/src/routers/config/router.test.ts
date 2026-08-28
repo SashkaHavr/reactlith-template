@@ -13,7 +13,7 @@ type AuthConfigShape = {
 
 const authConfigMakeMock = vi.hoisted(() => vi.fn<() => Effect.Effect<AuthConfigShape>>());
 
-vi.mock("@reactlith-template/services/auth-config", () => ({
+vi.mock("@reactlith-template/config/auth-config", () => ({
   AuthConfig: {
     get make() {
       return authConfigMakeMock();

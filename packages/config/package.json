@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/services",
+  "name": "@reactlith-template/config",
   "private": true,
   "type": "module",
   "imports": {

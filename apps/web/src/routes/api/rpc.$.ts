@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { trpcHandler } from "@reactlith-template/trpc";
+import { trpcHandler } from "@reactlith-template/rpc";
 
-export const Route = createFileRoute("/api/trpc/$")({
+export const Route = createFileRoute("/api/rpc/$")({
   server: {
     handlers: {
       ANY: async ({ request, context }) => {

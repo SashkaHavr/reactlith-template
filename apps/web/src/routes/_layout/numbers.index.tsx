@@ -5,7 +5,7 @@ import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
-import { addNewInput } from "@reactlith-template/trpc/schema/numbers";
+import { addNewInput } from "@reactlith-template/rpc/schema/numbers";
 import {
   FormField,
   FormFieldError,

@@ -1,7 +1,7 @@
 import { defineConfig } from "drizzle-kit";
 import { Effect, Redacted } from "effect";
 
-import { DBConfig } from "@reactlith-template/services/db-config";
+import { DBConfig } from "@reactlith-template/config/db-config";
 
 const config = Effect.runSync(DBConfig.make);
 

@@ -18,7 +18,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "0.5.7",
     "@electric-sql/pglite-prepopulatedfs": "0.5.7",
-    "@reactlith-template/services": "workspace:*",
+    "@reactlith-template/config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "drizzle-kit": "catalog:",

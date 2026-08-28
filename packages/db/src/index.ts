@@ -2,7 +2,7 @@ import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Context, Effect, Layer, Redacted } from "effect";
 
-import { DBConfig } from "@reactlith-template/services/db-config";
+import { DBConfig } from "@reactlith-template/config/db-config";
 
 import { relations, schema } from "./relations";
 

@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "@better-auth/drizzle-adapter": "^1.7.1",
+    "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",
-    "@reactlith-template/services": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",
     "better-auth": "catalog:",

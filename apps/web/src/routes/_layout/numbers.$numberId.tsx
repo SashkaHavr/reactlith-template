@@ -11,7 +11,7 @@ import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { NumberNotFound } from "@reactlith-template/trpc/errors/numbers";
+import { NumberNotFound } from "@reactlith-template/rpc/errors/numbers";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import { matchError } from "~/lib/rpc";

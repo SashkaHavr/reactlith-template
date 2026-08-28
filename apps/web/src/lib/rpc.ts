@@ -5,14 +5,14 @@ import {
 } from "@tanstack/react-start";
 import { createTRPCClient, httpLink } from "@trpc/client";
 
-import type { TRPCRouter } from "@reactlith-template/trpc";
+import type { TRPCRouter } from "@reactlith-template/rpc";
 
 let _rpc: ReturnType<typeof createRPC> | undefined = undefined;
 const createRPC = createClientOnlyFn(() =>
   createTRPCClient<TRPCRouter>({
     links: [
       httpLink({
-        url: "/api/trpc",
+        url: "/api/rpc",
       }),
     ],
   }),

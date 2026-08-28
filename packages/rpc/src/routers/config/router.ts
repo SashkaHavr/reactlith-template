@@ -1,7 +1,7 @@
 import { Effect, Option, Redacted } from "effect";
 
 import { publicProcedure, router } from "#init";
-import { AuthConfig } from "@reactlith-template/services/auth-config";
+import { AuthConfig } from "@reactlith-template/config/auth-config";
 
 import { authOutput } from "./schema";
 

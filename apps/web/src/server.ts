@@ -4,8 +4,8 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { createTRPCClient } from "@trpc/client";
 
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
-import { createLocalLink } from "@reactlith-template/trpc";
-import type { TRPCRouter } from "@reactlith-template/trpc";
+import { createLocalLink } from "@reactlith-template/rpc";
+import type { TRPCRouter } from "@reactlith-template/rpc";
 import type { LogType } from "@reactlith-template/utils/log";
 import { getRequestLog } from "~/utils/log";
 

@@ -2,8 +2,8 @@ import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { TRPCInput, TRPCOutput } from "@reactlith-template/trpc";
-import { MaxCountReached } from "@reactlith-template/trpc/errors/numbers";
+import type { TRPCInput, TRPCOutput } from "@reactlith-template/rpc";
+import { MaxCountReached } from "@reactlith-template/rpc/errors/numbers";
 import { toastManager } from "~/components/ui/toast";
 import { getRPC, matchError } from "~/lib/rpc";
 
