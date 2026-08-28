@@ -7,8 +7,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./id-branded": "./src/utils/id-branded.ts",
-    "./test-db": "./src/test-db.ts"
+    "./id-branded": "./src/utils/id-branded.ts"
   },
   "scripts": {
     "dev": "bun run studio",
@@ -17,6 +16,7 @@
   },
   "devDependencies": {
     "@effect/sql-pg": "catalog:",
+    "@effect/sql-pglite": "catalog:",
     "@electric-sql/pglite": "0.5.7",
     "@electric-sql/pglite-prepopulatedfs": "0.5.7",
     "@reactlith-template/config": "workspace:*",

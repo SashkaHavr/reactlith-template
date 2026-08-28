@@ -2,7 +2,7 @@ import { and, eq, gt } from "drizzle-orm";
 import { Context, Effect, Layer } from "effect";
 
 import { CurrentUser } from "#context";
-import { DrizzlePostgresClient, schema } from "@reactlith-template/db";
+import { Database, schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
 import { NumberNotFound } from "./schema";
@@ -15,40 +15,38 @@ export type NumberFullRow = NumberRow & {
 
 export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", {
   make: Effect.gen(function* () {
-    const db = yield* DrizzlePostgresClient;
+    const db = yield* Database;
 
     return {
       getCountAbove: (value: number) =>
         Effect.gen(function* () {
-          return yield* Effect.promise(() =>
-            db.$count(schema.number, gt(schema.number.number, value)),
-          );
+          return yield* db
+            .$count(schema.number, gt(schema.number.number, value))
+            .pipe(Effect.orDie);
         }),
       getAll: Effect.gen(function* () {
         const { userId } = yield* CurrentUser;
-        return yield* Effect.promise(() =>
-          db.query.number.findMany({
+        return yield* db.query.number
+          .findMany({
             columns: { id: true, number: true },
             where: { userId: { eq: userId } },
             orderBy: { createdAt: "asc" },
-          }),
-        );
+          })
+          .pipe(Effect.orDie);
       }),
       getCount: Effect.gen(function* () {
         const { userId } = yield* CurrentUser;
-        return yield* Effect.promise(() =>
-          db.$count(schema.number, eq(schema.number.userId, userId)),
-        );
+        return yield* db.$count(schema.number, eq(schema.number.userId, userId)).pipe(Effect.orDie);
       }),
       getById: (id: IdBranded<"number">) =>
         Effect.gen(function* () {
           const { userId } = yield* CurrentUser;
-          const number = yield* Effect.promise(() =>
-            db.query.number.findFirst({
+          const number = yield* db.query.number
+            .findFirst({
               columns: { id: true, number: true, createdAt: true, updatedAt: true },
               where: { id: { eq: id }, userId: { eq: userId } },
-            }),
-          );
+            })
+            .pipe(Effect.orDie);
           if (!number) {
             return yield* new NumberNotFound({ numberId: id });
           }
@@ -57,12 +55,11 @@ export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", 
       addNew: (value: number) =>
         Effect.gen(function* () {
           const { userId } = yield* CurrentUser;
-          const [number] = yield* Effect.promise(() =>
-            db
-              .insert(schema.number)
-              .values({ userId, number: value })
-              .returning({ id: schema.number.id, number: schema.number.number }),
-          );
+          const [number] = yield* db
+            .insert(schema.number)
+            .values({ userId, number: value })
+            .returning({ id: schema.number.id, number: schema.number.number })
+            .pipe(Effect.orDie);
           if (!number) {
             return yield* Effect.die("Failed to add number");
           }
@@ -71,18 +68,17 @@ export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", 
       update: (id: IdBranded<"number">, data: { readonly number?: number }) =>
         Effect.gen(function* () {
           const { userId } = yield* CurrentUser;
-          const [number] = yield* Effect.promise(() =>
-            db
-              .update(schema.number)
-              .set(data)
-              .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-              .returning({
-                id: schema.number.id,
-                number: schema.number.number,
-                createdAt: schema.number.createdAt,
-                updatedAt: schema.number.updatedAt,
-              }),
-          );
+          const [number] = yield* db
+            .update(schema.number)
+            .set(data)
+            .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
+            .returning({
+              id: schema.number.id,
+              number: schema.number.number,
+              createdAt: schema.number.createdAt,
+              updatedAt: schema.number.updatedAt,
+            })
+            .pipe(Effect.orDie);
           if (!number) {
             return yield* new NumberNotFound({ numberId: id });
           }
@@ -91,12 +87,11 @@ export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", 
       deleteById: (id: IdBranded<"number">) =>
         Effect.gen(function* () {
           const { userId } = yield* CurrentUser;
-          const [number] = yield* Effect.promise(() =>
-            db
-              .delete(schema.number)
-              .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-              .returning({ id: schema.number.id }),
-          );
+          const [number] = yield* db
+            .delete(schema.number)
+            .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
+            .returning({ id: schema.number.id })
+            .pipe(Effect.orDie);
           if (!number) {
             return yield* new NumberNotFound({ numberId: id });
           }
@@ -104,9 +99,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", 
         }),
       deleteAll: Effect.gen(function* () {
         const { userId } = yield* CurrentUser;
-        yield* Effect.promise(() =>
-          db.delete(schema.number).where(eq(schema.number.userId, userId)),
-        );
+        yield* db.delete(schema.number).where(eq(schema.number.userId, userId)).pipe(Effect.orDie);
       }),
     };
   }),

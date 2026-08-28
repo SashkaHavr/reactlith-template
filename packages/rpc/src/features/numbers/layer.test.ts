@@ -1,14 +1,16 @@
-import { assert, describe, it } from "@effect/vitest";
+/* oxlint-disable vitest/no-standalone-expect -- Effect's it.effect wrapper is not recognized. */
+import { describe, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import * as RpcTest from "effect/unstable/rpc/RpcTest";
+import { expect } from "vitest";
 
 import { RpcLogger } from "#context";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { Unauthorized } from "#middleware/authentication/schema";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import type { AuthType } from "@reactlith-template/auth";
-import { DrizzlePostgresClient } from "@reactlith-template/db";
-import type { DBType } from "@reactlith-template/db";
+import { Database } from "@reactlith-template/db";
+import type { DatabaseType } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
 import { UserRepo } from "../users/repo";
@@ -27,7 +29,7 @@ const numberFull = {
 
 function makeContext(authenticated: boolean): {
   readonly auth: AuthType;
-  readonly db: DBType;
+  readonly db: DatabaseType;
 } {
   return {
     auth: {
@@ -37,8 +39,8 @@ function makeContext(authenticated: boolean): {
       },
     } as AuthType,
     db: {
-      transaction: async (callback: (transaction: unknown) => Promise<unknown>) => callback({}),
-    } as DBType,
+      transaction: (callback: () => Effect.Effect<unknown>) => callback(),
+    } as unknown as DatabaseType,
   };
 }
 
@@ -56,7 +58,7 @@ function makeClient(options: {
     Layer.succeed(NumberRepo)(options.numberRepo),
     Layer.succeed(UserRepo)(userRepo),
     Layer.succeed(BetterAuthServerClient)(makeContext(options.authenticated ?? true).auth),
-    Layer.succeed(DrizzlePostgresClient)(makeContext(options.authenticated ?? true).db),
+    Layer.succeed(Database)(makeContext(options.authenticated ?? true).db),
     Layer.succeed(RpcLogger)(undefined),
   );
   const handlers = Layer.mergeAll(NumbersRpcsLive, AuthenticationMiddlewareLive).pipe(
@@ -90,8 +92,8 @@ describe("NumbersRpcs", () => {
       });
 
       const result = yield* client["numbers.getCountAbove50"]();
-      assert.deepStrictEqual(result, { count: 3 });
-      assert.strictEqual(threshold, 50);
+      expect(result).toEqual({ count: 3 });
+      expect(threshold).toBe(50);
     }),
   );
 
@@ -99,7 +101,7 @@ describe("NumbersRpcs", () => {
     Effect.gen(function* () {
       const client = yield* makeClient({ authenticated: false, numberRepo: unusedRepo });
       const error = yield* Effect.flip(client["numbers.getAll"]());
-      assert.instanceOf(error, Unauthorized);
+      expect(error).toBeInstanceOf(Unauthorized);
     }),
   );
 
@@ -108,7 +110,7 @@ describe("NumbersRpcs", () => {
       const client = yield* makeClient({
         numberRepo: { ...unusedRepo, getAll: Effect.succeed([number]) },
       });
-      assert.deepStrictEqual(yield* client["numbers.getAll"](), { numbers: [number] });
+      expect(yield* client["numbers.getAll"]()).toEqual({ numbers: [number] });
     }),
   );
 
@@ -117,7 +119,7 @@ describe("NumbersRpcs", () => {
       const client = yield* makeClient({
         numberRepo: { ...unusedRepo, getById: () => Effect.succeed(numberFull) },
       });
-      assert.deepStrictEqual(yield* client["numbers.getById"]({ id: numberId }), numberFull);
+      expect(yield* client["numbers.getById"]({ id: numberId })).toEqual(numberFull);
     }),
   );
 
@@ -134,8 +136,8 @@ describe("NumbersRpcs", () => {
           getUserLock: Effect.sync(() => ((locked = true), { id: userId })),
         },
       });
-      assert.deepStrictEqual(yield* client["numbers.addNew"]({ number: 42 }), number);
-      assert.isTrue(locked);
+      expect(yield* client["numbers.addNew"]({ number: 42 })).toEqual(number);
+      expect(locked).toBe(true);
     }),
   );
 
@@ -145,7 +147,7 @@ describe("NumbersRpcs", () => {
         numberRepo: { ...unusedRepo, getCount: Effect.succeed(10) },
       });
       const error = yield* Effect.flip(client["numbers.addNew"]({ number: 42 }));
-      assert.instanceOf(error, MaxCountReached);
+      expect(error).toBeInstanceOf(MaxCountReached);
     }),
   );
 
@@ -160,13 +162,12 @@ describe("NumbersRpcs", () => {
           deleteAll: Effect.sync(() => void (cleared = true)),
         },
       });
-      assert.deepStrictEqual(
-        yield* client["numbers.update"]({ id: numberId, data: { number: 42 } }),
+      expect(yield* client["numbers.update"]({ id: numberId, data: { number: 42 } })).toEqual(
         numberFull,
       );
-      assert.deepStrictEqual(yield* client["numbers.delete"]({ id: numberId }), { id: numberId });
-      assert.isNull(yield* client["numbers.deleteAll"]());
-      assert.isTrue(cleared);
+      expect(yield* client["numbers.delete"]({ id: numberId })).toEqual({ id: numberId });
+      expect(yield* client["numbers.deleteAll"]()).toBeNull();
+      expect(cleared).toBe(true);
     }),
   );
 });

@@ -1,6 +1,8 @@
-import { assert, describe, it } from "@effect/vitest";
+/* oxlint-disable vitest/no-standalone-expect -- Effect's it.effect wrapper is not recognized. */
+import { describe, it } from "@effect/vitest";
 import { Effect, Layer, Option, Redacted } from "effect";
 import * as RpcTest from "effect/unstable/rpc/RpcTest";
+import { expect } from "vitest";
 
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 
@@ -31,14 +33,14 @@ describe("ConfigRpcs", () => {
   it.effect("reports enabled authentication providers", () =>
     Effect.gen(function* () {
       const result = yield* callAuth(makeConfigLayer({ emulate: true }));
-      assert.deepStrictEqual(result, { google: true, googleEmulate: true });
+      expect(result).toEqual({ google: true, googleEmulate: true });
     }),
   );
 
   it.effect("reports disabled authentication providers", () =>
     Effect.gen(function* () {
       const result = yield* callAuth(makeConfigLayer({ secret: "" }));
-      assert.deepStrictEqual(result, { google: false, googleEmulate: false });
+      expect(result).toEqual({ google: false, googleEmulate: false });
     }),
   );
 });

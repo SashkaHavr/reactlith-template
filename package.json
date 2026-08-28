@@ -14,9 +14,9 @@
       "lucide-react": "1.34.0",
       "uuid": "14.0.2",
       "evlog": "2.27.0",
-      "drizzle-kit": "1.0.0-rc.4",
-      "drizzle-orm": "1.0.0-rc.4",
-      "drizzle-seed": "1.0.0-rc.4",
+      "drizzle-kit": "1.0.0-rc.5-ab785fc",
+      "drizzle-orm": "1.0.0-rc.5-ab785fc",
+      "drizzle-seed": "1.0.0-rc.5-ab785fc",
       "@types/react": "19.2.18",
       "@types/react-dom": "19.2.5",
       "react": "19.2.8",
@@ -43,7 +43,8 @@
       "@inlang/paraglide-js": "2.24.1",
       "pg": "8.23.0",
       "effect": "4.0.0-rc.112",
-      "@effect/sql-pg": "4.0.0-rc.112"
+      "@effect/sql-pg": "4.0.0-rc.112",
+      "@effect/sql-pglite": "4.0.0-rc.112"
     }
   },
   "type": "module",

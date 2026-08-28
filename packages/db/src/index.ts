@@ -1,7 +1,12 @@
+import { PgClient } from "@effect/sql-pg";
+import { PgliteClient } from "@effect/sql-pglite";
 import { sql } from "drizzle-orm";
+import * as PgliteDrizzle from "drizzle-orm/effect-pglite";
+import * as PgDrizzle from "drizzle-orm/effect-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Context, Effect, Layer, Redacted } from "effect";
 
+import { createTestDB } from "#test-db";
 import { DBConfig } from "@reactlith-template/config/db-config";
 
 import { relations, schema } from "./relations";
@@ -28,7 +33,39 @@ export class DrizzlePostgresClient extends Context.Service<DrizzlePostgresClient
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
+export const PgClientLive = PgClient.layerFrom(
+  Effect.gen(function* () {
+    const db = yield* DrizzlePostgresClient;
+    return yield* PgClient.fromPool({ acquire: Effect.succeed(db.$client) });
+  }),
+);
+
+export const PgliteClientLive = PgliteClient.layerFrom(
+  Effect.gen(function* () {
+    const db = yield* Effect.acquireRelease(Effect.promise(createTestDB), (db) =>
+      Effect.promise(async () => db.$client.close()),
+    );
+    return yield* PgliteClient.fromClient({ liveClient: db.$client });
+  }),
+);
+
+export class Database extends Context.Service<Database>()("db/Database", {
+  make: PgDrizzle.makeWithDefaults({ relations }),
+}) {
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(PgClientLive),
+    Layer.provide(DrizzlePostgresClient.layer),
+  );
+  static readonly layerTest = Layer.effect(
+    this,
+    // @ts-expect-error Test db, both use drizzle postgres
+    PgliteDrizzle.makeWithDefaults({ relations }),
+  ).pipe(Layer.provide(PgliteClientLive));
+  static readonly layerWithoutDependencies = Layer.effect(this, this.make);
+}
+
 export type DBType = Effect.Success<typeof DrizzlePostgresClient.make>;
+export type DatabaseType = Effect.Success<typeof Database.make>;
 
 export async function checkDbReady(db: DBType) {
   await db.execute(sql`select 1`);

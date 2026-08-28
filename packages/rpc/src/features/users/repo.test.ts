@@ -1,32 +1,35 @@
-import { assert, describe, it } from "@effect/vitest";
+/* oxlint-disable vitest/no-standalone-expect -- Effect's it.effect wrapper is not recognized. */
+import { layer } from "@effect/vitest";
 import { Effect } from "effect";
+import { expect } from "vitest";
 
-import { setupRepoTest } from "#test-utils/repo";
-import { schema } from "@reactlith-template/db";
+import { seedUsers, userId, withUser } from "#test-utils/repo";
+import { Database, schema } from "@reactlith-template/db";
 
 import { UserRepo } from "./repo";
 import { UserNotFound } from "./schema";
 
-const testContext = setupRepoTest();
-
 function withRepo<A, E, R>(effect: Effect.Effect<A, E, R>) {
-  return testContext.provideUser(testContext.userId, effect.pipe(Effect.provide(UserRepo.layer)));
+  return effect.pipe(Effect.provide(UserRepo.layer), withUser());
 }
 
-describe("UserRepo", () => {
+layer(Database.layerTest)("UserRepo", (it) => {
   it.effect("locks and returns the current user", () =>
     Effect.gen(function* () {
+      yield* seedUsers;
       const repo = yield* UserRepo;
-      assert.deepStrictEqual(yield* repo.getUserLock, { id: testContext.userId });
+      expect(yield* repo.getUserLock).toEqual({ id: userId });
     }).pipe(withRepo),
   );
 
   it.effect("rejects a missing current user", () =>
     Effect.gen(function* () {
-      yield* Effect.promise(() => testContext.db.delete(schema.user));
+      yield* seedUsers;
+      const db = yield* Database;
+      yield* db.delete(schema.user);
       const repo = yield* UserRepo;
       const error = yield* Effect.flip(repo.getUserLock);
-      assert.instanceOf(error, UserNotFound);
+      expect(error).toBeInstanceOf(UserNotFound);
     }).pipe(withRepo),
   );
 });
