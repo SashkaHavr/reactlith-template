@@ -1,9 +1,4 @@
-import {
-  environmentManager,
-  queryOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import {
   createClientOnlyFn,
@@ -57,9 +52,7 @@ export const baseAuthKey = "auth" as const;
 export const getSessionQueryOptions = queryOptions({
   queryKey: [baseAuthKey, "getSession"] as const,
   queryFn: async () => await getSession(),
-  retry: environmentManager.isServer() ? false : 1,
   staleTime: 5 * 60 * 1000,
-  refetchOnWindowFocus: environmentManager.isServer() ? false : "always",
 });
 
 export function useAuth() {
@@ -74,27 +67,17 @@ export function useLoggedInAuth() {
   return auth;
 }
 
-export function useResetAuth() {
+export function useSignout() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  return async () => {
-    const session = await getAuthClient().getSession({ query: { disableCookieCache: true } });
-    const auth = resolveSession(session);
-    queryClient.setQueryData(getSessionQueryOptions.queryKey, auth);
-    queryClient.removeQueries({
-      predicate: (query) => query.queryKey[0] !== baseAuthKey,
-    });
-    await router.invalidate();
-  };
-}
-
-export function useSignout() {
-  const resetAuth = useResetAuth();
   return useMutation({
-    mutationFn: async () => await getAuthClient().signOut(),
-    onSettled: async () => {
-      await resetAuth();
+    mutationFn: async () => {
+      await queryClient.cancelQueries();
+      await getAuthClient().signOut();
+      await getAuthClient().getSession({ query: { disableCookieCache: true } });
+      queryClient.clear();
+      await router.invalidate();
     },
   });
 }

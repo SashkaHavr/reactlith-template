@@ -4,7 +4,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
-import { getAuthClient, useResetAuth } from "~/lib/auth";
+import { getAuthClient } from "~/lib/auth";
 import { authConfigQueryOptions } from "~/queries/config";
 import { numbersAbove50QueryOptions } from "~/queries/numbers";
 
@@ -23,7 +23,6 @@ export const Route = createFileRoute("/_layout/")({
 function RouteComponent() {
   const authConfig = useSuspenseQuery(authConfigQueryOptions).data;
   const numbersAbove50 = useSuspenseQuery(numbersAbove50QueryOptions).data;
-  const resetAuth = useResetAuth();
 
   const signInWithGoogle = useMutation({
     mutationFn: async () => {
@@ -38,9 +37,6 @@ function RouteComponent() {
           callbackURL: window.location.href,
         });
       }
-    },
-    onSettled: async () => {
-      await resetAuth();
     },
   });
 

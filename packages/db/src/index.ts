@@ -12,14 +12,20 @@ export class DrizzlePostgresClient extends Context.Service<DrizzlePostgresClient
     make: Effect.gen(function* () {
       const config = yield* DBConfig;
 
-      return drizzle({
-        connection: Redacted.value(config.databaseUrl),
-        relations: relations,
-      });
+      return yield* Effect.acquireRelease(
+        Effect.sync(() =>
+          drizzle({
+            connection: Redacted.value(config.databaseUrl),
+            relations: relations,
+          }),
+        ),
+        (db) => Effect.promise(() => db.$client.end()),
+      );
     }),
   },
 ) {
   static readonly layer = Layer.effect(this, this.make).pipe(Layer.provide(DBConfig.layer));
+  static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
 export type DBType = Effect.Success<typeof DrizzlePostgresClient.make>;

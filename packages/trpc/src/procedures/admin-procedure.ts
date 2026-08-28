@@ -1,7 +1,7 @@
 import { panic, TaggedError } from "better-result";
 
 import { TRPCError } from "#context";
-import type { Permissions } from "@reactlith-template/auth";
+import type { AuthPermissions } from "@reactlith-template/auth";
 
 import { protectedProcedure } from "./protected-procedure";
 
@@ -15,7 +15,7 @@ export class AdminProcedureForbidden extends TaggedError("AdminProcedureForbidde
   }
 }
 
-export function adminProcedure(permissions: Permissions) {
+export function adminProcedure(permissions: AuthPermissions) {
   return protectedProcedure.use(async ({ ctx, next }) => {
     const requestPermissionsList = (
       Object.entries(permissions) as [
