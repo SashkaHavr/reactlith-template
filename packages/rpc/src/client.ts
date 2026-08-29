@@ -1,11 +1,14 @@
-import type * as RpcClient from "effect/unstable/rpc/RpcClient";
-import type { RpcClientError } from "effect/unstable/rpc/RpcClientError";
-import * as RpcGroup from "effect/unstable/rpc/RpcGroup";
+import type { HttpApiClient } from "effect/unstable/httpapi";
+import { HttpApi } from "effect/unstable/httpapi";
 
-import { ConfigRpcs } from "#features/config/schema";
-import { NumbersRpcs } from "#features/numbers/schema";
+import { ConfigApi } from "#features/config/schema";
+import { NumbersApi } from "#features/numbers/schema";
 import { GlobalMiddleware } from "#middleware/global/schema";
 
-export const AppRpcs = RpcGroup.make().merge(ConfigRpcs, NumbersRpcs).middleware(GlobalMiddleware);
+export class AppApi extends HttpApi.make("app")
+  .add(ConfigApi)
+  .add(NumbersApi)
+  .middleware(GlobalMiddleware)
+  .prefix("/api/rpc") {}
 
-export type AppRpcClient = RpcClient.FromGroup<typeof AppRpcs, RpcClientError>;
+export type AppApiClient = HttpApiClient.ForApi<typeof AppApi>;

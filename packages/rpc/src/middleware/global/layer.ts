@@ -1,16 +1,16 @@
 import { Effect, Layer } from "effect";
 
-import { RpcLogger } from "#context";
+import { ApiLogger } from "#context";
 
 import { GlobalMiddleware } from "./schema";
 
 export const GlobalMiddlewareLive = Layer.succeed(GlobalMiddleware)(
-  GlobalMiddleware.of((effect, options) =>
+  GlobalMiddleware.of((effect, { endpoint, group }) =>
     Effect.gen(function* () {
-      const log = yield* RpcLogger.get;
+      const log = yield* ApiLogger.get;
       log?.set({
-        rpc: { path: options.rpc._tag },
-        package: "rpc",
+        api: { path: `${group.identifier}.${endpoint.identifier}` },
+        package: "api",
       });
       return yield* effect;
     }),

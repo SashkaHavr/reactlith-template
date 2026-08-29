@@ -1,12 +1,14 @@
 import { layer } from "@effect/vitest";
-import { Context, Effect, Layer } from "effect";
-import type * as RpcClient from "effect/unstable/rpc/RpcClient";
-import type * as RpcGroup from "effect/unstable/rpc/RpcGroup";
-import * as RpcTest from "effect/unstable/rpc/RpcTest";
+import { Context, Effect, FileSystem, Layer, Path } from "effect";
+import { Etag, HttpPlatform } from "effect/unstable/http";
+import { HttpApiTest } from "effect/unstable/httpapi";
 import { expect, vi } from "vitest";
 
+import { AppApi } from "#client";
+import type { AppApiClient } from "#client";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { Unauthorized } from "#middleware/authentication/schema";
+import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import type { AuthType } from "@reactlith-template/auth";
 import { Database } from "@reactlith-template/db";
@@ -14,9 +16,9 @@ import type { DatabaseType } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
 import { UserRepo } from "../users/repo";
-import { NumbersRpcsLive } from "./layer";
+import { NumbersApiLive } from "./layer";
 import { NumberRepo } from "./repo";
-import { MaxCountReached, NumbersRpcs } from "./schema";
+import { MaxCountReached } from "./schema";
 
 const numberId = "00000000-0000-7000-8000-000000000001" as IdBranded<"number">;
 const userId = "00000000-0000-7000-8000-000000000002" as IdBranded<"user">;
@@ -27,12 +29,24 @@ const numberFull = {
   updatedAt: new Date(2_000),
 };
 
-class NumbersClient extends Context.Service<
-  NumbersClient,
-  RpcClient.RpcClient<RpcGroup.Rpcs<typeof NumbersRpcs>>
->()("rpc/test/NumbersClient") {
-  static readonly layerTest = Layer.effect(NumbersClient)(RpcTest.makeClient(NumbersRpcs)).pipe(
-    Layer.provide(Layer.mergeAll(NumbersRpcsLive, AuthenticationMiddlewareLive)),
+const TestServices = Layer.mergeAll(Path.layer, Etag.layerWeak, HttpPlatform.layer).pipe(
+  Layer.provideMerge(FileSystem.layerNoop({})),
+);
+
+class NumbersClient extends Context.Service<NumbersClient, AppApiClient>()(
+  "api/test/NumbersClient",
+) {
+  static readonly layerTest = Layer.effect(
+    NumbersClient,
+    HttpApiTest.groups(AppApi, ["numbers"]),
+  ).pipe(
+    Layer.provide(
+      NumbersApiLive.pipe(
+        Layer.provideMerge(AuthenticationMiddlewareLive),
+        Layer.provideMerge(GlobalMiddlewareLive),
+      ),
+    ),
+    Layer.provide(TestServices),
     Layer.provideMerge(
       Layer.mergeAll(
         Layer.succeed(UserRepo)({
@@ -80,7 +94,7 @@ layer(
       Effect.gen(function* () {
         const client = yield* NumbersClient;
         const repo = yield* NumberRepo;
-        const result = yield* client["numbers.getCountAbove50"]();
+        const result = yield* client.numbers.getCountAbove50();
         expect(result).toEqual({ count: 3 });
         expect(repo.getCountAbove).toHaveBeenCalledWith(50);
       }),
@@ -92,7 +106,7 @@ layer(
       it.effect("requires authentication", () =>
         Effect.gen(function* () {
           const client = yield* NumbersClient;
-          const error = yield* Effect.flip(client["numbers.getAll"]());
+          const error = yield* Effect.flip(client.numbers.getAll());
           expect(error).toBeInstanceOf(Unauthorized);
         }),
       );
@@ -117,7 +131,7 @@ layer(
     it.effect("gets all numbers from the repository", () =>
       Effect.gen(function* () {
         const client = yield* NumbersClient;
-        expect(yield* client["numbers.getAll"]()).toEqual({ numbers: [number] });
+        expect(yield* client.numbers.getAll()).toEqual({ numbers: [number] });
       }),
     );
   });
@@ -138,7 +152,7 @@ layer(
       Effect.gen(function* () {
         const client = yield* NumbersClient;
         const repo = yield* NumberRepo;
-        expect(yield* client["numbers.getById"]({ id: numberId })).toEqual(numberFull);
+        expect(yield* client.numbers.getById({ params: { id: numberId } })).toEqual(numberFull);
         expect(repo.getById).toHaveBeenCalledWith(numberId);
       }),
     );
@@ -167,7 +181,7 @@ layer(
         const client = yield* NumbersClient;
         const db = yield* Database;
         const repo = yield* NumberRepo;
-        expect(yield* client["numbers.addNew"]({ number: 42 })).toEqual(number);
+        expect(yield* client.numbers.addNew({ payload: { number: 42 } })).toEqual(number);
         // oxlint-disable-next-line typescript/unbound-method
         expect(db.transaction).toHaveBeenCalledOnce();
         expect(repo.addNew).toHaveBeenCalledWith(42);
@@ -185,7 +199,7 @@ layer(
     it.effect("rejects adding more than ten numbers", () =>
       Effect.gen(function* () {
         const client = yield* NumbersClient;
-        const error = yield* Effect.flip(client["numbers.addNew"]({ number: 42 }));
+        const error = yield* Effect.flip(client.numbers.addNew({ payload: { number: 42 } }));
         expect(error).toBeInstanceOf(MaxCountReached);
       }),
     );
@@ -211,11 +225,16 @@ layer(
       Effect.gen(function* () {
         const client = yield* NumbersClient;
         const repo = yield* NumberRepo;
-        expect(yield* client["numbers.update"]({ id: numberId, data: { number: 42 } })).toEqual(
-          numberFull,
-        );
-        expect(yield* client["numbers.delete"]({ id: numberId })).toEqual({ id: numberId });
-        expect(yield* client["numbers.deleteAll"]()).toBeNull();
+        expect(
+          yield* client.numbers.update({
+            params: { id: numberId },
+            payload: { number: 42 },
+          }),
+        ).toEqual(numberFull);
+        expect(yield* client.numbers.delete({ params: { id: numberId } })).toEqual({
+          id: numberId,
+        });
+        expect(yield* client.numbers.deleteAll()).toBeNull();
         expect(repo.update).toHaveBeenCalledWith(numberId, { number: 42 });
         expect(repo.deleteById).toHaveBeenCalledWith(numberId);
       }),

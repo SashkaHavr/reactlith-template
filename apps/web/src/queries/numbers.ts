@@ -3,27 +3,33 @@ import { Effect } from "effect";
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { AppRpcClient } from "@reactlith-template/rpc";
+import type { AppApiClient } from "@reactlith-template/rpc";
 import { MaxCountReached } from "@reactlith-template/rpc/schema/numbers";
 import { toastManager } from "~/components/ui/toast";
-import { getRPC } from "~/lib/rpc";
+import { getApi } from "~/lib/api";
 
-type RpcInput<Tag extends keyof AppRpcClient> = Parameters<AppRpcClient[Tag]>[0];
-type RpcOutput<Tag extends keyof AppRpcClient> = Effect.Success<ReturnType<AppRpcClient[Tag]>>;
+type NumbersClient = AppApiClient["numbers"];
+type ApiOutput<Tag extends keyof NumbersClient> = Effect.Success<ReturnType<NumbersClient[Tag]>>;
+type GetByIdInput = Parameters<NumbersClient["getById"]>[0]["params"];
+type AddNewInput = Parameters<NumbersClient["addNew"]>[0]["payload"];
+type UpdateInput = Parameters<NumbersClient["update"]>[0]["params"] & {
+  readonly data: Parameters<NumbersClient["update"]>[0]["payload"];
+};
+type DeleteInput = Parameters<NumbersClient["delete"]>[0]["params"];
 
 export const allNumbersQueryOptions = queryOptions({
   queryKey: ["numbers", "getAll"],
   queryFn: async ({ signal }) => {
-    const rpc = await getRPC();
-    return await Effect.runPromise(rpc["numbers.getAll"](), { signal });
+    const api = await getApi();
+    return await Effect.runPromise(api.numbers.getAll(), { signal });
   },
 });
 
 export const numbersAbove50QueryOptions = queryOptions({
   queryKey: ["numbers", "getCountAbove50"],
   queryFn: async ({ signal }) => {
-    const rpc = await getRPC();
-    return await Effect.runPromise(rpc["numbers.getCountAbove50"](), { signal });
+    const api = await getApi();
+    return await Effect.runPromise(api.numbers.getCountAbove50(), { signal });
   },
 });
 
@@ -32,12 +38,12 @@ export const numberQueryKey = {
   byId: (id: IdBranded<"number">) => ["numbers", "getById", id] as const,
 };
 
-export function getNumberQueryOptions(input: RpcInput<"numbers.getById">) {
+export function getNumberQueryOptions(input: GetByIdInput) {
   return queryOptions({
     queryKey: numberQueryKey.byId(input.id),
     queryFn: async ({ signal }) => {
-      const rpc = await getRPC();
-      return await Effect.runPromise(rpc["numbers.getById"](input), { signal });
+      const api = await getApi();
+      return await Effect.runPromise(api.numbers.getById({ params: input }), { signal });
     },
   });
 }
@@ -46,9 +52,9 @@ export function useAddNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: RpcInput<"numbers.addNew">) => {
-      const rpc = await getRPC();
-      return await Effect.runPromise(rpc["numbers.addNew"](input));
+    mutationFn: async (input: AddNewInput) => {
+      const api = await getApi();
+      return await Effect.runPromise(api.numbers.addNew({ payload: input }));
     },
     onError: async (error: unknown) => {
       if (error instanceof MaxCountReached) {
@@ -74,9 +80,11 @@ export function useUpdateNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: RpcInput<"numbers.update">) => {
-      const rpc = await getRPC();
-      return await Effect.runPromise(rpc["numbers.update"](input));
+    mutationFn: async (input: UpdateInput) => {
+      const api = await getApi();
+      return await Effect.runPromise(
+        api.numbers.update({ params: { id: input.id }, payload: input.data }),
+      );
     },
     onMutate: async (input) => {
       const detailQueryKey = getNumberQueryOptions({ id: input.id }).queryKey;
@@ -125,9 +133,9 @@ export function useDeleteNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: RpcInput<"numbers.delete">) => {
-      const rpc = await getRPC();
-      return await Effect.runPromise(rpc["numbers.delete"](input));
+    mutationFn: async (input: DeleteInput) => {
+      const api = await getApi();
+      return await Effect.runPromise(api.numbers.delete({ params: input }));
     },
     onMutate: async ({ id }) => {
       const detailQueryKey = getNumberQueryOptions({ id }).queryKey;
@@ -164,8 +172,8 @@ export function useDeleteAllNumbers() {
 
   return useMutation({
     mutationFn: async () => {
-      const rpc = await getRPC();
-      return await Effect.runPromise(rpc["numbers.deleteAll"]());
+      const api = await getApi();
+      return await Effect.runPromise(api.numbers.deleteAll());
     },
     onMutate: async () => {
       await Promise.all([
@@ -174,7 +182,7 @@ export function useDeleteAllNumbers() {
       ]);
 
       const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
-      const previousNumbers = queryClient.getQueriesData<RpcOutput<"numbers.getById">>({
+      const previousNumbers = queryClient.getQueriesData<ApiOutput<"getById">>({
         queryKey: numberQueryKey.all(),
       });
 

@@ -1,18 +1,20 @@
 import { Effect, Option } from "effect";
+import { HttpApiBuilder } from "effect/unstable/httpapi";
 
+import { AppApi } from "#client";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 
-import { ConfigRpcs } from "./schema";
-
-export const ConfigRpcsLive = ConfigRpcs.toLayer(
-  Effect.gen(function* () {
+export const ConfigApiLive = HttpApiBuilder.group(
+  AppApi,
+  "config",
+  Effect.fn(function* (handlers) {
     const config = yield* AuthConfig;
 
-    return ConfigRpcs.of({
-      "config.auth": () =>
-        Effect.sync(() => ({
+    return handlers.handleAll({
+      auth: () =>
+        Effect.succeed({
           googleEmulate: Option.isSome(config.googleEmulateUrl),
-        })),
+        }),
     });
   }),
 );

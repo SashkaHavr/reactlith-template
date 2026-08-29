@@ -1,15 +1,15 @@
 import { getRequest } from "@tanstack/react-start/server";
-import { Context, Effect, Exit, Layer, Scope } from "effect";
-import { FetchHttpClient, HttpEffect } from "effect/unstable/http";
-import { RpcClient, RpcSerialization, RpcServer } from "effect/unstable/rpc";
+import { Effect, Exit, Layer, Scope } from "effect";
+import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
+import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 import { fetch as nitroFetch } from "nitro";
 
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 import { DBConfig } from "@reactlith-template/config/db-config";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
-import { AppRpcs } from "@reactlith-template/rpc";
-import { AppRpcsLive } from "@reactlith-template/rpc/layer";
+import { AppApi } from "@reactlith-template/rpc";
+import { AppApiLive } from "@reactlith-template/rpc/layer";
 
 const scope = Scope.makeUnsafe();
 
@@ -33,24 +33,18 @@ export const resources = await Effect.runPromise(
   acquireResources.pipe(Effect.provide(layerContext)),
 );
 
-class RpcHttpEffect extends Context.Service<RpcHttpEffect>()("web/RpcHttpEffect", {
-  make: RpcServer.toHttpEffect(AppRpcs).pipe(
-    Effect.provide(
-      AppRpcsLive.pipe(
-        Layer.provide(Database.layerWithoutDependencies.pipe(Layer.provide(PgClientLive))),
-      ),
+const apiRoutes = HttpApiBuilder.layer(AppApi).pipe(
+  Layer.provide(
+    AppApiLive.pipe(
+      Layer.provide(Database.layerWithoutDependencies.pipe(Layer.provide(PgClientLive))),
     ),
-    Effect.provide(layerContext),
-    Effect.provide(RpcSerialization.layerJson),
   ),
-}) {
-  static readonly layer = Layer.effect(this, this.make);
-}
-
-const rpcHandlerLayer = HttpEffect.toWebHandlerLayerWith(RpcHttpEffect.layer, {
-  toHandler: (context) => Effect.succeed(Context.get(context, RpcHttpEffect)),
-});
-export const rpcHandler = rpcHandlerLayer.handler;
+  Layer.provide(Layer.succeedContext(layerContext)),
+);
+const apiHandlerLayer = HttpRouter.toWebHandler(
+  apiRoutes.pipe(Layer.provide(HttpServer.layerServices)),
+);
+export const apiHandler = apiHandlerLayer.handler;
 
 const serverFetch: typeof nitroFetch = async (input, init) => {
   const url = new URL(input instanceof Request ? input.url : input);
@@ -59,28 +53,19 @@ const serverFetch: typeof nitroFetch = async (input, init) => {
   return nitroFetch(`${url.pathname}${url.search}`, { ...init, headers });
 };
 
-export const rpc = await Effect.runPromise(
-  RpcClient.make(AppRpcs).pipe(
+export const api = await Effect.runPromise(
+  HttpApiClient.make(AppApi, { baseUrl: "http://localhost" }).pipe(
     Effect.provide(
-      RpcClient.layerProtocolHttp({ url: "http://localhost/api/rpc" }).pipe(
-        Layer.provide(RpcSerialization.layerJson),
+      FetchHttpClient.layer.pipe(
         Layer.provide(
-          FetchHttpClient.layer.pipe(
-            Layer.provide(
-              Layer.succeed(
-                FetchHttpClient.Fetch,
-                serverFetch as unknown as typeof globalThis.fetch,
-              ),
-            ),
-          ),
+          Layer.succeed(FetchHttpClient.Fetch, serverFetch as unknown as typeof globalThis.fetch),
         ),
       ),
     ),
-    Effect.provideService(Scope.Scope, scope),
   ),
 );
 
 export async function dispose() {
   await Effect.runPromise(Scope.close(scope, Exit.void));
-  await rpcHandlerLayer.dispose();
+  await apiHandlerLayer.dispose();
 }

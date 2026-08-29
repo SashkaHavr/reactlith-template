@@ -1,19 +1,22 @@
 import { Schema } from "effect";
-import * as Rpc from "effect/unstable/rpc/Rpc";
-import * as RpcGroup from "effect/unstable/rpc/RpcGroup";
+import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 import { AuthenticationMiddleware } from "#middleware/authentication/schema";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 
 import { UserNotFound } from "../users/schema";
 
-export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()("NumberNotFound", {
-  numberId: Schema.String,
-}) {}
+export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(
+  "NumberNotFound",
+  { numberId: Schema.String },
+  { httpApiStatus: 404 },
+) {}
 
-export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()("MaxCountReached", {
-  maxCount: Schema.Number,
-}) {}
+export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
+  "MaxCountReached",
+  { maxCount: Schema.Number },
+  { httpApiStatus: 400 },
+) {}
 
 export const numberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
 export const numberInput = Schema.Struct({ number: numberValue });
@@ -28,37 +31,38 @@ export const numberFullOutput = Schema.Struct({
   updatedAt: Schema.DateFromString,
 });
 
-const PublicRpcs = RpcGroup.make(
-  Rpc.make("getCountAbove50", {
-    success: Schema.Struct({ count: Schema.Natural }),
-  }),
-);
+const getCountAbove50 = HttpApiEndpoint.get("getCountAbove50", "/count-above-50", {
+  success: Schema.Struct({ count: Schema.Natural }),
+});
 
-const AuthenticatedRpcs = RpcGroup.make(
-  Rpc.make("getAll", {
-    success: Schema.Struct({ numbers: Schema.Array(numberOutput) }),
-  }),
-  Rpc.make("getById", {
-    payload: numberIdInput,
-    success: numberFullOutput,
-    error: NumberNotFound,
-  }),
-  Rpc.make("addNew", {
-    payload: numberInput,
-    success: numberOutput,
-    error: Schema.Union([MaxCountReached, UserNotFound]),
-  }),
-  Rpc.make("update", {
-    payload: Schema.Struct({ id: IdBranded("number"), data: numberUpdateInput }),
-    success: numberFullOutput,
-    error: NumberNotFound,
-  }),
-  Rpc.make("delete", {
-    payload: numberIdInput,
-    success: numberIdInput,
-    error: NumberNotFound,
-  }),
-  Rpc.make("deleteAll", { success: Schema.Null }),
-).middleware(AuthenticationMiddleware);
+const getAll = HttpApiEndpoint.get("getAll", "/", {
+  success: Schema.Struct({ numbers: Schema.Array(numberOutput) }),
+}).middleware(AuthenticationMiddleware);
+const getById = HttpApiEndpoint.get("getById", "/:id", {
+  params: numberIdInput,
+  success: numberFullOutput,
+  error: NumberNotFound,
+}).middleware(AuthenticationMiddleware);
+const addNew = HttpApiEndpoint.post("addNew", "/", {
+  payload: numberInput,
+  success: numberOutput,
+  error: [MaxCountReached, UserNotFound],
+}).middleware(AuthenticationMiddleware);
+const update = HttpApiEndpoint.patch("update", "/:id", {
+  params: numberIdInput,
+  payload: numberUpdateInput,
+  success: numberFullOutput,
+  error: NumberNotFound,
+}).middleware(AuthenticationMiddleware);
+const deleteNumber = HttpApiEndpoint.delete("delete", "/:id", {
+  params: numberIdInput,
+  success: numberIdInput,
+  error: NumberNotFound,
+}).middleware(AuthenticationMiddleware);
+const deleteAll = HttpApiEndpoint.delete("deleteAll", "/", {
+  success: Schema.Null,
+}).middleware(AuthenticationMiddleware);
 
-export const NumbersRpcs = RpcGroup.make().merge(PublicRpcs, AuthenticatedRpcs).prefix("numbers.");
+export class NumbersApi extends HttpApiGroup.make("numbers")
+  .add(getCountAbove50, getAll, getById, addNew, update, deleteNumber, deleteAll)
+  .prefix("/numbers") {}

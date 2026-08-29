@@ -1,23 +1,28 @@
 import { layer } from "@effect/vitest";
-import { Context, Effect, Layer, Option, Redacted } from "effect";
-import type * as RpcClient from "effect/unstable/rpc/RpcClient";
-import type * as RpcGroup from "effect/unstable/rpc/RpcGroup";
-import * as RpcTest from "effect/unstable/rpc/RpcTest";
+import { Effect, FileSystem, Layer, Option, Path, Redacted } from "effect";
+import { Etag, HttpPlatform } from "effect/unstable/http";
+import { HttpApiTest } from "effect/unstable/httpapi";
 import { expect } from "vitest";
 
+import { AppApi } from "#client";
+import { AuthenticationMiddleware } from "#middleware/authentication/schema";
+import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 
-import { ConfigRpcsLive } from "./layer";
-import { ConfigRpcs } from "./schema";
+import { ConfigApiLive } from "./layer";
 
-class ConfigClient extends Context.Service<
-  ConfigClient,
-  RpcClient.RpcClient<RpcGroup.Rpcs<typeof ConfigRpcs>>
->()("rpc/test/ConfigClient") {
-  static readonly layerTest = Layer.effect(ConfigClient)(RpcTest.makeClient(ConfigRpcs)).pipe(
-    Layer.provide(ConfigRpcsLive),
-  );
-}
+const TestServices = Layer.mergeAll(Path.layer, Etag.layerWeak, HttpPlatform.layer).pipe(
+  Layer.provideMerge(FileSystem.layerNoop({})),
+);
+
+const ClientServices = Layer.mergeAll(
+  TestServices,
+  ConfigApiLive.pipe(Layer.provideMerge(GlobalMiddlewareLive)),
+  Layer.succeed(AuthenticationMiddleware)(
+    AuthenticationMiddleware.of(() => Effect.die("unexpected authentication")),
+  ),
+);
+const makeClient = HttpApiTest.groups(AppApi, ["config"]).pipe(Effect.provide(ClientServices));
 
 const authConfig = {
   allowedHosts: [],
@@ -28,29 +33,25 @@ const authConfig = {
 } satisfies AuthConfig["Service"];
 
 layer(
-  ConfigClient.layerTest.pipe(
-    Layer.provide(
-      Layer.succeed(AuthConfig)({
-        ...authConfig,
-        googleEmulateUrl: Option.some(new URL("http://localhost:8080")),
-      }),
-    ),
-  ),
+  Layer.succeed(AuthConfig)({
+    ...authConfig,
+    googleEmulateUrl: Option.some(new URL("http://localhost:8080")),
+  }),
 )((it) => {
   it.effect("reports enabled authentication providers", () =>
     Effect.gen(function* () {
-      const client = yield* ConfigClient;
-      const result = yield* client["config.auth"]();
+      const client = yield* makeClient;
+      const result = yield* client.config.auth();
       expect(result).toEqual({ googleEmulate: true });
     }),
   );
 });
 
-layer(ConfigClient.layerTest.pipe(Layer.provide(Layer.succeed(AuthConfig)(authConfig))))((it) => {
+layer(Layer.succeed(AuthConfig)(authConfig))((it) => {
   it.effect("reports disabled authentication providers", () =>
     Effect.gen(function* () {
-      const client = yield* ConfigClient;
-      const result = yield* client["config.auth"]();
+      const client = yield* makeClient;
+      const result = yield* client.config.auth();
       expect(result).toEqual({ googleEmulate: false });
     }),
   );
