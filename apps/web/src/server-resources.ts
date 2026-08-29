@@ -43,6 +43,7 @@ const apiRoutes = HttpApiBuilder.layer(AppApi).pipe(
 );
 const apiHandlerLayer = HttpRouter.toWebHandler(
   apiRoutes.pipe(Layer.provide(HttpServer.layerServices)),
+  { disableLogger: true },
 );
 export const apiHandler = apiHandlerLayer.handler;
 
