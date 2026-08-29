@@ -71,6 +71,13 @@ export default defineConfig({
     ...Object.fromEntries(Object.keys(effectAntipattern.rules).map((k) => [k, "error" as const])),
 
     "effecttsgo/strict-effect-provide": "off",
+    "vitest/no-standalone-expect": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        paths: [{ name: "@effect/vitest", allowImportNames: ["layer"] }],
+      },
+    ],
   },
   overrides: [
     {

@@ -1,9 +1,8 @@
-/* oxlint-disable vitest/no-standalone-expect -- Effect's it.effect wrapper is not recognized. */
 import { layer } from "@effect/vitest";
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
 import { expect } from "vitest";
 
-import { otherUserId, seedUsers, userId, withUser } from "#test-utils/repo";
+import { layerCurrentUser, otherUserId, seedUsers, userId } from "#test-utils/repo";
 import { Database, schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
@@ -22,74 +21,75 @@ function insertNumber(id: IdBranded<"user">, value: number, createdAt?: Date) {
   });
 }
 
-function withRepo<A, E, R>(effect: Effect.Effect<A, E, R>, id = userId) {
-  return effect.pipe(Effect.provide(NumberRepo.layer), withUser(id));
-}
+layer(NumberRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("NumberRepo", (it) => {
+  it.layer(layerCurrentUser())((it) => {
+    it.effect("gets numbers for the current user in creation order", () =>
+      Effect.gen(function* () {
+        yield* seedUsers;
+        yield* insertNumber(userId, 2, new Date("2025-01-02"));
+        yield* insertNumber(userId, 1, new Date("2025-01-01"));
+        yield* insertNumber(otherUserId, 3, new Date("2025-01-01"));
+        const repo = yield* NumberRepo;
+        expect((yield* repo.getAll).map(({ number }) => number)).toEqual([1, 2]);
+      }),
+    );
+  });
 
-layer(Database.layerTest)("NumberRepo", (it) => {
-  it.effect("gets numbers for the current user in creation order", () =>
-    Effect.gen(function* () {
-      yield* seedUsers;
-      yield* insertNumber(userId, 2, new Date("2025-01-02"));
-      yield* insertNumber(userId, 1, new Date("2025-01-01"));
-      yield* insertNumber(otherUserId, 3, new Date("2025-01-01"));
-      const repo = yield* NumberRepo;
-      expect((yield* repo.getAll).map(({ number }) => number)).toEqual([1, 2]);
-    }).pipe(withRepo),
-  );
+  it.layer(layerCurrentUser())((it) => {
+    it.effect("counts owned numbers and public numbers above a value", () =>
+      Effect.gen(function* () {
+        yield* seedUsers;
+        yield* insertNumber(userId, 50);
+        yield* insertNumber(userId, 51);
+        yield* insertNumber(otherUserId, 100);
+        const repo = yield* NumberRepo;
+        expect(yield* repo.getCount).toBe(2);
+        expect(yield* repo.getCountAbove(50)).toBe(2);
+      }),
+    );
+  });
 
-  it.effect("counts owned numbers and public numbers above a value", () =>
-    Effect.gen(function* () {
-      yield* seedUsers;
-      yield* insertNumber(userId, 50);
-      yield* insertNumber(userId, 51);
-      yield* insertNumber(otherUserId, 100);
-      const repo = yield* NumberRepo;
-      expect(yield* repo.getCount).toBe(2);
-      expect(yield* repo.getCountAbove(50)).toBe(2);
-    }).pipe(withRepo),
-  );
+  it.layer(layerCurrentUser())((it) => {
+    it.effect("gets an owned number and rejects another user's number", () =>
+      Effect.gen(function* () {
+        yield* seedUsers;
+        const owned = yield* insertNumber(userId, 1);
+        const other = yield* insertNumber(otherUserId, 2);
+        const repo = yield* NumberRepo;
+        expect(yield* repo.getById(owned.id)).toMatchObject(owned);
+        expect(yield* Effect.flip(repo.getById(other.id))).toBeInstanceOf(NumberNotFound);
+      }),
+    );
+  });
 
-  it.effect("gets an owned number and rejects another user's number", () =>
-    Effect.gen(function* () {
-      yield* seedUsers;
-      const owned = yield* insertNumber(userId, 1);
-      const other = yield* insertNumber(otherUserId, 2);
-      const repo = yield* NumberRepo;
-      expect(yield* repo.getById(owned.id)).toMatchObject(owned);
-      expect(yield* Effect.flip(repo.getById(other.id))).toBeInstanceOf(NumberNotFound);
-    }).pipe(withRepo),
-  );
+  it.layer(layerCurrentUser())((it) => {
+    it.effect("adds, updates, and deletes owned numbers", () =>
+      Effect.gen(function* () {
+        yield* seedUsers;
+        const repo = yield* NumberRepo;
+        const added = yield* repo.addNew(42);
+        expect(added.number).toBe(42);
+        const updated = yield* repo.update(added.id, { number: 10 });
+        expect(updated.number).toBe(10);
+        expect(yield* repo.deleteById(added.id)).toEqual({ id: added.id });
+        expect(yield* repo.getAll).toEqual([]);
+      }),
+    );
+  });
 
-  it.effect("adds, updates, and deletes owned numbers", () =>
-    Effect.gen(function* () {
-      yield* seedUsers;
-      const repo = yield* NumberRepo;
-      const added = yield* repo.addNew(42);
-      expect(added.number).toBe(42);
-      const updated = yield* repo.update(added.id, { number: 10 });
-      expect(updated.number).toBe(10);
-      expect(yield* repo.deleteById(added.id)).toEqual({ id: added.id });
-      expect(yield* repo.getAll).toEqual([]);
-    }).pipe(withRepo),
-  );
+  it.layer(layerCurrentUser())((it) => {
+    it.effect("deletes only numbers owned by the current user", () =>
+      Effect.gen(function* () {
+        yield* seedUsers;
+        yield* insertNumber(userId, 1);
+        const other = yield* insertNumber(otherUserId, 2);
+        const repo = yield* NumberRepo;
+        yield* repo.deleteAll;
+        expect(yield* repo.getAll).toEqual([]);
 
-  it.effect("deletes only numbers owned by the current user", () =>
-    Effect.gen(function* () {
-      yield* seedUsers;
-      yield* insertNumber(userId, 1);
-      const other = yield* insertNumber(otherUserId, 2);
-      const repo = yield* NumberRepo;
-      yield* repo.deleteAll;
-      expect(yield* repo.getAll).toEqual([]);
-
-      const otherNumbers = yield* withRepo(
-        Effect.gen(function* () {
-          return yield* (yield* NumberRepo).getAll;
-        }),
-        otherUserId,
-      );
-      expect(otherNumbers).toEqual([other]);
-    }).pipe(withRepo),
-  );
+        const otherNumbers = yield* repo.getAll.pipe(Effect.provide(layerCurrentUser(otherUserId)));
+        expect(otherNumbers).toEqual([other]);
+      }),
+    );
+  });
 });

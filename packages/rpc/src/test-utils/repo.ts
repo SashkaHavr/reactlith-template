@@ -1,4 +1,4 @@
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
 
 import { CurrentUser } from "#context";
 import type { AuthType } from "@reactlith-template/auth";
@@ -17,8 +17,8 @@ export const seedUsers = Effect.gen(function* () {
   ]);
 });
 
-export function withUser(id: IdBranded<"user"> = userId) {
-  return Effect.provideService(CurrentUser, {
+export function layerCurrentUser(id: IdBranded<"user"> = userId) {
+  return Layer.succeed(CurrentUser, {
     userId: id,
     session: {} as AuthType["$Infer"]["Session"],
   });

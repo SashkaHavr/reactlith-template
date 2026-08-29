@@ -1,4 +1,4 @@
-import { Effect, Option, Redacted } from "effect";
+import { Effect, Option } from "effect";
 
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 
@@ -11,7 +11,6 @@ export const ConfigRpcsLive = ConfigRpcs.toLayer(
     return ConfigRpcs.of({
       "config.auth": () =>
         Effect.sync(() => ({
-          google: !!config.googleClientId && !!Redacted.value(config.googleClientSecret),
           googleEmulate: Option.isSome(config.googleEmulateUrl),
         })),
     });
