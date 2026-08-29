@@ -30,7 +30,7 @@ layer(NumberRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("NumberRepo
         yield* insertNumber(userId, 1, new Date("2025-01-01"));
         yield* insertNumber(otherUserId, 3, new Date("2025-01-01"));
         const repo = yield* NumberRepo;
-        expect((yield* repo.getAll).map(({ number }) => number)).toEqual([1, 2]);
+        expect((yield* repo.getAll()).map(({ number }) => number)).toEqual([1, 2]);
       }),
     );
   });
@@ -43,7 +43,7 @@ layer(NumberRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("NumberRepo
         yield* insertNumber(userId, 51);
         yield* insertNumber(otherUserId, 100);
         const repo = yield* NumberRepo;
-        expect(yield* repo.getCount).toBe(2);
+        expect(yield* repo.getCount()).toBe(2);
         expect(yield* repo.getCountAbove(50)).toBe(2);
       }),
     );
@@ -72,7 +72,7 @@ layer(NumberRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("NumberRepo
         const updated = yield* repo.update(added.id, { number: 10 });
         expect(updated.number).toBe(10);
         expect(yield* repo.deleteById(added.id)).toEqual({ id: added.id });
-        expect(yield* repo.getAll).toEqual([]);
+        expect(yield* repo.getAll()).toEqual([]);
       }),
     );
   });
@@ -84,10 +84,12 @@ layer(NumberRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("NumberRepo
         yield* insertNumber(userId, 1);
         const other = yield* insertNumber(otherUserId, 2);
         const repo = yield* NumberRepo;
-        yield* repo.deleteAll;
-        expect(yield* repo.getAll).toEqual([]);
+        yield* repo.deleteAll();
+        expect(yield* repo.getAll()).toEqual([]);
 
-        const otherNumbers = yield* repo.getAll.pipe(Effect.provide(layerCurrentUser(otherUserId)));
+        const otherNumbers = yield* repo
+          .getAll()
+          .pipe(Effect.provide(layerCurrentUser(otherUserId)));
         expect(otherNumbers).toEqual([other]);
       }),
     );

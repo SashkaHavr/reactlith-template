@@ -19,7 +19,7 @@ export const NumbersRpcsLive = NumbersRpcs.toLayer(
         }),
       "numbers.getAll": () =>
         Effect.gen(function* () {
-          return { numbers: yield* numberRepo.getAll };
+          return { numbers: yield* numberRepo.getAll() };
         }),
       "numbers.getById": ({ id }) => numberRepo.getById(id),
       "numbers.addNew": ({ number }) =>
@@ -27,8 +27,8 @@ export const NumbersRpcsLive = NumbersRpcs.toLayer(
           return yield* db
             .transaction(() =>
               Effect.gen(function* () {
-                yield* userRepo.getUserLock;
-                if ((yield* numberRepo.getCount) >= 10) {
+                yield* userRepo.getUserLock();
+                if ((yield* numberRepo.getCount()) >= 10) {
                   return yield* new MaxCountReached({ maxCount: 10 });
                 }
                 return yield* numberRepo.addNew(number);
@@ -40,7 +40,7 @@ export const NumbersRpcsLive = NumbersRpcs.toLayer(
       "numbers.delete": ({ id }) => numberRepo.deleteById(id),
       "numbers.deleteAll": () =>
         Effect.gen(function* () {
-          yield* numberRepo.deleteAll;
+          yield* numberRepo.deleteAll();
           return null;
         }),
     });

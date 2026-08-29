@@ -38,7 +38,7 @@ class NumbersClient extends Context.Service<
       Layer.mergeAll(
         Layer.succeed(RpcLogger)(undefined),
         Layer.succeed(UserRepo)({
-          getUserLock: Effect.succeed({ id: userId }),
+          getUserLock: () => Effect.succeed({ id: userId }),
         }),
         Layer.succeed(Database)({
           transaction: vi.fn<Effect.Success<typeof Database.make>["transaction"]>((callback) =>
@@ -52,13 +52,13 @@ class NumbersClient extends Context.Service<
 
 const unusedRepo: Effect.Success<typeof NumberRepo.make> = {
   getCountAbove: () => Effect.die("unexpected getCountAbove"),
-  getAll: Effect.die("unexpected getAll"),
-  getCount: Effect.die("unexpected getCount"),
+  getAll: () => Effect.die("unexpected getAll"),
+  getCount: () => Effect.die("unexpected getCount"),
   getById: () => Effect.die("unexpected getById"),
   addNew: () => Effect.die("unexpected addNew"),
   update: () => Effect.die("unexpected update"),
   deleteById: () => Effect.die("unexpected deleteById"),
-  deleteAll: Effect.die("unexpected deleteAll"),
+  deleteAll: () => Effect.die("unexpected deleteAll"),
 };
 
 layer(
@@ -111,7 +111,9 @@ layer(
 )("authenticated", (it) => {
   it.layer(
     NumbersClient.layerTest.pipe(
-      Layer.provide(Layer.succeed(NumberRepo)({ ...unusedRepo, getAll: Effect.succeed([number]) })),
+      Layer.provide(
+        Layer.succeed(NumberRepo)({ ...unusedRepo, getAll: () => Effect.succeed([number]) }),
+      ),
     ),
   )((it) => {
     it.effect("gets all numbers from the repository", () =>
@@ -150,13 +152,13 @@ layer(
         Layer.mergeAll(
           Layer.succeed(NumberRepo)({
             ...unusedRepo,
-            getCount: Effect.succeed(9),
+            getCount: () => Effect.succeed(9),
             addNew: vi.fn<Effect.Success<typeof NumberRepo.make>["addNew"]>(() =>
               Effect.succeed(number),
             ),
           }),
           Layer.succeed(UserRepo)({
-            getUserLock: Effect.succeed({ id: userId }),
+            getUserLock: () => Effect.succeed({ id: userId }),
           }),
         ),
       ),
@@ -177,7 +179,9 @@ layer(
 
   it.layer(
     NumbersClient.layerTest.pipe(
-      Layer.provide(Layer.succeed(NumberRepo)({ ...unusedRepo, getCount: Effect.succeed(10) })),
+      Layer.provide(
+        Layer.succeed(NumberRepo)({ ...unusedRepo, getCount: () => Effect.succeed(10) }),
+      ),
     ),
   )((it) => {
     it.effect("rejects adding more than ten numbers", () =>
@@ -200,7 +204,7 @@ layer(
           deleteById: vi.fn<Effect.Success<typeof NumberRepo.make>["deleteById"]>(() =>
             Effect.succeed({ id: numberId }),
           ),
-          deleteAll: Effect.succeed(undefined),
+          deleteAll: () => Effect.succeed(undefined),
         }),
       ),
     ),

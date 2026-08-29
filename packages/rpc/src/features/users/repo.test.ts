@@ -14,7 +14,7 @@ layer(UserRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("UserRepo", (
       Effect.gen(function* () {
         yield* seedUsers;
         const repo = yield* UserRepo;
-        expect(yield* repo.getUserLock).toEqual({ id: userId });
+        expect(yield* repo.getUserLock()).toEqual({ id: userId });
       }),
     );
   });
@@ -26,7 +26,7 @@ layer(UserRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("UserRepo", (
         const db = yield* Database;
         yield* db.delete(schema.user);
         const repo = yield* UserRepo;
-        const error = yield* Effect.flip(repo.getUserLock);
+        const error = yield* Effect.flip(repo.getUserLock());
         expect(error).toBeInstanceOf(UserNotFound);
       }),
     );

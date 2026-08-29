@@ -18,13 +18,10 @@ export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", 
     const db = yield* Database;
 
     return {
-      getCountAbove: (value: number) =>
-        Effect.gen(function* () {
-          return yield* db
-            .$count(schema.number, gt(schema.number.number, value))
-            .pipe(Effect.orDie);
-        }),
-      getAll: Effect.gen(function* () {
+      getCountAbove: Effect.fnUntraced(function* (value: number) {
+        return yield* db.$count(schema.number, gt(schema.number.number, value)).pipe(Effect.orDie);
+      }),
+      getAll: Effect.fnUntraced(function* () {
         const { userId } = yield* CurrentUser;
         return yield* db.query.number
           .findMany({
@@ -34,70 +31,69 @@ export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", 
           })
           .pipe(Effect.orDie);
       }),
-      getCount: Effect.gen(function* () {
+      getCount: Effect.fnUntraced(function* () {
         const { userId } = yield* CurrentUser;
         return yield* db.$count(schema.number, eq(schema.number.userId, userId)).pipe(Effect.orDie);
       }),
-      getById: (id: IdBranded<"number">) =>
-        Effect.gen(function* () {
-          const { userId } = yield* CurrentUser;
-          const number = yield* db.query.number
-            .findFirst({
-              columns: { id: true, number: true, createdAt: true, updatedAt: true },
-              where: { id: { eq: id }, userId: { eq: userId } },
-            })
-            .pipe(Effect.orDie);
-          if (!number) {
-            return yield* new NumberNotFound({ numberId: id });
-          }
-          return number;
-        }),
-      addNew: (value: number) =>
-        Effect.gen(function* () {
-          const { userId } = yield* CurrentUser;
-          const [number] = yield* db
-            .insert(schema.number)
-            .values({ userId, number: value })
-            .returning({ id: schema.number.id, number: schema.number.number })
-            .pipe(Effect.orDie);
-          if (!number) {
-            return yield* Effect.die("Failed to add number");
-          }
-          return number;
-        }),
-      update: (id: IdBranded<"number">, data: { readonly number?: number }) =>
-        Effect.gen(function* () {
-          const { userId } = yield* CurrentUser;
-          const [number] = yield* db
-            .update(schema.number)
-            .set(data)
-            .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-            .returning({
-              id: schema.number.id,
-              number: schema.number.number,
-              createdAt: schema.number.createdAt,
-              updatedAt: schema.number.updatedAt,
-            })
-            .pipe(Effect.orDie);
-          if (!number) {
-            return yield* new NumberNotFound({ numberId: id });
-          }
-          return number;
-        }),
-      deleteById: (id: IdBranded<"number">) =>
-        Effect.gen(function* () {
-          const { userId } = yield* CurrentUser;
-          const [number] = yield* db
-            .delete(schema.number)
-            .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-            .returning({ id: schema.number.id })
-            .pipe(Effect.orDie);
-          if (!number) {
-            return yield* new NumberNotFound({ numberId: id });
-          }
-          return number;
-        }),
-      deleteAll: Effect.gen(function* () {
+      getById: Effect.fnUntraced(function* (id: IdBranded<"number">) {
+        const { userId } = yield* CurrentUser;
+        const number = yield* db.query.number
+          .findFirst({
+            columns: { id: true, number: true, createdAt: true, updatedAt: true },
+            where: { id: { eq: id }, userId: { eq: userId } },
+          })
+          .pipe(Effect.orDie);
+        if (!number) {
+          return yield* new NumberNotFound({ numberId: id });
+        }
+        return number;
+      }),
+      addNew: Effect.fnUntraced(function* (value: number) {
+        const { userId } = yield* CurrentUser;
+        const [number] = yield* db
+          .insert(schema.number)
+          .values({ userId, number: value })
+          .returning({ id: schema.number.id, number: schema.number.number })
+          .pipe(Effect.orDie);
+        if (!number) {
+          return yield* Effect.die("Failed to add number");
+        }
+        return number;
+      }),
+      update: Effect.fnUntraced(function* (
+        id: IdBranded<"number">,
+        data: { readonly number?: number },
+      ) {
+        const { userId } = yield* CurrentUser;
+        const [number] = yield* db
+          .update(schema.number)
+          .set(data)
+          .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
+          .returning({
+            id: schema.number.id,
+            number: schema.number.number,
+            createdAt: schema.number.createdAt,
+            updatedAt: schema.number.updatedAt,
+          })
+          .pipe(Effect.orDie);
+        if (!number) {
+          return yield* new NumberNotFound({ numberId: id });
+        }
+        return number;
+      }),
+      deleteById: Effect.fnUntraced(function* (id: IdBranded<"number">) {
+        const { userId } = yield* CurrentUser;
+        const [number] = yield* db
+          .delete(schema.number)
+          .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
+          .returning({ id: schema.number.id })
+          .pipe(Effect.orDie);
+        if (!number) {
+          return yield* new NumberNotFound({ numberId: id });
+        }
+        return number;
+      }),
+      deleteAll: Effect.fnUntraced(function* () {
         const { userId } = yield* CurrentUser;
         yield* db.delete(schema.number).where(eq(schema.number.userId, userId)).pipe(Effect.orDie);
       }),

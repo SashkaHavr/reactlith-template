@@ -11,12 +11,12 @@ export class UserRepo extends Context.Service<UserRepo>()("rpc/UserRepo", {
     const db = yield* Database;
 
     return {
-      getUserLock: Effect.gen(function* () {
+      getUserLock: Effect.fnUntraced(function* () {
         const { userId } = yield* CurrentUser;
         const [user] = yield* db
-            .select({ id: schema.user.id })
-            .from(schema.user)
-            .where(eq(schema.user.id, userId))
+          .select({ id: schema.user.id })
+          .from(schema.user)
+          .where(eq(schema.user.id, userId))
           .for("update")
           .pipe(Effect.orDie);
         if (!user) {
