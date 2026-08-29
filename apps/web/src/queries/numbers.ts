@@ -1,21 +1,12 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Effect } from "effect";
+import { Effect, Schema } from "effect";
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { AppApiClient } from "@reactlith-template/rpc";
+import type { AppApiInput, AppApiOutput } from "@reactlith-template/rpc";
 import { MaxCountReached } from "@reactlith-template/rpc/schema/numbers";
 import { toastManager } from "~/components/ui/toast";
 import { getApi } from "~/lib/api";
-
-type NumbersClient = AppApiClient["numbers"];
-type ApiOutput<Tag extends keyof NumbersClient> = Effect.Success<ReturnType<NumbersClient[Tag]>>;
-type GetByIdInput = Parameters<NumbersClient["getById"]>[0]["params"];
-type AddNewInput = Parameters<NumbersClient["addNew"]>[0]["payload"];
-type UpdateInput = Parameters<NumbersClient["update"]>[0]["params"] & {
-  readonly data: Parameters<NumbersClient["update"]>[0]["payload"];
-};
-type DeleteInput = Parameters<NumbersClient["delete"]>[0]["params"];
 
 export const allNumbersQueryOptions = queryOptions({
   queryKey: ["numbers", "getAll"],
@@ -38,7 +29,7 @@ export const numberQueryKey = {
   byId: (id: IdBranded<"number">) => ["numbers", "getById", id] as const,
 };
 
-export function getNumberQueryOptions(input: GetByIdInput) {
+export function getNumberQueryOptions(input: AppApiInput["numbers"]["getById"]["params"]) {
   return queryOptions({
     queryKey: numberQueryKey.byId(input.id),
     queryFn: async ({ signal }) => {
@@ -52,12 +43,12 @@ export function useAddNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: AddNewInput) => {
+    mutationFn: async (input: AppApiInput["numbers"]["addNew"]["payload"]) => {
       const api = await getApi();
       return await Effect.runPromise(api.numbers.addNew({ payload: input }));
     },
     onError: async (error: unknown) => {
-      if (error instanceof MaxCountReached) {
+      if (Schema.is(MaxCountReached)(error)) {
         toastManager.add({
           title: m.example_maxNumberCountReached(),
           description: m.example_maxNumberCountReachedDescription({
@@ -80,10 +71,14 @@ export function useUpdateNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: UpdateInput) => {
+    mutationFn: async (
+      input: AppApiInput["numbers"]["update"]["params"] & {
+        payload: AppApiInput["numbers"]["update"]["payload"];
+      },
+    ) => {
       const api = await getApi();
       return await Effect.runPromise(
-        api.numbers.update({ params: { id: input.id }, payload: input.data }),
+        api.numbers.update({ params: { id: input.id }, payload: input.payload }),
       );
     },
     onMutate: async (input) => {
@@ -97,13 +92,13 @@ export function useUpdateNumber() {
       const previousNumber = queryClient.getQueryData(detailQueryKey);
 
       queryClient.setQueryData(detailQueryKey, (number) =>
-        number ? { ...number, ...input.data } : number,
+        number ? { ...number, ...input.payload } : number,
       );
       queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
         data
           ? {
               numbers: data.numbers.map((number) =>
-                number.id === input.id ? { ...number, ...input.data } : number,
+                number.id === input.id ? { ...number, ...input.payload } : number,
               ),
             }
           : data,
@@ -133,7 +128,7 @@ export function useDeleteNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: DeleteInput) => {
+    mutationFn: async (input: AppApiInput["numbers"]["delete"]["params"]) => {
       const api = await getApi();
       return await Effect.runPromise(api.numbers.delete({ params: input }));
     },
@@ -182,7 +177,7 @@ export function useDeleteAllNumbers() {
       ]);
 
       const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
-      const previousNumbers = queryClient.getQueriesData<ApiOutput<"getById">>({
+      const previousNumbers = queryClient.getQueriesData<AppApiOutput["numbers"]["getById"]>({
         queryKey: numberQueryKey.all(),
       });
 

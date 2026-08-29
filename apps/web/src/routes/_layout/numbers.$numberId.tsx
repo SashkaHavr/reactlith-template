@@ -6,6 +6,7 @@ import {
   useHydrated,
   useNavigate,
 } from "@tanstack/react-router";
+import { Schema } from "effect";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     try {
       await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
     } catch (error) {
-      if (error instanceof NumberNotFound) {
+      if (Schema.is(NumberNotFound)(error)) {
         throw notFound();
       }
       throw error;
@@ -70,7 +71,10 @@ function RouteComponent() {
         <Button
           variant="outline"
           onClick={() =>
-            updateNumber.mutate({ id: numberId, data: { number: Math.floor(Math.random() * 100) } })
+            updateNumber.mutate({
+              id: numberId,
+              payload: { number: Math.floor(Math.random() * 100) },
+            })
           }
         >
           <PencilIcon />

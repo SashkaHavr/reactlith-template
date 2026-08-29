@@ -18,15 +18,15 @@ export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
   { httpApiStatus: 400 },
 ) {}
 
-export const numberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
-export const numberInput = Schema.Struct({ number: numberValue });
-export const numberUpdateInput = Schema.Struct({ number: Schema.optionalKey(numberValue) }).check(
+export const NumberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
+export const NumberInput = Schema.Struct({ number: NumberValue });
+export const NumberUpdateInput = Schema.Struct({ number: Schema.optionalKey(NumberValue) }).check(
   Schema.makeFilter((data) => Object.keys(data).length > 0),
 );
-export const numberOutput = Schema.Struct({ id: IdBranded("number"), number: numberValue });
-export const numberIdInput = Schema.Struct({ id: IdBranded("number") });
-export const numberFullOutput = Schema.Struct({
-  ...numberOutput.fields,
+export const NumberOutput = Schema.Struct({ id: IdBranded("number"), number: NumberValue });
+export const NumberIdInput = Schema.Struct({ id: IdBranded("number") });
+export const NumberFullOutput = Schema.Struct({
+  ...NumberOutput.fields,
   createdAt: Schema.DateFromString,
   updatedAt: Schema.DateFromString,
 });
@@ -34,27 +34,27 @@ export const numberFullOutput = Schema.Struct({
 export class NumbersApi extends HttpApiGroup.make("numbers")
   .add(
     HttpApiEndpoint.get("getAll", "/", {
-      success: Schema.Struct({ numbers: Schema.Array(numberOutput) }),
+      success: Schema.Struct({ numbers: Schema.Array(NumberOutput) }),
     }),
     HttpApiEndpoint.get("getById", "/:id", {
-      params: numberIdInput,
-      success: numberFullOutput,
+      params: NumberIdInput,
+      success: NumberFullOutput,
       error: NumberNotFound,
     }),
     HttpApiEndpoint.post("addNew", "/", {
-      payload: numberInput,
-      success: numberOutput,
+      payload: NumberInput,
+      success: NumberOutput,
       error: [MaxCountReached, UserNotFound],
     }),
     HttpApiEndpoint.patch("update", "/:id", {
-      params: numberIdInput,
-      payload: numberUpdateInput,
-      success: numberFullOutput,
+      params: NumberIdInput,
+      payload: NumberUpdateInput,
+      success: NumberFullOutput,
       error: NumberNotFound,
     }),
     HttpApiEndpoint.delete("delete", "/:id", {
-      params: numberIdInput,
-      success: numberIdInput,
+      params: NumberIdInput,
+      success: NumberIdInput,
       error: NumberNotFound,
     }),
     HttpApiEndpoint.delete("deleteAll", "/", {

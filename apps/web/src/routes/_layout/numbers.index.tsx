@@ -5,7 +5,7 @@ import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
-import { numberInput } from "@reactlith-template/rpc/schema/numbers";
+import { NumberInput } from "@reactlith-template/rpc/schema/numbers";
 import {
   FormField,
   FormFieldError,
@@ -49,8 +49,8 @@ export const Route = createFileRoute("/_layout/numbers/")({
 
 const customNumberInput = Schema.toStandardSchemaV1(
   Schema.Struct({
-    ...numberInput.fields,
-    number: Schema.FiniteFromString.pipe(Schema.decodeTo(numberInput.fields.number)),
+    ...NumberInput.fields,
+    number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberInput.fields.number)),
   }),
 );
 
