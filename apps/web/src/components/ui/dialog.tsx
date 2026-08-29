@@ -190,7 +190,7 @@ export function DialogPanel({
   };
 
   return (
-    <ScrollArea scrollFade={scrollFade}>
+    <ScrollArea overscrollContain scrollFade={scrollFade}>
       {useRender({
         defaultTagName: "div",
         props: mergeProps<"div">(defaultProps, props),
