@@ -13,7 +13,7 @@ export type NumberFullRow = NumberRow & {
   readonly updatedAt: Date;
 };
 
-export class NumberRepo extends Context.Service<NumberRepo>()("rpc/NumberRepo", {
+export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", {
   make: Effect.gen(function* () {
     const db = yield* Database;
 

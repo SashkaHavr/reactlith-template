@@ -4,12 +4,12 @@ import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 import { fetch as nitroFetch } from "nitro";
 
+import { Api } from "@reactlith-template/api";
+import { ApiLive } from "@reactlith-template/api/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 import { DBConfig } from "@reactlith-template/config/db-config";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
-import { Api } from "@reactlith-template/rpc";
-import { ApiLive } from "@reactlith-template/rpc/layer";
 
 const scope = Scope.makeUnsafe();
 

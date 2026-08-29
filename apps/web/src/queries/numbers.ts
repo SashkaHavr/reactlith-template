@@ -1,9 +1,9 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Effect } from "effect";
 
+import type { ApiErrors, ApiInput, ApiOutput } from "@reactlith-template/api";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { ApiErrors, ApiInput, ApiOutput } from "@reactlith-template/rpc";
 import { toastManager } from "~/components/ui/toast";
 import { getApi } from "~/lib/api";
 

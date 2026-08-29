@@ -1,5 +1,5 @@
 {
-  "name": "@reactlith-template/rpc",
+  "name": "@reactlith-template/api",
   "private": true,
   "type": "module",
   "imports": {

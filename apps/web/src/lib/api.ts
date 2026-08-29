@@ -3,7 +3,7 @@ import { Effect } from "effect";
 import { FetchHttpClient } from "effect/unstable/http";
 import { HttpApiClient } from "effect/unstable/httpapi";
 
-import { Api } from "@reactlith-template/rpc";
+import { Api } from "@reactlith-template/api";
 
 async function createApi() {
   return Effect.runPromise(

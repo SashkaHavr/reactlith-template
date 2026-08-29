@@ -6,7 +6,7 @@ import { Database, schema } from "@reactlith-template/db";
 
 import { UserNotFound } from "./schema";
 
-export class UserRepo extends Context.Service<UserRepo>()("rpc/UserRepo", {
+export class UserRepo extends Context.Service<UserRepo>()("api/UserRepo", {
   make: Effect.gen(function* () {
     const db = yield* Database;
 

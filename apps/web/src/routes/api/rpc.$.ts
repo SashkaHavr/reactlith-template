@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Context } from "effect";
 
-import { ApiLogger } from "@reactlith-template/rpc/layer";
+import { ApiLogger } from "@reactlith-template/api/layer";
 
 export const Route = createFileRoute("/api/rpc/$")({
   server: {

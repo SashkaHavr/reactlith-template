@@ -4,8 +4,8 @@ import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
+import { NumberInput } from "@reactlith-template/api/schema/numbers";
 import { m } from "@reactlith-template/intl/messages";
-import { NumberInput } from "@reactlith-template/rpc/schema/numbers";
 import {
   FormField,
   FormFieldError,
