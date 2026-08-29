@@ -18,8 +18,8 @@
   "devDependencies": {
     "@effect/sql-pg": "catalog:",
     "@effect/sql-pglite": "catalog:",
-    "@electric-sql/pglite": "0.5.7",
-    "@electric-sql/pglite-prepopulatedfs": "0.5.7",
+    "@electric-sql/pglite": "0.5.8",
+    "@electric-sql/pglite-prepopulatedfs": "0.5.8",
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
     "@types/bun": "catalog:",

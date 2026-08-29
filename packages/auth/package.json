@@ -13,7 +13,7 @@
     "generate": "NODE_ENV=development bunx auth@latest generate --config ./generated/config.ts --output ./generated/auth-schema.ts --yes"
   },
   "devDependencies": {
-    "@better-auth/drizzle-adapter": "^1.7.1",
+    "@better-auth/drizzle-adapter": "^1.7.2",
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
