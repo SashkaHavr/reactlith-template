@@ -1,4 +1,4 @@
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
 
 import { Database } from "@reactlith-template/db";
 
@@ -45,4 +45,9 @@ export const NumbersRpcsLive = NumbersRpcs.toLayer(
         }),
     });
   }),
+);
+
+export const NumbersRpcsLiveWithServices = NumbersRpcsLive.pipe(
+  Layer.provideMerge(NumberRepo.layer),
+  Layer.provideMerge(UserRepo.layer),
 );
