@@ -1,4 +1,4 @@
-import { Effect, Layer } from "effect";
+import { Effect, Layer, Predicate } from "effect";
 
 import { ApiLogger } from "#context";
 
@@ -12,7 +12,15 @@ export const GlobalMiddlewareLive = Layer.succeed(GlobalMiddleware)(
         api: { path: `${group.identifier}.${endpoint.identifier}` },
         package: "api",
       });
-      return yield* effect;
+      return yield* effect.pipe(
+        Effect.tapError((error) =>
+          Effect.sync(() => {
+            if (Predicate.hasProperty(error, "_tag") && Predicate.isString(error._tag)) {
+              log?.set({ error: { tag: error._tag } });
+            }
+          }),
+        ),
+      );
     }),
   ),
 );
