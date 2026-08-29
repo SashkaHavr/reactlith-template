@@ -4,8 +4,8 @@ import { Etag, HttpPlatform } from "effect/unstable/http";
 import { HttpApiTest } from "effect/unstable/httpapi";
 import { expect, vi } from "vitest";
 
-import { AppApi } from "#client";
-import type { AppApiClient } from "#client";
+import { Api } from "#client";
+import type { ApiClient } from "#client";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { Unauthorized } from "#middleware/authentication/schema";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
@@ -33,12 +33,10 @@ const TestServices = Layer.mergeAll(Path.layer, Etag.layerWeak, HttpPlatform.lay
   Layer.provideMerge(FileSystem.layerNoop({})),
 );
 
-class NumbersClient extends Context.Service<NumbersClient, AppApiClient>()(
-  "api/test/NumbersClient",
-) {
+class NumbersClient extends Context.Service<NumbersClient, ApiClient>()("api/test/NumbersClient") {
   static readonly layerTest = Layer.effect(
     NumbersClient,
-    HttpApiTest.groups(AppApi, ["numbers"]),
+    HttpApiTest.groups(Api, ["numbers"]),
   ).pipe(
     Layer.provide(
       NumbersApiLive.pipe(

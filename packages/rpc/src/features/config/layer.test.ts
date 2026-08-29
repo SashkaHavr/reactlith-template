@@ -4,7 +4,7 @@ import { Etag, HttpPlatform } from "effect/unstable/http";
 import { HttpApiTest } from "effect/unstable/httpapi";
 import { expect } from "vitest";
 
-import { AppApi } from "#client";
+import { Api } from "#client";
 import { AuthenticationMiddleware } from "#middleware/authentication/schema";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
@@ -22,7 +22,7 @@ const ClientServices = Layer.mergeAll(
     AuthenticationMiddleware.of(() => Effect.die("unexpected authentication")),
   ),
 );
-const makeClient = HttpApiTest.groups(AppApi, ["config"]).pipe(Effect.provide(ClientServices));
+const makeClient = HttpApiTest.groups(Api, ["config"]).pipe(Effect.provide(ClientServices));
 
 const authConfig = {
   allowedHosts: [],

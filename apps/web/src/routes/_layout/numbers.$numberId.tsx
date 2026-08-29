@@ -11,7 +11,7 @@ import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
-import type { AppApiErrors } from "@reactlith-template/rpc";
+import type { ApiErrors } from "@reactlith-template/rpc";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
 import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     try {
       await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
     } catch (err) {
-      const error = err as AppApiErrors["numbers"]["getById"];
+      const error = err as ApiErrors["numbers"]["getById"];
       if (error._tag === "NumberNotFound") {
         throw notFound();
       }

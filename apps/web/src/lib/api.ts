@@ -3,11 +3,11 @@ import { Effect } from "effect";
 import { FetchHttpClient } from "effect/unstable/http";
 import { HttpApiClient } from "effect/unstable/httpapi";
 
-import { AppApi } from "@reactlith-template/rpc";
+import { Api } from "@reactlith-template/rpc";
 
 async function createApi() {
   return Effect.runPromise(
-    HttpApiClient.make(AppApi, { baseUrl: globalThis.location.origin }).pipe(
+    HttpApiClient.make(Api, { baseUrl: globalThis.location.origin }).pipe(
       Effect.provide(FetchHttpClient.layer),
     ),
   );

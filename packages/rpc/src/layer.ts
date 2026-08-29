@@ -5,7 +5,7 @@ import { NumbersApiLiveWithServices } from "#features/numbers/layer";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
 
-export const AppApiLive = Layer.mergeAll(ConfigApiLive, NumbersApiLiveWithServices).pipe(
+export const ApiLive = Layer.mergeAll(ConfigApiLive, NumbersApiLiveWithServices).pipe(
   Layer.provideMerge(AuthenticationMiddlewareLive),
   Layer.provideMerge(GlobalMiddlewareLive),
 );

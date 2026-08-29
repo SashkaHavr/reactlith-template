@@ -8,8 +8,8 @@ import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 import { DBConfig } from "@reactlith-template/config/db-config";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
-import { AppApi } from "@reactlith-template/rpc";
-import { AppApiLive } from "@reactlith-template/rpc/layer";
+import { Api } from "@reactlith-template/rpc";
+import { ApiLive } from "@reactlith-template/rpc/layer";
 
 const scope = Scope.makeUnsafe();
 
@@ -33,9 +33,9 @@ export const resources = await Effect.runPromise(
   acquireResources.pipe(Effect.provide(layerContext)),
 );
 
-const apiRoutes = HttpApiBuilder.layer(AppApi).pipe(
+const apiRoutes = HttpApiBuilder.layer(Api).pipe(
   Layer.provide(
-    AppApiLive.pipe(
+    ApiLive.pipe(
       Layer.provide(Database.layerWithoutDependencies.pipe(Layer.provide(PgClientLive))),
     ),
   ),
@@ -55,7 +55,7 @@ const serverFetch: typeof nitroFetch = async (input, init) => {
 };
 
 export const api = await Effect.runPromise(
-  HttpApiClient.make(AppApi, { baseUrl: "http://localhost" }).pipe(
+  HttpApiClient.make(Api, { baseUrl: "http://localhost" }).pipe(
     Effect.provide(
       FetchHttpClient.layer.pipe(
         Layer.provide(

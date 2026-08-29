@@ -1,11 +1,11 @@
 import { Effect, Option } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
-import { AppApi } from "#client";
+import { Api } from "#client";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 
 export const ConfigApiLive = HttpApiBuilder.group(
-  AppApi,
+  Api,
   "config",
   Effect.fn(function* (handlers) {
     const config = yield* AuthConfig;

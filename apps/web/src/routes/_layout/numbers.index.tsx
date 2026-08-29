@@ -149,7 +149,7 @@ function RouteComponent() {
               onClick={() =>
                 updateNumber.mutate({
                   id: number.id,
-                  data: { number: Math.floor(Math.random() * 100) },
+                  payload: { number: Math.floor(Math.random() * 100) },
                 })
               }
             >

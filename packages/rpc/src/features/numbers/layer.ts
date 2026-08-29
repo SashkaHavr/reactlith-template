@@ -1,7 +1,7 @@
 import { Effect, Layer } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
-import { AppApi } from "#client";
+import { Api } from "#client";
 import { Database } from "@reactlith-template/db";
 
 import { UserRepo } from "../users/repo";
@@ -9,7 +9,7 @@ import { NumberRepo } from "./repo";
 import { MaxCountReached } from "./schema";
 
 export const NumbersApiLive = HttpApiBuilder.group(
-  AppApi,
+  Api,
   "numbers",
   Effect.fn(function* (handlers) {
     const db = yield* Database;

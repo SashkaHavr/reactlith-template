@@ -3,13 +3,13 @@ import { Effect } from "effect";
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { AppApiErrors, AppApiInput, AppApiOutput } from "@reactlith-template/rpc";
+import type { ApiErrors, ApiInput, ApiOutput } from "@reactlith-template/rpc";
 import { toastManager } from "~/components/ui/toast";
 import { getApi } from "~/lib/api";
 
-type Input = AppApiInput["numbers"];
-type Output = AppApiOutput["numbers"];
-type Errors = AppApiErrors["numbers"];
+type Input = ApiInput["numbers"];
+type Output = ApiOutput["numbers"];
+type Errors = ApiErrors["numbers"];
 
 export const allNumbersQueryOptions = queryOptions({
   queryKey: ["numbers", "getAll"],
