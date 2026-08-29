@@ -4,11 +4,12 @@ import { expect } from "vitest";
 
 import { seedUsers, userId, layerCurrentUser } from "#test-utils/repo";
 import { Database, schema } from "@reactlith-template/db";
+import { DatabaseTest } from "@reactlith-template/db/test-db";
 
 import { UserRepo } from "./repo";
 import { UserNotFound } from "./schema";
 
-layer(UserRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("UserRepo", (it) => {
+layer(UserRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))("UserRepo", (it) => {
   it.layer(layerCurrentUser())((it) => {
     it.effect("locks and returns the current user", () =>
       Effect.gen(function* () {

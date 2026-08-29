@@ -5,6 +5,7 @@ import { expect } from "vitest";
 import { layerCurrentUser, otherUserId, seedUsers, userId } from "#test-utils/repo";
 import { Database, schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
+import { DatabaseTest } from "@reactlith-template/db/test-db";
 
 import { NumberRepo } from "./repo";
 import { NumberNotFound } from "./schema";
@@ -21,7 +22,7 @@ function insertNumber(id: IdBranded<"user">, value: number, createdAt?: Date) {
   });
 }
 
-layer(NumberRepo.layer.pipe(Layer.provideMerge(Database.layerTest)))("NumberRepo", (it) => {
+layer(NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))("NumberRepo", (it) => {
   it.layer(layerCurrentUser())((it) => {
     it.effect("gets numbers for the current user in creation order", () =>
       Effect.gen(function* () {
