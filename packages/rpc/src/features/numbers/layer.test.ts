@@ -5,7 +5,6 @@ import type * as RpcGroup from "effect/unstable/rpc/RpcGroup";
 import * as RpcTest from "effect/unstable/rpc/RpcTest";
 import { expect, vi } from "vitest";
 
-import { RpcLogger } from "#context";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { Unauthorized } from "#middleware/authentication/schema";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
@@ -36,7 +35,6 @@ class NumbersClient extends Context.Service<
     Layer.provide(Layer.mergeAll(NumbersRpcsLive, AuthenticationMiddlewareLive)),
     Layer.provideMerge(
       Layer.mergeAll(
-        Layer.succeed(RpcLogger)(undefined),
         Layer.succeed(UserRepo)({
           getUserLock: () => Effect.succeed({ id: userId }),
         }),

@@ -1,10 +1,12 @@
-import { Context } from "effect";
+import { Context, Effect, Option } from "effect";
 
 import type { AuthType } from "@reactlith-template/auth";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import type { LogType } from "@reactlith-template/utils/log";
 
-export class RpcLogger extends Context.Service<RpcLogger, LogType | undefined>()("rpc/RpcLogger") {}
+export class RpcLogger extends Context.Service<RpcLogger, LogType>()("rpc/RpcLogger") {
+  static readonly get = Effect.serviceOption(RpcLogger).pipe(Effect.map(Option.getOrUndefined));
+}
 
 export class CurrentUser extends Context.Service<
   CurrentUser,

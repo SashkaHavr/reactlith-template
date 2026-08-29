@@ -11,10 +11,9 @@ import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { NumberNotFound } from "@reactlith-template/rpc/errors/numbers";
+import { NumberNotFound } from "@reactlith-template/rpc/schema/numbers";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { matchError } from "~/lib/rpc";
 import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
@@ -28,10 +27,11 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
 
     try {
       await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
-    } catch (e) {
-      if (matchError(e, NumberNotFound)) {
+    } catch (error) {
+      if (error instanceof NumberNotFound) {
         throw notFound();
       }
+      throw error;
     }
     return { numberId };
   },

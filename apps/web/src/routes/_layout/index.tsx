@@ -42,12 +42,10 @@ function RouteComponent() {
 
   return (
     <div className="flex max-w-80 flex-col gap-3">
-      {authConfig.google && (
-        <Button variant="outline" className="w-full" onClick={() => signInWithGoogle.mutate()}>
-          <GoogleIcon />
-          <span>{m.example_signInWithGoogle()}</span>
-        </Button>
-      )}
+      <Button variant="outline" className="w-full" onClick={() => signInWithGoogle.mutate()}>
+        <GoogleIcon />
+        <span>{m.example_signInWithGoogle()}</span>
+      </Button>
       <p className="text-center text-sm text-muted-foreground">
         {m.example_numbersAbove50Count({ count: numbersAbove50.count })}
       </p>

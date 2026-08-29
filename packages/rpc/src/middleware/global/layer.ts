@@ -7,7 +7,7 @@ import { GlobalMiddleware } from "./schema";
 export const GlobalMiddlewareLive = Layer.succeed(GlobalMiddleware)(
   GlobalMiddleware.of((effect, options) =>
     Effect.gen(function* () {
-      const log = yield* RpcLogger;
+      const log = yield* RpcLogger.get;
       log?.set({
         rpc: { path: options.rpc._tag },
         package: "rpc",

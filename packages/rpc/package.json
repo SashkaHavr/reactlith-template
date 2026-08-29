@@ -6,7 +6,8 @@
     "#*": "./src/*.ts"
   },
   "exports": {
-    ".": "./src/index.ts",
+    ".": "./src/client.ts",
+    "./layer": "./src/layer.ts",
     "./schema/*": "./src/features/*/schema.ts"
   },
   "scripts": {},

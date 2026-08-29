@@ -26,7 +26,6 @@
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-ssr-query": "catalog:",
     "@tanstack/react-start": "catalog:",
-    "@trpc/client": "catalog:",
     "@types/babel__core": "catalog:",
     "@types/bun": "catalog:",
     "@types/react": "catalog:",

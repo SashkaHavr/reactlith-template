@@ -14,7 +14,7 @@ export const AuthenticationMiddlewareLive = Layer.effect(
 
     return AuthenticationMiddleware.of((effect, options) =>
       Effect.gen(function* () {
-        const log = yield* RpcLogger;
+        const log = yield* RpcLogger.get;
         const session = yield* Effect.promise(async () =>
           auth.api.getSession({ headers: new Headers(options.headers) }),
         );

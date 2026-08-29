@@ -1,33 +1,27 @@
-import {
-  createClientOnlyFn,
-  createIsomorphicFn,
-  getGlobalStartContext,
-} from "@tanstack/react-start";
-import { createTRPCClient, httpLink } from "@trpc/client";
+import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
+import { Effect, Layer, Scope } from "effect";
+import { FetchHttpClient } from "effect/unstable/http";
+import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
 
-import type { TRPCRouter } from "@reactlith-template/rpc";
+import { AppRpcs } from "@reactlith-template/rpc";
 
-let _rpc: ReturnType<typeof createRPC> | undefined = undefined;
-const createRPC = createClientOnlyFn(() =>
-  createTRPCClient<TRPCRouter>({
-    links: [
-      httpLink({
-        url: "/api/rpc",
-      }),
-    ],
-  }),
-);
+const scope = Scope.makeUnsafe();
+async function createRPC() {
+  const protocolLayer = RpcClient.layerProtocolHttp({ url: "/api/rpc" }).pipe(
+    Layer.provide(RpcSerialization.layerJson),
+    Layer.provide(FetchHttpClient.layer),
+  );
+
+  return Effect.runPromise(
+    RpcClient.make(AppRpcs).pipe(
+      Effect.provide(protocolLayer),
+      Effect.provideService(Scope.Scope, scope),
+    ),
+  );
+}
+
+let _rpc: ReturnType<typeof createRPC> | undefined;
 
 export const getRPC = createIsomorphicFn()
-  .server(() => getGlobalStartContext()!.rpc)
-  .client(() => (_rpc ??= createRPC()));
-
-export function matchError<T>(
-  error: any,
-  errorClass: (abstract new (...args: never[]) => T) & { name: string },
-): error is { data: { resultError: T } } {
-  if (errorClass.name === error["data"]["resultError"]["_tag"]) {
-    return true;
-  }
-  return false;
-}
+  .server(async () => getGlobalStartContext()!.rpc)
+  .client(async () => (_rpc ??= createRPC()));
