@@ -42,12 +42,13 @@ const form = useAppForm({
 - When creating subroutes, always create a `src/routes/<route>/` folder. Use `src/routes/<route>/index.tsx` for the index route and `src/routes/<route>/route.tsx` for the layout.
 - Perform access checks and redirects in a route's `beforeLoad`, not in component effects.
 - Use TanStack Router's `Link`, `useNavigate`, or the shared `LinkButton` for internal navigation instead of raw anchors or `window.location`.
-- Put all RPC query options and mutations in `/src/queries`.
-- Define RPC queries with TanStack Query's `queryOptions`. Use a stable query key and call the procedure through `getRPC()` in `queryFn`.
-- Always pass the `queryFn` abort signal to RPC queries: `queryFn: async ({ signal }) => getRPC().someQuery.query(input, { signal })`.
-- Preload queries by importing their options and using `await context.queryClient.query({...someQueryOptions, staleTime: "static" })` in the route's `loader`.
+- Put all API query options and mutation hooks in `/src/queries`.
+- Define API queries with TanStack Query's `queryOptions`. Use a stable query key, get the Effect HTTP API client with `getApi()`, and call the endpoint in `queryFn`.
+- Always pass the `queryFn` abort signal to `Effect.runPromise`: `queryFn: async ({ signal }) => Effect.runPromise((await getApi()).<group>.<endpoint>(input), { signal })`.
+- Preload queries in route loaders with `await context.queryClient.query({ ...someQueryOptions, staleTime: "static" })`.
 - Use `useSuspenseQuery(someQueryOptions)` for unconditional queries and `useQuery({ ...someQueryOptions, enabled })` for conditional queries.
-- Implement RPC mutations with `useMutation({ mutationFn: async (input) => getRPC().someMutation.mutate(input) })` in `/src/queries`.
+- Implement API mutations with `useMutation`; get the client with `getApi()` and run the endpoint Effect with `Effect.runPromise`.
+- Use `ApiInput`, `ApiOutput`, and `ApiErrors` for types.
 - Reuse exported query options' `.queryKey` for cache updates and invalidation.
 - Export query-key factory objects beside their query options when cache operations need both exact and prefix keys. Prefer named methods, for example `someQueryKey.all()` and `someQueryKey.byId(id)`.
-- Use `matchError(error, <ErrorClass>)` to match domain errors from the backend.
+- Match typed domain errors from `ApiErrors` by their `_tag`.
