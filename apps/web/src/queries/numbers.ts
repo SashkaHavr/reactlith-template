@@ -1,12 +1,15 @@
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Effect, Schema } from "effect";
+import { Effect } from "effect";
 
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
-import type { AppApiInput, AppApiOutput } from "@reactlith-template/rpc";
-import { MaxCountReached } from "@reactlith-template/rpc/schema/numbers";
+import type { AppApiErrors, AppApiInput, AppApiOutput } from "@reactlith-template/rpc";
 import { toastManager } from "~/components/ui/toast";
 import { getApi } from "~/lib/api";
+
+type Input = AppApiInput["numbers"];
+type Output = AppApiOutput["numbers"];
+type Errors = AppApiErrors["numbers"];
 
 export const allNumbersQueryOptions = queryOptions({
   queryKey: ["numbers", "getAll"],
@@ -29,7 +32,7 @@ export const numberQueryKey = {
   byId: (id: IdBranded<"number">) => ["numbers", "getById", id] as const,
 };
 
-export function getNumberQueryOptions(input: AppApiInput["numbers"]["getById"]["params"]) {
+export function getNumberQueryOptions(input: Input["getById"]["params"]) {
   return queryOptions({
     queryKey: numberQueryKey.byId(input.id),
     queryFn: async ({ signal }) => {
@@ -43,12 +46,12 @@ export function useAddNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: AppApiInput["numbers"]["addNew"]["payload"]) => {
+    mutationFn: async (input: Input["addNew"]["payload"]) => {
       const api = await getApi();
       return await Effect.runPromise(api.numbers.addNew({ payload: input }));
     },
-    onError: async (error: unknown) => {
-      if (Schema.is(MaxCountReached)(error)) {
+    onError: async (error: Errors["addNew"]) => {
+      if (error._tag === "MaxCountReached") {
         toastManager.add({
           title: m.example_maxNumberCountReached(),
           description: m.example_maxNumberCountReachedDescription({
@@ -72,8 +75,8 @@ export function useUpdateNumber() {
 
   return useMutation({
     mutationFn: async (
-      input: AppApiInput["numbers"]["update"]["params"] & {
-        payload: AppApiInput["numbers"]["update"]["payload"];
+      input: Input["update"]["params"] & {
+        payload: Input["update"]["payload"];
       },
     ) => {
       const api = await getApi();
@@ -128,7 +131,7 @@ export function useDeleteNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: AppApiInput["numbers"]["delete"]["params"]) => {
+    mutationFn: async (input: Input["delete"]["params"]) => {
       const api = await getApi();
       return await Effect.runPromise(api.numbers.delete({ params: input }));
     },
@@ -177,7 +180,7 @@ export function useDeleteAllNumbers() {
       ]);
 
       const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
-      const previousNumbers = queryClient.getQueriesData<AppApiOutput["numbers"]["getById"]>({
+      const previousNumbers = queryClient.getQueriesData<Output["getById"]>({
         queryKey: numberQueryKey.all(),
       });
 
