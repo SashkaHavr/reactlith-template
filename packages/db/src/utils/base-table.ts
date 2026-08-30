@@ -1,13 +1,13 @@
 import { timestamp, uuid } from "drizzle-orm/pg-core";
+import type { Brand } from "effect";
 import { v7 as uuidv7 } from "uuid";
-import type * as z from "zod";
 
 export function baseTable<T extends string>() {
   return {
     id: uuid()
-      .$type<string & z.core.$brand<T>>()
+      .$type<Brand.Branded<string, T>>()
       .primaryKey()
-      .$defaultFn(uuidv7 as () => string & z.core.$brand<T>),
+      .$defaultFn(uuidv7 as () => Brand.Branded<string, T>),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp({ withTimezone: true })
       .notNull()

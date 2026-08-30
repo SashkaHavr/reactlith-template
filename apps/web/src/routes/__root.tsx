@@ -6,37 +6,36 @@ import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanst
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
-import * as z from "zod";
 
 import { getLocale } from "@reactlith-template/intl/runtime";
-import type { Locale } from "@reactlith-template/intl/runtime";
 import { identifyUser } from "@reactlith-template/utils/log";
 import { seo } from "@reactlith-template/utils/seo";
 import { getTheme } from "~/components/theme/context";
 import { ThemeScript, ThemeProvider } from "~/components/theme/provider";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
-import type { TRPCRouteContext } from "~/lib/trpc";
+import type { RouterContext } from "~/lib/context";
 import { cn } from "~/lib/utils";
+import { authConfigQueryOptions } from "~/queries/config";
 import { getServerLog } from "~/utils/log";
 
 import indexCss from "../index.css?url";
 
-export const Route = createRootRouteWithContext<TRPCRouteContext>()({
-  beforeLoad: async ({ context: { queryClient, trpc } }) => {
+export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async ({ context: { queryClient } }) => {
     const locale = getLocale();
-    const [config, auth] = await Promise.all([
-      queryClient.ensureQueryData(trpc.config.auth.queryOptions()),
-      queryClient.ensureQueryData(getSessionQueryOptions),
+    const [authConfig, session] = await Promise.all([
+      queryClient.query({ ...authConfigQueryOptions, staleTime: "static" }),
+      queryClient.query({ ...getSessionQueryOptions, staleTime: "static" }),
     ]);
 
-    if (auth.loggedIn) {
-      identifyUser(getServerLog(), auth);
+    if (session.loggedIn) {
+      identifyUser(getServerLog(), session);
     }
 
     return {
-      auth,
-      config,
+      session,
+      authConfig,
       locale: locale,
       theme: await getTheme(),
     };
@@ -85,45 +84,25 @@ function RootComponent() {
 }
 
 function useSetLogIdentity() {
-  const auth = Route.useRouteContext({
-    select: (s) => s.auth,
+  const session = Route.useRouteContext({
+    select: (s) => s.session,
   });
 
   useEffect(() => {
-    if (auth.loggedIn) {
-      setIdentity({ user: { id: auth.user.id, role: auth.user.role } });
+    if (session.loggedIn) {
+      setIdentity({ user: { id: session.user.id, role: session.user.role } });
     } else {
       clearIdentity();
     }
-  }, [auth]);
-}
-
-const loadByLocale: Record<Locale, () => Promise<void>> = {
-  en: async () => {
-    z.config((await import("zod/v4/locales/en.js")).default());
-  },
-  uk: async () => {
-    z.config((await import("zod/v4/locales/uk.js")).default());
-  },
-};
-
-function useSetupZodLocale() {
-  const locale = Route.useRouteContext({
-    select: (s) => s.locale,
-  });
-
-  useEffect(() => {
-    void loadByLocale[locale]();
-  }, [locale]);
+  }, [session]);
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { locale, theme } = Route.useRouteContext({
-    select: (s) => ({ locale: s.locale, theme: s.theme, auth: s.auth }),
+    select: (s) => ({ locale: s.locale, theme: s.theme }),
   });
 
   useSetLogIdentity();
-  useSetupZodLocale();
 
   return (
     <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>

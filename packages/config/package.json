@@ -1,0 +1,17 @@
+{
+  "name": "@reactlith-template/config",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/bun": "catalog:",
+    "effect": "catalog:"
+  }
+}

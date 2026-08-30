@@ -1,43 +1,37 @@
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import {
-  environmentManager,
-  queryOptions,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useRouteContext, useRouter } from "@tanstack/react-router";
-import {
+  createClientOnlyFn,
   createIsomorphicFn,
-  createServerOnlyFn,
   getGlobalStartContext,
 } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
-import { genericOAuthClient } from "better-auth/client/plugins";
-import { createAuthClient } from "better-auth/react";
+import { createAuthClient as createAuthClientBase } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
 import { ac, roles } from "@reactlith-template/auth/permissions";
 
-export const authClient = createAuthClient({
-  basePath: "/api/auth",
-  plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles }), genericOAuthClient()],
-  fetchOptions: {
-    throw: true,
-  },
-});
+export function createAuthClientFromFetch(customFetchImpl?: typeof fetch) {
+  return createAuthClientBase({
+    basePath: "/api/auth",
+    plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
+    fetchOptions: {
+      customFetchImpl,
+      throw: true,
+    },
+  });
+}
 
-const getServerAuthApi = createServerOnlyFn(() => {
-  return getGlobalStartContext()?.auth.api!;
-});
+const createAuthClient = createClientOnlyFn(() => createAuthClientFromFetch());
 
-const getSession = createIsomorphicFn()
-  .server(async () => await getServerAuthApi().getSession({ headers: getRequest().headers }))
-  .client(async () => await authClient.getSession());
+let authClient: ReturnType<typeof createAuthClient> | undefined = undefined;
 
-export const baseAuthKey = "auth" as const;
+export const getAuthClient = createIsomorphicFn()
+  .server(() => getGlobalStartContext()!.authClient)
+  .client(() => (authClient ??= createAuthClient()));
 
-function toAuth(session: Awaited<ReturnType<typeof getSession>>) {
-  if (session === null) {
+function resolveSession<T>(session: T) {
+  if (session === null || session === undefined) {
     return {
       loggedIn: false as const,
     };
@@ -49,46 +43,30 @@ function toAuth(session: Awaited<ReturnType<typeof getSession>>) {
 }
 
 export const getSessionQueryOptions = queryOptions({
-  queryKey: [baseAuthKey, "getSession"] as const,
-  queryFn: async () => toAuth(await getSession()),
-  retry: environmentManager.isServer() ? false : 1,
+  queryKey: ["auth", "getSession"] as const,
+  queryFn: async () => resolveSession(await getAuthClient().getSession()),
   staleTime: 5 * 60 * 1000,
-  refetchOnWindowFocus: environmentManager.isServer() ? false : "always",
 });
 
-export function useAuth() {
-  return useRouteContext({ from: "__root__", select: (ctx) => ctx.auth });
-}
-
-export function useLoggedInAuth() {
-  const auth = useAuth();
-  if (!auth.loggedIn) {
-    throw new Error("Auth is not defined");
+export function useSession() {
+  const session = useQuery(getSessionQueryOptions);
+  if (!session.data?.loggedIn) {
+    throw new Error("User is not logged in");
   }
-  return auth;
-}
-
-export function useResetAuth() {
-  const queryClient = useQueryClient();
-  const router = useRouter();
-
-  return async () => {
-    const session = await authClient.getSession({ query: { disableCookieCache: true } });
-    const auth = toAuth(session);
-    queryClient.setQueryData(getSessionQueryOptions.queryKey, auth);
-    queryClient.removeQueries({
-      predicate: (query) => query.queryKey[0] !== baseAuthKey,
-    });
-    await router.invalidate();
-  };
+  return session.data;
 }
 
 export function useSignout() {
-  const resetAuth = useResetAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   return useMutation({
-    mutationFn: async () => await authClient.signOut(),
-    onSettled: async () => {
-      await resetAuth();
+    mutationFn: async () => {
+      await queryClient.cancelQueries();
+      await getAuthClient().signOut();
+      await getAuthClient().getSession({ query: { disableCookieCache: true } });
+      queryClient.clear();
+      await router.invalidate();
     },
   });
 }

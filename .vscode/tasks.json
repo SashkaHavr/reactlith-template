@@ -6,6 +6,12 @@
       "type": "npm",
       "script": "dev",
       "isBackground": true,
+      "presentation": {
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "runOptions": { "instancePolicy": "terminateNewest" },
       "options": {
         "cwd": "${workspaceFolder}"
       },

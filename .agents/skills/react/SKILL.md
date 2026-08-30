@@ -42,9 +42,13 @@ const form = useAppForm({
 - When creating subroutes, always create a `src/routes/<route>/` folder. Use `src/routes/<route>/index.tsx` for the index route and `src/routes/<route>/route.tsx` for the layout.
 - Perform access checks and redirects in a route's `beforeLoad`, not in component effects.
 - Use TanStack Router's `Link`, `useNavigate`, or the shared `LinkButton` for internal navigation instead of raw anchors or `window.location`.
-- Preload queries with `await context.queryClient.ensureQueryData(context.trpc.someQuery.queryOptions())` in the route's `loader`.
-- Use `useTRPC()` and `useSuspenseQuery(trpc.someQuery.queryOptions())` for unconditional tRPC queries in React components.
-- Use `useTRPC()` and `useQuery(trpc.someQuery.queryOptions())` for conditional tRPC queries in React components.
-- Use the second parameter of `.queryOptions()` to specify options such as `enabled` or `select` when needed, for example, `trpc.someQuery.queryOptions(input, { enabled: false })`.
-- Put all mutations and non-obvious queries in `/src/queries`.
-- Use `matchError(error, <ErrorClass>)` to match domain errors from the backend.
+- Put all API query options and mutation hooks in `/src/queries`.
+- Define API queries with TanStack Query's `queryOptions`. Use a stable query key, get the Effect HTTP API client with `getApiClient()`, and call the endpoint in `queryFn`.
+- Always pass the `queryFn` abort signal to `Effect.runPromise`: `queryFn: async ({ signal }) => Effect.runPromise((await getApiClient()).<group>.<endpoint>(input), { signal })`.
+- Preload queries in route loaders with `await context.queryClient.query({ ...someQueryOptions, staleTime: "static" })`.
+- Use `useSuspenseQuery(someQueryOptions)` for unconditional queries and `useQuery({ ...someQueryOptions, enabled })` for conditional queries.
+- Implement API mutations with `useMutation`; get the client with `getApiClient()` and run the endpoint Effect with `Effect.runPromise`.
+- Use `ApiInput`, `ApiOutput`, and `ApiErrors` for types.
+- Reuse exported query options' `.queryKey` for cache updates and invalidation.
+- Export query-key factory objects beside their query options when cache operations need both exact and prefix keys. Prefer named methods, for example `someQueryKey.all()` and `someQueryKey.byId(id)`.
+- Match typed domain errors from `ApiErrors` by their `_tag`.

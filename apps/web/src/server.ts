@@ -6,10 +6,13 @@ import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import type { LogType } from "@reactlith-template/utils/log";
 import { getRequestLog } from "~/utils/log";
 
-import { resources } from "./server-resources";
+import { apiClient, apiHandler, resources, authClient } from "./server-resources";
 
 type RequestContext = typeof resources & {
   log: LogType;
+  apiHandler: typeof apiHandler;
+  apiClient: typeof apiClient;
+  authClient: typeof authClient;
 };
 
 declare module "@tanstack/react-start" {
@@ -25,7 +28,7 @@ export default createServerEntry({
     const log = getRequestLog(request);
     return await paraglideMiddleware(request, async () =>
       handler.fetch(request, {
-        context: { ...resources, log },
+        context: { ...resources, apiClient, log, apiHandler, authClient },
       }),
     );
   },

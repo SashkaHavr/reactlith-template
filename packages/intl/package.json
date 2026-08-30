@@ -12,7 +12,6 @@
   "devDependencies": {
     "@inlang/paraglide-js": "catalog:",
     "@reactlith-template/typescript-config": "workspace:*",
-    "typescript": "catalog:",
     "vite": "catalog:"
   }
 }

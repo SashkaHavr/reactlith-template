@@ -34,7 +34,7 @@ const healthQueryOptions = queryOptions({
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.ensureQueryData(healthQueryOptions);
+    await queryClient.query({ ...healthQueryOptions, staleTime: "static" });
   },
   component: RouteComponent,
 });
@@ -100,10 +100,12 @@ function LocaleSwitcher() {
   );
 }
 
+const initialNow = Date.now();
+
 function RouteComponent() {
   const health = useSuspenseQuery(healthQueryOptions);
   const hydrated = useHydrated();
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(initialNow);
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
     dateStyle: "long",
     timeStyle: "medium",

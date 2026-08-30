@@ -1,18 +1,54 @@
+import { PgClient } from "@effect/sql-pg";
 import { sql } from "drizzle-orm";
+import * as PgDrizzle from "drizzle-orm/effect-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { Context, Effect, Layer, Redacted } from "effect";
 
-import { getEnvDB } from "@reactlith-template/env";
+import { DBConfig } from "@reactlith-template/config/db-config";
 
 import { relations, schema } from "./relations";
 
-export function createDB() {
-  return drizzle({
-    connection: getEnvDB().DATABASE_URL,
-    relations: relations,
-  });
+export class DrizzlePostgresClient extends Context.Service<DrizzlePostgresClient>()(
+  "db/DrizzlePostgresClient",
+  {
+    make: Effect.gen(function* () {
+      const config = yield* DBConfig;
+
+      return yield* Effect.acquireRelease(
+        Effect.sync(() =>
+          drizzle({
+            connection: Redacted.value(config.databaseUrl),
+            relations: relations,
+          }),
+        ),
+        (db) => Effect.promise(() => db.$client.end()),
+      );
+    }),
+  },
+) {
+  static readonly layer = Layer.effect(this, this.make).pipe(Layer.provide(DBConfig.layer));
+  static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
-export type DBType = ReturnType<typeof createDB>;
+export const PgClientLive = PgClient.layerFrom(
+  Effect.gen(function* () {
+    const db = yield* DrizzlePostgresClient;
+    return yield* PgClient.fromPool({ acquire: Effect.succeed(db.$client) });
+  }),
+);
+
+export class Database extends Context.Service<Database>()("db/Database", {
+  make: PgDrizzle.makeWithDefaults({ relations }),
+}) {
+  static readonly layer = Layer.effect(this, this.make).pipe(
+    Layer.provide(PgClientLive),
+    Layer.provide(DrizzlePostgresClient.layer),
+  );
+  static readonly layerWithoutDependencies = Layer.effect(this, this.make);
+}
+
+export type DBType = Effect.Success<typeof DrizzlePostgresClient.make>;
+export type DatabaseType = Effect.Success<typeof Database.make>;
 
 export async function checkDbReady(db: DBType) {
   await db.execute(sql`select 1`);

@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
-import * as z from "zod";
 
+import { NumberInput } from "@reactlith-template/api/schema/numbers";
 import { m } from "@reactlith-template/intl/messages";
-import { addNewInput } from "@reactlith-template/trpc/schema/numbers";
 import {
   FormField,
   FormFieldError,
@@ -26,9 +26,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { useTRPC } from "~/lib/trpc";
+import { useSession, useSignout } from "~/lib/auth";
 import {
+  allNumbersQueryOptions,
   useAddNumber,
   useDeleteAllNumbers,
   useDeleteNumber,
@@ -36,26 +36,28 @@ import {
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/")({
-  beforeLoad: ({ context: { auth } }) => {
-    if (!auth.loggedIn) {
+  beforeLoad: ({ context: { session } }) => {
+    if (!session.loggedIn) {
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient, trpc } }) => {
-    await queryClient.ensureQueryData(trpc.numbers.getAll.queryOptions());
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
   },
   component: RouteComponent,
 });
 
-const customNumberInput = addNewInput.extend({
-  number: z.string().min(1).transform(Number).pipe(addNewInput.shape.number),
-});
+const customNumberInput = Schema.toStandardSchemaV1(
+  Schema.Struct({
+    ...NumberInput.fields,
+    number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberInput.fields.number)),
+  }),
+);
 
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
-  const trpc = useTRPC();
-  const auth = useLoggedInAuth();
-  const numbers = useSuspenseQuery(trpc.numbers.getAll.queryOptions());
+  const session = useSession();
+  const numbers = useSuspenseQuery(allNumbersQueryOptions);
   const addNumber = useAddNumber();
   const updateNumber = useUpdateNumber();
   const deleteNumber = useDeleteNumber();
@@ -65,7 +67,7 @@ function RouteComponent() {
     defaultValues: { number: "" },
     validators: { onSubmit: customNumberInput },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber.mutateAsync(customNumberInput.parse(value));
+      await addNumber.mutateAsync(Schema.decodeUnknownSync(customNumberInput)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },
@@ -75,7 +77,7 @@ function RouteComponent() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <p>
-          {m.example_user()}: {auth.user.email}
+          {m.example_user()}: {session.user.email}
         </p>
         <Button variant="outline" onClick={() => signout.mutate()}>
           {m.example_logout()}
@@ -147,7 +149,7 @@ function RouteComponent() {
               onClick={() =>
                 updateNumber.mutate({
                   id: number.id,
-                  data: { number: Math.floor(Math.random() * 100) },
+                  payload: { number: Math.floor(Math.random() * 100) },
                 })
               }
             >

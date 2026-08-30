@@ -8,29 +8,31 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
+import type { ApiErrors } from "@reactlith-template/api";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { NumberNotFound } from "@reactlith-template/trpc/errors/numbers";
 import { Button, LinkButton } from "~/components/ui/button";
-import { useLoggedInAuth, useSignout } from "~/lib/auth";
-import { matchError, useTRPC } from "~/lib/trpc";
-import { useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
+import { useSession, useSignout } from "~/lib/auth";
+import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
-  beforeLoad: ({ context: { auth } }) => {
-    if (!auth.loggedIn) {
+  beforeLoad: ({ context: { session } }) => {
+    if (!session.loggedIn) {
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient, trpc }, params }) => {
+  loader: async ({ context: { queryClient }, params }) => {
     const numberId = params.numberId as IdBranded<"number">;
+
     try {
-      await queryClient.ensureQueryData(trpc.numbers.getById.queryOptions({ id: numberId }));
-    } catch (e) {
-      if (matchError(e, NumberNotFound)) {
+      await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
+    } catch (err) {
+      const error = err as ApiErrors["numbers"]["getById"];
+      if (error._tag === "NumberNotFound") {
         throw notFound();
       }
+      throw error;
     }
     return { numberId };
   },
@@ -40,14 +42,11 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
 function RouteComponent() {
   const { numberId } = Route.useLoaderData();
   const navigate = useNavigate();
-  const trpc = useTRPC();
-  const auth = useLoggedInAuth();
+  const session = useSession();
   const hydrated = useHydrated();
-  const number = useSuspenseQuery(trpc.numbers.getById.queryOptions({ id: numberId }));
+  const number = useSuspenseQuery(getNumberQueryOptions({ id: numberId }));
   const updateNumber = useUpdateNumber();
-  const deleteNumber = useDeleteNumber({
-    onSuccess: async () => await navigate({ to: "/numbers" }),
-  });
+  const deleteNumber = useDeleteNumber();
   const signout = useSignout();
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
     dateStyle: "long",
@@ -58,7 +57,7 @@ function RouteComponent() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <p>
-          {m.example_user()}: {auth.user.email}
+          {m.example_user()}: {session.user.email}
         </p>
         <Button variant="outline" onClick={() => signout.mutate()}>
           {m.example_logout()}
@@ -72,13 +71,21 @@ function RouteComponent() {
         <Button
           variant="outline"
           onClick={() =>
-            updateNumber.mutate({ id: numberId, data: { number: Math.floor(Math.random() * 100) } })
+            updateNumber.mutate({
+              id: numberId,
+              payload: { number: Math.floor(Math.random() * 100) },
+            })
           }
         >
           <PencilIcon />
           {m.example_updateNumber()}
         </Button>
-        <Button variant="destructive-outline" onClick={() => deleteNumber.mutate({ id: numberId })}>
+        <Button
+          variant="destructive-outline"
+          onClick={() =>
+            void navigate({ to: "/numbers" }).then(() => deleteNumber.mutate({ id: numberId }))
+          }
+        >
           <Trash2Icon />
           Delete number
         </Button>
@@ -87,10 +94,12 @@ function RouteComponent() {
         <p className="text-center text-4xl font-bold">{number.data.number}</p>
         <div className="flex flex-col gap-2 text-left">
           <p>
-            {m.example_createdAt()}: {hydrated && dateFormatter.format(number.data.createdAt)}
+            {m.example_createdAt()}:{" "}
+            {hydrated && dateFormatter.format(new Date(number.data.createdAt))}
           </p>
           <p>
-            {m.example_updatedAt()}: {hydrated && dateFormatter.format(number.data.updatedAt)}
+            {m.example_updatedAt()}:{" "}
+            {hydrated && dateFormatter.format(new Date(number.data.updatedAt))}
           </p>
         </div>
       </div>

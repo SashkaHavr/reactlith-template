@@ -1,0 +1,25 @@
+{
+  "name": "@reactlith-template/api",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
+  "exports": {
+    ".": "./src/client.ts",
+    "./layer": "./src/layer.ts",
+    "./schema/*": "./src/features/*/schema.ts"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/config": "workspace:*",
+    "@reactlith-template/db": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@reactlith-template/utils": "workspace:*",
+    "@types/bun": "catalog:",
+    "drizzle-orm": "catalog:",
+    "effect": "catalog:",
+    "evlog": "catalog:"
+  }
+}

@@ -5,7 +5,8 @@
   "workspaceFolder": "/home/vscode/reactlith-template",
   "postCreateCommand": "bun install",
   "postStartCommand": {
-    "opencode": "nohup bash -c 'opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 &' >/dev/null"
+    "opencode": "nohup bash -c 'opencode serve --hostname 0.0.0.0 --port 4096 > ~/opencode.log 2>&1 &' >/dev/null",
+    "effect-reference": "tag='effect@4.0.0-rc.112'; path='references/effect'; mkdir -p references && if [ ! -d $path/.git ]; then git clone --branch $tag --single-branch https://github.com/Effect-TS/effect $path; else git -C $path fetch origin tag $tag && git -C $path switch --detach $tag; fi"
   },
   "remoteUser": "vscode",
   "otherPortsAttributes": {
@@ -18,7 +19,8 @@
         "bradlc.vscode-tailwindcss",
         "oxc.oxc-vscode",
         "inlang.vs-code-extension",
-        "vitest.explorer"
+        "vitest.explorer",
+        "TypeScriptTeam.native-preview"
       ]
     }
   }

@@ -10,7 +10,7 @@ ENV FNM_PATH="/home/vscode/.local/share/fnm"
 ENV PATH="$FNM_PATH:$PATH"
 RUN fnm install 26
 
-RUN curl -fsSL https://bun.sh/install | bash
+RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.0"
 ENV BUN_INSTALL="/home/vscode/.bun"
 ENV PATH="$BUN_INSTALL/bin:$PATH"
 

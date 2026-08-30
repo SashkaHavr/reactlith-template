@@ -2,3 +2,4 @@
 - Always run `bun fix` after making any changes. Run `bun run test` or scoped `bun run test <filter>` if needed. NEVER RUN ANY OTHER CHECK COMMANDS.
 - Never run `bun dev`.
 - NEVER UPDATE LINT AND FORMAT RULES UNLESS EXPLICITLY REQUESTED.
+- When working with Effect code, ALWAYS consult ./references/effect for modern APIs and best practices.

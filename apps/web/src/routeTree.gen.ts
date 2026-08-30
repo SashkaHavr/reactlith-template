@@ -17,7 +17,7 @@ import { Route as LayoutNumbersNumberIdRouteImport } from './routes/_layout/numb
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 import { Route as ApiHealthLiveRouteImport } from './routes/api/health.live'
 import { Route as ApiHealthReadyRouteImport } from './routes/api/health.ready'
-import { Route as ApiTrpcSplatRouteImport } from './routes/api/trpc.$'
+import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc.$'
 
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
   id: '/_layout',
@@ -58,9 +58,9 @@ const ApiHealthReadyRoute = ApiHealthReadyRouteImport.update({
   path: '/api/health/ready',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiTrpcSplatRoute = ApiTrpcSplatRouteImport.update({
-  id: '/api/trpc/$',
-  path: '/api/trpc/$',
+const ApiRpcSplatRoute = ApiRpcSplatRouteImport.update({
+  id: '/api/rpc/$',
+  path: '/api/rpc/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -71,7 +71,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/health/live': typeof ApiHealthLiveRoute
   '/api/health/ready': typeof ApiHealthReadyRoute
-  '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/api/rpc/$': typeof ApiRpcSplatRoute
   '/numbers/': typeof LayoutNumbersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -81,7 +81,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/health/live': typeof ApiHealthLiveRoute
   '/api/health/ready': typeof ApiHealthReadyRoute
-  '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/api/rpc/$': typeof ApiRpcSplatRoute
   '/numbers': typeof LayoutNumbersIndexRoute
 }
 export interface FileRoutesById {
@@ -93,7 +93,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/health/live': typeof ApiHealthLiveRoute
   '/api/health/ready': typeof ApiHealthReadyRoute
-  '/api/trpc/$': typeof ApiTrpcSplatRoute
+  '/api/rpc/$': typeof ApiRpcSplatRoute
   '/_layout/numbers/': typeof LayoutNumbersIndexRoute
 }
 export interface FileRouteTypes {
@@ -105,7 +105,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/health/live'
     | '/api/health/ready'
-    | '/api/trpc/$'
+    | '/api/rpc/$'
     | '/numbers/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -115,7 +115,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/health/live'
     | '/api/health/ready'
-    | '/api/trpc/$'
+    | '/api/rpc/$'
     | '/numbers'
   id:
     | '__root__'
@@ -126,7 +126,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/health/live'
     | '/api/health/ready'
-    | '/api/trpc/$'
+    | '/api/rpc/$'
     | '/_layout/numbers/'
   fileRoutesById: FileRoutesById
 }
@@ -136,7 +136,7 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiHealthLiveRoute: typeof ApiHealthLiveRoute
   ApiHealthReadyRoute: typeof ApiHealthReadyRoute
-  ApiTrpcSplatRoute: typeof ApiTrpcSplatRoute
+  ApiRpcSplatRoute: typeof ApiRpcSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -197,11 +197,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiHealthReadyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/trpc/$': {
-      id: '/api/trpc/$'
-      path: '/api/trpc/$'
-      fullPath: '/api/trpc/$'
-      preLoaderRoute: typeof ApiTrpcSplatRouteImport
+    '/api/rpc/$': {
+      id: '/api/rpc/$'
+      path: '/api/rpc/$'
+      fullPath: '/api/rpc/$'
+      preLoaderRoute: typeof ApiRpcSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -229,7 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiHealthLiveRoute: ApiHealthLiveRoute,
   ApiHealthReadyRoute: ApiHealthReadyRoute,
-  ApiTrpcSplatRoute: ApiTrpcSplatRoute,
+  ApiRpcSplatRoute: ApiRpcSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

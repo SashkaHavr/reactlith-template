@@ -1,3 +1,5 @@
+import effectAntipattern from "@effect/tsgo/oxlint-presets/antipattern.json" with { type: "json" };
+import effectCorrectness from "@effect/tsgo/oxlint-presets/correctness.json" with { type: "json" };
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
@@ -15,6 +17,7 @@ export default defineConfig({
     "vitest",
     "react",
     "jsx-a11y",
+    "effecttsgo",
   ],
   env: {
     browser: true,
@@ -31,6 +34,7 @@ export default defineConfig({
     "no-process-env": "error",
     "no-shadow": "off",
     "typescript/only-throw-error": "error",
+    "no-underscore-dangle": "off",
 
     "typescript/no-misused-promises": "error",
     "typescript/consistent-type-imports": "error",
@@ -60,16 +64,20 @@ export default defineConfig({
         ignore: ["^*.gen.ts", "\\$.*tsx$"],
       },
     ],
-    "unicorn/import-style": [
-      "error",
-      {
-        styles: {
-          zod: { default: false, namespace: true, named: true },
-        },
-      },
-    ],
 
     "jsx-a11y/prefer-tag-over-role": "off",
+
+    ...Object.fromEntries(Object.keys(effectCorrectness.rules).map((k) => [k, "error" as const])),
+    ...Object.fromEntries(Object.keys(effectAntipattern.rules).map((k) => [k, "error" as const])),
+
+    "effecttsgo/strict-effect-provide": "off",
+    "vitest/no-standalone-expect": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        paths: [{ name: "@effect/vitest", allowImportNames: ["layer"] }],
+      },
+    ],
   },
   overrides: [
     {
