@@ -9,8 +9,7 @@ import type { ApiClient } from "#client";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { Unauthorized } from "#middleware/authentication/schema";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
-import { BetterAuthServerClient } from "@reactlith-template/auth";
-import type { AuthType } from "@reactlith-template/auth";
+import { Auth } from "@reactlith-template/auth/service";
 import { Database } from "@reactlith-template/db";
 import type { DatabaseType } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
@@ -72,9 +71,9 @@ const unusedRepo: Effect.Success<typeof NumberRepo.make> = {
 };
 
 layer(
-  Layer.succeed(BetterAuthServerClient)({
-    api: { getSession: async () => null },
-  } as unknown as AuthType),
+  Layer.succeed(Auth)({
+    getSession: () => Effect.succeed(null),
+  }),
 )("unauthenticated", (it) => {
   it.layer(
     NumbersClient.layerTest.pipe(
@@ -113,11 +112,9 @@ layer(
 });
 
 layer(
-  Layer.succeed(BetterAuthServerClient)({
-    api: {
-      getSession: async () => ({ user: { id: userId, role: "user" }, session: {} }),
-    },
-  } as unknown as AuthType),
+  Layer.succeed(Auth)({
+    getSession: () => Effect.succeed({ user: { id: userId, role: "user" }, session: {} } as never),
+  }),
 )("authenticated", (it) => {
   it.layer(
     NumbersClient.layerTest.pipe(

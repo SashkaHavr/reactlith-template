@@ -3,7 +3,7 @@ import { Effect, Redacted } from "effect";
 
 import { DBConfig } from "@reactlith-template/config/db-config";
 
-const config = Effect.runSync(DBConfig.make);
+const config = await Effect.runPromise(DBConfig.make);
 
 export default defineConfig({
   out: "./drizzle",

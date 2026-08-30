@@ -1,8 +1,7 @@
 import { Effect, Layer } from "effect";
-import { HttpServerRequest } from "effect/unstable/http";
 
 import { ApiLogger, CurrentUser } from "#context";
-import { BetterAuthServerClient } from "@reactlith-template/auth";
+import { Auth } from "@reactlith-template/auth/service";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { identifyUser } from "@reactlith-template/utils/log";
 
@@ -11,15 +10,12 @@ import { AuthenticationMiddleware, Unauthorized } from "./schema";
 export const AuthenticationMiddlewareLive = Layer.effect(
   AuthenticationMiddleware,
   Effect.gen(function* () {
-    const auth = yield* BetterAuthServerClient;
+    const auth = yield* Auth;
 
     return AuthenticationMiddleware.of((effect) =>
       Effect.gen(function* () {
         const log = yield* ApiLogger.get;
-        const request = yield* HttpServerRequest.HttpServerRequest;
-        const session = yield* Effect.promise(async () =>
-          auth.api.getSession({ headers: new Headers(request.headers) }),
-        );
+        const session = yield* auth.getSession();
         if (!session) {
           return yield* new Unauthorized();
         }

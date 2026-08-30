@@ -7,7 +7,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./permissions": "./src/permissions.ts"
+    "./permissions": "./src/permissions.ts",
+    "./service": "./src/service.ts"
   },
   "scripts": {
     "generate": "NODE_ENV=development bunx auth@latest generate --config ./generated/config.ts --output ./generated/auth-schema.ts --yes"
