@@ -15,13 +15,11 @@ import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-templa
 import { createAuthClientFromFetch } from "./lib/auth";
 
 const scope = Scope.makeUnsafe();
-
 const layerContext = await Effect.runPromise(
-  Auth.layer.pipe(
+  Layer.empty.pipe(
     Layer.provideMerge(BetterAuthServerClient.layerWithoutDependencies),
-    Layer.provideMerge(
-      DrizzlePostgresClient.layerWithoutDependencies.pipe(Layer.provide(DBConfig.layer)),
-    ),
+    Layer.provideMerge(DrizzlePostgresClient.layerWithoutDependencies),
+    Layer.provide(DBConfig.layer),
     Layer.provideMerge(AuthConfig.layer),
     Layer.buildWithScope(scope),
   ),
@@ -37,19 +35,18 @@ export const resources = await Effect.runPromise(
   acquireResources.pipe(Effect.provide(layerContext)),
 );
 
-const apiRoutes = HttpApiBuilder.layer(Api).pipe(
-  Layer.provide(
-    ApiLive.pipe(
-      Layer.provide(Database.layerWithoutDependencies.pipe(Layer.provide(PgClientLive))),
-    ),
+const { handler: apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHandler(
+  HttpApiBuilder.layer(Api).pipe(
+    Layer.provide(ApiLive),
+    Layer.provide(Database.layerWithoutDependencies),
+    Layer.provide(PgClientLive),
+    Layer.provide(Auth.layer),
+    Layer.provide(Layer.succeedContext(layerContext)),
+    Layer.provide(HttpServer.layerServices),
   ),
-  Layer.provide(Layer.succeedContext(layerContext)),
-);
-const apiHandlerLayer = HttpRouter.toWebHandler(
-  apiRoutes.pipe(Layer.provide(HttpServer.layerServices)),
   { disableLogger: true },
 );
-export const apiHandler = apiHandlerLayer.handler;
+export { apiHandler };
 
 async function serverFetch(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
   const request = new Request(
@@ -75,5 +72,5 @@ export const apiClient = await Effect.runPromise(
 
 export async function dispose() {
   await Effect.runPromise(Scope.close(scope, Exit.void));
-  await apiHandlerLayer.dispose();
+  await disposeApiHandler();
 }
