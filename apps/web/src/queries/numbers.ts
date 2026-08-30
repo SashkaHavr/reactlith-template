@@ -5,7 +5,7 @@ import type { ApiErrors, ApiInput, ApiOutput } from "@reactlith-template/api";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { toastManager } from "~/components/ui/toast";
-import { getApi } from "~/lib/api";
+import { getApiClient } from "~/lib/api";
 
 type Input = ApiInput["numbers"];
 type Output = ApiOutput["numbers"];
@@ -14,16 +14,14 @@ type Errors = ApiErrors["numbers"];
 export const allNumbersQueryOptions = queryOptions({
   queryKey: ["numbers", "getAll"],
   queryFn: async ({ signal }) => {
-    const api = await getApi();
-    return await Effect.runPromise(api.numbers.getAll(), { signal });
+    return await Effect.runPromise(getApiClient().numbers.getAll(), { signal });
   },
 });
 
 export const numbersAbove50QueryOptions = queryOptions({
   queryKey: ["numbers", "getCountAbove50"],
   queryFn: async ({ signal }) => {
-    const api = await getApi();
-    return await Effect.runPromise(api.numbers.getCountAbove50(), { signal });
+    return await Effect.runPromise(getApiClient().numbers.getCountAbove50(), { signal });
   },
 });
 
@@ -36,8 +34,7 @@ export function getNumberQueryOptions(input: Input["getById"]["params"]) {
   return queryOptions({
     queryKey: numberQueryKey.byId(input.id),
     queryFn: async ({ signal }) => {
-      const api = await getApi();
-      return await Effect.runPromise(api.numbers.getById({ params: input }), { signal });
+      return await Effect.runPromise(getApiClient().numbers.getById({ params: input }), { signal });
     },
   });
 }
@@ -47,8 +44,7 @@ export function useAddNumber() {
 
   return useMutation({
     mutationFn: async (input: Input["addNew"]["payload"]) => {
-      const api = await getApi();
-      return await Effect.runPromise(api.numbers.addNew({ payload: input }));
+      return await Effect.runPromise(getApiClient().numbers.addNew({ payload: input }));
     },
     onError: async (error: Errors["addNew"]) => {
       if (error._tag === "MaxCountReached") {
@@ -79,9 +75,8 @@ export function useUpdateNumber() {
         payload: Input["update"]["payload"];
       },
     ) => {
-      const api = await getApi();
       return await Effect.runPromise(
-        api.numbers.update({ params: { id: input.id }, payload: input.payload }),
+        getApiClient().numbers.update({ params: { id: input.id }, payload: input.payload }),
       );
     },
     onMutate: async (input) => {
@@ -132,8 +127,7 @@ export function useDeleteNumber() {
 
   return useMutation({
     mutationFn: async (input: Input["delete"]["params"]) => {
-      const api = await getApi();
-      return await Effect.runPromise(api.numbers.delete({ params: input }));
+      return await Effect.runPromise(getApiClient().numbers.delete({ params: input }));
     },
     onMutate: async ({ id }) => {
       const detailQueryKey = getNumberQueryOptions({ id }).queryKey;
@@ -170,8 +164,7 @@ export function useDeleteAllNumbers() {
 
   return useMutation({
     mutationFn: async () => {
-      const api = await getApi();
-      return await Effect.runPromise(api.numbers.deleteAll());
+      return await Effect.runPromise(getApiClient().numbers.deleteAll());
     },
     onMutate: async () => {
       await Promise.all([

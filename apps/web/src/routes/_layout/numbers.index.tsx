@@ -26,7 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { useLoggedInAuth, useSignout } from "~/lib/auth";
+import { useSession, useSignout } from "~/lib/auth";
 import {
   allNumbersQueryOptions,
   useAddNumber,
@@ -36,8 +36,8 @@ import {
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/")({
-  beforeLoad: ({ context: { auth } }) => {
-    if (!auth.loggedIn) {
+  beforeLoad: ({ context: { session } }) => {
+    if (!session.loggedIn) {
       throw redirect({ to: "/" });
     }
   },
@@ -56,7 +56,7 @@ const customNumberInput = Schema.toStandardSchemaV1(
 
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
-  const auth = useLoggedInAuth();
+  const session = useSession();
   const numbers = useSuspenseQuery(allNumbersQueryOptions);
   const addNumber = useAddNumber();
   const updateNumber = useUpdateNumber();
@@ -77,7 +77,7 @@ function RouteComponent() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <p>
-          {m.example_user()}: {auth.user.email}
+          {m.example_user()}: {session.user.email}
         </p>
         <Button variant="outline" onClick={() => signout.mutate()}>
           {m.example_logout()}

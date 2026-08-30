@@ -9,8 +9,8 @@ import { authConfigQueryOptions } from "~/queries/config";
 import { numbersAbove50QueryOptions } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/")({
-  beforeLoad: ({ context: { auth } }) => {
-    if (auth.loggedIn) {
+  beforeLoad: ({ context: { session } }) => {
+    if (session.loggedIn) {
       throw redirect({ to: "/numbers" });
     }
   },

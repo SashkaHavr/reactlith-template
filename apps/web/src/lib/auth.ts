@@ -1,39 +1,34 @@
-import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouteContext, useRouter } from "@tanstack/react-router";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import {
   createClientOnlyFn,
   createIsomorphicFn,
   getGlobalStartContext,
 } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient as createAuthClientBase } from "better-auth/react";
 
 import type { AuthType } from "@reactlith-template/auth";
 import { ac, roles } from "@reactlith-template/auth/permissions";
 
-let _authClient: ReturnType<typeof createAuthClient> | undefined = undefined;
-const createAuthClient = createClientOnlyFn(() =>
-  createAuthClientBase({
+export function createAuthClientFromFetch(customFetchImpl?: typeof fetch) {
+  return createAuthClientBase({
     basePath: "/api/auth",
     plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
     fetchOptions: {
+      customFetchImpl,
       throw: true,
     },
-  }),
-);
-
-export function getAuthClient() {
-  return (_authClient ??= createAuthClient());
+  });
 }
 
-export const getSession = createIsomorphicFn()
-  .server(async () =>
-    resolveSession(
-      await getGlobalStartContext()!.auth.api.getSession({ headers: getRequest().headers }),
-    ),
-  )
-  .client(async () => resolveSession(await getAuthClient().getSession()));
+const createAuthClient = createClientOnlyFn(() => createAuthClientFromFetch());
+
+let authClient: ReturnType<typeof createAuthClient> | undefined = undefined;
+
+export const getAuthClient = createIsomorphicFn()
+  .server(() => getGlobalStartContext()!.authClient)
+  .client(() => (authClient ??= createAuthClient()));
 
 function resolveSession<T>(session: T) {
   if (session === null || session === undefined) {
@@ -47,24 +42,18 @@ function resolveSession<T>(session: T) {
   };
 }
 
-export const baseAuthKey = "auth" as const;
-
 export const getSessionQueryOptions = queryOptions({
-  queryKey: [baseAuthKey, "getSession"] as const,
-  queryFn: async () => await getSession(),
+  queryKey: ["auth", "getSession"] as const,
+  queryFn: async () => resolveSession(await getAuthClient().getSession()),
   staleTime: 5 * 60 * 1000,
 });
 
-export function useAuth() {
-  return useRouteContext({ from: "__root__", select: (ctx) => ctx.auth });
-}
-
-export function useLoggedInAuth() {
-  const auth = useAuth();
-  if (!auth.loggedIn) {
-    throw new Error("Auth is not defined");
+export function useSession() {
+  const session = useQuery(getSessionQueryOptions);
+  if (!session.data?.loggedIn) {
+    throw new Error("User is not logged in");
   }
-  return auth;
+  return session.data;
 }
 
 export function useSignout() {

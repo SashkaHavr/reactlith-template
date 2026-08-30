@@ -5,16 +5,12 @@ import { HttpApiClient } from "effect/unstable/httpapi";
 
 import { Api } from "@reactlith-template/api";
 
-async function createApi() {
-  return Effect.runPromise(
-    HttpApiClient.make(Api, { baseUrl: globalThis.location.origin }).pipe(
-      Effect.provide(FetchHttpClient.layer),
-    ),
-  );
+function createApi() {
+  return Effect.runSync(HttpApiClient.make(Api).pipe(Effect.provide(FetchHttpClient.layer)));
 }
 
-let api: ReturnType<typeof createApi> | undefined;
+let apiClient: ReturnType<typeof createApi> | undefined;
 
-export const getApi = createIsomorphicFn()
-  .server(async () => getGlobalStartContext()!.api)
-  .client(async () => (api ??= createApi()));
+export const getApiClient = createIsomorphicFn()
+  .server(() => getGlobalStartContext()!.apiClient)
+  .client(() => (apiClient ??= createApi()));

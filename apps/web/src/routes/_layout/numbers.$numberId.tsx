@@ -13,12 +13,12 @@ import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { Button, LinkButton } from "~/components/ui/button";
-import { useLoggedInAuth, useSignout } from "~/lib/auth";
+import { useSession, useSignout } from "~/lib/auth";
 import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
-  beforeLoad: ({ context: { auth } }) => {
-    if (!auth.loggedIn) {
+  beforeLoad: ({ context: { session } }) => {
+    if (!session.loggedIn) {
       throw redirect({ to: "/" });
     }
   },
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
 function RouteComponent() {
   const { numberId } = Route.useLoaderData();
   const navigate = useNavigate();
-  const auth = useLoggedInAuth();
+  const session = useSession();
   const hydrated = useHydrated();
   const number = useSuspenseQuery(getNumberQueryOptions({ id: numberId }));
   const updateNumber = useUpdateNumber();
@@ -57,7 +57,7 @@ function RouteComponent() {
     <div className="flex flex-col items-center gap-4">
       <div className="flex items-center gap-3">
         <p>
-          {m.example_user()}: {auth.user.email}
+          {m.example_user()}: {session.user.email}
         </p>
         <Button variant="outline" onClick={() => signout.mutate()}>
           {m.example_logout()}

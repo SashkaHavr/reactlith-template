@@ -24,17 +24,17 @@ import indexCss from "../index.css?url";
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context: { queryClient } }) => {
     const locale = getLocale();
-    const [authConfig, auth] = await Promise.all([
+    const [authConfig, session] = await Promise.all([
       queryClient.query({ ...authConfigQueryOptions, staleTime: "static" }),
       queryClient.query({ ...getSessionQueryOptions, staleTime: "static" }),
     ]);
 
-    if (auth.loggedIn) {
-      identifyUser(getServerLog(), auth);
+    if (session.loggedIn) {
+      identifyUser(getServerLog(), session);
     }
 
     return {
-      auth,
+      session,
       authConfig,
       locale: locale,
       theme: await getTheme(),
@@ -84,17 +84,17 @@ function RootComponent() {
 }
 
 function useSetLogIdentity() {
-  const auth = Route.useRouteContext({
-    select: (s) => s.auth,
+  const session = Route.useRouteContext({
+    select: (s) => s.session,
   });
 
   useEffect(() => {
-    if (auth.loggedIn) {
-      setIdentity({ user: { id: auth.user.id, role: auth.user.role } });
+    if (session.loggedIn) {
+      setIdentity({ user: { id: session.user.id, role: session.user.role } });
     } else {
       clearIdentity();
     }
-  }, [auth]);
+  }, [session]);
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {

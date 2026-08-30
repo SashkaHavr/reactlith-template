@@ -2,7 +2,7 @@ import { getRequest } from "@tanstack/react-start/server";
 import { Effect, Exit, Layer, Scope } from "effect";
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
-import { fetch as nitroFetch } from "nitro";
+import { serverFetch as nitroServerFetch } from "nitro";
 
 import { Api } from "@reactlith-template/api";
 import { ApiLive } from "@reactlith-template/api/layer";
@@ -10,6 +10,8 @@ import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { AuthConfig } from "@reactlith-template/config/auth-config";
 import { DBConfig } from "@reactlith-template/config/db-config";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
+
+import { createAuthClientFromFetch } from "./lib/auth";
 
 const scope = Scope.makeUnsafe();
 
@@ -47,20 +49,23 @@ const apiHandlerLayer = HttpRouter.toWebHandler(
 );
 export const apiHandler = apiHandlerLayer.handler;
 
-const serverFetch: typeof nitroFetch = async (input, init) => {
-  const url = new URL(input instanceof Request ? input.url : input);
+async function serverFetch(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
+  const request = new Request(
+    input instanceof Request ? input : new URL(input, "http://localhost"),
+    init,
+  );
   const headers = new Headers(getRequest().headers);
-  new Headers(init?.headers).forEach((value, key) => headers.set(key, value));
-  return nitroFetch(`${url.pathname}${url.search}`, { ...init, headers });
-};
+  request.headers.forEach((value, key) => headers.set(key, value));
+  return nitroServerFetch(new Request(request, { headers }));
+}
 
-export const api = await Effect.runPromise(
+export const authClient = createAuthClientFromFetch(serverFetch as typeof fetch);
+
+export const apiClient = await Effect.runPromise(
   HttpApiClient.make(Api, { baseUrl: "http://localhost" }).pipe(
     Effect.provide(
       FetchHttpClient.layer.pipe(
-        Layer.provide(
-          Layer.succeed(FetchHttpClient.Fetch, serverFetch as unknown as typeof globalThis.fetch),
-        ),
+        Layer.provide(Layer.succeed(FetchHttpClient.Fetch, serverFetch as typeof fetch)),
       ),
     ),
   ),
