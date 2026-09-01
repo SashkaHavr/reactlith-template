@@ -47,13 +47,17 @@ function ThemeSwitcher() {
   return (
     <>
       {(!hydrated || theme === "light") && (
-        <Button className="dark:hidden" onClick={() => void setTheme("dark")}>
+        <Button className="dark:hidden" variant="outline" onClick={() => void setTheme("dark")}>
           <MoonIcon />
           <span>Dark mode</span>
         </Button>
       )}
       {(!hydrated || theme === "dark") && (
-        <Button className="hidden dark:inline-flex" onClick={() => void setTheme("light")}>
+        <Button
+          className="hidden dark:inline-flex"
+          variant="outline"
+          onClick={() => void setTheme("light")}
+        >
           <SunIcon />
           <span>Light mode</span>
         </Button>
