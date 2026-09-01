@@ -38,6 +38,7 @@ export const setCookie = createIsomorphicFn()
       name,
       value,
       expires: Date.now() + days * MILLISECONDS_IN_A_DAY,
+      sameSite: "lax",
     });
   });
 
