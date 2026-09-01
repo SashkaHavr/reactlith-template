@@ -47,7 +47,7 @@ export const Route = createFileRoute("/_layout/numbers/")({
   component: RouteComponent,
 });
 
-const customNumberInput = Schema.toStandardSchemaV1(
+const CustomNumberFormSchema = Schema.toStandardSchemaV1(
   Schema.Struct({
     ...NumberInput.fields,
     number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberInput.fields.number)),
@@ -65,9 +65,9 @@ function RouteComponent() {
   const signout = useSignout();
   const customNumberForm = useAppForm({
     defaultValues: { number: "" },
-    validators: { onSubmit: customNumberInput },
+    validators: { onSubmit: CustomNumberFormSchema },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber.mutateAsync(Schema.decodeUnknownSync(customNumberInput)(value));
+      await addNumber.mutateAsync(Schema.decodeUnknownSync(CustomNumberFormSchema)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },
