@@ -18,14 +18,14 @@ function getDarkThemeMediaQuery() {
 export type Theme = "light" | "dark";
 
 export function useTheme() {
-  return useRouteContext({ from: "__root__", select: (s) => s.theme.theme as Theme });
+  return useRouteContext({ from: "__root__", select: (s) => s.theme.theme });
 }
 
 const getSystemTheme = createIsomorphicFn()
-  .server(() => {
-    return "light" as const;
+  .server((): Theme => {
+    return "light";
   })
-  .client(() => {
+  .client((): Theme => {
     return getDarkThemeMediaQuery().matches ? "dark" : "light";
   });
 
@@ -76,17 +76,13 @@ export function ThemeScript() {
 
   return (
     <ScriptOnce>
-      {`(${((themeCookieExists: boolean) => {
+      {`${getDarkThemeMediaQuery.toString()}${updateMetaThemeColor.toString()}(${((
+        themeCookieExists: boolean,
+      ) => {
         if (!themeCookieExists) {
-          document.documentElement.classList.toggle(
-            "dark",
-            window.matchMedia("(prefers-color-scheme: dark)").matches,
-          );
+          document.documentElement.classList.toggle("dark", getDarkThemeMediaQuery().matches);
         }
-        const themeColor = getComputedStyle(document.documentElement)
-          .getPropertyValue("--theme-color")
-          .trim();
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
+        updateMetaThemeColor();
       }).toString()})(${themeCookieExists})`}
     </ScriptOnce>
   );
