@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale, isLocale, localizeUrl, setLocale } from "@reactlith-template/intl/runtime";
 import type { Locale } from "@reactlith-template/intl/runtime";
-import { useTheme } from "~/components/theme/context";
+import { useSetTheme, useTheme } from "~/components/theme";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
 import { cn } from "~/lib/utils";
@@ -42,17 +42,18 @@ export const Route = createFileRoute("/_layout")({
 function ThemeSwitcher() {
   const theme = useTheme();
   const hydrated = useHydrated();
+  const setTheme = useSetTheme();
 
   return (
     <>
-      {(!hydrated || theme.resolvedTheme === "light") && (
-        <Button className="dark:hidden" onClick={() => theme.setTheme("dark")}>
+      {(!hydrated || theme === "light") && (
+        <Button className="dark:hidden" onClick={() => void setTheme("dark")}>
           <MoonIcon />
           <span>Dark mode</span>
         </Button>
       )}
-      {(!hydrated || theme.resolvedTheme === "dark") && (
-        <Button className="hidden dark:inline-flex" onClick={() => theme.setTheme("light")}>
+      {(!hydrated || theme === "dark") && (
+        <Button className="hidden dark:inline-flex" onClick={() => void setTheme("light")}>
           <SunIcon />
           <span>Light mode</span>
         </Button>
