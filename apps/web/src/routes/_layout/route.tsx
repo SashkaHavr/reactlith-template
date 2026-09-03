@@ -7,6 +7,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { cn } from "cn";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { fetch } from "nitro";
 import { useEffect, useState } from "react";
@@ -17,7 +18,6 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useSetTheme, useTheme } from "~/components/theme";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { cn } from "~/lib/utils";
 
 const checkHealth = createServerFn().handler(async () => await fetch("/api/health/ready"));
 

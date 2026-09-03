@@ -1,4 +1,5 @@
 import { Toast } from "@base-ui/react/toast";
+import { cn } from "cn";
 import {
   CircleAlertIcon,
   CircleCheckIcon,
@@ -9,7 +10,6 @@ import {
 import type React from "react";
 
 import { buttonVariants } from "~/components/ui/button";
-import { cn } from "~/lib/utils";
 
 const TOAST_ICONS = {
   error: CircleAlertIcon,
