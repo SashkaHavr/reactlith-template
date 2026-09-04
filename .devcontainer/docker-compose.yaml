@@ -33,9 +33,9 @@ services:
       - traefik.http.routers.reactlith-template-db.service=reactlith-template-db
       - traefik.http.services.reactlith-template-db.loadbalancer.server.port=4983
   db:
-    image: postgres:17
+    image: postgres:18
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - pg-18-data:/var/lib/postgresql
     networks:
       - db-network
     restart: unless-stopped
@@ -53,7 +53,7 @@ networks:
     external: true
 
 volumes:
-  db-data:
+  pg-18-data:
   devcontainer-opencode-config:
     external: true
   devcontainer-opencode-auth:

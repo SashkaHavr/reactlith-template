@@ -50,9 +50,7 @@ class NumbersClient extends Context.Service<NumbersClient, ApiClient>()("api/tes
           getUserLock: () => Effect.succeed({ id: userId }),
         }),
         Layer.succeed(Database)({
-          transaction: vi.fn<Effect.Success<typeof Database.make>["transaction"]>((callback) =>
-            callback(undefined!),
-          ),
+          transaction: vi.fn<typeof Database.Service.transaction>((f) => f(undefined!)),
         } as unknown as DatabaseType),
       ),
     ),
@@ -80,9 +78,7 @@ layer(
       Layer.provideMerge(
         Layer.succeed(NumberRepo)({
           ...unusedRepo,
-          getCountAbove: vi.fn<Effect.Success<typeof NumberRepo.make>["getCountAbove"]>(() =>
-            Effect.succeed(3),
-          ),
+          getCountAbove: vi.fn<typeof NumberRepo.Service.getCountAbove>(() => Effect.succeed(3)),
         }),
       ),
     ),
@@ -136,9 +132,7 @@ layer(
       Layer.provideMerge(
         Layer.succeed(NumberRepo)({
           ...unusedRepo,
-          getById: vi.fn<Effect.Success<typeof NumberRepo.make>["getById"]>(() =>
-            Effect.succeed(numberFull),
-          ),
+          getById: vi.fn<typeof NumberRepo.Service.getById>(() => Effect.succeed(numberFull)),
         }),
       ),
     ),
@@ -160,9 +154,7 @@ layer(
           Layer.succeed(NumberRepo)({
             ...unusedRepo,
             getCount: () => Effect.succeed(9),
-            addNew: vi.fn<Effect.Success<typeof NumberRepo.make>["addNew"]>(() =>
-              Effect.succeed(number),
-            ),
+            addNew: vi.fn<typeof NumberRepo.Service.addNew>(() => Effect.succeed(number)),
           }),
           Layer.succeed(UserRepo)({
             getUserLock: () => Effect.succeed({ id: userId }),
@@ -205,10 +197,8 @@ layer(
       Layer.provideMerge(
         Layer.succeed(NumberRepo)({
           ...unusedRepo,
-          update: vi.fn<Effect.Success<typeof NumberRepo.make>["update"]>(() =>
-            Effect.succeed(numberFull),
-          ),
-          deleteById: vi.fn<Effect.Success<typeof NumberRepo.make>["deleteById"]>(() =>
+          update: vi.fn<typeof NumberRepo.Service.update>(() => Effect.succeed(numberFull)),
+          deleteById: vi.fn<typeof NumberRepo.Service.deleteById>(() =>
             Effect.succeed({ id: numberId }),
           ),
           deleteAll: () => Effect.succeed(undefined),

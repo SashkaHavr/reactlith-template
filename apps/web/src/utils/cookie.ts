@@ -1,10 +1,8 @@
+// oxlint-disable no-restricted-imports
 import { createIsomorphicFn } from "@tanstack/react-start";
 import {
-  // oxlint-disable-next-line no-restricted-imports
   getCookie as getServerCookie,
-  // oxlint-disable-next-line no-restricted-imports
   setCookie as setServerCookie,
-  // oxlint-disable-next-line no-restricted-imports
   deleteCookie as deleteServerCookie,
 } from "@tanstack/react-start/server";
 
@@ -40,6 +38,7 @@ export const setCookie = createIsomorphicFn()
       name,
       value,
       expires: Date.now() + days * MILLISECONDS_IN_A_DAY,
+      sameSite: "lax",
     });
   });
 

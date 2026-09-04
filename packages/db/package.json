@@ -27,7 +27,6 @@
     "drizzle-orm": "catalog:",
     "drizzle-seed": "catalog:",
     "effect": "catalog:",
-    "pg": "catalog:",
-    "uuid": "catalog:"
+    "pg": "catalog:"
   }
 }

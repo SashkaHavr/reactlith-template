@@ -10,12 +10,10 @@ import type { ReactNode } from "react";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { identifyUser } from "@reactlith-template/utils/log";
 import { seo } from "@reactlith-template/utils/seo";
-import { getTheme } from "~/components/theme/context";
-import { ThemeScript, ThemeProvider } from "~/components/theme/provider";
+import { getTheme, getThemeCookie, ThemeScript } from "~/components/theme";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
 import type { RouterContext } from "~/lib/context";
-import { cn } from "~/lib/utils";
 import { authConfigQueryOptions } from "~/queries/config";
 import { getServerLog } from "~/utils/log";
 
@@ -37,7 +35,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       session,
       authConfig,
       locale: locale,
-      theme: await getTheme(),
+      theme: { theme: await getTheme(), themeCookieExists: (await getThemeCookie()) !== undefined },
     };
   },
   component: RootComponent,
@@ -99,25 +97,23 @@ function useSetLogIdentity() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { locale, theme } = Route.useRouteContext({
-    select: (s) => ({ locale: s.locale, theme: s.theme }),
+    select: (s) => ({ locale: s.locale, theme: s.theme.theme }),
   });
 
   useSetLogIdentity();
 
   return (
-    <html suppressHydrationWarning lang={locale} className={cn(theme !== "system" && theme)}>
+    <html suppressHydrationWarning lang={locale} className={theme}>
       <head>
         <HeadContent />
         <ThemeScript />
       </head>
       <body>
-        <ThemeProvider>
-          <ToastProvider>
-            <AnchoredToastProvider>
-              <div className="isolate">{children}</div>
-            </AnchoredToastProvider>
-          </ToastProvider>
-        </ThemeProvider>
+        <ToastProvider>
+          <AnchoredToastProvider>
+            <div className="isolate">{children}</div>
+          </AnchoredToastProvider>
+        </ToastProvider>
         <Scripts />
       </body>
     </html>
