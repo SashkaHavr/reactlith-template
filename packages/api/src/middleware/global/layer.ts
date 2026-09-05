@@ -22,7 +22,6 @@ export const GlobalMiddlewareLive = Layer.succeed(GlobalMiddleware)(
                     ? error._tag
                     : error.message,
                 name: error.name,
-                stack: error.stack,
                 cause: error.cause,
               });
             }
