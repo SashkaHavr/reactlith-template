@@ -8,8 +8,8 @@ import { Api } from "@reactlith-template/api";
 import { ApiLive } from "@reactlith-template/api/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
-import { AuthConfig } from "@reactlith-template/config/auth-config";
-import { DBConfig } from "@reactlith-template/config/db-config";
+import { AuthConfig } from "@reactlith-template/config/auth";
+import { DBConfig } from "@reactlith-template/config/db";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
 
 import { createAuthClientFromFetch } from "./lib/auth";

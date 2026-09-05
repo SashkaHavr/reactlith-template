@@ -7,7 +7,7 @@ import { expect } from "vitest";
 import { Api } from "#client";
 import { AuthenticationMiddleware } from "#middleware/authentication/schema";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
-import { AuthConfig } from "@reactlith-template/config/auth-config";
+import { AuthConfig } from "@reactlith-template/config/auth";
 
 import { ConfigApiLive } from "./layer";
 

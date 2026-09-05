@@ -4,7 +4,7 @@ import * as PgDrizzle from "drizzle-orm/effect-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Context, Effect, Layer, Redacted } from "effect";
 
-import { DBConfig } from "@reactlith-template/config/db-config";
+import { DBConfig } from "@reactlith-template/config/db";
 
 import { relations, schema } from "./relations";
 

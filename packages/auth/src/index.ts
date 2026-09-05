@@ -5,7 +5,7 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { Context, Effect, Layer, Option, Redacted } from "effect";
 
 import { ac, roles } from "#permissions";
-import { AuthConfig } from "@reactlith-template/config/auth-config";
+import { AuthConfig } from "@reactlith-template/config/auth";
 import { DrizzlePostgresClient, schema } from "@reactlith-template/db";
 
 export class BetterAuthServerClient extends Context.Service<BetterAuthServerClient>()(
