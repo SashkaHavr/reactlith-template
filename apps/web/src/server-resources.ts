@@ -1,11 +1,11 @@
+import { getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { Effect, Exit, Layer, Scope } from "effect";
+import { Context, Effect, Exit, Layer, Scope } from "effect";
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
-import { serverFetch as nitroServerFetch } from "nitro";
 
 import { Api } from "@reactlith-template/api";
-import { ApiLive } from "@reactlith-template/api/layer";
+import { ApiLive, ApiLogger } from "@reactlith-template/api/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
@@ -35,7 +35,7 @@ export const resources = await Effect.runPromise(
   acquireResources.pipe(Effect.provide(layerContext)),
 );
 
-const { handler: apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHandler(
+const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHandler(
   HttpApiBuilder.layer(Api).pipe(
     Layer.provide(ApiLive),
     Layer.provide(Database.layerWithoutDependencies),
@@ -46,25 +46,33 @@ const { handler: apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHand
   ),
   { disableLogger: true },
 );
-export { apiHandler };
 
-async function serverFetch(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
+export async function apiHandler(request: Request) {
+  const context = getGlobalStartContext()!;
+  return await _apiHandler(request, Context.make(ApiLogger, context.log));
+}
+
+function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
   const request = new Request(
     input instanceof Request ? input : new URL(input, "http://localhost"),
     init,
   );
   const headers = new Headers(getRequest().headers);
   request.headers.forEach((value, key) => headers.set(key, value));
-  return nitroServerFetch(new Request(request, { headers }));
+  return new Request(request, { headers });
 }
 
-export const authClient = createAuthClientFromFetch(serverFetch as typeof fetch);
+export const authClient = createAuthClientFromFetch((async (input, init) =>
+  resources.auth.handler(getSsrRequest(input, init))) as typeof fetch);
 
 export const apiClient = await Effect.runPromise(
   HttpApiClient.make(Api, { baseUrl: "http://localhost" }).pipe(
     Effect.provide(
       FetchHttpClient.layer.pipe(
-        Layer.provide(Layer.succeed(FetchHttpClient.Fetch, serverFetch as typeof fetch)),
+        Layer.provide(
+          Layer.succeed(FetchHttpClient.Fetch, (async (input, init) =>
+            apiHandler(getSsrRequest(input, init))) as typeof fetch),
+        ),
       ),
     ),
   ),
