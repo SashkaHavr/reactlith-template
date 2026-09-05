@@ -15,8 +15,16 @@ export const GlobalMiddlewareLive = Layer.succeed(GlobalMiddleware)(
       return yield* effect.pipe(
         Effect.tapError((error) =>
           Effect.sync(() => {
-            if (Predicate.hasProperty(error, "_tag") && Predicate.isString(error._tag)) {
-              log?.set({ error: { tag: error._tag } });
+            if (Predicate.isError(error)) {
+              log?.error({
+                message:
+                  Predicate.hasProperty(error, "_tag") && Predicate.isString(error._tag)
+                    ? error._tag
+                    : error.message,
+                name: error.name,
+                stack: error.stack,
+                cause: error.cause,
+              });
             }
           }),
         ),
