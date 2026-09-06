@@ -7,12 +7,11 @@ import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 import { Api } from "@reactlith-template/api";
 import { ApiLive, ApiLogger } from "@reactlith-template/api/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
-import { Auth } from "@reactlith-template/auth/service";
+import { createAuthClient } from "@reactlith-template/auth/client";
+import { Auth, BetterAuthClient } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
-
-import { createAuthClientFromFetch } from "./lib/auth";
 
 const scope = Scope.makeUnsafe();
 const layerContext = await Effect.runPromise(
@@ -35,12 +34,17 @@ export const resources = await Effect.runPromise(
   acquireResources.pipe(Effect.provide(layerContext)),
 );
 
+export const authClient = createAuthClient({
+  customFetchImpl: async (input, init) => resources.auth.handler(getSsrRequest(input, init)),
+});
+
 const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHandler(
   HttpApiBuilder.layer(Api).pipe(
     Layer.provide(ApiLive),
     Layer.provide(Database.layerWithoutDependencies),
     Layer.provide(PgClientLive),
     Layer.provide(Auth.layer),
+    Layer.provide(Layer.succeed(BetterAuthClient, authClient)),
     Layer.provide(Layer.succeedContext(layerContext)),
     Layer.provide(HttpServer.layerServices),
   ),
@@ -61,9 +65,6 @@ function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typ
   request.headers.forEach((value, key) => headers.set(key, value));
   return new Request(request, { headers });
 }
-
-export const authClient = createAuthClientFromFetch((async (input, init) =>
-  resources.auth.handler(getSsrRequest(input, init))) as typeof fetch);
 
 export const apiClient = await Effect.runPromise(
   HttpApiClient.make(Api, { baseUrl: "http://localhost" }).pipe(

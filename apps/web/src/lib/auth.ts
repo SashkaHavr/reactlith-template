@@ -5,24 +5,10 @@ import {
   createIsomorphicFn,
   getGlobalStartContext,
 } from "@tanstack/react-start";
-import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
-import { createAuthClient as createAuthClientBase } from "better-auth/react";
 
-import type { AuthType } from "@reactlith-template/auth";
-import { ac, roles } from "@reactlith-template/auth/permissions";
+import { createAuthClient as createAuthClientBase } from "@reactlith-template/auth/client";
 
-export function createAuthClientFromFetch(customFetchImpl?: typeof fetch) {
-  return createAuthClientBase({
-    basePath: "/api/auth",
-    plugins: [inferAdditionalFields<AuthType>(), adminClient({ ac, roles })],
-    fetchOptions: {
-      customFetchImpl,
-      throw: true,
-    },
-  });
-}
-
-const createAuthClient = createClientOnlyFn(() => createAuthClientFromFetch());
+const createAuthClient = createClientOnlyFn(() => createAuthClientBase());
 
 let authClient: ReturnType<typeof createAuthClient> | undefined = undefined;
 

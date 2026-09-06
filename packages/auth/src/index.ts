@@ -1,8 +1,7 @@
 import { drizzleAdapter } from "@better-auth/drizzle-adapter/relations-v2";
 import { betterAuth } from "better-auth";
 import { admin, genericOAuth } from "better-auth/plugins";
-import { tanstackStartCookies } from "better-auth/tanstack-start";
-import { Context, Effect, Layer, Option, Redacted } from "effect";
+import { Context, Effect, Layer, Redacted } from "effect";
 
 import { ac, roles } from "#permissions";
 import { AuthConfig } from "@reactlith-template/config/auth";
@@ -14,7 +13,7 @@ export class BetterAuthServerClient extends Context.Service<BetterAuthServerClie
     make: Effect.gen(function* () {
       const db = yield* DrizzlePostgresClient;
       const config = yield* AuthConfig;
-      const googleEmulateUrl = Option.getOrUndefined(config.googleEmulateUrl);
+      const googleEmulateUrl = config.googleEmulateUrl.valueOrUndefined;
 
       return betterAuth({
         basePath: "/api/auth",
@@ -52,7 +51,6 @@ export class BetterAuthServerClient extends Context.Service<BetterAuthServerClie
                 }),
               ]
             : []),
-          tanstackStartCookies(),
         ],
         advanced: {
           database: {
