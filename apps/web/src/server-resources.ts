@@ -8,7 +8,7 @@ import { Api } from "@reactlith-template/api";
 import { ApiLive, ApiLogger } from "@reactlith-template/api/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { createAuthClient } from "@reactlith-template/auth/client";
-import { Auth, BetterAuthClient } from "@reactlith-template/auth/service";
+import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
@@ -43,8 +43,7 @@ const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHan
     Layer.provide(ApiLive),
     Layer.provide(Database.layerWithoutDependencies),
     Layer.provide(PgClientLive),
-    Layer.provide(Auth.layer),
-    Layer.provide(Layer.succeed(BetterAuthClient, authClient)),
+    Layer.provide(Auth.layer(authClient)),
     Layer.provide(Layer.succeedContext(layerContext)),
     Layer.provide(HttpServer.layerServices),
   ),

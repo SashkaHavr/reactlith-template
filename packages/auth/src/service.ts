@@ -4,10 +4,8 @@ import { HttpServerRequest } from "effect/unstable/http";
 import type { createAuthClient } from "#client";
 
 export class Auth extends Context.Service<Auth>()("auth/Auth", {
-  make: Effect.gen(function* () {
-    const auth = yield* BetterAuthClient;
-
-    return {
+  make: (auth: ReturnType<typeof createAuthClient>) =>
+    Effect.succeed({
       getSession: Effect.fn("Auth.getSession")(function* () {
         const request = yield* HttpServerRequest.toWeb(
           yield* HttpServerRequest.HttpServerRequest,
@@ -16,13 +14,8 @@ export class Auth extends Context.Service<Auth>()("auth/Auth", {
           auth.getSession({ fetchOptions: { headers: request.headers } }),
         );
       }),
-    };
-  }),
+    }),
 }) {
-  static readonly layer = Layer.effect(this, this.make);
+  static readonly layer = (auth: ReturnType<typeof createAuthClient>) =>
+    Layer.effect(this, this.make(auth));
 }
-
-export class BetterAuthClient extends Context.Service<
-  BetterAuthClient,
-  ReturnType<typeof createAuthClient>
->()("auth/BetterAuthClient") {}
