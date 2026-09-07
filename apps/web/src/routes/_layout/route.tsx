@@ -122,8 +122,8 @@ function RouteComponent() {
 
   return (
     <div className="flex w-full flex-col items-center gap-8 pt-20">
-      <div className="flex w-100 flex-col items-center">
-        <div className="flex w-fit flex-col gap-4">
+      <div className="flex w-90 flex-col items-center">
+        <div className="flex flex-col gap-4">
           <div className="flex gap-3">
             <p className="self-center font-heading text-xl">{m.example_works()}</p>
             <ThemeSwitcher />
