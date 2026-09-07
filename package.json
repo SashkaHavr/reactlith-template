@@ -37,7 +37,8 @@
       "effect": "4.0.0-rc.112",
       "@effect/sql-pg": "4.0.0-rc.112",
       "@effect/sql-pglite": "4.0.0-rc.112",
-      "cn": "0.2.4"
+      "cn": "0.2.4",
+      "@types/node": "^26"
     }
   },
   "type": "module",

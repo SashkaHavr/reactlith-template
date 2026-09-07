@@ -35,7 +35,7 @@ const authConfig = {
 layer(
   Layer.succeed(AuthConfig)({
     ...authConfig,
-    googleEmulateUrl: Option.some(new URL("http://localhost:8080")),
+    googleEmulateUrl: Option.some(new URL("http://localhost")),
   }),
 )((it) => {
   it.effect("reports enabled authentication providers", () =>

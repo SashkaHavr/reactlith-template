@@ -11,6 +11,7 @@ import { createAuthClient } from "@reactlith-template/auth/client";
 import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
+import { ServerConfig } from "@reactlith-template/config/server";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
 
 const scope = Scope.makeUnsafe();
@@ -20,21 +21,22 @@ const layerContext = await Effect.runPromise(
     Layer.provideMerge(DrizzlePostgresClient.layerWithoutDependencies),
     Layer.provide(DBConfig.layer),
     Layer.provideMerge(AuthConfig.layer),
+    Layer.provideMerge(ServerConfig.layer),
     Layer.buildWithScope(scope),
   ),
 );
 
-const acquireResources = Effect.gen(function* () {
-  const db = yield* DrizzlePostgresClient;
-  const auth = yield* BetterAuthServerClient;
-  return { db, auth };
-});
-
 export const resources = await Effect.runPromise(
-  acquireResources.pipe(Effect.provide(layerContext)),
+  Effect.gen(function* () {
+    const db = yield* DrizzlePostgresClient;
+    const auth = yield* BetterAuthServerClient;
+    const serverConfig = yield* ServerConfig;
+    return { db, auth, serverConfig };
+  }).pipe(Effect.provide(layerContext)),
 );
 
 export const authClient = createAuthClient({
+  baseURL: resources.serverConfig.publicUrl.href,
   customFetchImpl: async (input, init) => resources.auth.handler(getSsrRequest(input, init)),
 });
 
@@ -57,7 +59,7 @@ export async function apiHandler(request: Request) {
 
 function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
   const request = new Request(
-    input instanceof Request ? input : new URL(input, "http://localhost"),
+    input instanceof Request ? input : new URL(input, resources.serverConfig.publicUrl),
     init,
   );
   const headers = new Headers(getRequest().headers);
@@ -65,13 +67,14 @@ function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typ
   return new Request(request, { headers });
 }
 
-export const apiClient = await Effect.runPromise(
-  HttpApiClient.make(Api, { baseUrl: "http://localhost" }).pipe(
+export const apiClient = Effect.runSync(
+  HttpApiClient.make(Api, { baseUrl: resources.serverConfig.publicUrl }).pipe(
     Effect.provide(
       FetchHttpClient.layer.pipe(
         Layer.provide(
-          Layer.succeed(FetchHttpClient.Fetch, (async (input, init) =>
-            apiHandler(getSsrRequest(input, init))) as typeof fetch),
+          Layer.succeed(FetchHttpClient.Fetch, async (input, init) =>
+            apiHandler(getSsrRequest(input, init)),
+          ),
         ),
       ),
     ),

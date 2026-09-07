@@ -23,6 +23,7 @@ export const GlobalMiddlewareLive = Layer.succeed(GlobalMiddleware)(
                     : error.message,
                 name: error.name,
                 cause: error.cause,
+                stack: error.stack,
               });
             }
           }),

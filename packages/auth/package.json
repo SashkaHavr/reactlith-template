@@ -19,7 +19,7 @@
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "better-auth": "catalog:",
     "effect": "catalog:"
   }

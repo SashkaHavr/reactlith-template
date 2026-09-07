@@ -22,7 +22,7 @@
     "@electric-sql/pglite-prepopulatedfs": "0.5.8",
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",
-    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
     "drizzle-kit": "catalog:",
     "drizzle-orm": "catalog:",
     "drizzle-seed": "catalog:",

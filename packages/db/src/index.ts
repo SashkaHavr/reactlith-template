@@ -50,7 +50,7 @@ export class Database extends Context.Service<Database>()("db/Database", {
 export type DBType = Effect.Success<typeof DrizzlePostgresClient.make>;
 export type DatabaseType = Effect.Success<typeof Database.make>;
 
-export async function checkDbReady(db: DBType) {
+export async function healthcheckDB(db: DBType) {
   await db.execute(sql`select 1`);
 }
 

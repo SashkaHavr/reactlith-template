@@ -19,7 +19,7 @@ export const logError = createIsomorphicFn()
 
 export const setupClientLog = createIsomorphicFn().client(() => {
   initLog({
-    service: "reactlith-template-web-frontend",
+    service: "web-frontend",
     transport: {
       enabled: true,
       endpoint: "/api/ingest",

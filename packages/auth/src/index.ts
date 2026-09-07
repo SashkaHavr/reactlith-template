@@ -20,7 +20,7 @@ export class BetterAuthServerClient extends Context.Service<BetterAuthServerClie
         baseURL: {
           allowedHosts: [...config.allowedHosts],
         },
-        secret: Redacted.value(config.secret) || undefined,
+        secret: Redacted.value(config.secret),
         session: {
           cookieCache: {
             enabled: true,
