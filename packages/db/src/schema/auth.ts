@@ -1,4 +1,4 @@
-import { snakeCase, text, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { snakeCase, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
 
 import { baseTable } from "#utils/base-table";
 import { oneToManyCascadeOnDelete } from "#utils/foreign-keys";
@@ -33,7 +33,6 @@ export const account = snakeCase.table(
   "account",
   {
     ...baseTable<"account">(),
-    issuer: text().notNull(),
     accountId: text().notNull(),
     providerId: text().notNull(),
     userId: oneToManyCascadeOnDelete(() => user.id),
@@ -45,7 +44,7 @@ export const account = snakeCase.table(
     scope: text(),
     password: text(),
   },
-  (table) => [uniqueIndex().on(table.issuer, table.accountId), index().on(table.userId)],
+  (table) => [index().on(table.userId)],
 );
 
 export const verification = snakeCase.table(
