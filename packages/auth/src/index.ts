@@ -14,6 +14,7 @@ export class BetterAuthServerClient extends Context.Service<BetterAuthServerClie
       const db = yield* DrizzlePostgresClient;
       const config = yield* AuthConfig;
       const googleEmulateUrl = config.googleEmulateUrl.valueOrUndefined;
+      const googleEmulateInternalUrl = config.googleEmulateInternalUrl.valueOrUndefined;
 
       return betterAuth({
         basePath: "/api/auth",
@@ -45,7 +46,10 @@ export class BetterAuthServerClient extends Context.Service<BetterAuthServerClie
                       clientId: config.googleClientId,
                       clientSecret: Redacted.value(config.googleClientSecret),
                       authorizationUrl: new URL("/o/oauth2/v2/auth", googleEmulateUrl).href,
-                      tokenUrl: new URL("/oauth2/token", googleEmulateUrl).href,
+                      tokenUrl: new URL(
+                        "/oauth2/token",
+                        googleEmulateInternalUrl ?? googleEmulateUrl,
+                      ).href,
                     },
                   ],
                 }),

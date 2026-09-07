@@ -1,5 +1,5 @@
 import { layer } from "@effect/vitest";
-import { Effect, FileSystem, Layer, Option, Path, Redacted } from "effect";
+import { Effect, FileSystem, Layer, Option, Path } from "effect";
 import { Etag, HttpPlatform } from "effect/unstable/http";
 import { HttpApiTest } from "effect/unstable/httpapi";
 import { expect } from "vitest";
@@ -24,19 +24,10 @@ const ClientServices = Layer.mergeAll(
 );
 const makeClient = HttpApiTest.groups(Api, ["config"]).pipe(Effect.provide(ClientServices));
 
-const authConfig = {
-  allowedHosts: [],
-  secret: Redacted.make(""),
-  googleClientId: "",
-  googleClientSecret: Redacted.make(""),
-  googleEmulateUrl: Option.none(),
-} satisfies AuthConfig["Service"];
-
 layer(
   Layer.succeed(AuthConfig)({
-    ...authConfig,
     googleEmulateUrl: Option.some(new URL("http://localhost")),
-  }),
+  } satisfies Partial<AuthConfig["Service"]> as AuthConfig["Service"]),
 )((it) => {
   it.effect("reports enabled authentication providers", () =>
     Effect.gen(function* () {
@@ -47,7 +38,11 @@ layer(
   );
 });
 
-layer(Layer.succeed(AuthConfig)(authConfig))((it) => {
+layer(
+  Layer.succeed(AuthConfig)({
+    googleEmulateUrl: Option.none(),
+  } satisfies Partial<AuthConfig["Service"]> as AuthConfig["Service"]),
+)((it) => {
   it.effect("reports disabled authentication providers", () =>
     Effect.gen(function* () {
       const client = yield* makeClient;

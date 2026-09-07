@@ -8,6 +8,7 @@ export class AuthConfig extends Context.Service<AuthConfig>()("services/AuthConf
       googleClientId: Config.nonEmptyString("GOOGLE_CLIENT_ID"),
       googleClientSecret: Config.redacted("GOOGLE_CLIENT_SECRET"),
       googleEmulateUrl: Config.url("GOOGLE_EMULATE_URL").pipe(Config.option),
+      googleEmulateInternalUrl: Config.url("GOOGLE_EMULATE_INTERNAL_URL").pipe(Config.option),
     });
   }),
 }) {
