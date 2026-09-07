@@ -90,9 +90,9 @@ function RouteComponent() {
           Delete number
         </Button>
       </div>
-      <div className="flex w-full max-w-md flex-col items-center gap-6">
+      <div className="flex w-full flex-col items-center gap-6">
         <p className="text-4xl font-bold">{number.data.number}</p>
-        <div className="flex w-90 flex-col gap-2 text-left">
+        <div className="grid grid-cols-[minmax(auto,_360px)] grid-rows-2 gap-2 text-left">
           <p>
             {m.example_createdAt()}:{" "}
             {hydrated && dateFormatter.format(new Date(number.data.createdAt))}
