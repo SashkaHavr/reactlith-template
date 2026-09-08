@@ -44,7 +44,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
           })
           .pipe(Effect.orDie);
         if (!number) {
-          return yield* new NumberNotFound({ numberId: id });
+          return yield* NumberNotFound.make({ numberId: id });
         }
         return number;
       }),
@@ -77,7 +77,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
           })
           .pipe(Effect.orDie);
         if (!number) {
-          return yield* new NumberNotFound({ numberId: id });
+          return yield* NumberNotFound.make({ numberId: id });
         }
         return number;
       }),
@@ -89,7 +89,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
           .returning({ id: schema.number.id })
           .pipe(Effect.orDie);
         if (!number) {
-          return yield* new NumberNotFound({ numberId: id });
+          return yield* NumberNotFound.make({ numberId: id });
         }
         return number;
       }),

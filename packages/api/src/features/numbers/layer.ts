@@ -32,7 +32,7 @@ export const NumbersApiLive = HttpApiBuilder.group(
             Effect.fn(function* () {
               yield* userRepo.getUserLock();
               if ((yield* numberRepo.getCount()) >= 10) {
-                return yield* new MaxCountReached({ maxCount: 10 });
+                return yield* MaxCountReached.make({ maxCount: 10 });
               }
               return yield* numberRepo.create(payload.number);
             }),

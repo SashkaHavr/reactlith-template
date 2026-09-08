@@ -19,7 +19,7 @@ export const AuthenticationMiddlewareLive = Layer.effect(
         const log = yield* ApiLogger.get;
         const session = yield* auth.getSession();
         if (!session) {
-          return yield* new Unauthorized();
+          return yield* Unauthorized.make();
         }
 
         identifyUser(log, session);

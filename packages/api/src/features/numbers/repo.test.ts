@@ -17,7 +17,7 @@ const insertNumber = Effect.fn(function* (number: number, createdAt?: Date) {
     .insert(schema.number)
     .values({ userId: user.userId, number, createdAt })
     .returning({ id: schema.number.id, number: schema.number.number });
-  if (!row) throw new Error("Failed to seed number");
+  if (!row) return yield* Effect.die("Failed to seed number");
   return row;
 });
 

@@ -67,7 +67,7 @@ function RouteComponent() {
     defaultValues: { number: "" },
     validators: { onSubmit: CustomNumberFormSchema },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber.mutateAsync(Schema.decodeUnknownSync(CustomNumberFormSchema)(value));
+      await addNumber.mutateAsync(Schema.decodeSync(CustomNumberFormSchema)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },

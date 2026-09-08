@@ -14,7 +14,7 @@ export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(
 
 export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
   "MaxCountReached",
-  { maxCount: Schema.Number },
+  { maxCount: Schema.Finite },
   { httpApiStatus: 400 },
 ) {}
 

@@ -189,7 +189,7 @@ layer(
     "returns a not found error when getting a number",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      NumberRepoMock.get.mockReturnValue(Effect.fail(new NumberNotFound({ numberId })));
+      NumberRepoMock.get.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
       const error = yield* client.numbers.get({ params: { id: numberId } }).pipe(Effect.flip);
 
@@ -231,7 +231,7 @@ layer(
     "returns a user not found error when adding a number",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      UserRepoMock.getUserLock.mockReturnValue(Effect.fail(new UserNotFound({ userId })));
+      UserRepoMock.getUserLock.mockReturnValue(Effect.fail(UserNotFound.make({ userId })));
 
       const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
 
@@ -260,7 +260,7 @@ layer(
     "returns a not found error when updating a number",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      NumberRepoMock.update.mockReturnValue(Effect.fail(new NumberNotFound({ numberId })));
+      NumberRepoMock.update.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
       const error = yield* client.numbers
         .update({ params: { id: numberId }, payload: { number: 42 } })
@@ -287,7 +287,7 @@ layer(
     "returns a not found error when deleting a number",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      NumberRepoMock.delete.mockReturnValue(Effect.fail(new NumberNotFound({ numberId })));
+      NumberRepoMock.delete.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
       const error = yield* client.numbers.delete({ params: { id: numberId } }).pipe(Effect.flip);
 
@@ -299,7 +299,7 @@ layer(
     "deletes all numbers",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      NumberRepoMock.deleteAll.mockReturnValue(Effect.succeed(undefined));
+      NumberRepoMock.deleteAll.mockReturnValue(Effect.void);
 
       const result = yield* client.numbers.deleteAll();
 

@@ -20,7 +20,7 @@ export class UserRepo extends Context.Service<UserRepo>()("api/UserRepo", {
           .for("update")
           .pipe(Effect.orDie);
         if (!user) {
-          return yield* new UserNotFound({ userId });
+          return yield* UserNotFound.make({ userId });
         }
         return user;
       }),

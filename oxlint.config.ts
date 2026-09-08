@@ -1,5 +1,7 @@
 import effectAntipattern from "@effect/tsgo/oxlint-presets/antipattern.json" with { type: "json" };
 import effectCorrectness from "@effect/tsgo/oxlint-presets/correctness.json" with { type: "json" };
+import effectNative from "@effect/tsgo/oxlint-presets/effect-native.json" with { type: "json" };
+import effectRecommended from "@effect/tsgo/oxlint-presets/recommended.json" with { type: "json" };
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
@@ -69,7 +71,10 @@ export default defineConfig({
 
     ...Object.fromEntries(Object.keys(effectCorrectness.rules).map((k) => [k, "error" as const])),
     ...Object.fromEntries(Object.keys(effectAntipattern.rules).map((k) => [k, "error" as const])),
+    ...Object.fromEntries(Object.keys(effectRecommended.rules).map((k) => [k, "error" as const])),
+    ...Object.fromEntries(Object.keys(effectNative.rules).map((k) => [k, "off" as const])),
 
+    "effecttsgo/new-schema-class": "error",
     "effecttsgo/strict-effect-provide": "off",
     "vitest/no-standalone-expect": "off",
     "no-restricted-imports": [

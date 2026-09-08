@@ -27,7 +27,7 @@ export const ConfigApiLive = HttpApiBuilder.group(
       healthReady: Effect.fnUntraced(function* () {
         const dbReady = yield* db.execute(sql`select 1`).pipe(Effect.exit);
         if (Exit.isFailure(dbReady)) {
-          return yield* new NotReady();
+          return yield* NotReady.make();
         }
         return null;
       }),
