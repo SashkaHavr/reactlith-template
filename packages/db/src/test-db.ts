@@ -17,26 +17,18 @@ declare module "vitest" {
 
 function openTestDB(loadDataDir: Blob) {
   const client = new PGlite({ loadDataDir });
-  const db = drizzle({ client, relations });
-
-  return db;
-}
-
-export async function createTestDB() {
-  const dump = inject("pgliteDump");
-  const db = openTestDB(new Blob([dump]));
-
-  await db.$client.waitReady;
-
-  return db;
+  return drizzle({ client, relations });
 }
 
 const PgliteClientLive = PgliteClient.layerFrom(
   Effect.gen(function* () {
-    const db = yield* Effect.acquireRelease(Effect.promise(createTestDB), (db) =>
-      Effect.promise(async () => db.$client.close()),
+    const db = yield* Effect.acquireRelease(
+      Effect.sync(() => openTestDB(new Blob([inject("pgliteDump")]))),
+      (db) => Effect.promise(async () => db.$client.close()),
     );
-    return yield* PgliteClient.fromClient({ liveClient: db.$client });
+    return yield* PgliteClient.fromClient({
+      liveClient: db.$client,
+    });
   }),
 );
 
@@ -55,5 +47,3 @@ export async function createTestDBForDump() {
 
   return db;
 }
-
-export type TestDBType = Awaited<ReturnType<typeof createTestDB>>;
