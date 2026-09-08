@@ -15,8 +15,8 @@ import { NumbersApiLive } from "./layer";
 import { NumberRepo } from "./repo";
 import { MaxCountReached, NumberNotFound, NumbersApi } from "./schema";
 
-const userId = testId<"user">(0);
-const numberId = testId<"number">(0);
+const userId = testId("user", 0);
+const numberId = testId("number", 0);
 const number = { id: numberId, number: 42 };
 const numberFull = {
   ...number,

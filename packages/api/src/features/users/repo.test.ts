@@ -20,7 +20,7 @@ layer(
 
       const result = yield* repo.getUserLock();
 
-      expect(result).toEqual({ id: testId<"user">(0) });
+      expect(result).toEqual({ id: testId("user", 0) });
     }),
   );
 

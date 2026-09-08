@@ -4,7 +4,7 @@ import { defineConfig } from "oxlint";
 
 export default defineConfig({
   $schema: "./node_modules/oxlint/configuration_schema.json",
-  ignorePatterns: ["**/generated/**", "*.gen.ts", "*.js"],
+  ignorePatterns: ["**/generated/**", "*.gen.ts", "*.js", "packages/oxlint/**"],
   plugins: [
     "eslint",
     "typescript",
@@ -83,6 +83,52 @@ export default defineConfig({
     {
       files: ["*.config.ts"],
       rules: { "import/no-default-export": "off" },
+    },
+    {
+      files: ["./packages/db/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                name: "drizzle-orm/pg-core",
+                importNames: ["pgTable", "camelCase"],
+                allowTypeImports: true,
+                message: "Use snakeCase.table instead",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ["./apps/web/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: ["@base-ui/**"],
+              },
+            ],
+            paths: [
+              {
+                name: "@tanstack/react-start/server",
+                importNames: ["getCookie", "setCookie", "deleteCookie"],
+              },
+            ],
+          },
+        ],
+        "typescript/only-throw-error": "off",
+      },
+    },
+    {
+      files: ["**/src/components/ui/**"],
+      rules: {
+        "no-restricted-imports": "off",
+      },
     },
   ],
   options: {

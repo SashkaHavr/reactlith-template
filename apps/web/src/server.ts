@@ -9,7 +9,7 @@ import { getRequestLog } from "~/utils/log";
 import { apiClient, apiHandler, resources, authClient } from "./server-resources";
 
 type RequestContext = typeof resources & {
-  log: LogType;
+  log: LogType | undefined;
   apiHandler: typeof apiHandler;
   apiClient: typeof apiClient;
   authClient: typeof authClient;

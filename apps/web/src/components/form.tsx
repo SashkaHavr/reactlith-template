@@ -1,4 +1,5 @@
 import { createFormHook, createFormHookContexts } from "@tanstack/react-form";
+import { Predicate } from "effect";
 
 import { Button } from "./ui/button";
 import { Field, FieldError, FieldLabel } from "./ui/field";
@@ -12,11 +13,14 @@ export function FormFieldError(props: Omit<React.ComponentProps<typeof FieldErro
   const field = useFieldContext();
   return (
     <FieldError match={!field.state.meta.isValid} {...props}>
-      {field.state.meta.errors.map((_error, index) => {
-        const error = _error as { code: string; message: string } | string;
+      {field.state.meta.errors.map((error, index) => {
         return (
           <p key={`fielderror-${field.name}-${index}`}>
-            {typeof error === "string" ? error : error.message}
+            {Predicate.isString(error)
+              ? error
+              : Predicate.hasProperty("message")(error) && Predicate.isString(error.message)
+                ? error.message
+                : ""}
           </p>
         );
       })}

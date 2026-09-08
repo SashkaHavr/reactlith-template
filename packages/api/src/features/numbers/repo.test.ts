@@ -107,7 +107,7 @@ layer(
       yield* seedUsers;
       const repo = yield* NumberRepo;
 
-      const error = yield* repo.get(testId<"number">(0)).pipe(Effect.flip);
+      const error = yield* repo.get(testId("number", 0)).pipe(Effect.flip);
 
       expect(error).toBeInstanceOf(NumberNotFound);
     }),
@@ -148,7 +148,7 @@ layer(
       yield* seedUsers;
       const repo = yield* NumberRepo;
 
-      const error = yield* repo.update(testId<"number">(0), { number: 10 }).pipe(Effect.flip);
+      const error = yield* repo.update(testId("number", 0), { number: 10 }).pipe(Effect.flip);
 
       expect(error).toBeInstanceOf(NumberNotFound);
     }),
@@ -191,7 +191,7 @@ layer(
       yield* seedUsers;
       const repo = yield* NumberRepo;
 
-      const error = yield* repo.delete(testId<"number">(0)).pipe(Effect.flip);
+      const error = yield* repo.delete(testId("number", 0)).pipe(Effect.flip);
 
       expect(error).toBeInstanceOf(NumberNotFound);
     }),

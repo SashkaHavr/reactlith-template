@@ -2,10 +2,12 @@ import { Effect, Layer } from "effect";
 
 import { ApiLogger, CurrentUser } from "#context";
 import { Auth } from "@reactlith-template/auth/service";
-import type { IdBranded } from "@reactlith-template/db/id-branded";
+import { IdBranded } from "@reactlith-template/db/id-branded";
 import { identifyUser } from "@reactlith-template/utils/log";
 
 import { AuthenticationMiddleware, Unauthorized } from "./schema";
+
+const UserId = IdBranded("user");
 
 export const AuthenticationMiddlewareLive = Layer.effect(
   AuthenticationMiddleware,
@@ -23,7 +25,7 @@ export const AuthenticationMiddlewareLive = Layer.effect(
         identifyUser(log, session);
         return yield* Effect.provideService(effect, CurrentUser, {
           session,
-          userId: session.user.id as IdBranded<"user">,
+          userId: UserId.make(session.user.id),
         });
       }),
     );

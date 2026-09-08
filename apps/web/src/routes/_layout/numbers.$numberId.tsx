@@ -9,12 +9,14 @@ import {
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 import type { ApiErrors } from "@reactlith-template/api";
-import type { IdBranded } from "@reactlith-template/db/id-branded";
+import { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useSession, useSignout } from "~/lib/auth";
 import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
+
+const NumberId = IdBranded("number");
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
   beforeLoad: ({ context: { session } }) => {
@@ -23,7 +25,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     }
   },
   loader: async ({ context: { queryClient }, params }) => {
-    const numberId = params.numberId as IdBranded<"number">;
+    const numberId = NumberId.make(params.numberId);
 
     try {
       await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });

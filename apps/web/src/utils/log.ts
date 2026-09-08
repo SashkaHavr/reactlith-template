@@ -1,5 +1,6 @@
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { Predicate } from "effect";
 import { initLog, log as clientLog } from "evlog/client";
 
 import type { LogType } from "@reactlith-template/utils/log";
@@ -7,7 +8,7 @@ import type { LogType } from "@reactlith-template/utils/log";
 export const logError = createIsomorphicFn()
   .server((error: any) => {
     getServerLog()?.set({ error: getErrorData(error) });
-    if (error instanceof Error || typeof error === "string") {
+    if (Predicate.isError(error) || Predicate.isString(error)) {
       getServerLog()?.error(error);
     }
   })
@@ -35,18 +36,19 @@ export const getServerLog = createIsomorphicFn().server(() => {
   return getRequestLog(getRequest());
 });
 
-export function getRequestLog(request: Request | undefined) {
-  return (request as any)?.context?.log as LogType;
+export function getRequestLog(request: Request) {
+  return Predicate.hasProperty("context")(request) && Predicate.hasProperty("log")(request.context)
+    ? (request.context.log as LogType)
+    : undefined;
 }
 
-function getErrorData(error: unknown) {
-  if (error instanceof Error) {
+function getErrorData(error: any) {
+  if (Predicate.isError(error)) {
     const errorObj: Record<string, unknown> = {
       name: error.name,
       message: error.message,
       stack: error.stack,
     };
-    const errRecord = error as unknown as Record<string, unknown>;
     for (const k of [
       "status",
       "statusText",
@@ -56,7 +58,9 @@ function getErrorData(error: unknown) {
       "code",
       "routerCode",
     ] as const) {
-      if (k in error) errorObj[k] = errRecord[k];
+      if (Predicate.hasProperty(k)(error)) {
+        errorObj[k] = error[k];
+      }
     }
 
     return errorObj;
@@ -64,8 +68,8 @@ function getErrorData(error: unknown) {
   return error ?? {};
 }
 
-function getErrorDataWithCause(error: unknown) {
-  if (error instanceof Error) {
+function getErrorDataWithCause(error: Error | string) {
+  if (Predicate.isError(error)) {
     return {
       ...getErrorData(error),
       cause: error.cause !== undefined ? getErrorData(error.cause) : undefined,

@@ -54,7 +54,7 @@ const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHan
 
 export async function apiHandler(request: Request) {
   const context = getGlobalStartContext()!;
-  return await _apiHandler(request, Context.make(ApiLogger, context.log));
+  return await _apiHandler(request, context.log ? Context.make(ApiLogger, context.log) : undefined);
 }
 
 function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
