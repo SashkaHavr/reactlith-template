@@ -2,97 +2,228 @@ import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { expect } from "vitest";
 
-import { layerCurrentUser, otherUserId, seedUsers, userId } from "#test-utils/repo";
+import { CurrentUser } from "#context";
+import { layerCurrentUser, seedUsers, testId } from "#test-utils";
 import { Database, schema } from "@reactlith-template/db";
-import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { DatabaseTest } from "@reactlith-template/db/test-db";
 
 import { NumberRepo } from "./repo";
 import { NumberNotFound } from "./schema";
 
-function insertNumber(id: IdBranded<"user">, value: number, createdAt?: Date) {
-  return Effect.gen(function* () {
-    const db = yield* Database;
-    const [row] = yield* db
-      .insert(schema.number)
-      .values({ userId: id, number: value, createdAt })
-      .returning({ id: schema.number.id, number: schema.number.number });
-    if (!row) throw new Error("Failed to seed number");
-    return row;
-  });
-}
+const insertNumber = Effect.fn(function* (number: number, createdAt?: Date) {
+  const db = yield* Database;
+  const user = yield* CurrentUser;
+  const [row] = yield* db
+    .insert(schema.number)
+    .values({ userId: user.userId, number, createdAt })
+    .returning({ id: schema.number.id, number: schema.number.number });
+  if (!row) throw new Error("Failed to seed number");
+  return row;
+});
 
-layer(NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))("NumberRepo", (it) => {
-  it.layer(layerCurrentUser())((it) => {
-    it.effect("gets numbers for the current user in creation order", () =>
-      Effect.gen(function* () {
-        yield* seedUsers;
-        yield* insertNumber(userId, 2, new Date("2025-01-02"));
-        yield* insertNumber(userId, 1, new Date("2025-01-01"));
-        yield* insertNumber(otherUserId, 3, new Date("2025-01-01"));
-        const repo = yield* NumberRepo;
-        expect((yield* repo.getAll()).map(({ number }) => number)).toEqual([1, 2]);
-      }),
-    );
-  });
+layer(NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))((it) => {
+  it.effect(
+    "counts public numbers above",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      yield* insertNumber(1).pipe(Effect.provide(layerCurrentUser(0)));
+      yield* insertNumber(50).pipe(Effect.provide(layerCurrentUser(0)));
+      yield* insertNumber(51).pipe(Effect.provide(layerCurrentUser(0)));
+      yield* insertNumber(2).pipe(Effect.provide(layerCurrentUser(1)));
+      yield* insertNumber(52).pipe(Effect.provide(layerCurrentUser(1)));
+      yield* insertNumber(100).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
 
-  it.layer(layerCurrentUser())((it) => {
-    it.effect("counts owned numbers and public numbers above a value", () =>
-      Effect.gen(function* () {
-        yield* seedUsers;
-        yield* insertNumber(userId, 50);
-        yield* insertNumber(userId, 51);
-        yield* insertNumber(otherUserId, 100);
-        const repo = yield* NumberRepo;
-        expect(yield* repo.getCount()).toBe(2);
-        expect(yield* repo.getCountAbove(50)).toBe(2);
-      }),
-    );
-  });
+      const result = yield* repo.getCountAbove(50);
 
-  it.layer(layerCurrentUser())((it) => {
-    it.effect("gets an owned number and rejects another user's number", () =>
-      Effect.gen(function* () {
-        yield* seedUsers;
-        const owned = yield* insertNumber(userId, 1);
-        const other = yield* insertNumber(otherUserId, 2);
-        const repo = yield* NumberRepo;
-        expect(yield* repo.getById(owned.id)).toMatchObject(owned);
-        expect(yield* Effect.flip(repo.getById(other.id))).toBeInstanceOf(NumberNotFound);
-      }),
-    );
-  });
+      expect(result).toBe(3);
+    }),
+  );
+});
 
-  it.layer(layerCurrentUser())((it) => {
-    it.effect("adds, updates, and deletes owned numbers", () =>
-      Effect.gen(function* () {
-        yield* seedUsers;
-        const repo = yield* NumberRepo;
-        const added = yield* repo.addNew(42);
-        expect(added.number).toBe(42);
-        const updated = yield* repo.update(added.id, { number: 10 });
-        expect(updated.number).toBe(10);
-        expect(yield* repo.deleteById(added.id)).toEqual({ id: added.id });
-        expect(yield* repo.getAll()).toEqual([]);
-      }),
-    );
-  });
+layer(
+  NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest), Layer.provideMerge(layerCurrentUser())),
+)((it) => {
+  it.effect(
+    "gets numbers for the current user",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      yield* insertNumber(1);
+      yield* insertNumber(2);
+      yield* insertNumber(3).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
 
-  it.layer(layerCurrentUser())((it) => {
-    it.effect("deletes only numbers owned by the current user", () =>
-      Effect.gen(function* () {
-        yield* seedUsers;
-        yield* insertNumber(userId, 1);
-        const other = yield* insertNumber(otherUserId, 2);
-        const repo = yield* NumberRepo;
-        yield* repo.deleteAll();
-        expect(yield* repo.getAll()).toEqual([]);
+      const result = yield* repo.getAll();
 
-        const otherNumbers = yield* repo
-          .getAll()
-          .pipe(Effect.provide(layerCurrentUser(otherUserId)));
-        expect(otherNumbers).toEqual([other]);
-      }),
-    );
-  });
+      expect(result.map(({ number }) => number)).toEqual([1, 2]);
+    }),
+  );
+
+  it.effect(
+    "gets numbers sorted by createdAt",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      yield* insertNumber(2, new Date(1));
+      yield* insertNumber(1, new Date(0));
+      const repo = yield* NumberRepo;
+
+      const result = yield* repo.getAll();
+
+      expect(result.map(({ number }) => number)).toEqual([1, 2]);
+    }),
+  );
+
+  it.effect(
+    "counts owned numbers",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      yield* insertNumber(1);
+      yield* insertNumber(2);
+      yield* insertNumber(3).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
+
+      const result = yield* repo.getCount();
+
+      expect(result).toBe(2);
+    }),
+  );
+
+  it.effect(
+    "gets an owned number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const owned = yield* insertNumber(1);
+      const repo = yield* NumberRepo;
+
+      const result = yield* repo.get(owned.id);
+
+      expect(result).toMatchObject(owned);
+    }),
+  );
+
+  it.effect(
+    "rejects getting a missing number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const repo = yield* NumberRepo;
+
+      const error = yield* repo.get(testId<"number">(0)).pipe(Effect.flip);
+
+      expect(error).toBeInstanceOf(NumberNotFound);
+    }),
+  );
+
+  it.effect(
+    "rejects getting another user's number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const other = yield* insertNumber(2).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
+
+      const error = yield* repo.get(other.id).pipe(Effect.flip);
+
+      expect(error).toBeInstanceOf(NumberNotFound);
+    }),
+  );
+
+  it.effect(
+    "updates only the targeted number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const target = yield* insertNumber(1);
+      const sibling = yield* insertNumber(2);
+      const repo = yield* NumberRepo;
+
+      const result = yield* repo.update(target.id, { number: 10 });
+      const siblingResult = yield* repo.get(sibling.id);
+
+      expect(result).toMatchObject({ id: target.id, number: 10 });
+      expect(siblingResult).toMatchObject(sibling);
+    }),
+  );
+
+  it.effect(
+    "rejects updating a missing number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const repo = yield* NumberRepo;
+
+      const error = yield* repo.update(testId<"number">(0), { number: 10 }).pipe(Effect.flip);
+
+      expect(error).toBeInstanceOf(NumberNotFound);
+    }),
+  );
+
+  it.effect(
+    "rejects updating another user's number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const other = yield* insertNumber(2).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
+
+      const error = yield* repo.update(other.id, { number: 10 }).pipe(Effect.flip);
+
+      expect(error).toBeInstanceOf(NumberNotFound);
+    }),
+  );
+
+  it.effect(
+    "deletes only the targeted number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const target = yield* insertNumber(1);
+      const sibling = yield* insertNumber(2);
+      const repo = yield* NumberRepo;
+
+      const result = yield* repo.delete(target.id);
+      const targetError = yield* repo.get(target.id).pipe(Effect.flip);
+      const siblingResult = yield* repo.get(sibling.id);
+
+      expect(result).toEqual({ id: target.id });
+      expect(targetError).toBeInstanceOf(NumberNotFound);
+      expect(siblingResult).toMatchObject(sibling);
+    }),
+  );
+
+  it.effect(
+    "rejects deleting a missing number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const repo = yield* NumberRepo;
+
+      const error = yield* repo.delete(testId<"number">(0)).pipe(Effect.flip);
+
+      expect(error).toBeInstanceOf(NumberNotFound);
+    }),
+  );
+
+  it.effect(
+    "rejects deleting another user's number",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const other = yield* insertNumber(2).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
+
+      const error = yield* repo.delete(other.id).pipe(Effect.flip);
+
+      expect(error).toBeInstanceOf(NumberNotFound);
+    }),
+  );
+
+  it.effect(
+    "deletes only numbers owned by the current user",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      yield* insertNumber(1);
+      const other = yield* insertNumber(2).pipe(Effect.provide(layerCurrentUser(1)));
+      const repo = yield* NumberRepo;
+
+      yield* repo.deleteAll();
+      const getAllResult = yield* repo.getAll();
+      const otherUserGetAllResult = yield* repo.getAll().pipe(Effect.provide(layerCurrentUser(1)));
+
+      expect(getAllResult).toEqual([]);
+      expect(otherUserGetAllResult).toEqual([other]);
+    }),
+  );
 });

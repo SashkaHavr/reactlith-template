@@ -36,12 +36,12 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
     HttpApiEndpoint.get("getAll", "/", {
       success: Schema.Struct({ numbers: Schema.Array(NumberOutput) }),
     }),
-    HttpApiEndpoint.get("getById", "/:id", {
+    HttpApiEndpoint.get("get", "/:id", {
       params: NumberIdInput,
       success: NumberFullOutput,
       error: NumberNotFound,
     }),
-    HttpApiEndpoint.post("addNew", "/", {
+    HttpApiEndpoint.post("create", "/", {
       payload: NumberInput,
       success: NumberOutput,
       error: [MaxCountReached, UserNotFound],

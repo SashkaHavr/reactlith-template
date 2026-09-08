@@ -26,15 +26,15 @@ export const numbersAbove50QueryOptions = queryOptions({
 });
 
 export const numberQueryKey = {
-  all: () => ["numbers", "getById"] as const,
-  byId: (id: IdBranded<"number">) => ["numbers", "getById", id] as const,
+  all: () => ["numbers", "get"] as const,
+  byId: (id: IdBranded<"number">) => ["numbers", "get", id] as const,
 };
 
-export function getNumberQueryOptions(input: Input["getById"]["params"]) {
+export function getNumberQueryOptions(input: Input["get"]["params"]) {
   return queryOptions({
     queryKey: numberQueryKey.byId(input.id),
     queryFn: async ({ signal }) => {
-      return await Effect.runPromise(getApiClient().numbers.getById({ params: input }), { signal });
+      return await Effect.runPromise(getApiClient().numbers.get({ params: input }), { signal });
     },
   });
 }
@@ -43,10 +43,10 @@ export function useAddNumber() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (input: Input["addNew"]["payload"]) => {
-      return await Effect.runPromise(getApiClient().numbers.addNew({ payload: input }));
+    mutationFn: async (input: Input["create"]["payload"]) => {
+      return await Effect.runPromise(getApiClient().numbers.create({ payload: input }));
     },
-    onError: async (error: Errors["addNew"]) => {
+    onError: async (error: Errors["create"]) => {
       if (error._tag === "MaxCountReached") {
         toastManager.add({
           title: m.example_maxNumberCountReached(),
@@ -173,7 +173,7 @@ export function useDeleteAllNumbers() {
       ]);
 
       const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
-      const previousNumbers = queryClient.getQueriesData<Output["getById"]>({
+      const previousNumbers = queryClient.getQueriesData<Output["get"]>({
         queryKey: numberQueryKey.all(),
       });
 

@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
     try {
       await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
     } catch (err) {
-      const error = err as ApiErrors["numbers"]["getById"];
+      const error = err as ApiErrors["numbers"]["get"];
       if (error._tag === "NumberNotFound") {
         throw notFound();
       }

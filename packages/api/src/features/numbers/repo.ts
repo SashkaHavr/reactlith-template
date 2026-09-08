@@ -35,7 +35,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         const { userId } = yield* CurrentUser;
         return yield* db.$count(schema.number, eq(schema.number.userId, userId)).pipe(Effect.orDie);
       }),
-      getById: Effect.fnUntraced(function* (id: IdBranded<"number">) {
+      get: Effect.fnUntraced(function* (id: IdBranded<"number">) {
         const { userId } = yield* CurrentUser;
         const number = yield* db.query.number
           .findFirst({
@@ -48,7 +48,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         }
         return number;
       }),
-      addNew: Effect.fnUntraced(function* (value: number) {
+      create: Effect.fnUntraced(function* (value: number) {
         const { userId } = yield* CurrentUser;
         const [number] = yield* db
           .insert(schema.number)
@@ -81,7 +81,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         }
         return number;
       }),
-      deleteById: Effect.fnUntraced(function* (id: IdBranded<"number">) {
+      delete: Effect.fnUntraced(function* (id: IdBranded<"number">) {
         const { userId } = yield* CurrentUser;
         const [number] = yield* db
           .delete(schema.number)
