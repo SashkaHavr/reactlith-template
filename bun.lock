@@ -26,8 +26,8 @@
         "@reactlith-template/config": "workspace:*",
         "@reactlith-template/db": "workspace:*",
         "@reactlith-template/intl": "workspace:*",
+        "@reactlith-template/services": "workspace:*",
         "@reactlith-template/typescript-config": "workspace:*",
-        "@reactlith-template/utils": "workspace:*",
         "@tailwindcss/vite": "catalog:",
         "@tanstack/react-form": "catalog:",
         "@tanstack/react-query": "catalog:",
@@ -60,8 +60,8 @@
         "@reactlith-template/auth": "workspace:*",
         "@reactlith-template/config": "workspace:*",
         "@reactlith-template/db": "workspace:*",
+        "@reactlith-template/services": "workspace:*",
         "@reactlith-template/typescript-config": "workspace:*",
-        "@reactlith-template/utils": "workspace:*",
         "@types/node": "catalog:",
         "drizzle-orm": "catalog:",
         "effect": "catalog:",
@@ -113,16 +113,17 @@
         "vite": "catalog:",
       },
     },
-    "packages/typescript-config": {
-      "name": "@reactlith-template/typescript-config",
-    },
-    "packages/utils": {
-      "name": "@reactlith-template/utils",
+    "packages/services": {
+      "name": "@reactlith-template/services",
       "devDependencies": {
         "@reactlith-template/typescript-config": "workspace:*",
         "@types/node": "catalog:",
+        "effect": "catalog:",
         "evlog": "catalog:",
       },
+    },
+    "packages/typescript-config": {
+      "name": "@reactlith-template/typescript-config",
     },
   },
   "catalog": {
@@ -500,9 +501,9 @@
 
     "@reactlith-template/intl": ["@reactlith-template/intl@workspace:packages/intl"],
 
-    "@reactlith-template/typescript-config": ["@reactlith-template/typescript-config@workspace:packages/typescript-config"],
+    "@reactlith-template/services": ["@reactlith-template/services@workspace:packages/services"],
 
-    "@reactlith-template/utils": ["@reactlith-template/utils@workspace:packages/utils"],
+    "@reactlith-template/typescript-config": ["@reactlith-template/typescript-config@workspace:packages/typescript-config"],
 
     "@reactlith-template/web": ["@reactlith-template/web@workspace:apps/web"],
 

@@ -8,8 +8,6 @@ import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { identifyUser } from "@reactlith-template/utils/log";
-import { seo } from "@reactlith-template/utils/seo";
 import { getTheme, getThemeCookie, ThemeScript } from "~/components/theme";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
@@ -28,7 +26,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ]);
 
     if (session.loggedIn) {
-      identifyUser(getServerLog(), session);
+      getServerLog()?.set({ user: { id: session.user.id, role: session.user.role } });
     }
 
     return {
@@ -49,8 +47,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content: "width=device-width, initial-scale=1",
       },
       { name: "theme-color" },
-      ...seo({ title: "reactlith-template" }),
       { name: "robots", content: "noindex, nofollow" },
+      { title: "reactlith-template" },
     ],
     links: [
       { rel: "stylesheet", href: indexCss },

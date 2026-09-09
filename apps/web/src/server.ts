@@ -3,13 +3,13 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
-import type { LogType } from "@reactlith-template/utils/log";
+import type { Evlog } from "@reactlith-template/services/structured-logger";
 import { getRequestLog } from "~/utils/log";
 
 import { apiClient, apiHandler, resources, authClient } from "./server-resources";
 
 type RequestContext = typeof resources & {
-  log: LogType | undefined;
+  log: typeof Evlog.Service | undefined;
   apiHandler: typeof apiHandler;
   apiClient: typeof apiClient;
   authClient: typeof authClient;

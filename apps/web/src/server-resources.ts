@@ -1,11 +1,11 @@
 import { getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { Context, Effect, Exit, Layer, Scope } from "effect";
+import { Context, Effect, Exit, Layer, Logger, Scope } from "effect";
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 
 import { Api } from "@reactlith-template/api";
-import { ApiLive, ApiLogger } from "@reactlith-template/api/layer";
+import { ApiLive } from "@reactlith-template/api/layer";
 import { BetterAuthServerClient } from "@reactlith-template/auth";
 import { createAuthClient } from "@reactlith-template/auth/client";
 import { Auth } from "@reactlith-template/auth/service";
@@ -13,6 +13,7 @@ import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
 import { ServerConfig } from "@reactlith-template/config/server";
 import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
+import { Evlog, StructuredLogger } from "@reactlith-template/services/structured-logger";
 
 const scope = Scope.makeUnsafe();
 const layerContext = await Effect.runPromise(
@@ -43,6 +44,8 @@ export const authClient = createAuthClient({
 const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHandler(
   HttpApiBuilder.layer(Api).pipe(
     Layer.provide(ApiLive),
+    Layer.provide(StructuredLogger.layer),
+    Layer.provide(Logger.layer([Logger.tracerLogger])),
     Layer.provide(Database.layerWithoutDependencies),
     Layer.provide(PgClientLive),
     Layer.provide(Auth.layer(authClient)),
@@ -54,7 +57,7 @@ const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHan
 
 export async function apiHandler(request: Request) {
   const context = getGlobalStartContext()!;
-  return await _apiHandler(request, context.log ? Context.make(ApiLogger, context.log) : undefined);
+  return await _apiHandler(request, context.log ? Context.make(Evlog, context.log) : undefined);
 }
 
 function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {

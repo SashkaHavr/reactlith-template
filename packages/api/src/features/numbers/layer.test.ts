@@ -50,8 +50,8 @@ class TestClient extends Context.Service<TestClient>()("api/TestClient", {
 }) {
   static readonly layerTest = Layer.effect(this, this.make).pipe(
     Layer.provide(NumbersApiLive),
-    Layer.provide(ClientDependenciesLayerTest),
     Layer.provide(AuthenticationMiddlewareLive),
+    Layer.provide(ClientDependenciesLayerTest),
     Layer.provideMerge(Layer.succeed(NumberRepo)(NumberRepoMock)),
     Layer.provideMerge(Layer.succeed(UserRepo)(UserRepoMock)),
     Layer.provideMerge(Layer.succeed(Database)(DatabaseMock as never)),

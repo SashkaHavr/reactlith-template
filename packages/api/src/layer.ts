@@ -9,5 +9,3 @@ export const ApiLive = Layer.mergeAll(ConfigApiLive, NumbersApiLiveWithServices)
   Layer.provideMerge(AuthenticationMiddlewareLive),
   Layer.provideMerge(GlobalMiddlewareLive),
 );
-
-export { ApiLogger, CurrentUser } from "#context";

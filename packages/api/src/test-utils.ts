@@ -1,4 +1,4 @@
-import { Effect, FileSystem, Layer, Path } from "effect";
+import { Effect, FileSystem, Layer, Path, References } from "effect";
 import { Etag, HttpPlatform } from "effect/unstable/http";
 
 import { CurrentUser } from "#context";
@@ -7,6 +7,7 @@ import type { AuthType } from "@reactlith-template/auth";
 import { Database, schema } from "@reactlith-template/db";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import type { SchemaIdBrands } from "@reactlith-template/db/id-branded";
+import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
 export function testId<T extends SchemaIdBrands>(schema: T, id: number) {
   const idString = id.toString();
@@ -37,4 +38,6 @@ export const ClientDependenciesLayerTest = Layer.empty.pipe(
   Layer.provideMerge(HttpPlatform.layer),
   Layer.provideMerge(FileSystem.layerNoop({})),
   Layer.provideMerge(Layer.succeed(GlobalMiddleware)(GlobalMiddleware.of((effect) => effect))),
+  Layer.provideMerge(StructuredLogger.layer),
+  Layer.provide(Layer.succeed(References.MinimumLogLevel, "None")),
 );

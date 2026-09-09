@@ -1,9 +1,8 @@
-import { createIsomorphicFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { Predicate } from "effect";
 import { initLog, log as clientLog } from "evlog/client";
 
-import type { LogType } from "@reactlith-template/utils/log";
+import type { Evlog } from "@reactlith-template/services/structured-logger";
 
 export const logError = createIsomorphicFn()
   .server((error: any) => {
@@ -33,12 +32,12 @@ export const setupClientLog = createIsomorphicFn().client(() => {
 });
 
 export const getServerLog = createIsomorphicFn().server(() => {
-  return getRequestLog(getRequest());
+  return getGlobalStartContext()?.log;
 });
 
 export function getRequestLog(request: Request) {
   return Predicate.hasProperty("context")(request) && Predicate.hasProperty("log")(request.context)
-    ? (request.context.log as LogType)
+    ? (request.context.log as typeof Evlog.Service)
     : undefined;
 }
 

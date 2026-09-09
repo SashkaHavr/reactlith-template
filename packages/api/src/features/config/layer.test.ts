@@ -19,9 +19,9 @@ class TestClient extends Context.Service<TestClient>()("api/TestClient", {
   make: HttpApiTest.groups(TestApi, ["config"]),
 }) {
   static readonly layerTest = Layer.effect(this, this.make).pipe(
-    Layer.provide(ClientDependenciesLayerTest),
     Layer.provide(ConfigApiLive),
     Layer.provide(GlobalMiddlewareLive),
+    Layer.provide(ClientDependenciesLayerTest),
     Layer.provide(Layer.succeed(Database)(DatabaseMock as never)),
   );
 }
