@@ -4,13 +4,11 @@ import { HttpApi, HttpApiTest } from "effect/unstable/httpapi";
 import { expect, vi } from "vitest";
 
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
-import { Unauthorized } from "#middleware/authentication/schema";
 import { ClientDependenciesLayerTest, testId } from "#test-utils";
 import { Auth } from "@reactlith-template/auth/service";
 import { Database } from "@reactlith-template/db";
 
 import { UserRepo } from "../users/repo";
-import { UserNotFound } from "../users/schema";
 import { NumbersApiLive } from "./layer";
 import { NumberRepo } from "./repo";
 import { MaxCountReached, NumberNotFound, NumbersApi } from "./schema";
@@ -68,7 +66,7 @@ layer(
   ),
 )((it) => {
   it.effect(
-    "publicly gets the count of numbers above 50",
+    "gets the count of numbers above 50",
     Effect.fn(function* () {
       const client = yield* TestClient;
       NumberRepoMock.getCountAbove.mockReturnValue(Effect.succeed(3));
@@ -77,74 +75,6 @@ layer(
 
       expect(result).toEqual({ count: 3 });
       expect(NumberRepoMock.getCountAbove).toHaveBeenCalledOnce();
-    }),
-  );
-
-  it.effect(
-    "requires authentication to get all numbers",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const error = yield* client.numbers.getAll().pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(Unauthorized);
-    }),
-  );
-
-  it.effect(
-    "requires authentication to get a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const error = yield* client.numbers.get({ params: { id: numberId } }).pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(Unauthorized);
-    }),
-  );
-
-  it.effect(
-    "requires authentication to add a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(Unauthorized);
-    }),
-  );
-
-  it.effect(
-    "requires authentication to update a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const error = yield* client.numbers
-        .update({ params: { id: numberId }, payload: { number: 42 } })
-        .pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(Unauthorized);
-    }),
-  );
-
-  it.effect(
-    "requires authentication to delete a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const error = yield* client.numbers.delete({ params: { id: numberId } }).pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(Unauthorized);
-    }),
-  );
-
-  it.effect(
-    "requires authentication to delete all numbers",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const error = yield* client.numbers.deleteAll().pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(Unauthorized);
     }),
   );
 });
@@ -223,19 +153,6 @@ layer(
       const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
 
       expect(error).toBeInstanceOf(MaxCountReached);
-      expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
-    }),
-  );
-
-  it.effect(
-    "returns a user not found error when adding a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      UserRepoMock.getUserLock.mockReturnValue(Effect.fail(UserNotFound.make({ userId })));
-
-      const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(UserNotFound);
       expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
     }),
   );

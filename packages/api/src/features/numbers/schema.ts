@@ -4,8 +4,6 @@ import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 import { AuthenticationMiddleware } from "#middleware/authentication/schema";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 
-import { UserNotFound } from "../users/schema";
-
 export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(
   "NumberNotFound",
   { numberId: Schema.String },
@@ -39,23 +37,23 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
     HttpApiEndpoint.get("get", "/:id", {
       params: NumberIdInput,
       success: NumberFullOutput,
-      error: NumberNotFound,
+      error: [NumberNotFound],
     }),
     HttpApiEndpoint.post("create", "/", {
       payload: NumberInput,
       success: NumberOutput,
-      error: [MaxCountReached, UserNotFound],
+      error: [MaxCountReached],
     }),
     HttpApiEndpoint.patch("update", "/:id", {
       params: NumberIdInput,
       payload: NumberUpdateInput,
       success: NumberFullOutput,
-      error: NumberNotFound,
+      error: [NumberNotFound],
     }),
     HttpApiEndpoint.delete("delete", "/:id", {
       params: NumberIdInput,
       success: NumberIdInput,
-      error: NumberNotFound,
+      error: [NumberNotFound],
     }),
     HttpApiEndpoint.delete("deleteAll", "/", {
       success: Schema.Null,

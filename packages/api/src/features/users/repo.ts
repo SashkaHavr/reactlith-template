@@ -4,8 +4,6 @@ import { Context, Effect, Layer } from "effect";
 import { CurrentUser } from "#context";
 import { Database, schema } from "@reactlith-template/db";
 
-import { UserNotFound } from "./schema";
-
 export class UserRepo extends Context.Service<UserRepo>()("api/UserRepo", {
   make: Effect.gen(function* () {
     const db = yield* Database;
@@ -20,7 +18,7 @@ export class UserRepo extends Context.Service<UserRepo>()("api/UserRepo", {
           .for("update")
           .pipe(Effect.orDie);
         if (!user) {
-          return yield* UserNotFound.make({ userId });
+          return yield* Effect.die("User not found");
         }
         return user;
       }),
