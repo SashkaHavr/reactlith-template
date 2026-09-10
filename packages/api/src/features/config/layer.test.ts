@@ -6,12 +6,14 @@ import { expect, vi } from "vitest";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { ClientDependenciesLayerTest } from "#test-utils";
 import { AuthConfig } from "@reactlith-template/config/auth";
-import { Database } from "@reactlith-template/db";
 
 import { ConfigApiLive } from "./layer";
+import { ConfigRepo } from "./repo";
 import { ConfigApi, NotReady } from "./schema";
 
-const DatabaseMock = { execute: vi.fn<() => Effect.Effect<void, void>>() };
+const ConfigRepoMock = {
+  healthcheck: vi.fn<typeof ConfigRepo.Service.healthcheck>(),
+} satisfies ConfigRepo["Service"];
 
 class TestApi extends HttpApi.make("api").add(ConfigApi).prefix("/api/rpc") {}
 
@@ -22,7 +24,7 @@ class TestClient extends Context.Service<TestClient>()("api/TestClient", {
     Layer.provide(ConfigApiLive),
     Layer.provide(GlobalMiddlewareLive),
     Layer.provide(ClientDependenciesLayerTest),
-    Layer.provide(Layer.succeed(Database)(DatabaseMock as never)),
+    Layer.provide(Layer.succeed(ConfigRepo)(ConfigRepoMock)),
   );
 }
 
@@ -82,11 +84,12 @@ layer(
     "reports the service is ready when the database probe succeeds",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      DatabaseMock.execute.mockReturnValue(Effect.succeedNone);
+      ConfigRepoMock.healthcheck.mockReturnValue(Effect.succeed(true));
 
       const result = yield* client.config.healthReady();
 
       expect(result).toBeNull();
+      expect(ConfigRepoMock.healthcheck).toHaveBeenCalledOnce();
     }),
   );
 
@@ -94,7 +97,7 @@ layer(
     "reports the service is not ready when the database probe fails",
     Effect.fn(function* () {
       const client = yield* TestClient;
-      DatabaseMock.execute.mockReturnValue(Effect.fail(Option.none));
+      ConfigRepoMock.healthcheck.mockReturnValue(Effect.succeed(false));
 
       const error = yield* client.config.healthReady().pipe(Effect.flip);
 

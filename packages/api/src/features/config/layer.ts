@@ -1,11 +1,10 @@
-import { sql } from "drizzle-orm";
-import { Effect, Exit, Option } from "effect";
+import { Effect, Layer, Option } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
 import { Api } from "#client";
 import { AuthConfig } from "@reactlith-template/config/auth";
-import { Database } from "@reactlith-template/db";
 
+import { ConfigRepo } from "./repo";
 import { NotReady } from "./schema";
 
 export const ConfigApiLive = HttpApiBuilder.group(
@@ -13,7 +12,7 @@ export const ConfigApiLive = HttpApiBuilder.group(
   "config",
   Effect.fn(function* (handlers) {
     const config = yield* AuthConfig;
-    const db = yield* Database;
+    const repo = yield* ConfigRepo;
 
     return handlers.handleAll({
       auth: Effect.fnUntraced(function* () {
@@ -25,8 +24,7 @@ export const ConfigApiLive = HttpApiBuilder.group(
         return yield* Effect.succeed(null);
       }),
       healthReady: Effect.fnUntraced(function* () {
-        const dbReady = yield* db.execute(sql`select 1`).pipe(Effect.exit);
-        if (Exit.isFailure(dbReady)) {
+        if (!(yield* repo.healthcheck())) {
           return yield* NotReady.make();
         }
         return null;
@@ -34,3 +32,5 @@ export const ConfigApiLive = HttpApiBuilder.group(
     });
   }),
 );
+
+export const ConfigApiLiveWithServices = ConfigApiLive.pipe(Layer.provideMerge(ConfigRepo.layer));
