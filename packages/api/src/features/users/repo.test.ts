@@ -9,7 +9,7 @@ import { UserRepo } from "./repo";
 
 layer(
   UserRepo.layer.pipe(Layer.provideMerge(DatabaseTest), Layer.provideMerge(layerCurrentUser())),
-)((it) => {
+)("UserRepo with CurrentUser", (it) => {
   it.effect(
     "locks and returns the current user",
     Effect.fn(function* () {

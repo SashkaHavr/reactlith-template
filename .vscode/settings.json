@@ -78,6 +78,5 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
-  },
-  "vitest.rootConfig": "vitest.config.ts"
+  }
 }

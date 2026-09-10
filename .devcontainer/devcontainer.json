@@ -19,7 +19,6 @@
         "bradlc.vscode-tailwindcss",
         "oxc.oxc-vscode",
         "inlang.vs-code-extension",
-        "vitest.explorer",
         "TypeScriptTeam.native-preview"
       ]
     }

@@ -63,7 +63,7 @@ Register the API group in `src/client.ts` and its live layer in `src/layer.ts`.
 
 ## Test Style
 
-- Use `@effect/vitest`'s `layer` to provide shared test dependencies and `it.effect` with `Effect.fn(function* () { ... })` for each test.
+- Use `@effect/vitest`'s named `layer` overload to provide shared test dependencies and `it.effect` with `Effect.fn(function* () { ... })` for each test.
 - Keep fixture seeding, service or client acquisition, and mock configuration together in the arrange section. Leave blank lines between the arrange, act, and assert sections.
 - Name a successful method result `result`. Use specific names such as `<method>Result` only when a lifecycle test produces multiple results.
 - Assert expected failures with `const error = yield* method.pipe(Effect.flip)` followed by `expect(error).toBeInstanceOf(ErrorClass)`.

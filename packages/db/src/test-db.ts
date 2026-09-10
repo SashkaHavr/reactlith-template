@@ -23,7 +23,11 @@ function openTestDB(loadDataDir: Blob) {
 const PgliteClientLive = PgliteClient.layerFrom(
   Effect.gen(function* () {
     const db = yield* Effect.acquireRelease(
-      Effect.sync(() => openTestDB(new Blob([inject("pgliteDump")]))),
+      Effect.promise(async () => {
+        const db = openTestDB(new Blob([inject("pgliteDump")]));
+        await db.$client.waitReady;
+        return db;
+      }),
       (db) => Effect.promise(async () => db.$client.close()),
     );
     return yield* PgliteClient.fromClient({

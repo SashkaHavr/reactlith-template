@@ -21,7 +21,7 @@ const insertNumber = Effect.fn(function* (number: number, createdAt?: Date) {
   return row;
 });
 
-layer(NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))((it) => {
+layer(NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))("NumberRepo public", (it) => {
   it.effect(
     "counts public numbers above",
     Effect.fn(function* () {
@@ -43,9 +43,9 @@ layer(NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest)))((it) => {
 
 layer(
   NumberRepo.layer.pipe(Layer.provideMerge(DatabaseTest), Layer.provideMerge(layerCurrentUser())),
-)((it) => {
+)("NumberRepo with CurrentUser", (it) => {
   it.effect(
-    "gets numbers for the current user",
+    "gets owned numbers",
     Effect.fn(function* () {
       yield* seedUsers;
       yield* insertNumber(1);
@@ -89,7 +89,7 @@ layer(
   );
 
   it.effect(
-    "gets an owned number",
+    "gets a number",
     Effect.fn(function* () {
       yield* seedUsers;
       const owned = yield* insertNumber(1);
@@ -211,7 +211,7 @@ layer(
   );
 
   it.effect(
-    "deletes only numbers owned by the current user",
+    "deletes owned numbers",
     Effect.fn(function* () {
       yield* seedUsers;
       yield* insertNumber(1);

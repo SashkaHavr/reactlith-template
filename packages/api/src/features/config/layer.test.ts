@@ -34,7 +34,7 @@ layer(
       } satisfies Partial<AuthConfig["Service"]> as AuthConfig["Service"]),
     ),
   ),
-)((it) => {
+)("ConfigApi with emulate", (it) => {
   it.effect(
     "reports enabled emulate provider",
     Effect.fn(function* () {
@@ -55,7 +55,7 @@ layer(
       } satisfies Partial<AuthConfig["Service"]> as AuthConfig["Service"]),
     ),
   ),
-)((it) => {
+)("ConfigApi without emulate", (it) => {
   it.effect(
     "reports disabled emulate provider",
     Effect.fn(function* () {

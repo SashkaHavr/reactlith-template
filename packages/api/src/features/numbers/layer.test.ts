@@ -54,7 +54,7 @@ class TestClient extends Context.Service<TestClient>()("api/TestClient", {
   );
 }
 
-layer(TestClient.layerTest.pipe(Layer.provide(layerAuth())))((it) => {
+layer(TestClient.layerTest.pipe(Layer.provide(layerAuth())))("NumbersApi public", (it) => {
   it.effect(
     "gets the count of numbers above 50",
     Effect.fn(function* () {
@@ -69,140 +69,143 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth())))((it) => {
   );
 });
 
-layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))((it) => {
-  it.effect(
-    "gets all numbers from the repository",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.getAll.mockReturnValue(Effect.succeed([number]));
+layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
+  "NumbersApi with CurrentUser",
+  (it) => {
+    it.effect(
+      "gets all numbers from the repository",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.getAll.mockReturnValue(Effect.succeed([number]));
 
-      const result = yield* client.numbers.getAll();
+        const result = yield* client.numbers.getAll();
 
-      expect(result).toEqual({ numbers: [number] });
-      expect(NumberRepoMock.getAll).toHaveBeenCalledOnce();
-    }),
-  );
+        expect(result).toEqual({ numbers: [number] });
+        expect(NumberRepoMock.getAll).toHaveBeenCalledOnce();
+      }),
+    );
 
-  it.effect(
-    "gets a number by id",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.get.mockReturnValue(Effect.succeed(numberFull));
+    it.effect(
+      "gets a number by id",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.get.mockReturnValue(Effect.succeed(numberFull));
 
-      const result = yield* client.numbers.get({ params: { id: numberId } });
+        const result = yield* client.numbers.get({ params: { id: numberId } });
 
-      expect(result).toEqual(numberFull);
-      expect(NumberRepoMock.get).toHaveBeenCalledOnce();
-    }),
-  );
+        expect(result).toEqual(numberFull);
+        expect(NumberRepoMock.get).toHaveBeenCalledOnce();
+      }),
+    );
 
-  it.effect(
-    "returns a not found error when getting a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.get.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
+    it.effect(
+      "returns a not found error when getting a number",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.get.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
-      const error = yield* client.numbers.get({ params: { id: numberId } }).pipe(Effect.flip);
+        const error = yield* client.numbers.get({ params: { id: numberId } }).pipe(Effect.flip);
 
-      expect(error).toBeInstanceOf(NumberNotFound);
-    }),
-  );
+        expect(error).toBeInstanceOf(NumberNotFound);
+      }),
+    );
 
-  it.effect(
-    "adds a number within a locked transaction",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.getCount.mockReturnValue(Effect.succeed(9));
-      NumberRepoMock.create.mockReturnValue(Effect.succeed(number));
-      UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
+    it.effect(
+      "adds a number within a locked transaction",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.getCount.mockReturnValue(Effect.succeed(9));
+        NumberRepoMock.create.mockReturnValue(Effect.succeed(number));
+        UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
-      const result = yield* client.numbers.create({ payload: { number: 42 } });
+        const result = yield* client.numbers.create({ payload: { number: 42 } });
 
-      expect(result).toEqual(number);
-      expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
-      expect(NumberRepoMock.create).toHaveBeenCalledOnce();
-    }),
-  );
+        expect(result).toEqual(number);
+        expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
+        expect(NumberRepoMock.create).toHaveBeenCalledOnce();
+      }),
+    );
 
-  it.effect(
-    "rejects adding more than ten numbers",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.getCount.mockReturnValue(Effect.succeed(10));
-      UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
+    it.effect(
+      "rejects adding more than ten numbers",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.getCount.mockReturnValue(Effect.succeed(10));
+        UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
-      const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
+        const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
 
-      expect(error).toBeInstanceOf(MaxCountReached);
-      expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
-    }),
-  );
+        expect(error).toBeInstanceOf(MaxCountReached);
+        expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
+      }),
+    );
 
-  it.effect(
-    "updates a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.update.mockReturnValue(Effect.succeed(numberFull));
+    it.effect(
+      "updates a number",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.update.mockReturnValue(Effect.succeed(numberFull));
 
-      const result = yield* client.numbers.update({
-        params: { id: numberId },
-        payload: { number: 42 },
-      });
+        const result = yield* client.numbers.update({
+          params: { id: numberId },
+          payload: { number: 42 },
+        });
 
-      expect(result).toEqual(numberFull);
-      expect(NumberRepoMock.update).toHaveBeenCalledOnce();
-    }),
-  );
+        expect(result).toEqual(numberFull);
+        expect(NumberRepoMock.update).toHaveBeenCalledOnce();
+      }),
+    );
 
-  it.effect(
-    "returns a not found error when updating a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.update.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
+    it.effect(
+      "returns a not found error when updating a number",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.update.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
-      const error = yield* client.numbers
-        .update({ params: { id: numberId }, payload: { number: 42 } })
-        .pipe(Effect.flip);
+        const error = yield* client.numbers
+          .update({ params: { id: numberId }, payload: { number: 42 } })
+          .pipe(Effect.flip);
 
-      expect(error).toBeInstanceOf(NumberNotFound);
-    }),
-  );
+        expect(error).toBeInstanceOf(NumberNotFound);
+      }),
+    );
 
-  it.effect(
-    "deletes a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.delete.mockReturnValue(Effect.succeed({ id: numberId }));
+    it.effect(
+      "deletes a number",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.delete.mockReturnValue(Effect.succeed({ id: numberId }));
 
-      const result = yield* client.numbers.delete({ params: { id: numberId } });
+        const result = yield* client.numbers.delete({ params: { id: numberId } });
 
-      expect(result).toEqual({ id: numberId });
-      expect(NumberRepoMock.delete).toHaveBeenCalledOnce();
-    }),
-  );
+        expect(result).toEqual({ id: numberId });
+        expect(NumberRepoMock.delete).toHaveBeenCalledOnce();
+      }),
+    );
 
-  it.effect(
-    "returns a not found error when deleting a number",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.delete.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
+    it.effect(
+      "returns a not found error when deleting a number",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.delete.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
-      const error = yield* client.numbers.delete({ params: { id: numberId } }).pipe(Effect.flip);
+        const error = yield* client.numbers.delete({ params: { id: numberId } }).pipe(Effect.flip);
 
-      expect(error).toBeInstanceOf(NumberNotFound);
-    }),
-  );
+        expect(error).toBeInstanceOf(NumberNotFound);
+      }),
+    );
 
-  it.effect(
-    "deletes all numbers",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      NumberRepoMock.deleteAll.mockReturnValue(Effect.void);
+    it.effect(
+      "deletes all numbers",
+      Effect.fn(function* () {
+        const client = yield* TestClient;
+        NumberRepoMock.deleteAll.mockReturnValue(Effect.void);
 
-      const result = yield* client.numbers.deleteAll();
+        const result = yield* client.numbers.deleteAll();
 
-      expect(result).toBeNull();
-      expect(NumberRepoMock.deleteAll).toHaveBeenCalledOnce();
-    }),
-  );
-});
+        expect(result).toBeNull();
+        expect(NumberRepoMock.deleteAll).toHaveBeenCalledOnce();
+      }),
+    );
+  },
+);
