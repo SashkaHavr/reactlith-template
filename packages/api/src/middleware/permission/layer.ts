@@ -3,7 +3,7 @@ import { Context, Effect, Layer } from "effect";
 import { Auth } from "@reactlith-template/auth/service";
 import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
-import { Forbidden, AuthorizationMiddleware, RequiredPermissions } from "./schema";
+import { InsufficientPermissions, AuthorizationMiddleware, RequiredPermissions } from "./schema";
 
 export const AuthorizationMiddlewareLive = Layer.effect(
   AuthorizationMiddleware,
@@ -26,7 +26,7 @@ export const AuthorizationMiddlewareLive = Layer.effect(
 
         const hasPermission = yield* auth.userHasPermission(permissions);
         if (!hasPermission.success) {
-          return yield* Forbidden.make();
+          return yield* InsufficientPermissions.make();
         }
 
         return yield* effect;

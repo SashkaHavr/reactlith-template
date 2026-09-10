@@ -9,8 +9,8 @@ export const RequiredPermissions = Context.Reference<AuthPermissions>(
   { defaultValue: () => ({}) },
 );
 
-export class Forbidden extends Schema.TaggedError<Forbidden>()(
-  "Forbidden",
+export class InsufficientPermissions extends Schema.TaggedError<InsufficientPermissions>()(
+  "InsufficientPermissions",
   {},
   { httpApiStatus: 403 },
 ) {}
@@ -19,5 +19,5 @@ export class AuthorizationMiddleware extends HttpApiMiddleware.Service<
   AuthorizationMiddleware,
   { requires: CurrentUser }
 >()("api/AuthorizationMiddleware ", {
-  error: Forbidden,
+  error: InsufficientPermissions,
 }) {}

@@ -5,7 +5,7 @@ import { Auth } from "@reactlith-template/auth/service";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
-import { AuthenticationMiddleware, Unauthorized } from "./schema";
+import { AuthenticationMiddleware, NotAuthenticated } from "./schema";
 
 const UserId = IdBranded("user");
 
@@ -19,7 +19,7 @@ export const AuthenticationMiddlewareLive = Layer.effect(
       Effect.gen(function* () {
         const session = yield* auth.getSession();
         if (!session) {
-          return yield* Unauthorized.make();
+          return yield* NotAuthenticated.make();
         }
 
         yield* log.set({ user: { id: session.user.id, role: session.user.role } });
