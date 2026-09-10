@@ -6,6 +6,7 @@
   "example_backToNumbers": "Назад до чисел",
   "example_createdAt": "Створено",
   "example_deleteAllNumbers": "Видалити усі числа",
+  "example_deleteNumber": "Видалити число",
   "example_timeNow": "Час зараз",
   "example_signInWithGoogle": "Увійти з Google",
   "example_logout": "Вийти",

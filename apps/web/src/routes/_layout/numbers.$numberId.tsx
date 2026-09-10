@@ -89,7 +89,7 @@ function RouteComponent() {
           }
         >
           <Trash2Icon />
-          Delete number
+          {m.example_deleteNumber()}
         </Button>
       </div>
       <div className="flex w-full flex-col items-center gap-6">

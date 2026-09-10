@@ -6,6 +6,7 @@
   "example_backToNumbers": "Back to numbers",
   "example_createdAt": "Created at",
   "example_deleteAllNumbers": "Delete all numbers",
+  "example_deleteNumber": "Delete number",
   "example_timeNow": "Time now",
   "example_signInWithGoogle": "Sign in with Google",
   "example_logout": "Logout",
