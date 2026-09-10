@@ -4,8 +4,7 @@ import { HttpApi, HttpApiTest } from "effect/unstable/httpapi";
 import { expect, vi } from "vitest";
 
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
-import { ClientDependenciesLayerTest, testId } from "#test-utils";
-import { Auth } from "@reactlith-template/auth/service";
+import { ClientDependenciesLayerTest, layerAuth, testId } from "#test-utils";
 import { Database } from "@reactlith-template/db";
 
 import { UserRepo } from "../users/repo";
@@ -13,7 +12,6 @@ import { NumbersApiLive } from "./layer";
 import { NumberRepo } from "./repo";
 import { MaxCountReached, NumberNotFound, NumbersApi } from "./schema";
 
-const userId = testId("user", 0);
 const numberId = testId("number", 0);
 const number = { id: numberId, number: 42 };
 const numberFull = {
@@ -31,11 +29,11 @@ const NumberRepoMock = {
   update: vi.fn<typeof NumberRepo.Service.update>(),
   delete: vi.fn<typeof NumberRepo.Service.delete>(),
   deleteAll: vi.fn<typeof NumberRepo.Service.deleteAll>(),
-} satisfies Effect.Success<typeof NumberRepo.make>;
+} satisfies NumberRepo["Service"];
 
 const UserRepoMock = {
   getUserLock: vi.fn<typeof UserRepo.Service.getUserLock>(),
-} satisfies Effect.Success<typeof UserRepo.make>;
+} satisfies UserRepo["Service"];
 
 const DatabaseMock = {
   transaction: vi.fn<(fn: () => Effect.Effect<void>) => Effect.Effect<void>>((f) => f()),
@@ -56,15 +54,7 @@ class TestClient extends Context.Service<TestClient>()("api/TestClient", {
   );
 }
 
-layer(
-  TestClient.layerTest.pipe(
-    Layer.provide(
-      Layer.succeed(Auth)({
-        getSession: () => Effect.succeed(null),
-      }),
-    ),
-  ),
-)((it) => {
+layer(TestClient.layerTest.pipe(Layer.provide(layerAuth())))((it) => {
   it.effect(
     "gets the count of numbers above 50",
     Effect.fn(function* () {
@@ -79,16 +69,7 @@ layer(
   );
 });
 
-layer(
-  TestClient.layerTest.pipe(
-    Layer.provide(
-      Layer.succeed(Auth)({
-        getSession: () =>
-          Effect.succeed({ user: { id: userId, role: "user" }, session: {} } as never),
-      }),
-    ),
-  ),
-)((it) => {
+layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))((it) => {
   it.effect(
     "gets all numbers from the repository",
     Effect.fn(function* () {
@@ -133,7 +114,7 @@ layer(
       const client = yield* TestClient;
       NumberRepoMock.getCount.mockReturnValue(Effect.succeed(9));
       NumberRepoMock.create.mockReturnValue(Effect.succeed(number));
-      UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: userId }));
+      UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
       const result = yield* client.numbers.create({ payload: { number: 42 } });
 
@@ -148,7 +129,7 @@ layer(
     Effect.fn(function* () {
       const client = yield* TestClient;
       NumberRepoMock.getCount.mockReturnValue(Effect.succeed(10));
-      UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: userId }));
+      UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
       const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
 

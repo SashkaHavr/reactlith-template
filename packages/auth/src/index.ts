@@ -5,81 +5,76 @@ import { Context, Effect, Layer, Redacted } from "effect";
 
 import { ac, roles } from "#permissions";
 import { AuthConfig } from "@reactlith-template/config/auth";
-import { DrizzlePostgresClient, schema } from "@reactlith-template/db";
+import { DrizzlePostgres, schema } from "@reactlith-template/db";
 
-export class BetterAuthServerClient extends Context.Service<BetterAuthServerClient>()(
-  "auth/BetterAuthServerClient",
-  {
-    make: Effect.gen(function* () {
-      const db = yield* DrizzlePostgresClient;
-      const config = yield* AuthConfig;
-      const googleEmulateUrl = config.googleEmulateUrl.valueOrUndefined;
-      const googleEmulateInternalUrl = config.googleEmulateInternalUrl.valueOrUndefined;
+export class BetterAuth extends Context.Service<BetterAuth>()("auth/BetterAuth", {
+  make: Effect.gen(function* () {
+    const db = yield* DrizzlePostgres;
+    const config = yield* AuthConfig;
+    const googleEmulateUrl = config.googleEmulateUrl.valueOrUndefined;
+    const googleEmulateInternalUrl = config.googleEmulateInternalUrl.valueOrUndefined;
 
-      return betterAuth({
-        basePath: "/api/auth",
-        baseURL: {
-          allowedHosts: [...config.allowedHosts],
+    return betterAuth({
+      basePath: "/api/auth",
+      baseURL: {
+        allowedHosts: [...config.allowedHosts],
+      },
+      secret: Redacted.value(config.secret),
+      session: {
+        cookieCache: {
+          enabled: true,
+          // 5 minutes
+          maxAge: 5 * 60,
         },
-        secret: Redacted.value(config.secret),
-        session: {
-          cookieCache: {
-            enabled: true,
-            // 5 minutes
-            maxAge: 5 * 60,
-          },
-          // 1 year
-          expiresIn: 60 * 60 * 24 * 365,
+        // 1 year
+        expiresIn: 60 * 60 * 24 * 365,
+      },
+      database: drizzleAdapter(db, {
+        provider: "pg",
+        schema: schema,
+      }),
+      plugins: [
+        admin({ ac, roles }),
+        ...(googleEmulateUrl
+          ? [
+              genericOAuth({
+                config: [
+                  {
+                    providerId: "google-emulate",
+                    clientId: config.googleClientId,
+                    clientSecret: Redacted.value(config.googleClientSecret),
+                    authorizationUrl: new URL("/o/oauth2/v2/auth", googleEmulateUrl).href,
+                    tokenUrl: new URL("/oauth2/token", googleEmulateInternalUrl ?? googleEmulateUrl)
+                      .href,
+                  },
+                ],
+              }),
+            ]
+          : []),
+      ],
+      advanced: {
+        database: {
+          generateId: false,
         },
-        database: drizzleAdapter(db, {
-          provider: "pg",
-          schema: schema,
-        }),
-        plugins: [
-          admin({ ac, roles }),
-          ...(googleEmulateUrl
-            ? [
-                genericOAuth({
-                  config: [
-                    {
-                      providerId: "google-emulate",
-                      clientId: config.googleClientId,
-                      clientSecret: Redacted.value(config.googleClientSecret),
-                      authorizationUrl: new URL("/o/oauth2/v2/auth", googleEmulateUrl).href,
-                      tokenUrl: new URL(
-                        "/oauth2/token",
-                        googleEmulateInternalUrl ?? googleEmulateUrl,
-                      ).href,
-                    },
-                  ],
-                }),
-              ]
-            : []),
-        ],
-        advanced: {
-          database: {
-            generateId: false,
-          },
+      },
+      socialProviders: {
+        google: {
+          clientId: config.googleClientId,
+          clientSecret: Redacted.value(config.googleClientSecret),
+          enabled: googleEmulateUrl === undefined,
         },
-        socialProviders: {
-          google: {
-            clientId: config.googleClientId,
-            clientSecret: Redacted.value(config.googleClientSecret),
-            enabled: googleEmulateUrl === undefined,
-          },
-        },
-      });
-    }),
-  },
-) {
+      },
+    });
+  }),
+}) {
   static readonly layer = Layer.effect(this, this.make).pipe(
     Layer.provide(AuthConfig.layer),
-    Layer.provideMerge(DrizzlePostgresClient.layer),
+    Layer.provideMerge(DrizzlePostgres.layer),
   );
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
-export type AuthType = Effect.Success<typeof BetterAuthServerClient.make>;
+export type SessionType = BetterAuth["Service"]["$Infer"]["Session"];
 
 export type AuthPermissions = {
   [K in keyof typeof ac.statements]?: (typeof ac.statements)[K][number][];

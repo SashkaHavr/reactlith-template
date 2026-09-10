@@ -8,31 +8,28 @@ import { DBConfig } from "@reactlith-template/config/db";
 
 import { relations, schema } from "./relations";
 
-export class DrizzlePostgresClient extends Context.Service<DrizzlePostgresClient>()(
-  "db/DrizzlePostgresClient",
-  {
-    make: Effect.gen(function* () {
-      const config = yield* DBConfig;
+export class DrizzlePostgres extends Context.Service<DrizzlePostgres>()("db/DrizzlePostgres", {
+  make: Effect.gen(function* () {
+    const config = yield* DBConfig;
 
-      return yield* Effect.acquireRelease(
-        Effect.sync(() =>
-          drizzle({
-            connection: Redacted.value(config.databaseUrl),
-            relations: relations,
-          }),
-        ),
-        (db) => Effect.promise(() => db.$client.end()),
-      );
-    }),
-  },
-) {
+    return yield* Effect.acquireRelease(
+      Effect.sync(() =>
+        drizzle({
+          connection: Redacted.value(config.databaseUrl),
+          relations: relations,
+        }),
+      ),
+      (db) => Effect.promise(() => db.$client.end()),
+    );
+  }),
+}) {
   static readonly layer = Layer.effect(this, this.make).pipe(Layer.provide(DBConfig.layer));
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
 export const PgClientLive = PgClient.layerFrom(
   Effect.gen(function* () {
-    const db = yield* DrizzlePostgresClient;
+    const db = yield* DrizzlePostgres;
     return yield* PgClient.fromPool({ acquire: Effect.succeed(db.$client) });
   }),
 );
@@ -42,15 +39,12 @@ export class Database extends Context.Service<Database>()("db/Database", {
 }) {
   static readonly layer = Layer.effect(this, this.make).pipe(
     Layer.provide(PgClientLive),
-    Layer.provide(DrizzlePostgresClient.layer),
+    Layer.provide(DrizzlePostgres.layer),
   );
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
-export type DBType = Effect.Success<typeof DrizzlePostgresClient.make>;
-export type DatabaseType = Effect.Success<typeof Database.make>;
-
-export async function healthcheckDB(db: DBType) {
+export async function healthcheckDB(db: DrizzlePostgres["Service"]) {
   await db.execute(sql`select 1`);
 }
 

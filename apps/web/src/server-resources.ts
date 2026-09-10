@@ -6,20 +6,20 @@ import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 
 import { Api } from "@reactlith-template/api";
 import { ApiLive } from "@reactlith-template/api/layer";
-import { BetterAuthServerClient } from "@reactlith-template/auth";
+import { BetterAuth } from "@reactlith-template/auth";
 import { createAuthClient } from "@reactlith-template/auth/client";
 import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
 import { ServerConfig } from "@reactlith-template/config/server";
-import { Database, DrizzlePostgresClient, PgClientLive } from "@reactlith-template/db";
+import { Database, DrizzlePostgres, PgClientLive } from "@reactlith-template/db";
 import { Evlog, StructuredLogger } from "@reactlith-template/services/structured-logger";
 
 const scope = Scope.makeUnsafe();
 const layerContext = await Effect.runPromise(
   Layer.empty.pipe(
-    Layer.provideMerge(BetterAuthServerClient.layerWithoutDependencies),
-    Layer.provideMerge(DrizzlePostgresClient.layerWithoutDependencies),
+    Layer.provideMerge(BetterAuth.layerWithoutDependencies),
+    Layer.provideMerge(DrizzlePostgres.layerWithoutDependencies),
     Layer.provide(DBConfig.layer),
     Layer.provideMerge(AuthConfig.layer),
     Layer.provideMerge(ServerConfig.layer),
@@ -29,8 +29,8 @@ const layerContext = await Effect.runPromise(
 
 export const resources = await Effect.runPromise(
   Effect.gen(function* () {
-    const db = yield* DrizzlePostgresClient;
-    const auth = yield* BetterAuthServerClient;
+    const db = yield* DrizzlePostgres;
+    const auth = yield* BetterAuth;
     const serverConfig = yield* ServerConfig;
     return { db, auth, serverConfig };
   }).pipe(Effect.provide(layerContext)),
@@ -48,7 +48,7 @@ const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHan
     Layer.provide(Logger.layer([Logger.tracerLogger])),
     Layer.provide(Database.layerWithoutDependencies),
     Layer.provide(PgClientLive),
-    Layer.provide(Auth.layer(authClient)),
+    Layer.provide(Auth.layer),
     Layer.provide(Layer.succeedContext(layerContext)),
     Layer.provide(HttpServer.layerServices),
   ),

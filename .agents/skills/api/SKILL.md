@@ -54,6 +54,7 @@ Register the API group in `src/client.ts` and its live layer in `src/layer.ts`.
 - Test an API group through file-local `TestApi` and `TestClient` classes. Create the client with `HttpApiTest.groups(TestApi, ["<group>"])` and provide its dependencies in `TestClient.layerTest`.
 - Define dependency mocks once at module scope. Type each mocked method with `vi.fn<typeof Service.Service.method>()`.
 - Configure mocks inside the test that uses them.
+- Never create tests for middleware or for errors included in an API contract by middleware.
 
 ## Repository Tests
 

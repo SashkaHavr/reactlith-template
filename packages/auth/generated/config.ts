@@ -1,7 +1,5 @@
 import { Effect } from "effect";
 
-import { BetterAuthServerClient } from "#/index";
+import { BetterAuth } from "#/index";
 
-export const auth = await Effect.runPromise(
-  BetterAuthServerClient.pipe(Effect.provide(BetterAuthServerClient.layer)),
-);
+export const auth = await Effect.runPromise(BetterAuth.pipe(Effect.provide(BetterAuth.layer)));
