@@ -16,7 +16,7 @@ export default defineConfig({
           name: "repo",
           maxWorkers: "50%",
           sequence: { groupOrder: 1 },
-          globalSetup: "./vitest.global-setup.ts",
+          globalSetup: "./vitest.db-setup.ts",
           include: ["{apps,packages}/**/repo.{test,spec}.?(c|m)[jt]s?(x)"],
         },
       },
