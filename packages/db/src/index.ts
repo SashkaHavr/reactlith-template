@@ -1,5 +1,4 @@
 import { PgClient } from "@effect/sql-pg";
-import { sql } from "drizzle-orm";
 import * as PgDrizzle from "drizzle-orm/effect-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Context, Effect, Layer, Redacted } from "effect";
@@ -42,10 +41,6 @@ export class Database extends Context.Service<Database>()("db/Database", {
     Layer.provide(DrizzlePostgres.layer),
   );
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
-}
-
-export async function healthcheckDB(db: DrizzlePostgres["Service"]) {
-  await db.execute(sql`select 1`);
 }
 
 export { relations, schema };
