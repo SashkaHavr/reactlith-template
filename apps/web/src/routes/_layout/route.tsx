@@ -6,10 +6,9 @@ import {
   useRouteContext,
   useRouter,
 } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { cn } from "cn";
+import { Effect } from "effect";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { fetch } from "nitro";
 import { useEffect, useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
@@ -18,23 +17,16 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useSetTheme, useTheme } from "~/components/theme";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
+import { getApiClient } from "~/lib/api";
 
-const checkHealth = createServerFn().handler(async () => await fetch("/api/health/ready"));
-
-const healthQueryOptions = queryOptions({
-  queryKey: ["health", "ready"],
-  queryFn: async () => {
-    const response = await checkHealth();
-    if (!response.ok) {
-      throw new Error("API is not ready");
-    }
-    return null;
-  },
+const healthReadyQueryOptions = queryOptions({
+  queryKey: ["health"],
+  queryFn: async () => await Effect.runPromise(getApiClient().config.healthReady()),
 });
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { queryClient } }) => {
-    await queryClient.query({ ...healthQueryOptions, staleTime: "static" });
+    await queryClient.query({ ...healthReadyQueryOptions, staleTime: "static" });
   },
   component: RouteComponent,
 });
@@ -108,7 +100,7 @@ function LocaleSwitcher() {
 const initialNow = Date.now();
 
 function RouteComponent() {
-  const health = useSuspenseQuery(healthQueryOptions);
+  const health = useSuspenseQuery(healthReadyQueryOptions);
   const hydrated = useHydrated();
   const [now, setNow] = useState(initialNow);
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {

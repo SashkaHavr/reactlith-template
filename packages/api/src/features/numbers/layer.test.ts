@@ -39,7 +39,7 @@ const DatabaseMock = {
   transaction: vi.fn<(fn: () => Effect.Effect<void>) => Effect.Effect<void>>((f) => f()),
 };
 
-class TestApi extends HttpApi.make("api").add(NumbersApi).prefix("/api/rpc") {}
+class TestApi extends HttpApi.make("api").add(NumbersApi).prefix("/api") {}
 
 class TestClient extends Context.Service<TestClient>()("api/TestClient", {
   make: HttpApiTest.groups(TestApi, ["numbers"]),

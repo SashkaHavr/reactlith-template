@@ -15,7 +15,7 @@ const ConfigRepoMock = {
   healthcheck: vi.fn<typeof ConfigRepo.Service.healthcheck>(),
 } satisfies ConfigRepo["Service"];
 
-class TestApi extends HttpApi.make("api").add(ConfigApi).prefix("/api/rpc") {}
+class TestApi extends HttpApi.make("api").add(ConfigApi).prefix("/api") {}
 
 class TestClient extends Context.Service<TestClient>()("api/TestClient", {
   make: HttpApiTest.groups(TestApi, ["config"]),

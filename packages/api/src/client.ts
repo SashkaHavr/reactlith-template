@@ -9,7 +9,7 @@ export class Api extends HttpApi.make("api")
   .add(ConfigApi)
   .add(NumbersApi)
   .middleware(GlobalMiddleware)
-  .prefix("/api/rpc") {}
+  .prefix("/api") {}
 
 export type ApiClient = HttpApiClient.ForApi<typeof Api>;
 

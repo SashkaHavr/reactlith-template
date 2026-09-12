@@ -1,4 +1,4 @@
-// oxlint-disable import/no-default-export
+// oxlint-disable import/no-default-export no-restricted-imports
 
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 

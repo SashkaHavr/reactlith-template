@@ -117,6 +117,9 @@ export default defineConfig({
               {
                 group: ["@base-ui/**"],
               },
+              {
+                group: ["server-resources"],
+              },
             ],
             paths: [
               {
