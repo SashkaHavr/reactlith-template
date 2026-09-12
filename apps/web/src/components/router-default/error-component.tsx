@@ -1,4 +1,5 @@
 import { ErrorComponent as DefaultErrorComponent } from "@tanstack/react-router";
+import type { ErrorComponentProps } from "@tanstack/react-router";
 
 import { m } from "@reactlith-template/intl/messages";
 import { logError } from "~/utils/log";
@@ -6,7 +7,7 @@ import { logError } from "~/utils/log";
 import { LinkButton } from "../ui/button";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 
-export function ErrorComponent({ error }: { error: Error }) {
+export function ErrorComponent({ error }: ErrorComponentProps) {
   logError(error);
 
   return (

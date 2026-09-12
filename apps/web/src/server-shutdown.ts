@@ -1,4 +1,4 @@
-// oxlint-disable import/no-default-export
+// oxlint-disable import/no-default-export no-restricted-imports
 import { definePlugin } from "nitro";
 
 import { dispose } from "./server-resources";
