@@ -5,7 +5,7 @@
   "scripts": {
     "build": "bun --bun vite build",
     "component": "bunx shadcn@latest add",
-    "dev": "bun run ../../.devcontainer/localhost.js && bun --bun vite dev",
+    "dev": "bun --bun vite dev",
     "start": "NODE_ENV=production bun run dist/server/index.mjs"
   },
   "devDependencies": {

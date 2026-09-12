@@ -1,0 +1,16 @@
+{
+  "name": "proxy-links",
+  "displayName": "Proxy links",
+  "version": "0.0.1",
+  "description": "Forward terminal localhost links to Traefik hosts declared in docker-compose labels.",
+  "files": [
+    "extension.js"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  }
+}

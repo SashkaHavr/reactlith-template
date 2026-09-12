@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "bun run studio",
     "push": "bun --bun drizzle-kit push",
-    "studio": "bun run ../../.devcontainer/localhost.js && bun --bun drizzle-kit studio --host 0.0.0.0"
+    "studio": "bun --bun drizzle-kit studio --host 0.0.0.0"
   },
   "devDependencies": {
     "@effect/sql-pg": "catalog:",

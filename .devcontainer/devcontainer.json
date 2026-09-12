@@ -15,6 +15,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "/extensions/proxy-links/proxy-links.vsix",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
         "oxc.oxc-vscode",
