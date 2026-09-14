@@ -1,9 +1,6 @@
 name: Deploy
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - example
 
 concurrency:
   group: deploy-production

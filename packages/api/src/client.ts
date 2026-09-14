@@ -2,12 +2,10 @@ import type { HttpApiClient, HttpApiEndpoint } from "effect/unstable/httpapi";
 import { HttpApi } from "effect/unstable/httpapi";
 
 import { ConfigApi } from "#features/config/schema";
-import { NumbersApi } from "#features/numbers/schema";
 import { GlobalMiddleware } from "#middleware/global/schema";
 
 export class Api extends HttpApi.make("api")
   .add(ConfigApi)
-  .add(NumbersApi)
   .middleware(GlobalMiddleware)
   .prefix("/api") {}
 
