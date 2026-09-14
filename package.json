@@ -34,9 +34,9 @@
       "nitro": "3.0.260903-beta",
       "@inlang/paraglide-js": "2.25.1",
       "pg": "8.23.0",
-      "effect": "4.0.0-rc.112",
-      "@effect/sql-pg": "4.0.0-rc.112",
-      "@effect/sql-pglite": "4.0.0-rc.112",
+      "effect": "4.0.0-rc.115",
+      "@effect/sql-pg": "4.0.0-rc.115",
+      "@effect/sql-pglite": "4.0.0-rc.115",
       "cn": "0.2.6",
       "@types/node": "^26.5.1"
     }
@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@effect/tsgo": "0.45.0",
-    "@effect/vitest": "4.0.0-rc.112",
+    "@effect/vitest": "4.0.0-rc.115",
     "oxfmt": "0.67.0",
     "oxlint": "1.82.0",
     "oxlint-tsgolint": "7.0.2001",
