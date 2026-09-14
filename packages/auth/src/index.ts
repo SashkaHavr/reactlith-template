@@ -13,6 +13,7 @@ export class BetterAuth extends Context.Service<BetterAuth>()("auth/BetterAuth",
     const config = yield* AuthConfig;
     const googleEmulateUrl = config.googleEmulateUrl.valueOrUndefined;
     const googleEmulateInternalUrl = config.googleEmulateInternalUrl.valueOrUndefined;
+    const ipAddressHeaders = config.ipAddressHeaders.valueOrUndefined;
 
     return betterAuth({
       basePath: "/api/auth",
@@ -55,6 +56,9 @@ export class BetterAuth extends Context.Service<BetterAuth>()("auth/BetterAuth",
       advanced: {
         database: {
           generateId: false,
+        },
+        ipAddress: {
+          ipAddressHeaders: ipAddressHeaders ? [...ipAddressHeaders] : undefined,
         },
       },
       socialProviders: {

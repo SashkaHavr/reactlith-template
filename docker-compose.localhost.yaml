@@ -1,8 +1,4 @@
 services:
-  db-push:
-    environment:
-      BETTER_AUTH_SECRET: abcdefghijklmnopqrstuvwxyz123456789
-      BETTER_AUTH_HOSTS_0: http://web.staging.reactlith-template.localhost
   db-studio:
     networks:
       - devcontainer-proxy
