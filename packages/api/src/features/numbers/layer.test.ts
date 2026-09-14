@@ -13,10 +13,9 @@ import { NumberRepo } from "./repo";
 import { MaxCountReached, NumberNotFound, NumbersApi } from "./schema";
 
 const numberId = testId("number", 0);
-const number = { id: numberId, number: 42 };
+const number = { id: numberId, number: 42, createdAt: new Date(1_000) };
 const numberFull = {
   ...number,
-  createdAt: new Date(1_000),
   updatedAt: new Date(2_000),
 };
 
@@ -115,7 +114,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
       Effect.fn(function* () {
         const client = yield* TestClient;
         NumberRepoMock.getCount.mockReturnValue(Effect.succeed(9));
-        NumberRepoMock.create.mockReturnValue(Effect.succeed(number));
+        NumberRepoMock.create.mockReturnValue(Effect.succeed(numberFull));
         UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
         const result = yield* client.numbers.create({ payload: { number: 42 } });

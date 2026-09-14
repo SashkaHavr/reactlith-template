@@ -21,11 +21,14 @@ export const NumberInput = Schema.Struct({ number: NumberValue });
 export const NumberUpdateInput = Schema.Struct({ number: Schema.optionalKey(NumberValue) }).check(
   Schema.makeFilter((data) => Object.keys(data).length > 0),
 );
-export const NumberOutput = Schema.Struct({ id: IdBranded("number"), number: NumberValue });
+export const NumberOutput = Schema.Struct({
+  id: IdBranded("number"),
+  number: NumberValue,
+  createdAt: Schema.DateFromString,
+});
 export const NumberIdInput = Schema.Struct({ id: IdBranded("number") });
 export const NumberFullOutput = Schema.Struct({
   ...NumberOutput.fields,
-  createdAt: Schema.DateFromString,
   updatedAt: Schema.DateFromString,
 });
 
@@ -41,7 +44,7 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
     }),
     HttpApiEndpoint.post("create", "/", {
       payload: NumberInput,
-      success: NumberOutput,
+      success: NumberFullOutput,
       error: [MaxCountReached],
     }),
     HttpApiEndpoint.patch("update", "/:id", {

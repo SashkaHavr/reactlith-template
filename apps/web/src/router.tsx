@@ -1,5 +1,7 @@
+import { DbProvider } from "@tanstack/react-db";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
+import { routerWithDbClient } from "@tanstack/react-router-with-db";
 
 import { deLocalizeUrl, localizeUrl } from "@reactlith-template/intl/runtime";
 import { setupClientLog } from "~/utils/log";
@@ -28,6 +30,7 @@ export function getRouter() {
       input: ({ url }) => deLocalizeUrl(url),
       output: ({ url }) => localizeUrl(url),
     },
+    Wrap: ({ children }) => <DbProvider client={routerContext.dbClient}>{children}</DbProvider>,
   });
 
   setupRouterSsrQueryIntegration({
@@ -35,5 +38,5 @@ export function getRouter() {
     queryClient: routerContext.queryClient,
   });
 
-  return router;
+  return routerWithDbClient(router, routerContext.dbClient);
 }

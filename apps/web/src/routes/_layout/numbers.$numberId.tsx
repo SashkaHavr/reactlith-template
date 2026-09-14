@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { eq, queryOnce, useLiveSuspenseQuery } from "@tanstack/react-db";
 import {
   createFileRoute,
   notFound,
@@ -8,13 +8,12 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
-import type { ApiErrors } from "@reactlith-template/api";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useSession, useSignout } from "~/lib/auth";
-import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
+import { numbersCollection, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 const NumberId = IdBranded("number");
 
@@ -24,17 +23,17 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient }, params }) => {
+  loader: async ({ context: { dbClient }, params }) => {
     const numberId = NumberId.make(params.numberId);
-
-    try {
-      await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
-    } catch (err) {
-      const error = err as ApiErrors["numbers"]["get"];
-      if (error._tag === "NumberNotFound") {
-        throw notFound();
-      }
-      throw error;
+    const number = await queryOnce({
+      query: (q) =>
+        q
+          .from({ numbers: dbClient.collection(numbersCollection) })
+          .where(({ numbers }) => eq(numbers.id, numberId))
+          .findOne(),
+    });
+    if (number === undefined) {
+      throw notFound();
     }
     return { numberId };
   },
@@ -46,7 +45,13 @@ function RouteComponent() {
   const navigate = useNavigate();
   const session = useSession();
   const hydrated = useHydrated();
-  const number = useSuspenseQuery(getNumberQueryOptions({ id: numberId }));
+  const number = useLiveSuspenseQuery({
+    query: (q) =>
+      q
+        .from({ numbers: numbersCollection })
+        .where(({ numbers }) => eq(numbers.id, numberId))
+        .findOne(),
+  });
   const updateNumber = useUpdateNumber();
   const deleteNumber = useDeleteNumber();
   const signout = useSignout();
@@ -54,6 +59,10 @@ function RouteComponent() {
     dateStyle: "long",
     timeStyle: "medium",
   });
+
+  if (number.data === undefined) {
+    throw notFound();
+  }
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -73,7 +82,7 @@ function RouteComponent() {
         <Button
           variant="outline"
           onClick={() =>
-            updateNumber.mutate({
+            updateNumber({
               id: numberId,
               payload: { number: Math.floor(Math.random() * 100) },
             })
@@ -84,9 +93,7 @@ function RouteComponent() {
         </Button>
         <Button
           variant="destructive-outline"
-          onClick={() =>
-            void navigate({ to: "/numbers" }).then(() => deleteNumber.mutate({ id: numberId }))
-          }
+          onClick={() => void navigate({ to: "/numbers" }).then(() => deleteNumber(numberId))}
         >
           <Trash2Icon />
           {m.example_deleteNumber()}
@@ -101,7 +108,9 @@ function RouteComponent() {
           </p>
           <p>
             {m.example_updatedAt()}:{" "}
-            {hydrated && dateFormatter.format(new Date(number.data.updatedAt))}
+            {hydrated &&
+              number.data.updatedAt &&
+              dateFormatter.format(new Date(number.data.updatedAt))}
           </p>
         </div>
       </div>

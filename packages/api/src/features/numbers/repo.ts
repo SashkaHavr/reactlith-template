@@ -13,6 +13,13 @@ export type NumberFullRow = NumberRow & {
   readonly updatedAt: Date;
 };
 
+const numberReturning = {
+  id: schema.number.id,
+  number: schema.number.number,
+  createdAt: schema.number.createdAt,
+  updatedAt: schema.number.updatedAt,
+} as const;
+
 export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", {
   make: Effect.gen(function* () {
     const db = yield* Database;
@@ -25,7 +32,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         const { userId } = yield* CurrentUser;
         return yield* db.query.number
           .findMany({
-            columns: { id: true, number: true },
+            columns: { id: true, number: true, createdAt: true },
             where: { userId: { eq: userId } },
             orderBy: { createdAt: "asc" },
           })
@@ -53,7 +60,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         const [number] = yield* db
           .insert(schema.number)
           .values({ userId, number: value })
-          .returning({ id: schema.number.id, number: schema.number.number })
+          .returning(numberReturning)
           .pipe(Effect.orDie);
         if (!number) {
           return yield* Effect.die("Failed to add number");
@@ -69,12 +76,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
           .update(schema.number)
           .set(data)
           .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-          .returning({
-            id: schema.number.id,
-            number: schema.number.number,
-            createdAt: schema.number.createdAt,
-            updatedAt: schema.number.updatedAt,
-          })
+          .returning(numberReturning)
           .pipe(Effect.orDie);
         if (!number) {
           return yield* NumberNotFound.make({ numberId: id });

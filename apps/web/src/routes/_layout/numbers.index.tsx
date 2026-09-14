@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLiveSuspenseQuery } from "@tanstack/react-db";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
@@ -28,7 +28,7 @@ import {
 } from "~/components/ui/dialog";
 import { useSession, useSignout } from "~/lib/auth";
 import {
-  allNumbersQueryOptions,
+  numbersCollection,
   useAddNumber,
   useDeleteAllNumbers,
   useDeleteNumber,
@@ -41,8 +41,11 @@ export const Route = createFileRoute("/_layout/numbers/")({
       throw redirect({ to: "/" });
     }
   },
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
+  loader: async ({ context: { dbClient } }) => {
+    await dbClient.preloadLiveQuery({
+      query: (q) =>
+        q.from({ numbers: numbersCollection }).orderBy(({ numbers }) => numbers.createdAt),
+    });
   },
   component: RouteComponent,
 });
@@ -57,7 +60,10 @@ const CustomNumberFormSchema = Schema.toStandardSchemaV1(
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
   const session = useSession();
-  const numbers = useSuspenseQuery(allNumbersQueryOptions);
+  const numbers = useLiveSuspenseQuery({
+    query: (q) =>
+      q.from({ numbers: numbersCollection }).orderBy(({ numbers }) => numbers.createdAt),
+  });
   const addNumber = useAddNumber();
   const updateNumber = useUpdateNumber();
   const deleteNumber = useDeleteNumber();
@@ -127,7 +133,7 @@ function RouteComponent() {
             </customNumberForm.AppForm>
           </DialogPopup>
         </Dialog>
-        <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
+        <Button variant="outline" onClick={() => deleteNumbers()}>
           {m.example_deleteAllNumbers()}
         </Button>
         <Button
@@ -140,14 +146,14 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {numbers.data.numbers.map((number) => (
+        {numbers.data.map((number) => (
           <div key={number.id} className="flex items-center gap-2">
             <p className="min-w-8 flex-1 text-xl font-bold">{number.number}</p>
             <Button
               size="icon"
               variant="outline"
               onClick={() =>
-                updateNumber.mutate({
+                updateNumber({
                   id: number.id,
                   payload: { number: Math.floor(Math.random() * 100) },
                 })
@@ -158,7 +164,7 @@ function RouteComponent() {
             <Button
               size="icon"
               variant="destructive-outline"
-              onClick={() => deleteNumber.mutate({ id: number.id })}
+              onClick={() => deleteNumber(number.id)}
             >
               <Trash2Icon />
             </Button>

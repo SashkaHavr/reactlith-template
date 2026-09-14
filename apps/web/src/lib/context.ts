@@ -1,3 +1,4 @@
+import { DbClient } from "@tanstack/db";
 import { QueryClient } from "@tanstack/react-query";
 
 export function createRouterContext() {
@@ -9,7 +10,8 @@ export function createRouterContext() {
       },
     },
   });
-  return { queryClient };
+  const dbClient = new DbClient({ queryClient });
+  return { queryClient, dbClient };
 }
 
 export type RouterContext = ReturnType<typeof createRouterContext>;
