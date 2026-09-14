@@ -26,20 +26,14 @@ export class DrizzlePostgres extends Context.Service<DrizzlePostgres>()("db/Driz
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 
-export const PgClientLive = PgClient.layerFrom(
-  Effect.gen(function* () {
-    const db = yield* DrizzlePostgres;
-    return yield* PgClient.fromPool({ acquire: Effect.succeed(db.$client) });
-  }),
-);
-
 export class Database extends Context.Service<Database>()("db/Database", {
-  make: PgDrizzle.makeWithDefaults({ relations }),
+  make: Effect.gen(function* () {
+    const config = yield* DBConfig;
+    const pgClient = yield* PgClient.layer({ url: config.databaseUrl }).pipe(Layer.build);
+    return yield* PgDrizzle.makeWithDefaults({ relations }).pipe(Effect.provide(pgClient));
+  }),
 }) {
-  static readonly layer = Layer.effect(this, this.make).pipe(
-    Layer.provide(PgClientLive),
-    Layer.provide(DrizzlePostgres.layer),
-  );
+  static readonly layer = Layer.effect(this, this.make).pipe(Layer.provide(DBConfig.layer));
   static readonly layerWithoutDependencies = Layer.effect(this, this.make);
 }
 

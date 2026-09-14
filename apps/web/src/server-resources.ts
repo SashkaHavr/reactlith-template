@@ -12,7 +12,7 @@ import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
 import { ServerConfig } from "@reactlith-template/config/server";
-import { Database, DrizzlePostgres, PgClientLive } from "@reactlith-template/db";
+import { Database, DrizzlePostgres } from "@reactlith-template/db";
 import { Evlog, StructuredLogger } from "@reactlith-template/services/structured-logger";
 
 const scope = Scope.makeUnsafe();
@@ -20,7 +20,7 @@ const layerContext = await Effect.runPromise(
   Layer.empty.pipe(
     Layer.provideMerge(BetterAuth.layerWithoutDependencies),
     Layer.provideMerge(DrizzlePostgres.layerWithoutDependencies),
-    Layer.provide(DBConfig.layer),
+    Layer.provideMerge(DBConfig.layer),
     Layer.provideMerge(AuthConfig.layer),
     Layer.provideMerge(ServerConfig.layer),
     Layer.buildWithScope(scope),
@@ -47,7 +47,6 @@ const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHan
     Layer.provide(StructuredLogger.layer),
     Layer.provide(Logger.layer([Logger.tracerLogger])),
     Layer.provide(Database.layerWithoutDependencies),
-    Layer.provide(PgClientLive),
     Layer.provide(Auth.layer),
     Layer.provide(Layer.succeedContext(layerContext)),
     Layer.provide(HttpServer.layerServices),
