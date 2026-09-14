@@ -108,9 +108,7 @@ function RouteComponent() {
           </p>
           <p>
             {m.example_updatedAt()}:{" "}
-            {hydrated &&
-              number.data.updatedAt &&
-              dateFormatter.format(new Date(number.data.updatedAt))}
+            {hydrated && dateFormatter.format(new Date(number.data.updatedAt))}
           </p>
         </div>
       </div>

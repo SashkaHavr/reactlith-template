@@ -223,7 +223,7 @@ layer(
       const otherUserGetAllResult = yield* repo.getAll().pipe(Effect.provide(layerCurrentUser(1)));
 
       expect(getAllResult).toEqual([]);
-      expect(otherUserGetAllResult).toEqual([other]);
+      expect(otherUserGetAllResult).toMatchObject([other]);
     }),
   );
 });

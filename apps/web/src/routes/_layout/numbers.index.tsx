@@ -4,7 +4,7 @@ import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
-import { NumberInput } from "@reactlith-template/api/schema/numbers";
+import { NumberValue } from "@reactlith-template/api/schema/numbers";
 import { m } from "@reactlith-template/intl/messages";
 import {
   FormField,
@@ -52,8 +52,7 @@ export const Route = createFileRoute("/_layout/numbers/")({
 
 const CustomNumberFormSchema = Schema.toStandardSchemaV1(
   Schema.Struct({
-    ...NumberInput.fields,
-    number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberInput.fields.number)),
+    number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberValue)),
   }),
 );
 

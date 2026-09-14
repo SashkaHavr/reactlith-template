@@ -32,7 +32,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         const { userId } = yield* CurrentUser;
         return yield* db.query.number
           .findMany({
-            columns: { id: true, number: true, createdAt: true },
+            columns: { id: true, number: true, createdAt: true, updatedAt: true },
             where: { userId: { eq: userId } },
             orderBy: { createdAt: "asc" },
           })

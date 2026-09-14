@@ -13,11 +13,7 @@ import { NumberRepo } from "./repo";
 import { MaxCountReached, NumberNotFound, NumbersApi } from "./schema";
 
 const numberId = testId("number", 0);
-const number = { id: numberId, number: 42, createdAt: new Date(1_000) };
-const numberFull = {
-  ...number,
-  updatedAt: new Date(2_000),
-};
+const number = { id: numberId, number: 42, createdAt: new Date(1_000), updatedAt: new Date(2_000) };
 
 const NumberRepoMock = {
   getCountAbove: vi.fn<typeof NumberRepo.Service.getCountAbove>(),
@@ -88,11 +84,11 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
       "gets a number by id",
       Effect.fn(function* () {
         const client = yield* TestClient;
-        NumberRepoMock.get.mockReturnValue(Effect.succeed(numberFull));
+        NumberRepoMock.get.mockReturnValue(Effect.succeed(number));
 
         const result = yield* client.numbers.get({ params: { id: numberId } });
 
-        expect(result).toEqual(numberFull);
+        expect(result).toEqual(number);
         expect(NumberRepoMock.get).toHaveBeenCalledOnce();
       }),
     );
@@ -114,7 +110,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
       Effect.fn(function* () {
         const client = yield* TestClient;
         NumberRepoMock.getCount.mockReturnValue(Effect.succeed(9));
-        NumberRepoMock.create.mockReturnValue(Effect.succeed(numberFull));
+        NumberRepoMock.create.mockReturnValue(Effect.succeed(number));
         UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
         const result = yield* client.numbers.create({ payload: { number: 42 } });
@@ -143,14 +139,14 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
       "updates a number",
       Effect.fn(function* () {
         const client = yield* TestClient;
-        NumberRepoMock.update.mockReturnValue(Effect.succeed(numberFull));
+        NumberRepoMock.update.mockReturnValue(Effect.succeed(number));
 
         const result = yield* client.numbers.update({
           params: { id: numberId },
           payload: { number: 42 },
         });
 
-        expect(result).toEqual(numberFull);
+        expect(result).toEqual(number);
         expect(NumberRepoMock.update).toHaveBeenCalledOnce();
       }),
     );

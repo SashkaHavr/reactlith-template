@@ -2,6 +2,7 @@ import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
 
 import { AuthenticationMiddleware } from "#middleware/authentication/schema";
+import { schemaCrudUpdate } from "#schema-utils";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 
 export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(
@@ -17,40 +18,33 @@ export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
 ) {}
 
 export const NumberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
-export const NumberInput = Schema.Struct({ number: NumberValue });
-export const NumberUpdateInput = Schema.Struct({ number: Schema.optionalKey(NumberValue) }).check(
-  Schema.makeFilter((data) => Object.keys(data).length > 0),
-);
-export const NumberOutput = Schema.Struct({
+export const NumberSchema = Schema.Struct({
   id: IdBranded("number"),
   number: NumberValue,
   createdAt: Schema.DateFromString,
-});
-export const NumberIdInput = Schema.Struct({ id: IdBranded("number") });
-export const NumberFullOutput = Schema.Struct({
-  ...NumberOutput.fields,
   updatedAt: Schema.DateFromString,
 });
+const NumberIdInput = Schema.Struct({ id: IdBranded("number") });
 
 export class NumbersApi extends HttpApiGroup.make("numbers")
   .add(
     HttpApiEndpoint.get("getAll", "/", {
-      success: Schema.Struct({ numbers: Schema.Array(NumberOutput) }),
+      success: Schema.Struct({ numbers: Schema.Array(NumberSchema) }),
     }),
     HttpApiEndpoint.get("get", "/:id", {
       params: NumberIdInput,
-      success: NumberFullOutput,
+      success: NumberSchema,
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.post("create", "/", {
-      payload: NumberInput,
-      success: NumberFullOutput,
+      payload: Schema.Struct({ number: NumberValue }),
+      success: NumberSchema,
       error: [MaxCountReached],
     }),
     HttpApiEndpoint.patch("update", "/:id", {
       params: NumberIdInput,
-      payload: NumberUpdateInput,
-      success: NumberFullOutput,
+      payload: Schema.Struct({ number: NumberValue }).pipe(schemaCrudUpdate),
+      success: NumberSchema,
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.delete("delete", "/:id", {
