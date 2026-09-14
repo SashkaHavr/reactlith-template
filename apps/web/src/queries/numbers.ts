@@ -5,6 +5,7 @@ import { useDbClient } from "@tanstack/react-db";
 import type { QueryClient } from "@tanstack/react-query";
 import { queryOptions, useMutation } from "@tanstack/react-query";
 import { Effect, Schema } from "effect";
+import { Option } from "effect";
 
 import type { ApiErrors, ApiInput } from "@reactlith-template/api";
 import { NumberSchema, NumberValue } from "@reactlith-template/api/schema/numbers";
@@ -51,11 +52,18 @@ export const numbersCollection = collectionOptions("numbers", (client) =>
     queryFn: async ({ signal, meta }) => {
       const opts = parseNumbersCollectionOptions(meta?.loadSubsetOptions);
       if (opts.type === "byId") {
-        return [
-          await Effect.runPromise(getApiClient().numbers.get({ params: { id: opts.id } }), {
+        const number = await Effect.runPromise(
+          getApiClient()
+            .numbers.get({ params: { id: opts.id } })
+            .pipe(
+              Effect.asSome,
+              Effect.catchTag("NumberNotFound", () => Effect.succeedNone),
+            ),
+          {
             signal,
-          }),
-        ];
+          },
+        );
+        return Option.isSome(number) ? [number.value] : [];
       }
       return [...(await Effect.runPromise(getApiClient().numbers.getAll(), { signal })).numbers];
     },
