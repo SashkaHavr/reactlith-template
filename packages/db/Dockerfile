@@ -3,8 +3,8 @@ WORKDIR /app
 
 FROM base AS prepare
 COPY . .
-RUN bun ci --filter '.'
-RUN bun turbo prune @reactlith-template/db --docker
+RUN bun add -g turbo@$(bun --print "require('./package.json').devDependencies.turbo")
+RUN turbo prune @reactlith-template/db --docker
 
 FROM base
 
