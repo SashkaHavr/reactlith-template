@@ -1,0 +1,48 @@
+name: Deploy
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - example
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  run-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/check
+  deploy:
+    runs-on: ubuntu-latest
+    needs: run-check
+    if: ${{ success() }}
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun ci
+      - run: bun add -g @railway/cli@5
+
+      - uses: ./.github/actions/extract-database-url
+
+      - run: railway config plan --out railway-plan.json
+      - name: Reject destructive Railway plan
+        run: |
+          if [[ "$(jq -r '.destructive' railway-plan.json)" == "true" ]]; then
+            echo "Railway plan contains destructive changes."
+            exit 1
+          fi
+      - name: Reject destructive database migration
+        if: ${{ env.DATABASE_URL != '' }}
+        run: bun --filter @reactlith-template/db push --explain
+
+      - run: railway config apply --plan railway-plan.json --yes
+      - uses: ./.github/actions/extract-database-url
+      - run: bun --filter @reactlith-template/db push
+      - run: railway up --service web --ci

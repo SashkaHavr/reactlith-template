@@ -1,8 +1,10 @@
-name: Run workspace check
+name: Run check
 on:
   pull_request:
 
 jobs:
   run-check:
-    uses: ./.github/workflows/check-reusable.yaml
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/check

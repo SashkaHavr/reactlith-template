@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:mysecretpassword@db:5432/postgres}
-  db-studio:
+  drizzle-gateway:
     image: ghcr.io/drizzle-team/gateway:latest
     volumes:
       - drizzle-gateway:/app
