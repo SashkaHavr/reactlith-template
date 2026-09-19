@@ -1,12 +1,13 @@
 /// <reference types="vite/client" />
 
+import { environmentManager } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { getLocale } from "@reactlith-template/intl/runtime";
-import { getTheme, getThemeCookie, ThemeScript } from "~/components/theme";
+import { getTheme, syncMetaThemeColor, ThemeScript, useSyncTheme } from "~/components/theme";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
 import { getSessionQueryOptions } from "~/lib/auth";
 import type { RouterContext } from "~/lib/context";
@@ -17,7 +18,6 @@ import indexCss from "../index.css?url";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context: { queryClient } }) => {
-    const locale = getLocale();
     const [authConfig, session] = await Promise.all([
       queryClient.query({ ...authConfigQueryOptions, staleTime: "static" }),
       queryClient.query({ ...getSessionQueryOptions, staleTime: "static" }),
@@ -30,11 +30,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     return {
       session,
       authConfig,
-      locale: locale,
-      theme: { theme: await getTheme(), themeCookieExists: (await getThemeCookie()) !== undefined },
+      theme: environmentManager.isServer() ? undefined : getTheme(),
     };
   },
-  component: RootComponent,
   head: () => ({
     meta: [
       {
@@ -44,7 +42,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
-      { name: "theme-color" },
       { name: "robots", content: "noindex, nofollow" },
       { title: "reactlith-template" },
     ],
@@ -53,13 +50,25 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
     ],
   }),
+  scripts: () => [{ children: `(${syncMetaThemeColor.toString()})()` }],
+  shellComponent: RootShell,
+  component: RouteComponent,
 });
 
-function RootComponent() {
+function RouteComponent() {
+  useSetLogIdentity();
+  useSyncTheme();
+
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <>
+      <ToastProvider>
+        <AnchoredToastProvider>
+          <div className="isolate">
+            <Outlet />
+          </div>
+        </AnchoredToastProvider>
+      </ToastProvider>
+    </>
   );
 }
 
@@ -77,25 +86,19 @@ function useSetLogIdentity() {
   }, [session]);
 }
 
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const { locale, theme } = Route.useRouteContext({
-    select: (s) => ({ locale: s.locale, theme: s.theme.theme }),
+function RootShell({ children }: Readonly<{ children: ReactNode }>) {
+  const theme = Route.useRouteContext({
+    select: (s) => s.theme,
   });
 
-  useSetLogIdentity();
-
   return (
-    <html suppressHydrationWarning lang={locale} className={theme}>
+    <html suppressHydrationWarning lang={getLocale()} className={theme}>
       <head>
         <HeadContent />
         <ThemeScript />
       </head>
       <body>
-        <ToastProvider>
-          <AnchoredToastProvider>
-            <div className="isolate">{children}</div>
-          </AnchoredToastProvider>
-        </ToastProvider>
+        {children}
         <Scripts />
       </body>
     </html>

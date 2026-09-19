@@ -6,7 +6,6 @@ import { setupClientLog } from "~/utils/log";
 
 import { ErrorComponent } from "./components/router-default/error-component";
 import { NotFoundComponent } from "./components/router-default/not-found-component";
-import { PendingComponent } from "./components/router-default/pending-component";
 import { createRouterContext } from "./lib/context";
 import { routeTree } from "./routeTree.gen";
 
@@ -21,7 +20,6 @@ export function getRouter() {
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     defaultPreload: "intent",
-    defaultPendingComponent: PendingComponent,
     defaultNotFoundComponent: NotFoundComponent,
     defaultErrorComponent: ErrorComponent,
     rewrite: {

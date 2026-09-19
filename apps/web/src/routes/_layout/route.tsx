@@ -1,11 +1,5 @@
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  Outlet,
-  useHydrated,
-  useRouteContext,
-  useRouter,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, useHydrated, useRouter } from "@tanstack/react-router";
 import { cn } from "cn";
 import { Effect } from "effect";
 import { MoonIcon, SunIcon } from "lucide-react";
@@ -41,7 +35,7 @@ function ThemeSwitcher() {
       {(!hydrated || theme === "light") && (
         <Button className="dark:hidden" variant="outline" onClick={() => void setTheme("dark")}>
           <MoonIcon />
-          <span>Dark mode</span>
+          <span>{m.example_darkMode()}</span>
         </Button>
       )}
       {(!hydrated || theme === "dark") && (
@@ -51,7 +45,7 @@ function ThemeSwitcher() {
           onClick={() => void setTheme("light")}
         >
           <SunIcon />
-          <span>Light mode</span>
+          <span>{m.example_lightMode()}</span>
         </Button>
       )}
     </>
@@ -65,11 +59,10 @@ const localeToString: Record<Locale, string> = {
 
 function LocaleSwitcher() {
   const router = useRouter();
-  const locale = useRouteContext({ from: "__root__", select: (s) => s.locale });
 
   return (
     <Select
-      value={locale}
+      value={getLocale()}
       onValueChange={(value) => {
         if (isLocale(value)) {
           void (async () => {
@@ -84,7 +77,7 @@ function LocaleSwitcher() {
       }}
     >
       <SelectTrigger className="w-fit">
-        <span>{localeToString[locale]}</span>
+        <span>{localeToString[getLocale()]}</span>
       </SelectTrigger>
       <SelectContent>
         {Object.entries(localeToString).map(([key, label]) => (

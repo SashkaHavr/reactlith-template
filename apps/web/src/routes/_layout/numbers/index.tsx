@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
@@ -36,11 +36,6 @@ import {
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/")({
-  beforeLoad: ({ context: { session } }) => {
-    if (!session.loggedIn) {
-      throw redirect({ to: "/" });
-    }
-  },
   loader: async ({ context: { queryClient } }) => {
     await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
   },

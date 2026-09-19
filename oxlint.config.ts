@@ -121,12 +121,6 @@ export default defineConfig({
                 group: ["server-resources"],
               },
             ],
-            paths: [
-              {
-                name: "@tanstack/react-start/server",
-                importNames: ["getCookie", "setCookie", "deleteCookie"],
-              },
-            ],
           },
         ],
         "typescript/only-throw-error": "off",

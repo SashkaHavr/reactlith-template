@@ -1,14 +1,24 @@
-import { ScriptOnce, useRouteContext, useRouter } from "@tanstack/react-router";
-import { createIsomorphicFn } from "@tanstack/react-start";
+import { environmentManager } from "@tanstack/react-query";
+import { ScriptOnce, useHydrated, useRouteContext, useRouter } from "@tanstack/react-router";
 import { useEffect, useEffectEvent } from "react";
 
-import { deleteCookie, getCookie, setCookie } from "~/utils/cookie";
-
-function updateMetaThemeColor() {
-  const themeColor = getComputedStyle(document.documentElement)
-    .getPropertyValue("--theme-color")
-    .trim();
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", themeColor);
+export function syncMetaThemeColor() {
+  const html = document.documentElement;
+  const updateMetaThemeColor = () => {
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "theme-color");
+      document.head.append(meta);
+    }
+    const themeColor = getComputedStyle(html).getPropertyValue("--theme-color").trim();
+    meta.setAttribute("content", themeColor);
+  };
+  new MutationObserver(updateMetaThemeColor).observe(html, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  updateMetaThemeColor();
 }
 
 function getDarkThemeMediaQuery() {
@@ -18,53 +28,46 @@ function getDarkThemeMediaQuery() {
 export type Theme = "light" | "dark";
 
 export function useTheme() {
-  return useRouteContext({ from: "__root__", select: (s) => s.theme.theme });
+  const hydrated = useHydrated();
+  return useRouteContext({
+    from: "__root__",
+    select: (s) => (hydrated ? s.theme! : undefined),
+  });
 }
 
-const getSystemTheme = createIsomorphicFn()
-  .server((): Theme => {
-    return "light";
-  })
-  .client((): Theme => {
-    return getDarkThemeMediaQuery().matches ? "dark" : "light";
-  });
+function getSystemTheme(): Theme {
+  return getDarkThemeMediaQuery().matches ? "dark" : "light";
+}
 
-const themeCookieName = "theme";
-
-export async function getThemeCookie() {
-  const theme = await getCookie(themeCookieName);
+function getSavedTheme(): Theme | undefined {
+  const theme = localStorage.getItem("theme");
   if (theme === "light" || theme === "dark") {
     return theme;
   }
   return undefined;
 }
 
-export async function getTheme() {
-  return (await getThemeCookie()) ?? getSystemTheme();
+export function getTheme(): Theme | undefined {
+  if (environmentManager.isServer()) return undefined;
+  return getSavedTheme() ?? getSystemTheme();
 }
 
 export function useSetTheme() {
   const router = useRouter();
   return async (newTheme: Theme) => {
     if (newTheme === getSystemTheme()) {
-      await deleteCookie(themeCookieName);
+      localStorage.removeItem("theme");
     } else {
-      await setCookie(themeCookieName, newTheme);
+      localStorage.setItem("theme", newTheme);
     }
     await router.invalidate();
-    updateMetaThemeColor();
   };
 }
 
-export function ThemeScript() {
+export function useSyncTheme() {
   const router = useRouter();
-  const { themeCookieExists } = useRouteContext({
-    from: "__root__",
-    select: (s) => ({ themeCookieExists: s.theme.themeCookieExists }),
-  });
   const handleMediaQuery = useEffectEvent(() => {
     void router.invalidate();
-    updateMetaThemeColor();
   });
 
   useEffect(() => {
@@ -73,17 +76,15 @@ export function ThemeScript() {
     handleMediaQuery();
     return () => media.removeEventListener("change", handleMediaQuery);
   }, []);
+}
 
+export function ThemeScript() {
   return (
     <ScriptOnce>
-      {`${getDarkThemeMediaQuery.toString()}${updateMetaThemeColor.toString()}(${((
-        themeCookieExists: boolean,
-      ) => {
-        if (!themeCookieExists) {
-          document.documentElement.classList.toggle("dark", getDarkThemeMediaQuery().matches);
-        }
-        updateMetaThemeColor();
-      }).toString()})(${themeCookieExists})`}
+      {`${getSavedTheme.toString()}
+        ${getDarkThemeMediaQuery.toString()}
+        ${getSystemTheme.toString()}
+        (${(() => document.documentElement.classList.add(getSavedTheme() ?? getSystemTheme())).toString()})()`}
     </ScriptOnce>
   );
 }

@@ -1,11 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  notFound,
-  redirect,
-  useHydrated,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/react-router";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 import type { ApiErrors } from "@reactlith-template/api";
@@ -19,11 +13,6 @@ import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queri
 const NumberId = IdBranded("number");
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
-  beforeLoad: ({ context: { session } }) => {
-    if (!session.loggedIn) {
-      throw redirect({ to: "/" });
-    }
-  },
   loader: async ({ context: { queryClient }, params }) => {
     const numberId = NumberId.make(params.numberId);
 

@@ -11,10 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as LayoutNumbersRouteRouteImport } from './routes/_layout/numbers/route'
 import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as ApiIngestRouteImport } from './routes/api/ingest'
-import { Route as LayoutNumbersIndexRouteImport } from './routes/_layout/numbers.index'
-import { Route as LayoutNumbersNumberIdRouteImport } from './routes/_layout/numbers.$numberId'
+import { Route as LayoutNumbersIndexRouteImport } from './routes/_layout/numbers/index'
+import { Route as LayoutNumbersNumberIdRouteImport } from './routes/_layout/numbers/$numberId'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
 
 const LayoutRouteRoute = LayoutRouteRouteImport.update({
@@ -24,6 +25,11 @@ const LayoutRouteRoute = LayoutRouteRouteImport.update({
 const LayoutIndexRoute = LayoutIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => LayoutRouteRoute,
+} as any)
+const LayoutNumbersRouteRoute = LayoutNumbersRouteRouteImport.update({
+  id: '/numbers',
+  path: '/numbers',
   getParentRoute: () => LayoutRouteRoute,
 } as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
@@ -37,14 +43,14 @@ const ApiIngestRoute = ApiIngestRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const LayoutNumbersIndexRoute = LayoutNumbersIndexRouteImport.update({
-  id: '/numbers/',
-  path: '/numbers/',
-  getParentRoute: () => LayoutRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => LayoutNumbersRouteRoute,
 } as any)
 const LayoutNumbersNumberIdRoute = LayoutNumbersNumberIdRouteImport.update({
-  id: '/numbers/$numberId',
-  path: '/numbers/$numberId',
-  getParentRoute: () => LayoutRouteRoute,
+  id: '/$numberId',
+  path: '/$numberId',
+  getParentRoute: () => LayoutNumbersRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -54,6 +60,7 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
+  '/numbers': typeof LayoutNumbersRouteRouteWithChildren
   '/api/$': typeof ApiSplatRoute
   '/api/ingest': typeof ApiIngestRoute
   '/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteRouteWithChildren
+  '/_layout/numbers': typeof LayoutNumbersRouteRouteWithChildren
   '/api/$': typeof ApiSplatRoute
   '/api/ingest': typeof ApiIngestRoute
   '/_layout/': typeof LayoutIndexRoute
@@ -82,6 +90,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/numbers'
     | '/api/$'
     | '/api/ingest'
     | '/numbers/$numberId'
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_layout'
+    | '/_layout/numbers'
     | '/api/$'
     | '/api/ingest'
     | '/_layout/'
@@ -129,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRouteRoute
     }
+    '/_layout/numbers': {
+      id: '/_layout/numbers'
+      path: '/numbers'
+      fullPath: '/numbers'
+      preLoaderRoute: typeof LayoutNumbersRouteRouteImport
+      parentRoute: typeof LayoutRouteRoute
+    }
     '/api/$': {
       id: '/api/$'
       path: '/api/$'
@@ -145,17 +162,17 @@ declare module '@tanstack/react-router' {
     }
     '/_layout/numbers/': {
       id: '/_layout/numbers/'
-      path: '/numbers'
+      path: '/'
       fullPath: '/numbers/'
       preLoaderRoute: typeof LayoutNumbersIndexRouteImport
-      parentRoute: typeof LayoutRouteRoute
+      parentRoute: typeof LayoutNumbersRouteRoute
     }
     '/_layout/numbers/$numberId': {
       id: '/_layout/numbers/$numberId'
-      path: '/numbers/$numberId'
+      path: '/$numberId'
       fullPath: '/numbers/$numberId'
       preLoaderRoute: typeof LayoutNumbersNumberIdRouteImport
-      parentRoute: typeof LayoutRouteRoute
+      parentRoute: typeof LayoutNumbersRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -167,16 +184,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface LayoutRouteRouteChildren {
-  LayoutIndexRoute: typeof LayoutIndexRoute
+interface LayoutNumbersRouteRouteChildren {
   LayoutNumbersNumberIdRoute: typeof LayoutNumbersNumberIdRoute
   LayoutNumbersIndexRoute: typeof LayoutNumbersIndexRoute
 }
 
-const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
-  LayoutIndexRoute: LayoutIndexRoute,
+const LayoutNumbersRouteRouteChildren: LayoutNumbersRouteRouteChildren = {
   LayoutNumbersNumberIdRoute: LayoutNumbersNumberIdRoute,
   LayoutNumbersIndexRoute: LayoutNumbersIndexRoute,
+}
+
+const LayoutNumbersRouteRouteWithChildren =
+  LayoutNumbersRouteRoute._addFileChildren(LayoutNumbersRouteRouteChildren)
+
+interface LayoutRouteRouteChildren {
+  LayoutNumbersRouteRoute: typeof LayoutNumbersRouteRouteWithChildren
+  LayoutIndexRoute: typeof LayoutIndexRoute
+}
+
+const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
+  LayoutNumbersRouteRoute: LayoutNumbersRouteRouteWithChildren,
+  LayoutIndexRoute: LayoutIndexRoute,
 }
 
 const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
