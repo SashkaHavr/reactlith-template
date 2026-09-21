@@ -1,5 +1,5 @@
 services:
-  db-studio:
+  drizzle-gateway:
     networks:
       - devcontainer-proxy
       - db-network

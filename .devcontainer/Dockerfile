@@ -22,4 +22,5 @@ RUN curl -fsSL https://bun.sh/install | bash -s "bun-v1.4.2"
 ENV BUN_INSTALL="/home/vscode/.bun"
 ENV PATH="$BUN_INSTALL/bin:$PATH"
 
-RUN bun add -g opencode-ai
+RUN bun add -g opencode-ai@1
+RUN bun add -g @railway/cli@5

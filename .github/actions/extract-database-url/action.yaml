@@ -1,0 +1,23 @@
+name: Extract public DATABASE_URL from Railway
+
+inputs:
+  service:
+    description: Railway database service name
+    required: false
+    default: db
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        SERVICE: ${{ inputs.service }}
+      run: |
+        if railway service list --json | jq -e --arg service "$SERVICE" 'any(.[]; .name == $service)' > /dev/null; then
+          endpoint=$(railway tcp-proxy list --service "$SERVICE" --json | jq -r '.proxies[0].endpoint')
+          database_url=$(railway variables list --service "$SERVICE" --json | jq -r --arg endpoint "$endpoint" '.DATABASE_URL | sub("@[^/]+"; "@\($endpoint)")')
+        else
+          database_url=""
+        fi
+        echo "::add-mask::$database_url"
+        echo "DATABASE_URL=$database_url" >> "$GITHUB_ENV"
