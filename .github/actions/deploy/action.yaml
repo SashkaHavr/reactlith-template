@@ -1,5 +1,14 @@
 name: Deploy to Railway
 
+inputs:
+  domains:
+    required: false
+    default: "false"
+
+outputs:
+  domains-web:
+    value: ${{ steps.domains-web.outputs.link }}
+
 runs:
   using: composite
   steps:
@@ -23,5 +32,9 @@ runs:
     - uses: ./.github/actions/extract-database-url
     - shell: bash
       run: bun --filter @reactlith-template/db push
+    - id: domains-web
+      if: ${{ inputs.domains == 'true' }}
+      shell: bash
+      run: echo "link=$(railway domain --service web --json | jq -r '.domains[0]')" >> "$GITHUB_OUTPUT"
     - shell: bash
       run: railway up --service web --ci

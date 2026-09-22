@@ -1,0 +1,71 @@
+name: PR
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  run-check:
+    if: ${{ github.event.action != 'closed' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/check
+
+  deploy:
+    needs: run-check
+    if: ${{ github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository && vars.RAILWAY_PROJECT_ID != '' }}
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      RAILWAY_DEFAULT_ENVIRONMENT: ${{ vars.RAILWAY_DEFAULT_ENVIRONMENT || 'production' }}
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    outputs:
+      domains-web: ${{ steps.deploy.outputs.domains-web }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun ci
+      - run: bun add -g @railway/cli@5
+      - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_DEFAULT_ENVIRONMENT"
+      - if: ${{ github.event.action == 'opened' || github.event.action == 'reopened' }}
+        run: railway environment new "$RAILWAY_ENVIRONMENT" --duplicate "$RAILWAY_DEFAULT_ENVIRONMENT"
+      - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
+      - uses: ./.github/actions/deploy
+        id: deploy
+        with:
+          domains: true
+
+  comment:
+    needs: deploy
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body "Preview: $DOMAIN"'
+        env:
+          DOMAIN: ${{ needs.deploy.outputs.domains-web }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+  destroy:
+    if: ${{ github.event.action == 'closed' && github.event.pull_request.head.repo.full_name == github.repository && vars.RAILWAY_PROJECT_ID != '' }}
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
+      RAILWAY_DEFAULT_ENVIRONMENT: ${{ vars.RAILWAY_DEFAULT_ENVIRONMENT || 'production' }}
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+    steps:
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun add -g @railway/cli@5
+      - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_DEFAULT_ENVIRONMENT"
+      - run: railway environment delete "$RAILWAY_ENVIRONMENT" --yes
