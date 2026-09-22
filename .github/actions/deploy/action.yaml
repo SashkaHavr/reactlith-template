@@ -1,0 +1,27 @@
+name: Deploy to Railway
+
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/extract-database-url
+
+    - shell: bash
+      run: railway config plan --out railway-plan.json
+    - name: Reject destructive Railway plan
+      shell: bash
+      run: |
+        if [[ "$(jq -r '.destructive' railway-plan.json)" == "true" ]]; then
+          exit 1
+        fi
+    - name: Reject destructive database migration
+      if: ${{ env.DATABASE_URL != '' }}
+      shell: bash
+      run: bun --filter @reactlith-template/db push --explain
+
+    - shell: bash
+      run: railway config apply --plan railway-plan.json --yes
+    - uses: ./.github/actions/extract-database-url
+    - shell: bash
+      run: bun --filter @reactlith-template/db push
+    - shell: bash
+      run: railway up --service web --ci

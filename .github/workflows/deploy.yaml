@@ -10,19 +10,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check-railway-token:
-    runs-on: ubuntu-latest
-    outputs:
-      exists: ${{ steps.check.outputs.exists }}
-    steps:
-      - name: Check RAILWAY_TOKEN exists
-        id: check
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          if [[ -n "$RAILWAY_TOKEN" ]]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          fi
   run-check:
     runs-on: ubuntu-latest
     steps:
@@ -30,9 +17,10 @@ jobs:
       - uses: ./.github/actions/check
   deploy:
     runs-on: ubuntu-latest
-    needs: [check-railway-token, run-check]
-    if: ${{ needs.check-railway-token.outputs.exists == 'true' }}
+    needs: run-check
+    if: ${{ vars.RAILWAY_PROJECT_ID != '' }}
     env:
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - uses: actions/checkout@v7
@@ -41,21 +29,6 @@ jobs:
           bun-version: 1.4.2
       - run: bun ci
       - run: bun add -g @railway/cli@5
+      - run: railway link --project "$RAILWAY_PROJECT_ID" --environment production
 
-      - uses: ./.github/actions/extract-database-url
-
-      - run: railway config plan --out railway-plan.json
-      - name: Reject destructive Railway plan
-        run: |
-          if [[ "$(jq -r '.destructive' railway-plan.json)" == "true" ]]; then
-            echo "Railway plan contains destructive changes."
-            exit 1
-          fi
-      - name: Reject destructive database migration
-        if: ${{ env.DATABASE_URL != '' }}
-        run: bun --filter @reactlith-template/db push --explain
-
-      - run: railway config apply --plan railway-plan.json --yes
-      - uses: ./.github/actions/extract-database-url
-      - run: bun --filter @reactlith-template/db push
-      - run: railway up --service web --ci
+      - uses: ./.github/actions/deploy
