@@ -19,5 +19,7 @@ runs:
         else
           database_url=""
         fi
-        echo "::add-mask::$database_url"
+        if [[ -n "$database_url" ]]; then
+          echo "::add-mask::$database_url"
+        fi
         echo "DATABASE_URL=$database_url" >> "$GITHUB_ENV"

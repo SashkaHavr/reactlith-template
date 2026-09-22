@@ -30,8 +30,21 @@ runs:
     - shell: bash
       run: railway config apply --plan railway-plan.json --yes
     - uses: ./.github/actions/extract-database-url
-    - shell: bash
-      run: bun --filter @reactlith-template/db push
+    - name: Run database migration
+      shell: bash
+      run: |
+        for attempt in {1..5}; do
+          if bun --filter @reactlith-template/db push; then
+            exit 0
+          else
+            status=$?
+          fi
+          if [[ "$status" -ne 1 || "$attempt" -eq 5 ]]; then
+            exit "$status"
+          fi
+          echo "Database push failed (attempt $attempt/5); retrying in 5 seconds..."
+          sleep 5
+        done
     - id: domains-web
       if: ${{ inputs.domains == 'true' }}
       shell: bash
