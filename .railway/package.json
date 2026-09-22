@@ -1,0 +1,10 @@
+{
+  "name": "@reactlith-template/railway",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@effect/platform-node": "catalog:",
+    "effect": "catalog:",
+    "railway": "3.11.0"
+  }
+}
