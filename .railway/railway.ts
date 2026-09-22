@@ -19,6 +19,7 @@ export default defineRailway(() => {
       dockerfilePath: "/apps/web/Dockerfile",
     },
     healthcheckPath: "/api/health/ready",
+    healthcheckTimeout: 10,
     env: {
       PUBLIC_URL: "https://${{RAILWAY_PUBLIC_DOMAIN}}",
       PORT: "3000",
