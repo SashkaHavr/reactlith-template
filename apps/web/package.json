@@ -30,7 +30,6 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "better-auth": "catalog:",
-    "better-result": "catalog:",
     "class-variance-authority": "catalog:",
     "cn": "catalog:",
     "effect": "catalog:",

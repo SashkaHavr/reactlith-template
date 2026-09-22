@@ -2,17 +2,13 @@
 
 ## About
 
-Minimal full-stack typescript/react monorepo template.
+Minimal full-stack Effect + TanStack Start (React) monorepo template.
 
 Used packages: https://github.com/stars/SashkaHavr/lists/reactlith
 
-## Fast local startup
-
-```sh
-bun compose
-```
-
 ## Development setup
 
-1. Use provided devcontainer
-2. Run `bun dev`
+1. Set up reverse proxy + emulate with [dedicated project](https://github.com/SashkaHavr/emulate-setup) (or make your own)
+2. Use provided devcontainer
+3. Run `bun --filter @reactlith-template/db push`
+4. Run `bun dev`
