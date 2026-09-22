@@ -22,7 +22,7 @@
   "example_updateNumber": "Update number",
   "example_updatedAt": "Updated at",
   "example_user": "User",
-  "example_works": "Works!",
+  "example_works": "Preview!",
   "routeDefault_error": "Something went wrong",
   "routeDefault_notFound": "Not Found",
   "routeDefault_notFoundDescription": "The page you're looking for doesn't exist.",
