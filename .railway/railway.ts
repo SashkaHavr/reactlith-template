@@ -1,11 +1,34 @@
 // oxlint-disable import/no-default-export
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+
 import { defineRailway, image, postgres, preserve, project, service, volume } from "railway/iac";
+
+const execAsync = promisify(exec);
 
 const RAM_GB = 1000000000;
 const STORAGE_GB = 1000;
 const region = "europe-west4-drams3a";
 
-export default defineRailway(() => {
+async function getServiceVariables(serviceName: string) {
+  try {
+    return JSON.parse(
+      (await execAsync(`railway variables --service ${serviceName} --json`)).stdout,
+    ) as Record<string, string>;
+  } catch {
+    return undefined;
+  }
+}
+
+async function preserveOrGenerator({ service, variable }: { service: string; variable: string }) {
+  const variables = await getServiceVariables(service);
+  if (variables && variable in variables) {
+    return preserve();
+  }
+  return "${{secret(32)}}";
+}
+
+export default defineRailway(async () => {
   const db = postgres("db", { region: region });
   db.networking = { tcpProxies: { "5432": {} } };
   const reactlithTemplateWeb = service("web", {
@@ -25,7 +48,10 @@ export default defineRailway(() => {
       PORT: "3000",
       BETTER_AUTH_ALLOWED_HOSTS: "https://${{RAILWAY_PUBLIC_DOMAIN}}",
       BETTER_AUTH_IP_ADDRESS_HEADERS: "X-Real-IP",
-      BETTER_AUTH_SECRET: preserve(),
+      BETTER_AUTH_SECRET: await preserveOrGenerator({
+        service: "web",
+        variable: "BETTER_AUTH_SECRET",
+      }),
       DATABASE_URL: db.env.DATABASE_URL,
       GOOGLE_CLIENT_ID: preserve(),
       GOOGLE_CLIENT_SECRET: preserve(),
@@ -49,7 +75,7 @@ export default defineRailway(() => {
     env: {
       PORT: "4983",
       DATABASE_URL: db.env.DATABASE_URL,
-      MASTERPASS: preserve(),
+      MASTERPASS: await preserveOrGenerator({ service: "drizzle-gateway", variable: "MASTERPASS" }),
     },
   });
 
