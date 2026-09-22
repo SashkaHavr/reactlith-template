@@ -45,9 +45,13 @@ runs:
           echo "Database push failed (attempt $attempt/5); retrying in 5 seconds..."
           sleep 5
         done
-    - id: domains-web
+    - shell: bash
+      if: ${{ inputs.domains == 'true' }}
+      run: railway domain --service web --json
+    - shell: bash
+      run: railway up --service web --ci
+    - name: Write domain to output
+      id: domains-web
       if: ${{ inputs.domains == 'true' }}
       shell: bash
       run: echo "link=$(railway domain --service web --json | jq -r '.domains[0]')" >> "$GITHUB_OUTPUT"
-    - shell: bash
-      run: railway up --service web --ci
