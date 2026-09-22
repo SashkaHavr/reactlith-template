@@ -5,7 +5,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { defineRailway, image, postgres, preserve, project, service, volume } from "railway/iac";
 
 const RAM_GB = 1000000000 as const;
-const STORAGE_GB = 1000 as const;
+const STORAGE_5GB = 5000 as const;
 const region = "europe-west4-drams3a" as const;
 const randomStringGenerator = "${{secret(32)}}" as const;
 
@@ -66,7 +66,7 @@ export default defineRailway(async () => {
 
   const drizzleGatewayVolume = volume("drizzle-gateway-volume", {
     region: region,
-    sizeMB: STORAGE_GB,
+    sizeMB: STORAGE_5GB,
   });
   const drizzleGateway = service("drizzle-gateway", {
     source: image("ghcr.io/drizzle-team/gateway:latest"),
