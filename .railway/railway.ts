@@ -62,6 +62,10 @@ export default defineRailway(async () => {
       GOOGLE_CLIENT_SECRET: preserve(),
       GOOGLE_EMULATE_URL: preserve(),
     },
+    tracing: {
+      autoInstrumentation: false,
+      enabled: true,
+    },
   });
 
   const drizzleGatewayVolume = volume("drizzle-gateway-volume", {

@@ -5,6 +5,6 @@
   "devDependencies": {
     "@effect/platform-node": "catalog:",
     "effect": "catalog:",
-    "railway": "3.11.0"
+    "railway": "3.13.1"
   }
 }
