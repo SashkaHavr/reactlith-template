@@ -1,12 +1,20 @@
 import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
-import { Effect } from "effect";
-import { FetchHttpClient } from "effect/unstable/http";
+import { Effect, Layer } from "effect";
+import { FetchHttpClient, HttpClient } from "effect/unstable/http";
 import { HttpApiClient } from "effect/unstable/httpapi";
 
 import { Api } from "@reactlith-template/api";
 
 function createApi() {
-  return Effect.runSync(HttpApiClient.make(Api).pipe(Effect.provide(FetchHttpClient.layer)));
+  return Effect.runSync(
+    HttpApiClient.make(Api).pipe(
+      Effect.provide(
+        FetchHttpClient.layer.pipe(
+          Layer.provide(Layer.succeed(HttpClient.TracerPropagationEnabled, false)),
+        ),
+      ),
+    ),
+  );
 }
 
 let apiClient: ReturnType<typeof createApi> | undefined;

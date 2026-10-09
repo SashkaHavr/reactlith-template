@@ -18,7 +18,7 @@ export const AuthorizationMiddlewareLive = Layer.effect(
           ([resource, actions]) => actions?.map((action) => `${resource}.${action}`) ?? [],
         );
 
-        yield* log.set({ admin: { permissionsRequested } });
+        yield* log.set({ authorizationMiddleware: { permissionsRequested } });
 
         if (permissionsRequested.length === 0) {
           return yield* Effect.die("No permissions specified for AuthorizationMiddleware ");

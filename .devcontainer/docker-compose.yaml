@@ -38,7 +38,7 @@ services:
       - traefik.http.routers.reactlith-template-db.service=reactlith-template-db
       - traefik.http.services.reactlith-template-db.loadbalancer.server.port=4983
   otel:
-    image: grafana/otel-lgtm
+    image: ghcr.io/ctrlspice/otel-desktop-viewer:latest
     networks:
       - otel-network
       - devcontainer-proxy
@@ -46,7 +46,7 @@ services:
       - traefik.enable=true
       - traefik.http.routers.reactlith-template-otel.rule=Host(`otel.reactlith-template.localhost`)
       - traefik.http.routers.reactlith-template-otel.service=reactlith-template-otel
-      - traefik.http.services.reactlith-template-otel.loadbalancer.server.port=3000
+      - traefik.http.services.reactlith-template-otel.loadbalancer.server.port=8000
   db:
     image: postgres:18
     volumes:

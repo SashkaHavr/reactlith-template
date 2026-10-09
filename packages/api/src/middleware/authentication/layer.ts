@@ -22,7 +22,7 @@ export const AuthenticationMiddlewareLive = Layer.effect(
           return yield* NotAuthenticated.make();
         }
 
-        yield* log.set({ user: { id: session.user.id, role: session.user.role } });
+        yield* log.set({ user: { id: session.user.id, roles: session.user.role } });
         return yield* Effect.provideService(effect, CurrentUser, {
           session,
           userId: UserId.make(session.user.id),
