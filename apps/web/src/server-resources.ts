@@ -1,5 +1,5 @@
 import * as NodeSdk from "@effect/opentelemetry/NodeSdk";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
