@@ -3,7 +3,7 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { Context, Effect, Exit, Layer, Logger, References, Scope } from "effect";
+import { Context, Effect, Exit, Layer, Logger, Option, References, Scope } from "effect";
 import { FetchHttpClient, HttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 
@@ -45,7 +45,7 @@ export const authClient = createAuthClient({
 });
 
 const TelemertySdkLive = NodeSdk.layer(() => ({
-  resource: { serviceName: "web" },
+  resource: { serviceName: Option.getOrElse(resources.serverConfig.otelServiceName, () => "web") },
   spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
 }));
 
