@@ -9,6 +9,7 @@ services:
       - devcontainer-opencode-auth:/home/vscode/.local/share/opencode
     networks:
       - db-network
+      - otel-network
       - devcontainer-proxy
     command: sleep infinity
     environment:
@@ -21,6 +22,7 @@ services:
       GOOGLE_EMULATE_URL: http://emulate.localhost
       GOOGLE_EMULATE_INTERNAL_URL: http://emulate
       PUBLIC_URL: http://web.reactlith-template.localhost
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel:4318
     depends_on:
       db:
         condition: service_healthy
@@ -35,6 +37,16 @@ services:
       - traefik.http.routers.reactlith-template-db.rule=Host(`db.reactlith-template.localhost`)
       - traefik.http.routers.reactlith-template-db.service=reactlith-template-db
       - traefik.http.services.reactlith-template-db.loadbalancer.server.port=4983
+  otel:
+    image: grafana/otel-lgtm
+    networks:
+      - otel-network
+      - devcontainer-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.reactlith-template-otel.rule=Host(`otel.reactlith-template.localhost`)
+      - traefik.http.routers.reactlith-template-otel.service=reactlith-template-otel
+      - traefik.http.services.reactlith-template-otel.loadbalancer.server.port=3000
   db:
     image: postgres:18
     volumes:
@@ -52,6 +64,7 @@ services:
 
 networks:
   db-network:
+  otel-network:
   devcontainer-proxy:
     external: true
 

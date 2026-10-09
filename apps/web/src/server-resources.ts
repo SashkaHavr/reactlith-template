@@ -1,6 +1,9 @@
+import * as NodeSdk from "@effect/opentelemetry/NodeSdk";
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
+import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
-import { Context, Effect, Exit, Layer, Logger, Scope } from "effect";
+import { Context, Effect, Exit, Layer, Logger, Option, Scope } from "effect";
 import { FetchHttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
 import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
 
@@ -12,6 +15,7 @@ import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DBConfig } from "@reactlith-template/config/db";
 import { ServerConfig } from "@reactlith-template/config/server";
+import { TelemetryConfig } from "@reactlith-template/config/telemetry";
 import { Database, DrizzlePostgres } from "@reactlith-template/db";
 import { Evlog, StructuredLogger } from "@reactlith-template/services/structured-logger";
 
@@ -41,11 +45,28 @@ export const authClient = createAuthClient({
   customFetchImpl: async (input, init) => resources.auth.handler(getSsrRequest(input, init)),
 });
 
+const TelemertySdkLive = Layer.unwrap(
+  Effect.gen(function* () {
+    const config = yield* TelemetryConfig;
+
+    if (config.disabled || Option.isNone(config.endpoint)) {
+      return NodeSdk.layerEmpty;
+    }
+
+    return NodeSdk.layer(() => ({
+      resource: { serviceName: "reactlith-template-web" },
+      spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
+    }));
+  }),
+);
+
 const { handler: _apiHandler, dispose: disposeApiHandler } = HttpRouter.toWebHandler(
   HttpApiBuilder.layer(Api).pipe(
     Layer.provide(ApiLive),
     Layer.provide(StructuredLogger.layer),
     Layer.provide(Logger.layer([Logger.tracerLogger])),
+    Layer.provideMerge(TelemertySdkLive),
+    Layer.provide(TelemetryConfig.layer),
     Layer.provide(Database.layerWithoutDependencies),
     Layer.provide(Auth.layer),
     Layer.provide(Layer.succeedContext(layerContext)),
