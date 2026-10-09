@@ -27,7 +27,7 @@ export default defineConfig({
       },
       modules: [
         evlog({
-          env: { service: "web-backend" },
+          env: { service: "web-server" },
           sampling: {
             rates: {
               info: 0,

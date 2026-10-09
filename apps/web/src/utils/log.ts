@@ -19,7 +19,7 @@ export const logError = createIsomorphicFn()
 
 export const setupClientLog = createIsomorphicFn().client(() => {
   initLog({
-    service: "web-frontend",
+    service: "web-browser",
     transport: {
       enabled: true,
       endpoint: "/api/ingest",
