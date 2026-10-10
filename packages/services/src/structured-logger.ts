@@ -10,13 +10,11 @@ export class StructuredLogger extends Context.Service<StructuredLogger>()(
   "services/StructuredLogger",
   {
     make: Effect.succeed({
-      set: Effect.fnUntraced(function* (context, annotateSpan = true) {
+      set: Effect.fnUntraced(function* (context) {
         const log = yield* Evlog.get;
 
         yield* Effect.sync(() => log?.set(context));
-        if (annotateSpan) {
-          yield* Effect.annotateCurrentSpan(flattenRecord(context));
-        }
+        yield* Effect.annotateCurrentSpan(flattenRecord(context));
       } satisfies AuditableLogger["set"]),
       error: Effect.fnUntraced(function* (error, context?) {
         const log = yield* Evlog.get;

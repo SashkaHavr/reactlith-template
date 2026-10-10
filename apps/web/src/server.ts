@@ -4,6 +4,8 @@ import { Readable } from "node:stream";
 import { constants, createBrotliCompress, createGzip } from "node:zlib";
 
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
+import { Option } from "effect";
+import { Headers as HttpHeaders, HttpTraceContext } from "effect/unstable/http";
 
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import type { Evlog } from "@reactlith-template/services/structured-logger";
@@ -76,6 +78,12 @@ function compressStream(request: Request, response: Response) {
 export default createServerEntry({
   async fetch(request) {
     const log = getRequestLog(request);
+    const requestId = request.headers.get("x-railway-request-id");
+    const traceId = HttpTraceContext.fromHeaders(HttpHeaders.fromInput(request.headers)).pipe(
+      Option.map((span) => span.traceId),
+      Option.getOrUndefined,
+    );
+    log?.set({ requestId, traceId });
     const response = await paraglideMiddleware(request, async () =>
       handler.fetch(request, {
         context: { ...resources, apiClient, log, apiHandler, authClient },

@@ -1,4 +1,4 @@
-import { Effect, Layer, Option, Predicate } from "effect";
+import { Effect, Layer, Predicate } from "effect";
 
 import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
@@ -30,10 +30,6 @@ export const GlobalMiddlewareLive = Layer.effect(
 
     return GlobalMiddleware.of((effect, { endpoint, group }) =>
       Effect.gen(function* () {
-        const currentSpan = yield* Effect.currentSpan.pipe(Effect.option);
-        if (Option.isSome(currentSpan)) {
-          yield* log?.set({ traceId: currentSpan.value.traceId }, false);
-        }
         yield* log?.set({
           rpc: { method: `${group.identifier}.${endpoint.identifier}` },
         });
