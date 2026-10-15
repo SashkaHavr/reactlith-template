@@ -5,7 +5,7 @@ export const AuthOutput = Schema.Struct({
   googleEmulate: Schema.Boolean,
 });
 
-export class NotReady extends Schema.TaggedError<NotReady>()(
+export class NotReady extends Schema.TaggedError<NotReady, { readonly brand: unique symbol }>()(
   "NotReady",
   {},
   { httpApiStatus: 400 },

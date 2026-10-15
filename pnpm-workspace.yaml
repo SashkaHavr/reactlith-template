@@ -3,6 +3,8 @@ packages:
   - apps/*
   - packages/*
 
+allowBuilds:
+  esbuild: false
 catalog:
   "@tanstack/react-form": "1.33.5"
   "@types/bun": "1.4.2"
@@ -24,7 +26,7 @@ catalog:
   "@tanstack/react-router": "1.170.35"
   "@tanstack/react-router-ssr-query": "1.167.2"
   "@tanstack/react-start": "1.168.52"
-  vite: "8.3.0"
+  vite: npm:@voidzero-dev/vite-plus-core@1.2.0
   "@vitejs/plugin-react": "6.1.1"
   oxc-transform-react: "0.149.0"
   nitro: "3.0.260903-beta"
@@ -40,3 +42,15 @@ catalog:
   "@opentelemetry/exporter-trace-otlp-proto": "0.223.0"
   "@opentelemetry/sdk-trace-base": "2.12.0"
   "@opentelemetry/sdk-trace-node": "2.12.0"
+  vitest: 5.0.4
+  vite-plus: 1.2.0
+overrides:
+  vite@*: "catalog:"
+  vitest@*: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

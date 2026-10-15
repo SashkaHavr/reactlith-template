@@ -4,7 +4,7 @@ import { dataDir } from "@electric-sql/pglite-prepopulatedfs";
 import * as PgliteDrizzle from "drizzle-orm/effect-pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { Effect, Layer } from "effect";
-import { inject } from "vitest";
+import { inject } from "vite-plus/test";
 
 import { Database } from "./index";
 import { relations, schema } from "./relations";

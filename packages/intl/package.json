@@ -6,12 +6,13 @@
     "./*": "./src/*.js"
   },
   "scripts": {
-    "dev": "bun --bun vite build --watch",
-    "build": "bun --bun vite build"
+    "dev": "vp build --watch",
+    "build": "vp build"
   },
   "devDependencies": {
     "@inlang/paraglide-js": "catalog:",
     "@reactlith-template/typescript-config": "workspace:*",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   }
 }

@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun --bun vite build",
-    "component": "bunx shadcn@latest add",
-    "dev": "bun --bun vite dev",
-    "start": "NODE_ENV=production bun run dist/server/index.mjs"
+    "dev": "vp dev",
+    "build": "vp build",
+    "component": "vpx shadcn@latest add",
+    "start": "NODE_ENV=production vpr dist/server/index.mjs"
   },
   "devDependencies": {
     "@base-ui/react": "^1.8.0",
@@ -45,6 +45,7 @@
     "react-dom": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   }
 }

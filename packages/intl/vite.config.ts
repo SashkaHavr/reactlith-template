@@ -1,8 +1,8 @@
 import { paraglideVitePlugin } from "@inlang/paraglide-js";
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
 export default defineConfig({
-  plugins: [
+  plugins: lazyPlugins(() => [
     paraglideVitePlugin({
       project: "./project.inlang",
       outdir: "./src",
@@ -11,5 +11,5 @@ export default defineConfig({
       strategy: ["cookie", "preferredLanguage", "url", "baseLocale"],
       routeStrategies: [{ match: "/api/:path(.*)?", exclude: true }],
     }),
-  ],
+  ]),
 });

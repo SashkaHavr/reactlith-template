@@ -11,9 +11,9 @@
     "./test-db": "./src/test-db.ts"
   },
   "scripts": {
-    "dev": "bun run studio",
-    "push": "bun --bun drizzle-kit push",
-    "studio": "bun --bun drizzle-kit studio --host 0.0.0.0"
+    "dev": "vpr studio",
+    "push": "vp exec drizzle-kit push",
+    "studio": "vp exec drizzle-kit studio --host 0.0.0.0"
   },
   "devDependencies": {
     "@effect/sql-pg": "catalog:",
@@ -27,6 +27,7 @@
     "drizzle-orm": "catalog:",
     "drizzle-seed": "catalog:",
     "effect": "catalog:",
-    "pg": "catalog:"
+    "pg": "catalog:",
+    "vitest": "catalog:"
   }
 }

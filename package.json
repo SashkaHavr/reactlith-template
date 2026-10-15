@@ -5,28 +5,19 @@
   "scripts": {
     "build": "turbo build",
     "clean": "git clean -xdfq 'node_modules/*' '**/node_modules/*' '**/dist/*'",
-    "format": "bun --bun oxfmt",
-    "format:check": "bun --bun oxfmt --check",
-    "lint": "bun --bun oxlint",
-    "lint:fix": "bun --bun oxlint --fix",
-    "check": "bun --bun oxlint && bun --bun oxfmt --check",
-    "fix": "bun --bun oxlint --fix && bun --bun oxfmt",
-    "test": "bun --bun vitest run",
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d",
-    "deps": "bun update --interactive --recursive",
+    "deps": "vp update -i -r --latest",
     "dev": "turbo dev --env-mode=loose",
     "postinstall": "effect-tsgo patch --oxlint",
-    "prepare": "if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then bun run --filter @reactlith-template/intl build; fi"
+    "prepare": "vp config && if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then vpr @reactlith-template/intl#build; fi"
   },
   "devDependencies": {
-    "@effect/tsgo": "0.45.0",
+    "@effect/tsgo": "0.53.0",
     "@effect/vitest": "4.0.0-rc.115",
-    "oxfmt": "0.67.0",
-    "oxlint": "1.82.0",
-    "oxlint-tsgolint": "7.0.2001",
     "turbo": "2.10.12",
     "typescript": "7.0.2",
-    "vitest": "5.0.0"
+    "vite-plus": "catalog:",
+    "vitest": "catalog:"
   },
   "devEngines": {
     "packageManager": {

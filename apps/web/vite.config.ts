@@ -3,7 +3,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
 import evlog from "evlog/nitro/v3";
 import { nitro } from "nitro/vite";
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
 export default defineConfig({
   server: {
@@ -14,7 +14,7 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [
+  plugins: lazyPlugins(() => [
     tailwindcss(),
     tanstackStart(),
     nitro({
@@ -42,5 +42,5 @@ export default defineConfig({
       ],
     }),
     react({ compiler: true }),
-  ],
+  ]),
 });
