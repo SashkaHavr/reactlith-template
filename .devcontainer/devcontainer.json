@@ -2,13 +2,13 @@
   "name": "Dev Container",
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
-  "workspaceFolder": "/home/vscode/reactlith-template",
+  "workspaceFolder": "/home/vp/reactlith-template",
   "postCreateCommand": "vp install",
   "postStartCommand": {
     "opencode": "opencode service set hostname 0.0.0.0 && opencode service set port 4096 && opencode service set env OTEL_EXPORTER_OTLP_ENDPOINT \"\" && opencode service start",
     "effect-reference": "tag='effect@4.0.0-rc.115'; path='references/effect'; mkdir -p references && if [ ! -d $path/.git ]; then git clone --branch $tag --single-branch https://github.com/Effect-TS/effect $path; else git -C $path fetch origin tag $tag && git -C $path switch --detach $tag; fi"
   },
-  "remoteUser": "vscode",
+  "remoteUser": "vp",
   "otherPortsAttributes": {
     "onAutoForward": "ignore"
   },
@@ -18,7 +18,7 @@
         "/extensions/proxy-links/proxy-links.vsix",
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
-        "oxc.oxc-vscode",
+        "VoidZero.vite-plus-extension-pack",
         "inlang.vs-code-extension",
         "TypeScriptTeam.native-preview"
       ]

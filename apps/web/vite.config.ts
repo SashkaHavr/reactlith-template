@@ -18,7 +18,6 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
-      preset: "bun",
       plugins: ["src/server-shutdown"],
       output: { dir: "dist" },
       compressPublicAssets: { gzip: true, brotli: true },

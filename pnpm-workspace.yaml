@@ -7,7 +7,6 @@ allowBuilds:
   esbuild: false
 catalog:
   "@tanstack/react-form": "1.33.5"
-  "@types/bun": "1.4.2"
   better-auth: "1.7.4"
   lucide-react: "1.45.0"
   evlog: "2.29.0"
