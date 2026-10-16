@@ -3,13 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "turbo build",
+    "build": "vpr -r build",
     "clean": "git clean -xdfq 'node_modules/*' '**/node_modules/*' '**/dist/*'",
     "compose": "docker compose -f docker-compose.yaml -f docker-compose.localhost.yaml up --build -d",
     "deps": "vp update -i -r --latest",
     "dev": "turbo dev --env-mode=loose",
     "postinstall": "effect-tsgo patch --oxlint",
-    "prepare": "vp config && if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then vpr @reactlith-template/intl#build; fi"
+    "prepare": "vp hooks enable && if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then vpr intl#build; fi"
   },
   "devDependencies": {
     "@effect/tsgo": "0.53.0",
