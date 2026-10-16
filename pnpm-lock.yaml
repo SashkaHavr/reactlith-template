@@ -279,6 +279,7 @@ catalogs:
 overrides:
   vite@*: npm:@voidzero-dev/vite-plus-core@1.2.0
   vitest@*: 5.0.4
+  '@effect/platform-node-shared': 4.0.0-rc.115
 
 importers:
 
@@ -890,11 +891,11 @@ packages:
       '@opentelemetry/sdk-trace-web':
         optional: true
 
-  '@effect/platform-node-shared@4.0.4':
-    resolution: {integrity: sha512-gh2KRmqGWrJ0FVL8GqnI1GpB+fCfCUI7sGiUZkxxBHyHj1t94rm6VDJffCfuVZWe6GpvYXtizifVczUrgOce8A==}
+  '@effect/platform-node-shared@4.0.0-rc.115':
+    resolution: {integrity: sha512-rcBwhDIfb82akJoTv7Vwh8K5x9vC/XfuePS7JjOr+z+dORXzsmKqI1BUQF27ARCN9fTAbDh7I6YvBlWhLjnqNg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      effect: ^4.0.4
+      effect: ^4.0.0-rc.115
 
   '@effect/platform-node@4.0.0-rc.115':
     resolution: {integrity: sha512-mW03Wjq2FiTL5oi9yOkaKpCyUNBaduKgTk7qMHNELvC21Jq2qOAfdsfH+p+s2zmpB9w2RSa+ApODv4WjO9wQfw==}
@@ -4242,7 +4243,7 @@ snapshots:
       '@opentelemetry/sdk-trace-base': 2.12.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-node': 2.12.0(@opentelemetry/api@1.9.1)
 
-  '@effect/platform-node-shared@4.0.4(effect@4.0.0-rc.115)':
+  '@effect/platform-node-shared@4.0.0-rc.115(effect@4.0.0-rc.115)':
     dependencies:
       '@types/ws': 8.18.2
       effect: 4.0.0-rc.115
@@ -4253,7 +4254,7 @@ snapshots:
 
   '@effect/platform-node@4.0.0-rc.115(effect@4.0.0-rc.115)(redis@6.3.0(@opentelemetry/api@1.9.1))':
     dependencies:
-      '@effect/platform-node-shared': 4.0.4(effect@4.0.0-rc.115)
+      '@effect/platform-node-shared': 4.0.0-rc.115(effect@4.0.0-rc.115)
       effect: 4.0.0-rc.115
       redis: 6.3.0(@opentelemetry/api@1.9.1)
       undici: 8.12.1
