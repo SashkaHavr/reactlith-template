@@ -1,27 +1,28 @@
-FROM oven/bun:1.4.2-slim AS base
+FROM ghcr.io/voidzero-dev/vite-plus:latest AS base
 WORKDIR /app
 
 FROM base AS prepare
 COPY . .
-RUN bun add -g turbo@$(bun --print "require('./package.json').devDependencies.turbo")
+RUN vp add -g turbo@$(node -p "require('./package.json').devDependencies.turbo")
 RUN turbo prune @reactlith-template/web --docker
 
 FROM base AS build
 COPY --from=prepare /app/out/json/ .
-RUN bun ci
+RUN vp install --frozen-lockfile
 COPY --from=prepare /app/out/full/ .
-RUN bun run build
+RUN vp run build
 
-FROM base
+FROM node:26-slim
+WORKDIR /app
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --start-interval=1s \
-  CMD [ "bun", "-e", "fetch('http://localhost:3000/api/health/live').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))" ]
+  CMD [ "node", "-e", "fetch('http://localhost:3000/api/health/live').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))" ]
 
 ENV NODE_ENV=production
 
 COPY --from=build /app/apps/web/dist ./apps/web
 
-USER bun
+USER node
 EXPOSE 3000
 WORKDIR /app/apps/web
-CMD [ "bun", "run", "./server/index.mjs" ]
+CMD [ "node", "./server/index.mjs" ]

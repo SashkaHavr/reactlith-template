@@ -1,5 +1,5 @@
-- Always use `bun` as package manager and task runner.
-- Always run `bun fix` after making any changes. Run `bun run test` or scoped `bun run test <filter>` if needed. NEVER RUN ANY OTHER CHECK COMMANDS.
-- Never run `bun dev`.
+- Always use `vp` as package manager and `vpr` task runner.
+- Always run `vp check --fix` after making any changes or `vp check` for review. Run `vp test` or scoped `vp test <filter>` if needed. NEVER RUN ANY OTHER CHECK COMMANDS.
+- Never run `vp dev`.
 - NEVER UPDATE LINT AND FORMAT RULES UNLESS EXPLICITLY REQUESTED.
 - When working with Effect code, ALWAYS consult ./references/effect for modern APIs and best practices.

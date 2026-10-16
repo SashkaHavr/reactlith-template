@@ -3,9 +3,16 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
 import evlog from "evlog/nitro/v3";
 import { nitro } from "nitro/vite";
-import { defineConfig } from "vite";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
 export default defineConfig({
+  build: {
+    rolldownOptions: {
+      checks: {
+        moduleLevelDirective: false,
+      },
+    },
+  },
   server: {
     port: 3000,
     host: "0.0.0.0",
@@ -14,11 +21,10 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [
+  plugins: lazyPlugins(() => [
     tailwindcss(),
     tanstackStart(),
     nitro({
-      preset: "bun",
       plugins: ["src/server-shutdown"],
       output: { dir: "dist" },
       compressPublicAssets: { gzip: true, brotli: true },
@@ -42,5 +48,5 @@ export default defineConfig({
       ],
     }),
     react({ compiler: true }),
-  ],
+  ]),
 });
