@@ -4,8 +4,6 @@ runs:
   using: composite
   steps:
     - uses: voidzero-dev/setup-vp@v1.21.2
-      with:
-        cache: true
     - shell: bash
       run: vp check
     - shell: bash
