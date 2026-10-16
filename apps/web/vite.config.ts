@@ -6,6 +6,13 @@ import { nitro } from "nitro/vite";
 import { defineConfig, lazyPlugins } from "vite-plus";
 
 export default defineConfig({
+  build: {
+    rolldownOptions: {
+      checks: {
+        moduleLevelDirective: false,
+      },
+    },
+  },
   server: {
     port: 3000,
     host: "0.0.0.0",
