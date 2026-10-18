@@ -8,11 +8,11 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { Effect, Layer, Option } from "effect";
 import { FetchHttpClient, HttpClient, Headers as HttpHeaders, HttpTraceContext } from "effect/http";
 import { HttpApiClient } from "effect/http-api";
+import type { AuditableLogger } from "evlog";
 
 import { Api } from "@reactlith-template/api-contract";
 import { createAuthClient } from "@reactlith-template/auth/client";
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
-import type { Evlog } from "@reactlith-template/services/structured-logger";
 import { WebConfig } from "~/config";
 import { getRequestLog } from "~/utils/log";
 
@@ -56,7 +56,7 @@ const apiClient = Effect.runSync(
 );
 
 type RequestContext = {
-  log: typeof Evlog.Service | undefined;
+  log: AuditableLogger | undefined;
   apiClient: typeof apiClient;
   authClient: typeof authClient;
 };

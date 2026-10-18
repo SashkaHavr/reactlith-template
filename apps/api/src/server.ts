@@ -7,7 +7,8 @@ import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { Effect, Layer, Logger } from "effect";
 import { HttpEffect, HttpRouter } from "effect/http";
 import { HttpApiBuilder } from "effect/http-api";
-import { initLogger } from "evlog";
+import { defineEvlog, definePlugin, toLoggerConfig, toMiddlewareOptions } from "evlog";
+import { initLoggerLayer, loggerLayer, routerLayer } from "evlog/effect";
 
 import { ApiConfig } from "#config";
 import { ConfigApiLiveWithServices } from "#features/config/layer";
@@ -15,7 +16,6 @@ import { NumbersApiLiveWithServices } from "#features/numbers/layer";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { AuthorizationMiddlewareLive } from "#middleware/permission/layer";
-import { RequestLogging } from "#request-logging";
 import { Api } from "@reactlith-template/api-contract";
 import { BetterAuth } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
@@ -23,12 +23,24 @@ import { AuthConfig } from "@reactlith-template/config/auth";
 import { Database } from "@reactlith-template/db";
 import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
-initLogger({
-  sampling: { rates: { info: 0, warn: 0, debug: 0, error: 100 } },
-  redact: false,
-});
-
 const config = Effect.runSync(ApiConfig.make);
+const evlogConfig = defineEvlog({
+  service: "api",
+  sampling: {
+    rates: { info: 0, warn: 0, debug: 0, error: 100 },
+    keep: [{ status: 400 }, { duration: 500 }],
+  },
+  redact: false,
+  plugins: [
+    definePlugin({
+      name: "railway-request-id",
+      onRequestStart({ logger, headers }) {
+        const requestId = headers?.["x-railway-request-id"];
+        if (requestId) logger.set({ requestId });
+      },
+    }),
+  ],
+});
 
 export const AuthRoutes = HttpRouter.use(
   Effect.fnUntraced(function* (router) {
@@ -52,7 +64,7 @@ Layer.launch(
           spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
         })),
       ),
-      Layer.provide(RequestLogging),
+      Layer.provide(routerLayer(toMiddlewareOptions(evlogConfig))),
       Layer.provide(Auth.layer),
       Layer.provide(Database.layer),
       Layer.provide(BetterAuth.layer),
@@ -62,6 +74,8 @@ Layer.launch(
     { disableLogger: true },
   ).pipe(
     Layer.provide(NodeHttpServer.layer(createServer, { host: "0.0.0.0", port: config.port })),
+    Layer.provide(initLoggerLayer(toLoggerConfig(evlogConfig))),
+    Layer.provide(loggerLayer()),
     Layer.provide(Logger.layer([Logger.tracerLogger])),
   ),
 ).pipe(NodeRuntime.runMain);
