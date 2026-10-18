@@ -34,8 +34,11 @@ jobs:
       - run: vp install --frozen-lockfile --filter db --filter railway
       - run: vp add -g @railway/cli@5
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_DEFAULT_ENVIRONMENT"
-      - if: ${{ github.event.action == 'opened' || github.event.action == 'reopened' }}
-        run: railway environment new "$RAILWAY_ENVIRONMENT" --duplicate "$RAILWAY_DEFAULT_ENVIRONMENT"
+      - name: Ensure preview environment exists
+        run: |
+          if [[ "$(railway environment list --json | jq -r --arg name "$RAILWAY_ENVIRONMENT" 'any(.environments[]; .name == $name)')" == "false" ]]; then
+            railway environment new "$RAILWAY_ENVIRONMENT" --duplicate "$RAILWAY_DEFAULT_ENVIRONMENT"
+          fi
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
       - uses: ./.github/actions/deploy
         id: deploy
