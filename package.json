@@ -12,9 +12,9 @@
     "prepare": "vp hooks enable && if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then vpr intl#build; fi"
   },
   "devDependencies": {
-    "@effect/tsgo": "0.53.0",
+    "@effect/tsgo": "0.53.3",
     "@effect/vitest": "4.0.5",
-    "turbo": "2.10.12",
+    "turbo": "2.11.9",
     "typescript": "7.0.2",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
