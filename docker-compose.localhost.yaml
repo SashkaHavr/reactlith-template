@@ -8,7 +8,7 @@ services:
       - traefik.http.routers.reactlith-template-db-staging.rule=Host(`db.staging.reactlith-template.localhost`)
       - traefik.http.routers.reactlith-template-db-staging.service=reactlith-template-db-staging
       - traefik.http.services.reactlith-template-db-staging.loadbalancer.server.port=4983
-  api:
+  web:
     networks:
       - devcontainer-proxy
     environment:
@@ -18,10 +18,6 @@ services:
       GOOGLE_CLIENT_SECRET: GOCSPX-secret
       GOOGLE_EMULATE_URL: http://emulate.localhost
       GOOGLE_EMULATE_INTERNAL_URL: http://emulate
-  web:
-    networks:
-      - devcontainer-proxy
-    environment:
       PUBLIC_URL: http://web.staging.reactlith-template.localhost
     labels:
       - traefik.enable=true

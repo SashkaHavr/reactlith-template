@@ -37,38 +37,6 @@ export default defineRailway(async () => {
   const db = postgres("db", { region: region });
   db.networking = { tcpProxies: { "5432": {} } };
 
-  const api = service("api", {
-    replicas: { [region]: 1 },
-    deploy: {
-      limitOverride: { containers: { cpu: 2, memoryBytes: 2 * RAM_GB } },
-      sleepApplication: true,
-    },
-    build: {
-      builder: "DOCKERFILE",
-      dockerfilePath: "/apps/api/Dockerfile",
-    },
-    healthcheckPath: "/api/health/ready",
-    healthcheckTimeout: 10,
-    env: {
-      PORT: "3000",
-      BETTER_AUTH_ALLOWED_HOSTS: "https://${{web.RAILWAY_PUBLIC_DOMAIN}}",
-      BETTER_AUTH_IP_ADDRESS_HEADERS: "X-Real-IP",
-      BETTER_AUTH_SECRET: await preserveOrGenerate({
-        service: "api",
-        variable: "BETTER_AUTH_SECRET",
-      }).pipe(Effect.runPromise),
-      DATABASE_URL: db.env.DATABASE_URL,
-      GOOGLE_CLIENT_ID: preserve(),
-      GOOGLE_CLIENT_SECRET: preserve(),
-      GOOGLE_EMULATE_URL: preserve(),
-      GOOGLE_EMULATE_INTERNAL_URL: preserve(),
-    },
-    tracing: {
-      autoInstrumentation: false,
-      enabled: true,
-    },
-  });
-
   const web = service("web", {
     replicas: { [region]: 1 },
     deploy: {
@@ -79,12 +47,22 @@ export default defineRailway(async () => {
       builder: "DOCKERFILE",
       dockerfilePath: "/apps/web/Dockerfile",
     },
-    healthcheckPath: "/health",
+    healthcheckPath: "/api/health/ready",
     healthcheckTimeout: 10,
     env: {
       PUBLIC_URL: "https://${{RAILWAY_PUBLIC_DOMAIN}}",
       PORT: "3000",
-      API_INTERNAL_URL: "http://${{api.RAILWAY_PRIVATE_DOMAIN}}:3000",
+      BETTER_AUTH_ALLOWED_HOSTS: "https://${{RAILWAY_PUBLIC_DOMAIN}}",
+      BETTER_AUTH_IP_ADDRESS_HEADERS: "X-Real-IP",
+      BETTER_AUTH_SECRET: await preserveOrGenerate({
+        service: "web",
+        variable: "BETTER_AUTH_SECRET",
+      }).pipe(Effect.runPromise),
+      DATABASE_URL: db.env.DATABASE_URL,
+      GOOGLE_CLIENT_ID: preserve(),
+      GOOGLE_CLIENT_SECRET: preserve(),
+      GOOGLE_EMULATE_URL: preserve(),
+      GOOGLE_EMULATE_INTERNAL_URL: preserve(),
     },
     tracing: {
       autoInstrumentation: false,
@@ -116,6 +94,6 @@ export default defineRailway(async () => {
   });
 
   return project("reactlith-iac-test", {
-    resources: [db, web, api, drizzleGateway, drizzleGatewayVolume],
+    resources: [db, web, drizzleGateway, drizzleGatewayVolume],
   });
 });

@@ -32,9 +32,4 @@ jobs:
       - run: vp add -g @railway/cli@5
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_DEFAULT_ENVIRONMENT"
 
-      - uses: ./.github/actions/prepare-deploy
-      - parallel:
-          - name: Deploy API
-            run: railway up --service api --ci
-          - name: Deploy web
-            run: railway up --service web --ci
+      - uses: ./.github/actions/deploy

@@ -5,39 +5,32 @@ import { constants, createBrotliCompress, createGzip } from "node:zlib";
 
 import { getRequest } from "@tanstack/react-start/server";
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
-import { Effect, Layer, Option } from "effect";
+import { Config, Effect, Layer, Option } from "effect";
 import { FetchHttpClient, HttpClient, Headers as HttpHeaders, HttpTraceContext } from "effect/http";
 import { HttpApiClient } from "effect/http-api";
 import type { AuditableLogger } from "evlog";
+import { serverFetch } from "nitro/app";
 
 import { Api } from "@reactlith-template/api-contract";
 import { createAuthClient } from "@reactlith-template/auth/client";
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
-import { WebConfig } from "~/config";
 import { getRequestLog } from "~/utils/log";
 
-const serverConfig = Effect.runSync(WebConfig.make);
+const serverConfig = Effect.runSync(
+  Config.all({
+    publicUrl: Config.URL("PUBLIC_URL"),
+  }),
+);
 
-function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
+const ssrFetch: typeof fetch = async (input, init) => {
   const request = new Request(
     input instanceof Request ? input : new URL(input, serverConfig.publicUrl),
     init,
   );
-  const url = new URL(request.url);
-  url.protocol = serverConfig.apiInternalUrl.protocol;
-  url.host = serverConfig.apiInternalUrl.host;
-  url.port = serverConfig.apiInternalUrl.port;
-
   const headers = new Headers(getRequest().headers);
   request.headers.forEach((value, key) => headers.set(key, value));
-  headers.set("host", serverConfig.publicUrl.host);
-  headers.set("x-forwarded-host", serverConfig.publicUrl.host);
-  headers.set("x-forwarded-proto", serverConfig.publicUrl.protocol.slice(0, -1));
-
-  return new Request(url, new Request(request, { headers, redirect: "manual" }));
-}
-
-const ssrFetch: typeof fetch = async (input, init) => fetch(getSsrRequest(input, init));
+  return serverFetch(new Request(request, { headers }));
+};
 
 const authClient = createAuthClient({
   baseURL: serverConfig.publicUrl.href,

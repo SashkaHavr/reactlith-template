@@ -12,6 +12,7 @@
     "@base-ui/react": "1.9.0",
     "@fontsource-variable/geist": "5.3.0",
     "@fontsource-variable/geist-mono": "5.3.0",
+    "@reactlith-template/api": "workspace:*",
     "@reactlith-template/api-contract": "workspace:*",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/config": "workspace:*",

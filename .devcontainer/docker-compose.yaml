@@ -22,7 +22,6 @@ services:
       GOOGLE_EMULATE_URL: http://emulate.localhost
       GOOGLE_EMULATE_INTERNAL_URL: http://emulate
       PUBLIC_URL: http://web.reactlith-template.localhost
-      API_INTERNAL_URL: http://localhost:3001
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel:4318
     depends_on:
       db:

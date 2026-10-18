@@ -1,4 +1,4 @@
-name: Prepare Railway deployment
+name: Deploy to Railway
 
 inputs:
   domains:
@@ -57,3 +57,6 @@ runs:
       if: ${{ inputs.domains == 'true' }}
       shell: bash
       run: echo "link=$(railway domain --service web --json | jq -r '.domains[0]')" >> "$GITHUB_OUTPUT"
+    - name: Deploy web
+      shell: bash
+      run: railway up --service web --ci

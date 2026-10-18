@@ -28,8 +28,9 @@ export default defineConfig({
       routes: {
         "/health": { handler: "src/nitro/health", method: "GET" },
         "/api/ingest": { handler: "src/nitro/log-ingest", method: "POST" },
-        "/api/**": { handler: "src/nitro/api-proxy" },
+        "/api/**": { handler: "src/nitro/api" },
       },
+      plugins: ["src/server-shutdown.ts"],
       output: { dir: "dist" },
       compressPublicAssets: { gzip: true, brotli: true },
       experimental: {
