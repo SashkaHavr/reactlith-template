@@ -41,7 +41,7 @@ export default defineRailway(async () => {
     replicas: { [region]: 1 },
     deploy: {
       limitOverride: { containers: { cpu: 2, memoryBytes: 2 * RAM_GB } },
-      sleepApplication: false,
+      sleepApplication: true,
     },
     build: {
       builder: "DOCKERFILE",
