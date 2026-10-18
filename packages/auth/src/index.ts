@@ -54,6 +54,7 @@ export class BetterAuth extends Context.Service<BetterAuth>()("auth/BetterAuth",
           : []),
       ],
       advanced: {
+        trustedProxyHeaders: true,
         database: {
           generateId: false,
         },

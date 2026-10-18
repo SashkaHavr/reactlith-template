@@ -3,7 +3,7 @@ import { Effect, Layer } from "effect";
 import { FetchHttpClient, HttpClient } from "effect/http";
 import { HttpApiClient } from "effect/http-api";
 
-import { Api } from "@reactlith-template/api";
+import { Api } from "@reactlith-template/api-contract";
 
 function createApi() {
   return Effect.runSync(

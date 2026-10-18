@@ -3,19 +3,60 @@
 import { Readable } from "node:stream";
 import { constants, createBrotliCompress, createGzip } from "node:zlib";
 
+import { getRequest } from "@tanstack/react-start/server";
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
-import { Option } from "effect";
-import { Headers as HttpHeaders, HttpTraceContext } from "effect/http";
+import { Effect, Layer, Option } from "effect";
+import { FetchHttpClient, HttpClient, Headers as HttpHeaders, HttpTraceContext } from "effect/http";
+import { HttpApiClient } from "effect/http-api";
 
+import { Api } from "@reactlith-template/api-contract";
+import { createAuthClient } from "@reactlith-template/auth/client";
+import { ServerConfig } from "@reactlith-template/config/server";
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import type { Evlog } from "@reactlith-template/services/structured-logger";
 import { getRequestLog } from "~/utils/log";
 
-import { apiClient, apiHandler, resources, authClient } from "./server-resources";
+const serverConfig = Effect.runSync(ServerConfig.make);
 
-type RequestContext = typeof resources & {
+function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
+  const request = new Request(
+    input instanceof Request ? input : new URL(input, serverConfig.publicUrl),
+    init,
+  );
+  const url = new URL(request.url);
+  url.protocol = serverConfig.apiInternalUrl.protocol;
+  url.host = serverConfig.apiInternalUrl.host;
+  url.port = serverConfig.apiInternalUrl.port;
+
+  const headers = new Headers(getRequest().headers);
+  request.headers.forEach((value, key) => headers.set(key, value));
+  headers.set("host", serverConfig.publicUrl.host);
+  headers.set("x-forwarded-host", serverConfig.publicUrl.host);
+  headers.set("x-forwarded-proto", serverConfig.publicUrl.protocol.slice(0, -1));
+
+  return new Request(url, new Request(request, { headers, redirect: "manual" }));
+}
+
+const ssrFetch: typeof fetch = async (input, init) => fetch(getSsrRequest(input, init));
+
+const authClient = createAuthClient({
+  baseURL: serverConfig.publicUrl.href,
+  customFetchImpl: ssrFetch,
+});
+
+const apiClient = Effect.runSync(
+  HttpApiClient.make(Api, { baseUrl: serverConfig.publicUrl }).pipe(
+    Effect.provide(
+      FetchHttpClient.layer.pipe(
+        Layer.provide(Layer.succeed(FetchHttpClient.Fetch, ssrFetch)),
+        Layer.provide(Layer.succeed(HttpClient.TracerPropagationEnabled, false)),
+      ),
+    ),
+  ),
+);
+
+type RequestContext = {
   log: typeof Evlog.Service | undefined;
-  apiHandler: typeof apiHandler;
   apiClient: typeof apiClient;
   authClient: typeof authClient;
 };
@@ -86,7 +127,7 @@ export default createServerEntry({
     log?.set({ requestId, traceId });
     const response = await paraglideMiddleware(request, async () =>
       handler.fetch(request, {
-        context: { ...resources, apiClient, log, apiHandler, authClient },
+        context: { apiClient, log, authClient },
       }),
     );
     return compressStream(request, response);

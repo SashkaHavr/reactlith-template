@@ -1,0 +1,31 @@
+{
+  "name": "@reactlith-template/api",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
+  "scripts": {
+    "dev": "vp pack --watch",
+    "build": "vp pack",
+    "start": "NODE_ENV=production node dist/server.mjs"
+  },
+  "devDependencies": {
+    "@effect/opentelemetry": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-proto": "catalog:",
+    "@opentelemetry/sdk-trace-base": "catalog:",
+    "@opentelemetry/sdk-trace-node": "catalog:",
+    "@reactlith-template/api-contract": "workspace:*",
+    "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/config": "workspace:*",
+    "@reactlith-template/db": "workspace:*",
+    "@reactlith-template/services": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "drizzle-orm": "catalog:",
+    "effect": "catalog:",
+    "evlog": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

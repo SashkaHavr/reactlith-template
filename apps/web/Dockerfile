@@ -10,7 +10,8 @@ FROM base AS build
 COPY --from=prepare /app/out/json/ .
 RUN vp install --frozen-lockfile
 COPY --from=prepare /app/out/full/ .
-RUN vp run build
+RUN vpr intl#build
+RUN vpr web#build
 
 FROM node:26.12.0-slim
 WORKDIR /app

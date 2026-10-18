@@ -25,7 +25,10 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
-      plugins: ["src/server-shutdown"],
+      routes: {
+        "/api/ingest": { handler: "src/log-ingest", method: "POST" },
+        "/api/**": { handler: "src/api-proxy" },
+      },
       output: { dir: "dist" },
       compressPublicAssets: { gzip: true, brotli: true },
       experimental: {

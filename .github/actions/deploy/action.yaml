@@ -49,6 +49,8 @@ runs:
       if: ${{ inputs.domains == 'true' }}
       run: railway domain --service web --json
     - shell: bash
+      run: railway up --service api --ci
+    - shell: bash
       run: railway up --service web --ci
     - name: Write domain to output
       id: domains-web
