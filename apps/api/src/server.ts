@@ -5,12 +5,18 @@ import { NodeHttpServer, NodeRuntime } from "@effect/platform-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { Effect, Layer, Logger } from "effect";
-import { HttpRouter } from "effect/http";
+import { HttpEffect, HttpRouter } from "effect/http";
+import { HttpApiBuilder } from "effect/http-api";
 import { initLogger } from "evlog";
 
 import { ApiConfig } from "#config";
+import { ConfigApiLiveWithServices } from "#features/config/layer";
+import { NumbersApiLiveWithServices } from "#features/numbers/layer";
+import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
+import { GlobalMiddlewareLive } from "#middleware/global/layer";
+import { AuthorizationMiddlewareLive } from "#middleware/permission/layer";
 import { RequestLogging } from "#request-logging";
-import { ApiRoutes } from "#routes";
+import { Api } from "@reactlith-template/api-contract";
 import { BetterAuth } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
@@ -24,9 +30,22 @@ initLogger({
 
 const config = Effect.runSync(ApiConfig.make);
 
+export const AuthRoutes = HttpRouter.use(
+  Effect.fnUntraced(function* (router) {
+    const auth = yield* BetterAuth;
+    return yield* router.add("*", "/api/auth/*", HttpEffect.fromWebHandler(auth.handler));
+  }),
+);
+
+export const ApiLive = Layer.mergeAll(ConfigApiLiveWithServices, NumbersApiLiveWithServices).pipe(
+  Layer.provideMerge(AuthorizationMiddlewareLive),
+  Layer.provideMerge(AuthenticationMiddlewareLive),
+  Layer.provideMerge(GlobalMiddlewareLive),
+);
+
 Layer.launch(
   HttpRouter.serve(
-    ApiRoutes.pipe(
+    Layer.mergeAll(HttpApiBuilder.layer(Api).pipe(Layer.provide(ApiLive)), AuthRoutes).pipe(
       Layer.provide(
         NodeSdk.layer(() => ({
           resource: { serviceName: config.otelServiceName.valueOrUndefined ?? "api" },
