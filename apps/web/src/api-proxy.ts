@@ -3,9 +3,9 @@ import { Effect } from "effect";
 import { defineHandler } from "nitro";
 import { proxyRequest } from "nitro/h3";
 
-import { ServerConfig } from "@reactlith-template/config/server";
+import { WebConfig } from "~/config";
 
-const serverConfig = Effect.runSync(ServerConfig.make);
+const serverConfig = Effect.runSync(WebConfig.make);
 
 export default defineHandler(async (event) => {
   const target = new URL(event.req.url);

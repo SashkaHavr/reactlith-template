@@ -8,12 +8,12 @@ import { Effect, Layer, Logger } from "effect";
 import { HttpRouter } from "effect/http";
 import { initLogger } from "evlog";
 
+import { ApiConfig } from "#config";
 import { RequestLogging } from "#request-logging";
 import { ApiRoutes } from "#routes";
 import { BetterAuth } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
-import { ServerConfig } from "@reactlith-template/config/server";
 import { Database } from "@reactlith-template/db";
 import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
@@ -22,7 +22,7 @@ initLogger({
   redact: false,
 });
 
-const config = Effect.runSync(ServerConfig.make);
+const config = Effect.runSync(ApiConfig.make);
 
 const TelemetryLive = NodeSdk.layer(() => ({
   resource: { serviceName: config.otelServiceName.valueOrUndefined ?? "api" },
@@ -41,7 +41,7 @@ Layer.launch(
     ),
     { disableLogger: true },
   ).pipe(
-    Layer.provide(NodeHttpServer.layer(createServer, { host: "0.0.0.0", port: 3001 })),
+    Layer.provide(NodeHttpServer.layer(createServer, { host: "0.0.0.0", port: config.port })),
     Layer.provide(Logger.layer([Logger.tracerLogger])),
     Layer.provide(TelemetryLive),
   ),

@@ -11,12 +11,12 @@ import { HttpApiClient } from "effect/http-api";
 
 import { Api } from "@reactlith-template/api-contract";
 import { createAuthClient } from "@reactlith-template/auth/client";
-import { ServerConfig } from "@reactlith-template/config/server";
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import type { Evlog } from "@reactlith-template/services/structured-logger";
+import { WebConfig } from "~/config";
 import { getRequestLog } from "~/utils/log";
 
-const serverConfig = Effect.runSync(ServerConfig.make);
+const serverConfig = Effect.runSync(WebConfig.make);
 
 function getSsrRequest(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) {
   const request = new Request(

@@ -50,7 +50,7 @@ export default defineRailway(async () => {
     healthcheckPath: "/api/health/ready",
     healthcheckTimeout: 10,
     env: {
-      PORT: "3001",
+      PORT: "3000",
       BETTER_AUTH_ALLOWED_HOSTS: "https://${{web.RAILWAY_PUBLIC_DOMAIN}}",
       BETTER_AUTH_IP_ADDRESS_HEADERS: "X-Real-IP",
       BETTER_AUTH_SECRET: await preserveOrGenerate({
@@ -84,7 +84,7 @@ export default defineRailway(async () => {
     env: {
       PUBLIC_URL: "https://${{RAILWAY_PUBLIC_DOMAIN}}",
       PORT: "3000",
-      API_INTERNAL_URL: "http://${{api.RAILWAY_PRIVATE_DOMAIN}}:3001",
+      API_INTERNAL_URL: "http://${{api.RAILWAY_PRIVATE_DOMAIN}}:3000",
     },
     tracing: {
       autoInstrumentation: false,

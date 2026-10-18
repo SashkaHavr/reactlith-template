@@ -40,10 +40,15 @@ jobs:
             railway environment new "$RAILWAY_ENVIRONMENT"
           fi
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
-      - uses: ./.github/actions/deploy
+      - uses: ./.github/actions/prepare-deploy
         id: deploy
         with:
           domains: true
+      - parallel:
+          - name: Deploy API
+            run: railway up --service api --ci
+          - name: Deploy web
+            run: railway up --service web --ci
 
   comment:
     needs: deploy

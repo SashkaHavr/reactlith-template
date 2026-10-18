@@ -50,7 +50,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     environment:
-      API_INTERNAL_URL: http://api:3001
+      API_INTERNAL_URL: http://api:3000
   drizzle-gateway:
     image: ghcr.io/drizzle-team/gateway:latest
     volumes:

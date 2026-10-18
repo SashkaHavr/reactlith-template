@@ -16,12 +16,13 @@ FROM node:26.12.0-slim
 WORKDIR /app
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --start-interval=1s \
-  CMD [ "node", "-e", "fetch('http://localhost:3001/api/health/live').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))" ]
+  CMD [ "node", "-e", "fetch('http://localhost:' + process.env.PORT + '/api/health/live').then(response => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))" ]
 
 ENV NODE_ENV=production
+ENV PORT=3000
 
 COPY --from=build /app/apps/api/dist ./dist
 
 USER node
-EXPOSE 3001
+EXPOSE 3000
 CMD [ "node", "dist/server.mjs" ]
