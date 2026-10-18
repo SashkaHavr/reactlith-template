@@ -1,7 +1,8 @@
 {
   "files.exclude": {
     "**/node_modules": true,
-    "**/.tanstack": true
+    "**/.tanstack": true,
+    ".pnpm-store": true
   },
   "search.exclude": {
     "pnpm-lock.yaml": true,
