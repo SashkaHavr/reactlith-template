@@ -1,4 +1,4 @@
-FROM ghcr.io/voidzero-dev/vite-plus:latest AS base
+FROM ghcr.io/voidzero-dev/vite-plus:1.3.0 AS base
 WORKDIR /app
 
 FROM base AS prepare
