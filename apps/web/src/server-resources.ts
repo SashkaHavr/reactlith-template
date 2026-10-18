@@ -4,8 +4,8 @@ import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { getGlobalStartContext } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { Context, Effect, Exit, Layer, Logger, Option, References, Scope } from "effect";
-import { FetchHttpClient, HttpClient, HttpRouter, HttpServer } from "effect/unstable/http";
-import { HttpApiBuilder, HttpApiClient } from "effect/unstable/httpapi";
+import { FetchHttpClient, HttpClient, HttpRouter, HttpServer } from "effect/http";
+import { HttpApiBuilder, HttpApiClient } from "effect/http-api";
 
 import { Api } from "@reactlith-template/api";
 import { ApiLive } from "@reactlith-template/api/layer";

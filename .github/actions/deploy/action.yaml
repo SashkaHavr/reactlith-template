@@ -25,7 +25,7 @@ runs:
     - name: Reject destructive database migration
       if: ${{ env.DATABASE_URL != '' }}
       shell: bash
-      run: bun --filter @reactlith-template/db push --explain
+      run: vpr db#push --explain
 
     - shell: bash
       run: railway config apply --plan railway-plan.json --yes
@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: |
         for attempt in {1..5}; do
-          if bun --filter @reactlith-template/db push; then
+          if vpr db#push; then
             exit 0
           else
             status=$?

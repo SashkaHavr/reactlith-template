@@ -5,7 +5,7 @@ import { constants, createBrotliCompress, createGzip } from "node:zlib";
 
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { Option } from "effect";
-import { Headers as HttpHeaders, HttpTraceContext } from "effect/unstable/http";
+import { Headers as HttpHeaders, HttpTraceContext } from "effect/http";
 
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import type { Evlog } from "@reactlith-template/services/structured-logger";

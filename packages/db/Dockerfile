@@ -1,14 +1,14 @@
-FROM oven/bun:1.4.2-slim AS base
+FROM ghcr.io/voidzero-dev/vite-plus:1.3.0 AS base
 WORKDIR /app
 
 FROM base AS prepare
 COPY . .
-RUN bun add -g turbo@$(bun --print "require('./package.json').devDependencies.turbo")
+RUN vp add -g turbo@$(node -p "require('./package.json').devDependencies.turbo")
 RUN turbo prune @reactlith-template/db --docker
 
 FROM base
 
 COPY --from=prepare /app/out/json/ .
-RUN bun ci
+RUN vp install --frozen-lockfile
 COPY --from=prepare /app/out/full/ .
-CMD [ "bun", "--filter", "@reactlith-template/db", "push" ]
+CMD [ "vpr", "db#push" ]

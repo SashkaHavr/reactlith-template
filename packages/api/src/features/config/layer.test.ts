@@ -1,7 +1,7 @@
 import { layer } from "@effect/vitest";
 import { Context, Effect, Layer, Option } from "effect";
-import { HttpApi, HttpApiTest } from "effect/unstable/httpapi";
-import { expect, vi } from "vitest";
+import { HttpApi, HttpApiTest } from "effect/http-api";
+import { expect, vi } from "vite-plus/test";
 
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { ClientDependenciesLayerTest } from "#test-utils";

@@ -1,5 +1,5 @@
 import { Effect, FileSystem, Layer, Path, References } from "effect";
-import { Etag, HttpPlatform } from "effect/unstable/http";
+import { Etag, HttpPlatform } from "effect/http";
 
 import { CurrentUser } from "#context";
 import { GlobalMiddleware } from "#middleware/global/schema";
@@ -7,12 +7,12 @@ import type { SessionType } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
 import { Database, schema } from "@reactlith-template/db";
 import { IdBranded } from "@reactlith-template/db/id-branded";
-import type { SchemaIdBrands } from "@reactlith-template/db/id-branded";
+import type { IdBrandInput, SchemaIdBrands } from "@reactlith-template/db/id-branded";
 import { StructuredLogger } from "@reactlith-template/services/structured-logger";
 
-export function testId<T extends SchemaIdBrands>(schema: T, id: number) {
+export function testId<T extends SchemaIdBrands>(schema: IdBrandInput<T>, id: number) {
   const idString = id.toString();
-  return IdBranded(schema).make(
+  return IdBranded<T>(schema).make(
     "00000000-0000-7000-8000-000000000000".slice(0, -idString.length) + idString,
   );
 }

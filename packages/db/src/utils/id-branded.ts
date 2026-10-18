@@ -3,18 +3,14 @@ import { Schema } from "effect";
 
 import type { schema } from "#relations";
 
-type BrandOf<T> = T extends Brand.Brand<string> ? Brand.Brand.Keys<T> : never;
+type IdBrandOfTable<T> = T extends { $inferSelect: { id: Brand.Brand<infer B> } } ? B : never;
 
-type IdBrandOfTable<T> = T extends { $inferSelect: { id: infer Id } } ? BrandOf<Id> : never;
+export type SchemaIdBrands = IdBrandOfTable<(typeof schema)[keyof typeof schema]>;
 
-type AllIdBrands<S> = {
-  [K in keyof S]: IdBrandOfTable<S[K]>;
-}[keyof S];
+export type IdBrandInput<T extends SchemaIdBrands> = Parameters<typeof Schema.brand<T>>[0];
 
-export type SchemaIdBrands = AllIdBrands<typeof schema>;
-
-export function IdBranded<T extends SchemaIdBrands>(brand: T) {
-  return Schema.String.check(Schema.isUUID(7)).pipe(Schema.brand(brand), Schema.toType);
+export function IdBranded<T extends SchemaIdBrands>(brand: IdBrandInput<T>) {
+  return Schema.String.check(Schema.isUUID(7)).pipe(Schema.brand<T>(brand), Schema.toType);
 }
 
 export type IdBranded<T extends SchemaIdBrands> = Brand.Branded<string, T>;

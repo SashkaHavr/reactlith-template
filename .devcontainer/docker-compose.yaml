@@ -1,12 +1,12 @@
 services:
   devcontainer:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ../:/home/vscode/reactlith-template:cached
-      - devcontainer-opencode-config:/home/vscode/.config/opencode
-      - devcontainer-opencode-auth:/home/vscode/.local/share/opencode
+      - ../:/home/vp/reactlith-template:cached
+      - devcontainer-opencode-config:/home/vp/.config/opencode
+      - devcontainer-opencode-auth:/home/vp/.local/share/opencode
     networks:
       - db-network
       - otel-network

@@ -1,5 +1,5 @@
 import { Context, Schema } from "effect";
-import { HttpApiMiddleware } from "effect/unstable/httpapi";
+import { HttpApiMiddleware } from "effect/http-api";
 
 import type { CurrentUser } from "#context";
 import type { AuthPermissions } from "@reactlith-template/auth";

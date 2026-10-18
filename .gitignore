@@ -172,3 +172,5 @@ yarn-error.*
 
 .codex
 references/
+.vitest/
+.pnpm-store/

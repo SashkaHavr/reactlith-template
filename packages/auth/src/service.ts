@@ -1,5 +1,5 @@
 import { Context, Effect, Layer } from "effect";
-import { HttpServerRequest } from "effect/unstable/http";
+import { HttpServerRequest } from "effect/http";
 
 import { BetterAuth } from "#index";
 import type { AuthPermissions } from "#index";
