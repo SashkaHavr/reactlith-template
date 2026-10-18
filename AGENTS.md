@@ -3,3 +3,4 @@
 - Never run `vp dev`.
 - NEVER UPDATE LINT AND FORMAT RULES UNLESS EXPLICITLY REQUESTED.
 - When working with Effect code, ALWAYS consult ./references/effect for modern APIs and best practices.
+- NEVER WRITE UNIT TESTS UNLESS EXPLICITLY REQUESTED.

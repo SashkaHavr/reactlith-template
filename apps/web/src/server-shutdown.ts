@@ -1,10 +1,9 @@
-// oxlint-disable import/no-default-export no-restricted-imports
+// oxlint-disable import/no-default-export
+// oxlint-disable no-restricted-imports
 import { definePlugin } from "nitro";
 
-import { dispose } from "./server-resources";
+import { api } from "~/server-resources";
 
-export default definePlugin((nitroApp) => {
-  nitroApp.hooks.hook("close", async () => {
-    await dispose();
-  });
+export default definePlugin((nitro) => {
+  nitro.hooks.hook("close", api.dispose);
 });

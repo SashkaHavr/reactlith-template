@@ -25,7 +25,12 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     nitro({
-      plugins: ["src/server-shutdown"],
+      routes: {
+        "/health": { handler: "src/nitro/health", method: "GET" },
+        "/api/ingest": { handler: "src/nitro/log-ingest", method: "POST" },
+        "/api/**": { handler: "src/nitro/api" },
+      },
+      plugins: ["src/server-shutdown.ts"],
       output: { dir: "dist" },
       compressPublicAssets: { gzip: true, brotli: true },
       experimental: {
@@ -34,6 +39,7 @@ export default defineConfig({
       modules: [
         evlog({
           env: { service: "web-server" },
+          exclude: ["/api/**"],
           sampling: {
             rates: {
               info: 0,

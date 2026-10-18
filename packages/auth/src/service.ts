@@ -5,10 +5,8 @@ import { BetterAuth } from "#index";
 import type { AuthPermissions } from "#index";
 
 const getHeaders = Effect.fnUntraced(function* () {
-  return yield* HttpServerRequest.toWeb(yield* HttpServerRequest.HttpServerRequest).pipe(
-    Effect.orDie,
-    Effect.map((r) => r.headers),
-  );
+  const request = yield* HttpServerRequest.HttpServerRequest;
+  return new Headers(request.headers);
 });
 
 // @effect-expect-leaking HttpServerRequest

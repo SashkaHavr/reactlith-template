@@ -6,17 +6,14 @@
     "dev": "vp dev",
     "build": "vp build",
     "component": "vpx shadcn@latest add",
-    "start": "NODE_ENV=production vpr dist/server/index.mjs"
+    "start": "NODE_ENV=production node dist/server/index.mjs"
   },
   "devDependencies": {
     "@base-ui/react": "1.9.0",
-    "@effect/opentelemetry": "catalog:",
     "@fontsource-variable/geist": "5.3.0",
     "@fontsource-variable/geist-mono": "5.3.0",
-    "@opentelemetry/exporter-trace-otlp-proto": "catalog:",
-    "@opentelemetry/sdk-trace-base": "catalog:",
-    "@opentelemetry/sdk-trace-node": "catalog:",
     "@reactlith-template/api": "workspace:*",
+    "@reactlith-template/api-contract": "workspace:*",
     "@reactlith-template/auth": "workspace:*",
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",

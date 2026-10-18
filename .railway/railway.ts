@@ -36,7 +36,8 @@ const preserveOrGenerate = Effect.fn(
 export default defineRailway(async () => {
   const db = postgres("db", { region: region });
   db.networking = { tcpProxies: { "5432": {} } };
-  const reactlithTemplateWeb = service("web", {
+
+  const web = service("web", {
     replicas: { [region]: 1 },
     deploy: {
       limitOverride: { containers: { cpu: 2, memoryBytes: 2 * RAM_GB } },
@@ -61,6 +62,7 @@ export default defineRailway(async () => {
       GOOGLE_CLIENT_ID: preserve(),
       GOOGLE_CLIENT_SECRET: preserve(),
       GOOGLE_EMULATE_URL: preserve(),
+      GOOGLE_EMULATE_INTERNAL_URL: preserve(),
     },
     tracing: {
       autoInstrumentation: false,
@@ -92,6 +94,6 @@ export default defineRailway(async () => {
   });
 
   return project("reactlith-iac-test", {
-    resources: [db, reactlithTemplateWeb, drizzleGateway, drizzleGatewayVolume],
+    resources: [db, web, drizzleGateway, drizzleGatewayVolume],
   });
 });

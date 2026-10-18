@@ -1,0 +1,19 @@
+{
+  "name": "@reactlith-template/api-contract",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
+  "exports": {
+    ".": "./src/client.ts",
+    "./*": "./src/*.ts"
+  },
+  "devDependencies": {
+    "@reactlith-template/auth": "workspace:*",
+    "@reactlith-template/db": "workspace:*",
+    "@reactlith-template/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "effect": "catalog:"
+  }
+}

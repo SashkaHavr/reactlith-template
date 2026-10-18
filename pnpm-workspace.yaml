@@ -9,7 +9,7 @@ catalog:
   "@tanstack/react-form": "1.33.5"
   better-auth: 1.7.10
   lucide-react: 1.59.0
-  evlog: 2.32.0
+  evlog: 2.33.0
   drizzle-kit: "1.0.0-rc.5-ab785fc"
   drizzle-orm: "1.0.0-rc.5-ab785fc"
   drizzle-seed: "1.0.0-rc.5-ab785fc"

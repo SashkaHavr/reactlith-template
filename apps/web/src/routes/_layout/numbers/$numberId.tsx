@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/react-router";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
-import type { ApiErrors } from "@reactlith-template/api";
+import type { ApiErrors } from "@reactlith-template/api-contract";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";

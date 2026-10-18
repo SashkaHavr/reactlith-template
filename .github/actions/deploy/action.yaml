@@ -4,6 +4,9 @@ inputs:
   domains:
     required: false
     default: "false"
+  force:
+    required: false
+    default: "false"
 
 outputs:
   domains-web:
@@ -17,6 +20,7 @@ runs:
     - shell: bash
       run: railway config plan --out railway-plan.json
     - name: Reject destructive Railway plan
+      if: ${{ inputs.force != 'true' }}
       shell: bash
       run: |
         if [[ "$(jq -r '.destructive' railway-plan.json)" == "true" ]]; then
@@ -28,21 +32,21 @@ runs:
       run: vpr db#push --explain
 
     - shell: bash
-      run: railway config apply --plan railway-plan.json --yes
+      run: railway config apply --plan railway-plan.json --yes ${{ inputs.force == 'true' && '--confirm-destructive' || '' }}
     - uses: ./.github/actions/extract-database-url
     - name: Run database migration
       shell: bash
       run: |
-        for attempt in {1..5}; do
+        for attempt in {1..20}; do
           if vpr db#push; then
             exit 0
           else
             status=$?
           fi
-          if [[ "$status" -ne 1 || "$attempt" -eq 5 ]]; then
+          if [[ "$status" -ne 1 || "$attempt" -eq 20 ]]; then
             exit "$status"
           fi
-          echo "Database push failed (attempt $attempt/5); retrying in 5 seconds..."
+          echo "Database push failed (attempt $attempt/20); retrying in 5 seconds..."
           sleep 5
         done
     - shell: bash

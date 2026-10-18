@@ -5,9 +5,9 @@ description: Use when working with Effect HTTP API groups or their related schem
 
 ## Files
 
-Keep each feature in `src/features/<feature>/`:
+Keep each feature's implementation in `apps/api/src/features/<feature>/`:
 
-- `schema.ts`: Effect schemas, tagged domain errors, endpoints, and one `<Feature>Api` group.
+- `packages/api-contract/src/features/<feature>.ts`: Shared Effect schemas, tagged domain errors, endpoints, and one `<Feature>Api` group.
 - `repo.ts`: Database methods. Export one `<Feature>Repo` `Context.Service` containing all methods.
 - `repo.test.ts`: Repository integration tests.
 - `service.ts`: OPTIONAL file for complex domain logic. Export one `<Feature>Service` `Context.Service` containing all methods.
@@ -15,7 +15,7 @@ Keep each feature in `src/features/<feature>/`:
 - `layer.ts`: Effect HTTP API handlers. Export one `<Feature>ApiLive` layer and, when useful, one layer with its services provided.
 - `layer.test.ts`: API group unit tests.
 
-Register the API group in `src/client.ts` and its live layer in `src/layer.ts`.
+Register the API group in `packages/api-contract/src/client.ts` and its live layer in `apps/api/src/app.ts`.
 
 ## API and Schema
 
