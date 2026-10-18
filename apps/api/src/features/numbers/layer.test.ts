@@ -1,5 +1,5 @@
 import { layer } from "@effect/vitest";
-import { Context, Effect, Layer } from "effect";
+import { Context, Effect, Layer, Struct } from "effect";
 import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect, vi } from "vite-plus/test";
 
@@ -17,9 +17,9 @@ import { NumbersApiLive } from "./layer";
 import { NumberRepo } from "./repo";
 
 const numberId = testId("number", 0);
-const number = { id: numberId, number: 42 };
-const numberFull = {
-  ...number,
+const number = {
+  id: numberId,
+  number: 42,
   createdAt: new Date(1_000),
   updatedAt: new Date(2_000),
 };
@@ -84,7 +84,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
 
         const result = yield* client.numbers.getAll();
 
-        expect(result).toEqual({ numbers: [number] });
+        expect(result).toEqual({ numbers: [Struct.pick(number, ["id", "number"])] });
         expect(NumberRepoMock.getAll).toHaveBeenCalledOnce();
       }),
     );
@@ -93,11 +93,11 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
       "gets a number by id",
       Effect.fn(function* () {
         const client = yield* TestClient;
-        NumberRepoMock.get.mockReturnValue(Effect.succeed(numberFull));
+        NumberRepoMock.get.mockReturnValue(Effect.succeed(number));
 
         const result = yield* client.numbers.get({ params: { id: numberId } });
 
-        expect(result).toEqual(numberFull);
+        expect(result).toEqual(number);
         expect(NumberRepoMock.get).toHaveBeenCalledOnce();
       }),
     );
@@ -148,14 +148,14 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
       "updates a number",
       Effect.fn(function* () {
         const client = yield* TestClient;
-        NumberRepoMock.update.mockReturnValue(Effect.succeed(numberFull));
+        NumberRepoMock.update.mockReturnValue(Effect.succeed(number));
 
         const result = yield* client.numbers.update({
           params: { id: numberId },
           payload: { number: 42 },
         });
 
-        expect(result).toEqual(numberFull);
+        expect(result).toEqual(number);
         expect(NumberRepoMock.update).toHaveBeenCalledOnce();
       }),
     );

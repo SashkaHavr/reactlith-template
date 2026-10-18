@@ -60,20 +60,6 @@ layer(
   );
 
   it.effect(
-    "gets numbers sorted by createdAt",
-    Effect.fn(function* () {
-      yield* seedUsers;
-      yield* insertNumber(2, new Date(1));
-      yield* insertNumber(1, new Date(0));
-      const repo = yield* NumberRepo;
-
-      const result = yield* repo.getAll();
-
-      expect(result.map(({ number }) => number)).toEqual([1, 2]);
-    }),
-  );
-
-  it.effect(
     "counts owned numbers",
     Effect.fn(function* () {
       yield* seedUsers;

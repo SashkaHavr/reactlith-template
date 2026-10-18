@@ -1,5 +1,5 @@
-import { and, eq, gt } from "drizzle-orm";
-import { Context, Effect, Layer } from "effect";
+import { and, eq, getColumns, gt } from "drizzle-orm";
+import { Context, Effect, Layer, Struct } from "effect";
 
 import { CurrentUser } from "@reactlith-template/api-contract/context";
 import { NumberNotFound } from "@reactlith-template/api-contract/features/numbers";
@@ -52,7 +52,9 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
         const [number] = yield* db
           .insert(schema.number)
           .values({ userId, number: value })
-          .returning({ id: schema.number.id, number: schema.number.number })
+          .returning(
+            Struct.pick(getColumns(schema.number), ["id", "number", "createdAt", "updatedAt"]),
+          )
           .pipe(Effect.orDie);
         if (!number) {
           return yield* Effect.die("Failed to add number");
@@ -68,12 +70,9 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
           .update(schema.number)
           .set(data)
           .where(and(eq(schema.number.id, id), eq(schema.number.userId, userId)))
-          .returning({
-            id: schema.number.id,
-            number: schema.number.number,
-            createdAt: schema.number.createdAt,
-            updatedAt: schema.number.updatedAt,
-          })
+          .returning(
+            Struct.pick(getColumns(schema.number), ["id", "number", "createdAt", "updatedAt"]),
+          )
           .pipe(Effect.orDie);
         if (!number) {
           return yield* NumberNotFound.make({ numberId: id });

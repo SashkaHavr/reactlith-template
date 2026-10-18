@@ -1,4 +1,4 @@
-import { Schema } from "effect";
+import { Schema, Struct } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/http-api";
 
 import { AuthenticationMiddleware } from "#middleware/authentication";
@@ -17,14 +17,9 @@ export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
 ) {}
 
 export const NumberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
-export const NumberInput = Schema.Struct({ number: NumberValue });
-export const NumberUpdateInput = Schema.Struct({ number: Schema.optionalKey(NumberValue) }).check(
-  Schema.makeFilter((data) => Object.keys(data).length > 0),
-);
-export const NumberOutput = Schema.Struct({ id: IdBranded("number"), number: NumberValue });
-export const NumberIdInput = Schema.Struct({ id: IdBranded("number") });
-export const NumberFullOutput = Schema.Struct({
-  ...NumberOutput.fields,
+export const NumberOutput = Schema.Struct({
+  id: IdBranded("number"),
+  number: NumberValue,
   createdAt: Schema.DateFromString,
   updatedAt: Schema.DateFromString,
 });
@@ -32,27 +27,31 @@ export const NumberFullOutput = Schema.Struct({
 export class NumbersApi extends HttpApiGroup.make("numbers")
   .add(
     HttpApiEndpoint.get("getAll", "/", {
-      success: Schema.Struct({ numbers: Schema.Array(NumberOutput) }),
+      success: Schema.Struct({
+        numbers: Schema.Array(NumberOutput.mapFields(Struct.pick(["id", "number"]))),
+      }),
     }),
     HttpApiEndpoint.get("get", "/:id", {
-      params: NumberIdInput,
-      success: NumberFullOutput,
+      params: Schema.Struct({ id: IdBranded("number") }),
+      success: NumberOutput,
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.post("create", "/", {
-      payload: NumberInput,
+      payload: Schema.Struct({ number: NumberValue }),
       success: NumberOutput,
       error: [MaxCountReached],
     }),
     HttpApiEndpoint.patch("update", "/:id", {
-      params: NumberIdInput,
-      payload: NumberUpdateInput,
-      success: NumberFullOutput,
+      params: Schema.Struct({ id: IdBranded("number") }),
+      payload: Schema.Struct({ number: Schema.optionalKey(NumberValue) }).check(
+        Schema.isMinProperties(1),
+      ),
+      success: NumberOutput,
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.delete("delete", "/:id", {
-      params: NumberIdInput,
-      success: NumberIdInput,
+      params: Schema.Struct({ id: IdBranded("number") }),
+      success: Schema.Struct({ id: IdBranded("number") }),
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.delete("deleteAll", "/", {
