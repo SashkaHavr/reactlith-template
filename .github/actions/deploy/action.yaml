@@ -52,11 +52,10 @@ runs:
     - shell: bash
       if: ${{ inputs.domains == 'true' }}
       run: railway domain --service web --json
+    - shell: bash
+      run: railway up --service web --ci
     - name: Write domain to output
       id: domains-web
       if: ${{ inputs.domains == 'true' }}
       shell: bash
       run: echo "link=$(railway domain --service web --json | jq -r '.domains[0]')" >> "$GITHUB_OUTPUT"
-    - name: Deploy web
-      shell: bash
-      run: railway up --service web --ci

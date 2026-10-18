@@ -40,29 +40,29 @@ const evlogConfig = defineEvlog({
   ],
 });
 
-export const AuthRoutes = HttpRouter.use(
+const AuthRoutes = HttpRouter.use(
   Effect.fnUntraced(function* (router) {
     const auth = yield* BetterAuth;
     return yield* router.add("*", "/api/auth/*", HttpEffect.fromWebHandler(auth.handler));
   }),
 );
 
-export const ApiLive = Layer.mergeAll(ConfigApiLiveWithServices, NumbersApiLiveWithServices).pipe(
+const ApiLive = Layer.mergeAll(ConfigApiLiveWithServices, NumbersApiLiveWithServices).pipe(
   Layer.provideMerge(AuthorizationMiddlewareLive),
   Layer.provideMerge(AuthenticationMiddlewareLive),
   Layer.provideMerge(GlobalMiddlewareLive),
 );
 
+const NodeSdkLive = NodeSdk.layer(() => ({
+  resource: { serviceName: config.otelServiceName.valueOrUndefined ?? "api" },
+  spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
+}));
+
 export const App = Layer.mergeAll(
   HttpApiBuilder.layer(Api).pipe(Layer.provide(ApiLive)),
   AuthRoutes,
 ).pipe(
-  Layer.provide(
-    NodeSdk.layer(() => ({
-      resource: { serviceName: config.otelServiceName.valueOrUndefined ?? "api" },
-      spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
-    })),
-  ),
+  Layer.provideMerge(NodeSdkLive),
   Layer.provide(routerLayer(toMiddlewareOptions(evlogConfig))),
   Layer.provide(Auth.layer),
   Layer.provide(Database.layer),

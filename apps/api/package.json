@@ -5,11 +5,6 @@
   "imports": {
     "#*": "./src/*.ts"
   },
-  "scripts": {
-    "dev": "vp pack --watch",
-    "build": "vp pack",
-    "start": "NODE_ENV=production node dist/server.mjs"
-  },
   "devDependencies": {
     "@effect/opentelemetry": "catalog:",
     "@effect/platform-node": "catalog:",

@@ -39,6 +39,7 @@ export default defineConfig({
       modules: [
         evlog({
           env: { service: "web-server" },
+          exclude: ["/api/**"],
           sampling: {
             rates: {
               info: 0,
