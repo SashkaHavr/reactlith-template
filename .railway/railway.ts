@@ -79,7 +79,7 @@ export default defineRailway(async () => {
       builder: "DOCKERFILE",
       dockerfilePath: "/apps/web/Dockerfile",
     },
-    healthcheckPath: "/api/health/ready",
+    healthcheckPath: "/health",
     healthcheckTimeout: 10,
     env: {
       PUBLIC_URL: "https://${{RAILWAY_PUBLIC_DOMAIN}}",

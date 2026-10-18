@@ -26,8 +26,9 @@ export default defineConfig({
     tanstackStart(),
     nitro({
       routes: {
-        "/api/ingest": { handler: "src/log-ingest", method: "POST" },
-        "/api/**": { handler: "src/api-proxy" },
+        "/health": { handler: "src/nitro/health", method: "GET" },
+        "/api/ingest": { handler: "src/nitro/log-ingest", method: "POST" },
+        "/api/**": { handler: "src/nitro/api-proxy" },
       },
       output: { dir: "dist" },
       compressPublicAssets: { gzip: true, brotli: true },

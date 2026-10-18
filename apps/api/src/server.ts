@@ -24,14 +24,15 @@ initLogger({
 
 const config = Effect.runSync(ApiConfig.make);
 
-const TelemetryLive = NodeSdk.layer(() => ({
-  resource: { serviceName: config.otelServiceName.valueOrUndefined ?? "api" },
-  spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
-}));
-
 Layer.launch(
   HttpRouter.serve(
     ApiRoutes.pipe(
+      Layer.provide(
+        NodeSdk.layer(() => ({
+          resource: { serviceName: config.otelServiceName.valueOrUndefined ?? "api" },
+          spanProcessor: new BatchSpanProcessor(new OTLPTraceExporter()),
+        })),
+      ),
       Layer.provide(RequestLogging),
       Layer.provide(Auth.layer),
       Layer.provide(Database.layer),
@@ -43,6 +44,5 @@ Layer.launch(
   ).pipe(
     Layer.provide(NodeHttpServer.layer(createServer, { host: "0.0.0.0", port: config.port })),
     Layer.provide(Logger.layer([Logger.tracerLogger])),
-    Layer.provide(TelemetryLive),
   ),
 ).pipe(NodeRuntime.runMain);

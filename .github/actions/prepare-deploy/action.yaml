@@ -4,6 +4,9 @@ inputs:
   domains:
     required: false
     default: "false"
+  force:
+    required: false
+    default: "false"
 
 outputs:
   domains-web:
@@ -17,6 +20,7 @@ runs:
     - shell: bash
       run: railway config plan --out railway-plan.json
     - name: Reject destructive Railway plan
+      if: ${{ inputs.force != 'true' }}
       shell: bash
       run: |
         if [[ "$(jq -r '.destructive' railway-plan.json)" == "true" ]]; then
@@ -28,7 +32,7 @@ runs:
       run: vpr db#push --explain
 
     - shell: bash
-      run: railway config apply --plan railway-plan.json --yes
+      run: railway config apply --plan railway-plan.json --yes ${{ inputs.force == 'true' && '--confirm-destructive' || '' }}
     - uses: ./.github/actions/extract-database-url
     - name: Run database migration
       shell: bash

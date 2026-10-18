@@ -37,13 +37,14 @@ jobs:
       - name: Ensure preview environment exists
         run: |
           if [[ "$(railway environment list --json | jq -r --arg name "$RAILWAY_ENVIRONMENT" 'any(.environments[]; .name == $name)')" == "false" ]]; then
-            railway environment new "$RAILWAY_ENVIRONMENT"
+            railway environment new "$RAILWAY_ENVIRONMENT" --duplicate "$RAILWAY_DEFAULT_ENVIRONMENT"
           fi
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
       - uses: ./.github/actions/prepare-deploy
         id: deploy
         with:
           domains: true
+          force: true
       - parallel:
           - name: Deploy API
             run: railway up --service api --ci
