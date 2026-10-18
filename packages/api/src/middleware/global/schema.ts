@@ -1,4 +1,4 @@
-import { HttpApiMiddleware } from "effect/unstable/httpapi";
+import { HttpApiMiddleware } from "effect/http-api";
 
 export class GlobalMiddleware extends HttpApiMiddleware.Service<GlobalMiddleware>()(
   "api/GlobalMiddleware",

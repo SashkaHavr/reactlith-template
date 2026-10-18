@@ -1,6 +1,6 @@
 import { layer } from "@effect/vitest";
 import { Context, Effect, Layer } from "effect";
-import { HttpApi, HttpApiTest } from "effect/unstable/httpapi";
+import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect, vi } from "vite-plus/test";
 
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";

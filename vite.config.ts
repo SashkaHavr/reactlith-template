@@ -109,6 +109,8 @@ export default defineConfig({
 
       "effecttsgo/new-schema-class": "error",
       "effecttsgo/strict-effect-provide": "off",
+      "effecttsgo/unstable-api-usage": "off",
+      "effecttsgo/schema-class-missing-brand": "off",
       "vitest/no-standalone-expect": "off",
       "no-restricted-imports": [
         "error",

@@ -1,18 +1,20 @@
 import { Schema } from "effect";
-import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
+import { HttpApiEndpoint, HttpApiGroup } from "effect/http-api";
 
 import { AuthenticationMiddleware } from "#middleware/authentication/schema";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 
-export class NumberNotFound extends Schema.TaggedError<
-  NumberNotFound,
-  { readonly brand: unique symbol }
->()("NumberNotFound", { numberId: Schema.String }, { httpApiStatus: 404 }) {}
+export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(
+  "NumberNotFound",
+  { numberId: Schema.String },
+  { httpApiStatus: 404 },
+) {}
 
-export class MaxCountReached extends Schema.TaggedError<
-  MaxCountReached,
-  { readonly brand: unique symbol }
->()("MaxCountReached", { maxCount: Schema.Finite }, { httpApiStatus: 400 }) {}
+export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
+  "MaxCountReached",
+  { maxCount: Schema.Finite },
+  { httpApiStatus: 400 },
+) {}
 
 export const NumberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
 export const NumberInput = Schema.Struct({ number: NumberValue });

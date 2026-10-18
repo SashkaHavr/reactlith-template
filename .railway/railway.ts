@@ -1,7 +1,7 @@
 // oxlint-disable import/no-default-export
 import { NodeServices } from "@effect/platform-node";
 import { Effect, Predicate, Schema, Stream } from "effect";
-import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
+import { ChildProcess, ChildProcessSpawner } from "effect/process";
 import { defineRailway, image, postgres, preserve, project, service, volume } from "railway/iac";
 
 const RAM_GB = 1000000000 as const;

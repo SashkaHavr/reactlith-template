@@ -1,11 +1,11 @@
 import { Schema } from "effect";
-import { HttpApiEndpoint, HttpApiGroup } from "effect/unstable/httpapi";
+import { HttpApiEndpoint, HttpApiGroup } from "effect/http-api";
 
 export const AuthOutput = Schema.Struct({
   googleEmulate: Schema.Boolean,
 });
 
-export class NotReady extends Schema.TaggedError<NotReady, { readonly brand: unique symbol }>()(
+export class NotReady extends Schema.TaggedError<NotReady>()(
   "NotReady",
   {},
   { httpApiStatus: 400 },

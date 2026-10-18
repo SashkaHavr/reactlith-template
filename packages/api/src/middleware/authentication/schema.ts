@@ -1,12 +1,13 @@
 import { Schema } from "effect";
-import { HttpApiMiddleware } from "effect/unstable/httpapi";
+import { HttpApiMiddleware } from "effect/http-api";
 
 import type { CurrentUser } from "#context";
 
-export class NotAuthenticated extends Schema.TaggedError<
-  NotAuthenticated,
-  { readonly brand: unique symbol }
->()("NotAuthenticated", {}, { httpApiStatus: 401 }) {}
+export class NotAuthenticated extends Schema.TaggedError<NotAuthenticated>()(
+  "NotAuthenticated",
+  {},
+  { httpApiStatus: 401 },
+) {}
 
 export class AuthenticationMiddleware extends HttpApiMiddleware.Service<
   AuthenticationMiddleware,

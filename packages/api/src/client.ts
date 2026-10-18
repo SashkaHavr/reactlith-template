@@ -1,5 +1,5 @@
-import type { HttpApiClient, HttpApiEndpoint } from "effect/unstable/httpapi";
-import { HttpApi } from "effect/unstable/httpapi";
+import type { HttpApiClient, HttpApiEndpoint } from "effect/http-api";
+import { HttpApi } from "effect/http-api";
 
 import { ConfigApi } from "#features/config/schema";
 import { NumbersApi } from "#features/numbers/schema";

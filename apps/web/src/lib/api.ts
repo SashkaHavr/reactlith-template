@@ -1,7 +1,7 @@
 import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { Effect, Layer } from "effect";
-import { FetchHttpClient, HttpClient } from "effect/unstable/http";
-import { HttpApiClient } from "effect/unstable/httpapi";
+import { FetchHttpClient, HttpClient } from "effect/http";
+import { HttpApiClient } from "effect/http-api";
 
 import { Api } from "@reactlith-template/api";
 

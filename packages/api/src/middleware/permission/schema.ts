@@ -1,5 +1,5 @@
 import { Context, Schema } from "effect";
-import { HttpApiMiddleware } from "effect/unstable/httpapi";
+import { HttpApiMiddleware } from "effect/http-api";
 
 import type { CurrentUser } from "#context";
 import type { AuthPermissions } from "@reactlith-template/auth";
@@ -9,10 +9,11 @@ export const RequiredPermissions = Context.Reference<AuthPermissions>(
   { defaultValue: () => ({}) },
 );
 
-export class InsufficientPermissions extends Schema.TaggedError<
-  InsufficientPermissions,
-  { readonly brand: unique symbol }
->()("InsufficientPermissions", {}, { httpApiStatus: 403 }) {}
+export class InsufficientPermissions extends Schema.TaggedError<InsufficientPermissions>()(
+  "InsufficientPermissions",
+  {},
+  { httpApiStatus: 403 },
+) {}
 
 export class AuthorizationMiddleware extends HttpApiMiddleware.Service<
   AuthorizationMiddleware,
