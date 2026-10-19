@@ -9,143 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LayoutRouteRouteImport } from './routes/_layout/route'
-import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
-import { Route as LayoutNumbersRouteRouteImport } from './routes/_layout/numbers/route'
-import { Route as LayoutNumbersIndexRouteImport } from './routes/_layout/numbers/index'
-import { Route as LayoutNumbersNumberIdRouteImport } from './routes/_layout/numbers/$numberId'
+import { Route as IndexRouteImport } from './routes/index'
 
-const LayoutRouteRoute = LayoutRouteRouteImport.update({
-  id: '/_layout',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const LayoutIndexRoute = LayoutIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
-const LayoutNumbersRouteRoute = LayoutNumbersRouteRouteImport.update({
-  id: '/numbers',
-  path: '/numbers',
-  getParentRoute: () => LayoutRouteRoute,
-} as any)
-const LayoutNumbersIndexRoute = LayoutNumbersIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LayoutNumbersRouteRoute,
-} as any)
-const LayoutNumbersNumberIdRoute = LayoutNumbersNumberIdRouteImport.update({
-  id: '/$numberId',
-  path: '/$numberId',
-  getParentRoute: () => LayoutNumbersRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof LayoutIndexRoute
-  '/numbers': typeof LayoutNumbersRouteRouteWithChildren
-  '/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
-  '/numbers/': typeof LayoutNumbersIndexRoute
+  '/': typeof IndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof LayoutIndexRoute
-  '/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
-  '/numbers': typeof LayoutNumbersIndexRoute
+  '/': typeof IndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_layout': typeof LayoutRouteRouteWithChildren
-  '/_layout/numbers': typeof LayoutNumbersRouteRouteWithChildren
-  '/_layout/': typeof LayoutIndexRoute
-  '/_layout/numbers/$numberId': typeof LayoutNumbersNumberIdRoute
-  '/_layout/numbers/': typeof LayoutNumbersIndexRoute
+  '/': typeof IndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/numbers' | '/numbers/$numberId' | '/numbers/'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/numbers/$numberId' | '/numbers'
-  id:
-    | '__root__'
-    | '/_layout'
-    | '/_layout/numbers'
-    | '/_layout/'
-    | '/_layout/numbers/$numberId'
-    | '/_layout/numbers/'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  LayoutRouteRoute: typeof LayoutRouteRouteWithChildren
+  IndexRoute: typeof IndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
+    '/': {
+      id: '/'
+      path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutRouteRouteImport
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_layout/': {
-      id: '/_layout/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexRouteImport
-      parentRoute: typeof LayoutRouteRoute
-    }
-    '/_layout/numbers': {
-      id: '/_layout/numbers'
-      path: '/numbers'
-      fullPath: '/numbers'
-      preLoaderRoute: typeof LayoutNumbersRouteRouteImport
-      parentRoute: typeof LayoutRouteRoute
-    }
-    '/_layout/numbers/': {
-      id: '/_layout/numbers/'
-      path: '/'
-      fullPath: '/numbers/'
-      preLoaderRoute: typeof LayoutNumbersIndexRouteImport
-      parentRoute: typeof LayoutNumbersRouteRoute
-    }
-    '/_layout/numbers/$numberId': {
-      id: '/_layout/numbers/$numberId'
-      path: '/$numberId'
-      fullPath: '/numbers/$numberId'
-      preLoaderRoute: typeof LayoutNumbersNumberIdRouteImport
-      parentRoute: typeof LayoutNumbersRouteRoute
     }
   }
 }
 
-interface LayoutNumbersRouteRouteChildren {
-  LayoutNumbersNumberIdRoute: typeof LayoutNumbersNumberIdRoute
-  LayoutNumbersIndexRoute: typeof LayoutNumbersIndexRoute
-}
-
-const LayoutNumbersRouteRouteChildren: LayoutNumbersRouteRouteChildren = {
-  LayoutNumbersNumberIdRoute: LayoutNumbersNumberIdRoute,
-  LayoutNumbersIndexRoute: LayoutNumbersIndexRoute,
-}
-
-const LayoutNumbersRouteRouteWithChildren =
-  LayoutNumbersRouteRoute._addFileChildren(LayoutNumbersRouteRouteChildren)
-
-interface LayoutRouteRouteChildren {
-  LayoutNumbersRouteRoute: typeof LayoutNumbersRouteRouteWithChildren
-  LayoutIndexRoute: typeof LayoutIndexRoute
-}
-
-const LayoutRouteRouteChildren: LayoutRouteRouteChildren = {
-  LayoutNumbersRouteRoute: LayoutNumbersRouteRouteWithChildren,
-  LayoutIndexRoute: LayoutIndexRoute,
-}
-
-const LayoutRouteRouteWithChildren = LayoutRouteRoute._addFileChildren(
-  LayoutRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRouteRoute: LayoutRouteRouteWithChildren,
+  IndexRoute: IndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
