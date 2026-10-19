@@ -2,12 +2,10 @@ import type { HttpApiClient, HttpApiEndpoint } from "effect/http-api";
 import { HttpApi } from "effect/http-api";
 
 import { ConfigApi } from "#features/config";
-import { NumbersApi } from "#features/numbers";
 import { GlobalMiddleware } from "#middleware/global";
 
 export class Api extends HttpApi.make("api")
   .add(ConfigApi)
-  .add(NumbersApi)
   .middleware(GlobalMiddleware)
   .prefix("/api") {}
 

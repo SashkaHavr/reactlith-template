@@ -10,7 +10,6 @@ import { initLoggerLayer, loggerLayer, routerLayer } from "evlog/effect";
 
 import { ApiConfig } from "#config";
 import { ConfigApiLiveWithServices } from "#features/config/layer";
-import { NumbersApiLiveWithServices } from "#features/numbers/layer";
 import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
 import { GlobalMiddlewareLive } from "#middleware/global/layer";
 import { AuthorizationMiddlewareLive } from "#middleware/permission/layer";
@@ -47,7 +46,7 @@ const AuthRoutes = HttpRouter.use(
   }),
 );
 
-const ApiLive = Layer.mergeAll(ConfigApiLiveWithServices, NumbersApiLiveWithServices).pipe(
+const ApiLive = Layer.mergeAll(ConfigApiLiveWithServices).pipe(
   Layer.provideMerge(AuthorizationMiddlewareLive),
   Layer.provideMerge(AuthenticationMiddlewareLive),
   Layer.provideMerge(GlobalMiddlewareLive),
