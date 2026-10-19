@@ -8,6 +8,8 @@ FROM ghcr.io/voidzero-dev/vite-plus:1.3.0
 
 COPY --from=build-extensions /app/proxy-links.vsix /extensions/proxy-links/
 
+ENV pnpm_config_store_dir=/home/vp/.local/share/pnpm/store
+
 WORKDIR /home/vp/reactlith-template
 COPY --chown=vp:vp package.json ./
 RUN vp env install

@@ -5,8 +5,9 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ../:/home/vp/reactlith-template:cached
+      - opencode-auth:/home/vp/.local/share/opencode
       - devcontainer-opencode-config:/home/vp/.config/opencode
-      - devcontainer-opencode-auth:/home/vp/.local/share/opencode
+      - devcontainer-pnpm-store:/home/vp/.local/share/pnpm/store
     networks:
       - db-network
       - otel-network
@@ -70,7 +71,8 @@ networks:
 
 volumes:
   pg-18-data:
+  opencode-auth:
   devcontainer-opencode-config:
     external: true
-  devcontainer-opencode-auth:
+  devcontainer-pnpm-store:
     external: true
