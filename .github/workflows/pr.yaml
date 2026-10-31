@@ -28,7 +28,7 @@ jobs:
       domains-web: ${{ steps.deploy.outputs.domains-web }}
     steps:
       - uses: actions/checkout@v7
-      - uses: voidzero-dev/setup-vp@v1.21.2
+      - uses: voidzero-dev/setup-vp@v1.22.0
         with:
           run-install: false
       - run: vp install --frozen-lockfile --filter db --filter railway
@@ -67,7 +67,7 @@ jobs:
       RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
     steps:
-      - uses: voidzero-dev/setup-vp@v1.21.2
+      - uses: voidzero-dev/setup-vp@v1.22.0
         with:
           run-install: false
       - run: vp add -g @railway/cli@5

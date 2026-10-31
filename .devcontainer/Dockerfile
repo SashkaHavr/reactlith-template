@@ -1,10 +1,10 @@
-FROM ghcr.io/voidzero-dev/vite-plus:1.3.0 AS build-extensions
+FROM ghcr.io/voidzero-dev/vite-plus:1.4.0 AS build-extensions
 
 COPY --chown=vp:vp .devcontainer/proxy-links /app
 WORKDIR /app
 RUN vpx @vscode/vsce@3 package --no-dependencies --out /app/proxy-links.vsix
 
-FROM ghcr.io/voidzero-dev/vite-plus:1.3.0
+FROM ghcr.io/voidzero-dev/vite-plus:1.4.0
 
 COPY --from=build-extensions /app/proxy-links.vsix /extensions/proxy-links/
 
