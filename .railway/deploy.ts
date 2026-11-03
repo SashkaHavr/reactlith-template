@@ -40,8 +40,16 @@ const run = Effect.fn(function* (
   return output;
 }, Effect.scoped);
 
+const railway = (args: ReadonlyArray<string>, options: ChildProcess.CommandOptions = {}) =>
+  run("railway", args, {
+    ...options,
+    // railway/iac uses $_ to locate the CLI for its minimum-version check.
+    env: { ...options.env, _: "railway" },
+    extendEnv: true,
+  });
+
 function railwayJson<A, R>(args: ReadonlyArray<string>, schema: Schema.ConstraintDecoder<A, R>) {
-  return run("railway", [...args, "--json"], { stdout: "pipe" }).pipe(
+  return railway([...args, "--json"], { stdout: "pipe" }).pipe(
     Effect.flatMap(Schema.fromJsonString(schema).pipe(Schema.decodeUnknownEffect)),
   );
 }
@@ -85,7 +93,7 @@ const deploy = Command.make(
           extendEnv: true,
         });
 
-      yield* run("railway", ["config", "plan", "--out", "railway-plan.json"]);
+      yield* railway(["config", "plan", "--out", "railway-plan.json"]);
       if (!preview) {
         const plan = yield* fs
           .readFileString("railway-plan.json")
@@ -107,7 +115,7 @@ const deploy = Command.make(
       if (Redacted.value(databaseUrl)) {
         yield* pushDatabase(["--explain"]);
       }
-      yield* run("railway", [
+      yield* railway([
         "config",
         "apply",
         "--plan",
@@ -128,7 +136,7 @@ const deploy = Command.make(
         }),
       );
       if (preview) {
-        yield* run("railway", ["domain", "--service", "web", "--json"]);
+        yield* railway(["domain", "--service", "web", "--json"]);
         const result = yield* railwayJson(
           ["domain", "--service", "web"],
           Schema.Struct({ domains: Schema.Array(Schema.String) }),
@@ -181,7 +189,7 @@ const deploy = Command.make(
               Config.withDefault(Redacted.make("")),
             );
             if (Redacted.value(fallback)) {
-              yield* run("railway", ["variables", "set", name, "--service", service, "--stdin"], {
+              yield* railway(["variables", "set", name, "--service", service, "--stdin"], {
                 stdin: Stream.succeed(Redacted.value(fallback)).pipe(Stream.encodeText),
               });
               continue;
