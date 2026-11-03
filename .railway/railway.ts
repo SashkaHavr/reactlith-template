@@ -9,23 +9,21 @@ const STORAGE_5GB = 5000 as const;
 const region = "europe-west4-drams3a" as const;
 const randomStringGenerator = "${{secret(32)}}" as const;
 
-class RailwayConfig extends Schema.Class<RailwayConfig>("RailwayConfig")({
+const RailwayConfig = Schema.Struct({
   resources: Schema.Array(
     Schema.Struct({
       address: Schema.String,
-      variables: Schema.NullOr(Schema.Record(Schema.String, Schema.Unknown)),
-      source: Schema.NullOr(
-        Schema.Struct({
-          repo: Schema.optional(Schema.NullOr(Schema.String)),
-          branch: Schema.optional(Schema.NullOr(Schema.String)),
-        }),
-      ),
+      variables: Schema.Record(Schema.String, Schema.Unknown).pipe(Schema.NullOr),
+      source: Schema.Struct({
+        repo: Schema.String.pipe(Schema.NullOr, Schema.optional),
+        branch: Schema.String.pipe(Schema.NullOr, Schema.optional),
+      }).pipe(Schema.NullOr),
     }),
   ),
-}) {}
+});
 
 function preserveOrGenerate(
-  config: RailwayConfig,
+  config: typeof RailwayConfig.Type,
   { service, variable }: { service: string; variable: string },
 ) {
   const resource = config.resources.find((resource) => resource.address === `service.${service}`);

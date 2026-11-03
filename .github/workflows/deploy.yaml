@@ -32,4 +32,4 @@ jobs:
       - run: vp add -g @railway/cli@5
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_DEFAULT_ENVIRONMENT"
 
-      - uses: ./.github/actions/deploy
+      - run: vpx ./.railway/deploy.ts
