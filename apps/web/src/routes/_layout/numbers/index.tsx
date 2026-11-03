@@ -40,7 +40,10 @@ export const Route = createFileRoute("/_layout/numbers/")({
 
 const CustomNumberFormSchema = Schema.toStandardSchemaV1(
   Schema.Struct({
-    number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberValue)),
+    number: Schema.Trim.check(Schema.isNonEmpty()).pipe(
+      Schema.decodeTo(Schema.FiniteFromString),
+      Schema.decodeTo(NumberValue),
+    ),
   }),
 );
 
