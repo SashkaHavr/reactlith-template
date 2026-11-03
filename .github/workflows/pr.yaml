@@ -20,6 +20,7 @@ jobs:
     if: ${{ github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository && vars.RAILWAY_PROJECT_ID != '' }}
     runs-on: ubuntu-latest
     env:
+      PREVIEW: "true"
       RAILWAY_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       RAILWAY_DEFAULT_ENVIRONMENT: ${{ vars.RAILWAY_DEFAULT_ENVIRONMENT || 'production' }}
       RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
@@ -43,7 +44,7 @@ jobs:
             railway environment new "$RAILWAY_ENVIRONMENT"
           fi
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
-      - run: vpx ./.railway/deploy.ts --preview
+      - run: vpx ./.railway/deploy.ts
         id: deploy
 
   comment:

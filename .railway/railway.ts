@@ -1,6 +1,6 @@
 // oxlint-disable import/no-default-export
 import { NodeServices } from "@effect/platform-node";
-import { Config, Effect, Predicate, Schema, Stream } from "effect";
+import { Config, Effect, Predicate, Redacted, Schema, Stream } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 import { defineRailway, image, postgres, preserve, project, service, volume } from "railway/iac";
 
@@ -31,6 +31,21 @@ function preserveOrGenerate(
     ? preserve()
     : randomStringGenerator;
 }
+
+const preserveOrUsePreviewSecret = Effect.fn(function* (
+  config: typeof RailwayConfig.Type,
+  { service, variable }: { service: string; variable: string },
+) {
+  const preview = yield* Config.Boolean("PREVIEW").pipe(Config.withDefault(false));
+  const resource = config.resources.find((resource) => resource.address === `service.${service}`);
+  const value = resource?.variables?.[variable];
+  if (!preview || (value !== null && value !== undefined && value !== "")) {
+    return preserve();
+  }
+  const envName = `PREVIEW_${service.toUpperCase().replace(/[^A-Z0-9]/g, "_")}_${variable}`;
+  const fallback = yield* Config.Redacted(envName).pipe(Config.withDefault(Redacted.make("")));
+  return Redacted.value(fallback) || preserve();
+});
 
 export default defineRailway(async () =>
   Effect.gen(function* () {
@@ -89,9 +104,18 @@ export default defineRailway(async () =>
           variable: "BETTER_AUTH_SECRET",
         }),
         DATABASE_URL: db.env.DATABASE_URL,
-        GOOGLE_CLIENT_ID: preserve(),
-        GOOGLE_CLIENT_SECRET: preserve(),
-        GOOGLE_EMULATE_URL: preserve(),
+        GOOGLE_CLIENT_ID: yield* preserveOrUsePreviewSecret(config, {
+          service: "web",
+          variable: "GOOGLE_CLIENT_ID",
+        }),
+        GOOGLE_CLIENT_SECRET: yield* preserveOrUsePreviewSecret(config, {
+          service: "web",
+          variable: "GOOGLE_CLIENT_SECRET",
+        }),
+        GOOGLE_EMULATE_URL: yield* preserveOrUsePreviewSecret(config, {
+          service: "web",
+          variable: "GOOGLE_EMULATE_URL",
+        }),
       },
       tracing: {
         autoInstrumentation: false,
