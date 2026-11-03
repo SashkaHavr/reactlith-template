@@ -92,7 +92,6 @@ export default defineRailway(async () =>
         GOOGLE_CLIENT_ID: preserve(),
         GOOGLE_CLIENT_SECRET: preserve(),
         GOOGLE_EMULATE_URL: preserve(),
-        GOOGLE_EMULATE_INTERNAL_URL: preserve(),
       },
       tracing: {
         autoInstrumentation: false,

@@ -24,6 +24,9 @@ jobs:
       RAILWAY_DEFAULT_ENVIRONMENT: ${{ vars.RAILWAY_DEFAULT_ENVIRONMENT || 'production' }}
       RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      PREVIEW_WEB_GOOGLE_CLIENT_ID: ${{ secrets.PREVIEW_WEB_GOOGLE_CLIENT_ID }}
+      PREVIEW_WEB_GOOGLE_CLIENT_SECRET: ${{ secrets.PREVIEW_WEB_GOOGLE_CLIENT_SECRET }}
+      PREVIEW_WEB_GOOGLE_EMULATE_URL: ${{ secrets.PREVIEW_WEB_GOOGLE_EMULATE_URL }}
     outputs:
       domains-web: ${{ steps.deploy.outputs.domains-web }}
     steps:
@@ -40,7 +43,7 @@ jobs:
             railway environment new "$RAILWAY_ENVIRONMENT" --duplicate "$RAILWAY_DEFAULT_ENVIRONMENT"
           fi
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
-      - run: vpx ./.railway/deploy.ts --domains --force
+      - run: vpx ./.railway/deploy.ts --preview
         id: deploy
 
   comment:

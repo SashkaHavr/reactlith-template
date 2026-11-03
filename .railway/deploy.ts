@@ -5,6 +5,7 @@ import {
   Data,
   Effect,
   FileSystem,
+  Record,
   Redacted,
   Schedule,
   Schema,
@@ -71,11 +72,10 @@ const extractDatabaseUrl = Effect.fn(function* (service: string) {
 const deploy = Command.make(
   "deploy",
   {
-    domains: Flag.Boolean("domains"),
-    force: Flag.Boolean("force"),
+    preview: Flag.Boolean("preview"),
     service: Flag.String("service").pipe(Flag.withDefault("db")),
   },
-  ({ domains, force, service }) =>
+  ({ preview, service }) =>
     Effect.gen(function* () {
       const fs = yield* FileSystem.FileSystem;
       let databaseUrl = yield* extractDatabaseUrl(service);
@@ -86,7 +86,7 @@ const deploy = Command.make(
         });
 
       yield* run("railway", ["config", "plan", "--out", "railway-plan.json"]);
-      if (!force) {
+      if (!preview) {
         const plan = yield* fs
           .readFileString("railway-plan.json")
           .pipe(
@@ -113,7 +113,7 @@ const deploy = Command.make(
         "--plan",
         "railway-plan.json",
         "--yes",
-        ...(force ? ["--confirm-destructive"] : []),
+        ...(preview ? ["--confirm-destructive"] : []),
       ]);
       databaseUrl = yield* extractDatabaseUrl(service);
       yield* pushDatabase().pipe(
@@ -127,7 +127,7 @@ const deploy = Command.make(
           ),
         }),
       );
-      if (domains) {
+      if (preview) {
         yield* run("railway", ["domain", "--service", "web", "--json"]);
         const result = yield* railwayJson(
           ["domain", "--service", "web"],
@@ -138,6 +138,63 @@ const deploy = Command.make(
           `domains-web=${result.domains[0] ?? "null"}\n`,
           { flag: "a" },
         );
+      }
+      const { resources } = yield* railwayJson(
+        ["config", "pull"],
+        Schema.Struct({
+          resources: Schema.Array(
+            Schema.Struct({
+              address: Schema.String,
+              variables: Schema.Record(Schema.String, Schema.Unknown).pipe(
+                Schema.NullOr,
+                Schema.optional,
+              ),
+            }),
+          ),
+        }),
+      );
+      const requiredVariables = {
+        web: [
+          "PUBLIC_URL",
+          "BETTER_AUTH_ALLOWED_HOSTS",
+          "BETTER_AUTH_SECRET",
+          "DATABASE_URL",
+          "GOOGLE_CLIENT_ID",
+          "GOOGLE_CLIENT_SECRET",
+          "GOOGLE_EMULATE_URL",
+        ],
+        "drizzle-gateway": ["MASTERPASS"],
+      };
+      const missing: Array<string> = [];
+      for (const [service, names] of Record.toEntries(requiredVariables)) {
+        const variables = resources.find(
+          (resource) => resource.address === `service.${service}`,
+        )?.variables;
+        for (const name of names) {
+          const value = variables?.[name];
+          if (value !== null && value !== undefined && value !== "") {
+            continue;
+          }
+          if (preview) {
+            const envName = `PREVIEW_${service.toUpperCase().replace(/[^A-Z0-9]/g, "_")}_${name}`;
+            const fallback = yield* Config.Redacted(envName).pipe(
+              Config.withDefault(Redacted.make("")),
+            );
+            if (Redacted.value(fallback)) {
+              yield* run("railway", ["variables", "set", name, "--service", service, "--stdin"], {
+                stdin: Stream.succeed(Redacted.value(fallback)).pipe(Stream.encodeText),
+              });
+              continue;
+            }
+          }
+          missing.push(`${service}.${name}`);
+        }
+      }
+      if (missing.length > 0) {
+        return yield* new CommandFailed({
+          command: `Missing required Railway variables: ${missing.join(", ")}`,
+          code: 1,
+        });
       }
     }),
 );
