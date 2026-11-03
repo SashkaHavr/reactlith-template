@@ -1,7 +1,7 @@
 import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/http-api";
 
-import { AuthenticationMiddleware } from "#middleware/authentication";
+import { AuthenticationMiddleware } from "#/middleware/authentication";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 
 export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(

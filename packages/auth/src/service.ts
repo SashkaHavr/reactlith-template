@@ -1,8 +1,8 @@
 import { Context, Effect, Layer } from "effect";
 import { HttpServerRequest } from "effect/http";
 
-import { BetterAuth } from "#index";
-import type { AuthPermissions } from "#index";
+import { BetterAuth } from "#/index";
+import type { AuthPermissions } from "#/index";
 
 const getHeaders = Effect.fnUntraced(function* () {
   const request = yield* HttpServerRequest.HttpServerRequest;

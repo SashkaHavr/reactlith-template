@@ -3,7 +3,7 @@ import { getColumns } from "drizzle-orm";
 import { Effect, Layer, Struct } from "effect";
 import { expect } from "vite-plus/test";
 
-import { layerCurrentUser, seedUsers, testId } from "#test-utils";
+import { layerCurrentUser, seedUsers, testId } from "#/test-utils";
 import { CurrentUser } from "@reactlith-template/api-contract/context";
 import { NumberNotFound } from "@reactlith-template/api-contract/features/numbers";
 import { Database, schema } from "@reactlith-template/db";

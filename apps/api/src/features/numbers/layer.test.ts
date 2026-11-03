@@ -3,8 +3,8 @@ import { Context, Effect, Layer } from "effect";
 import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect, vi } from "vite-plus/test";
 
-import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
-import { ClientDependenciesLayerTest, layerAuth, testId } from "#test-utils";
+import { AuthenticationMiddlewareLive } from "#/middleware/authentication/layer";
+import { ClientDependenciesLayerTest, layerAuth, testId } from "#/test-utils";
 import {
   MaxCountReached,
   NumberNotFound,

@@ -8,12 +8,12 @@ import { HttpApiBuilder } from "effect/http-api";
 import { defineEvlog, definePlugin, toLoggerConfig, toMiddlewareOptions } from "evlog";
 import { initLoggerLayer, loggerLayer, routerLayer } from "evlog/effect";
 
-import { ApiConfig } from "#config";
-import { ConfigApiLiveWithServices } from "#features/config/layer";
-import { NumbersApiLiveWithServices } from "#features/numbers/layer";
-import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
-import { GlobalMiddlewareLive } from "#middleware/global/layer";
-import { AuthorizationMiddlewareLive } from "#middleware/permission/layer";
+import { ApiConfig } from "#/config";
+import { ConfigApiLiveWithServices } from "#/features/config/layer";
+import { NumbersApiLiveWithServices } from "#/features/numbers/layer";
+import { AuthenticationMiddlewareLive } from "#/middleware/authentication/layer";
+import { GlobalMiddlewareLive } from "#/middleware/global/layer";
+import { AuthorizationMiddlewareLive } from "#/middleware/permission/layer";
 import { Api } from "@reactlith-template/api-contract";
 import { BetterAuth } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
