@@ -8,7 +8,7 @@ allowBuilds:
 catalog:
   "@tanstack/react-form": "1.33.5"
   better-auth: 1.7.14
-  lucide-react: 1.65.0
+  lucide-react: 1.66.0
   evlog: 2.34.0
   drizzle-kit: "1.0.0-rc.5"
   drizzle-orm: "1.0.0-rc.5"
@@ -31,13 +31,15 @@ catalog:
   nitro: 3.0.261029-rc
   "@inlang/paraglide-js": 2.29.3
   pg: 8.23.1
-  effect: 4.1.0
-  "@effect/sql-pg": 4.1.0
-  "@effect/sql-pglite": 4.1.0
-  "@effect/platform-node": 4.1.0
-  "@effect/opentelemetry": 4.1.0
+  effect: 4.1.1
+  "@effect/sql-pg": 4.1.1
+  "@effect/sql-pglite": 4.1.1
+  "@effect/platform-node": 4.1.1
+  "@effect/opentelemetry": 4.1.1
   cn: 0.5.1
   "@types/node": 26.6.6
+  "@opentelemetry/api": 1.10.0
+  "@opentelemetry/api-logs": 0.223.0
   "@opentelemetry/exporter-trace-otlp-proto": 0.300.0
   "@opentelemetry/sdk-trace-base": "2.12.0"
   "@opentelemetry/sdk-trace-node": "2.12.0"
