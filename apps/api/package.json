@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#*": "./src/*.ts"
+    "#/*": "./src/*.ts"
   },
   "devDependencies": {
     "@effect/opentelemetry": "catalog:",
     "@effect/platform-node": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/api-logs": "catalog:",
     "@opentelemetry/exporter-trace-otlp-proto": "catalog:",
     "@opentelemetry/sdk-trace-base": "catalog:",
     "@opentelemetry/sdk-trace-node": "catalog:",

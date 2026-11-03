@@ -2,7 +2,7 @@ import { layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { expect } from "vite-plus/test";
 
-import { layerCurrentUser, seedUsers, testId } from "#test-utils";
+import { layerCurrentUser, seedUsers, testId } from "#/test-utils";
 import { DatabaseTest } from "@reactlith-template/db/test-db";
 
 import { UserRepo } from "./repo";

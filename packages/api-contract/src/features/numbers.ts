@@ -1,7 +1,7 @@
-import { Schema, Struct } from "effect";
+import { Schema } from "effect";
 import { HttpApiEndpoint, HttpApiGroup } from "effect/http-api";
 
-import { AuthenticationMiddleware } from "#middleware/authentication";
+import { AuthenticationMiddleware } from "#/middleware/authentication";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 
 export class NumberNotFound extends Schema.TaggedError<NumberNotFound>()(
@@ -28,7 +28,7 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
   .add(
     HttpApiEndpoint.get("getAll", "/", {
       success: Schema.Struct({
-        numbers: Schema.Array(NumberOutput.mapFields(Struct.pick(["id", "number"]))),
+        numbers: Schema.Array(NumberOutput),
       }),
     }),
     HttpApiEndpoint.get("get", "/:id", {

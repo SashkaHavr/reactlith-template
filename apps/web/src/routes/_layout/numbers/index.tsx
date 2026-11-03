@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useDbClient, useLiveSuspenseQuery } from "@tanstack/react-db";
 import { createFileRoute } from "@tanstack/react-router";
 import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
@@ -28,40 +28,39 @@ import {
 } from "~/components/ui/dialog";
 import { useSession, useSignout } from "~/lib/auth";
 import {
-  allNumbersQueryOptions,
+  getAllNumbersQuery,
+  numbersCollectionOptions,
   useAddNumber,
   useDeleteAllNumbers,
-  useDeleteNumber,
-  useUpdateNumber,
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/")({
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
-  },
   component: RouteComponent,
 });
 
 const CustomNumberFormSchema = Schema.toStandardSchemaV1(
   Schema.Struct({
-    number: Schema.FiniteFromString.pipe(Schema.decodeTo(NumberValue)),
+    number: Schema.Trim.check(Schema.isNonEmpty()).pipe(
+      Schema.decodeTo(Schema.FiniteFromString),
+      Schema.decodeTo(NumberValue),
+    ),
   }),
 );
 
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
   const session = useSession();
-  const numbers = useSuspenseQuery(allNumbersQueryOptions);
+  const dbClient = useDbClient();
+  const numbersCollection = dbClient.collection(numbersCollectionOptions);
+  const numbers = useLiveSuspenseQuery({ query: getAllNumbersQuery(dbClient) });
   const addNumber = useAddNumber();
-  const updateNumber = useUpdateNumber();
-  const deleteNumber = useDeleteNumber();
-  const deleteNumbers = useDeleteAllNumbers();
+  const deleteAllNumbers = useDeleteAllNumbers();
   const signout = useSignout();
   const customNumberForm = useAppForm({
     defaultValues: { number: "" },
     validators: { onSubmit: CustomNumberFormSchema },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber.mutateAsync(Schema.decodeSync(CustomNumberFormSchema)(value));
+      await addNumber(Schema.decodeSync(CustomNumberFormSchema)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },
@@ -80,7 +79,7 @@ function RouteComponent() {
       <div className="flex flex-wrap justify-center gap-3">
         <Button
           variant="outline"
-          onClick={() => addNumber.mutate({ number: Math.floor(Math.random() * 100) })}
+          onClick={() => void addNumber({ number: Math.floor(Math.random() * 100) })}
         >
           {m.example_addNumber()}
         </Button>
@@ -121,7 +120,7 @@ function RouteComponent() {
             </customNumberForm.AppForm>
           </DialogPopup>
         </Dialog>
-        <Button variant="outline" onClick={() => deleteNumbers.mutate()}>
+        <Button variant="outline" onClick={() => deleteAllNumbers()}>
           {m.example_deleteAllNumbers()}
         </Button>
         <Button
@@ -134,17 +133,17 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {numbers.data.numbers.map((number) => (
+        {numbers.data.map((number) => (
           <div key={number.id} className="flex items-center gap-2">
             <p className="min-w-8 flex-1 text-xl font-bold">{number.number}</p>
             <Button
               size="icon"
               variant="outline"
               onClick={() =>
-                updateNumber.mutate({
-                  id: number.id,
-                  payload: { number: Math.floor(Math.random() * 100) },
-                })
+                numbersCollection.update(
+                  number.id,
+                  (draft) => (draft.number = Math.floor(Math.random() * 100)),
+                )
               }
             >
               <PencilIcon />
@@ -152,7 +151,7 @@ function RouteComponent() {
             <Button
               size="icon"
               variant="destructive-outline"
-              onClick={() => deleteNumber.mutate({ id: number.id })}
+              onClick={() => numbersCollection.delete(number.id)}
             >
               <Trash2Icon />
             </Button>

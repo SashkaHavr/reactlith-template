@@ -1,9 +1,9 @@
 import type { HttpApiClient, HttpApiEndpoint } from "effect/http-api";
 import { HttpApi } from "effect/http-api";
 
-import { ConfigApi } from "#features/config";
-import { NumbersApi } from "#features/numbers";
-import { GlobalMiddleware } from "#middleware/global";
+import { ConfigApi } from "#/features/config";
+import { NumbersApi } from "#/features/numbers";
+import { GlobalMiddleware } from "#/middleware/global";
 
 export class Api extends HttpApi.make("api")
   .add(ConfigApi)

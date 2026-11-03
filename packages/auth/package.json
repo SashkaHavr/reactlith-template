@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "imports": {
-    "#*": "./src/*.ts"
+    "#/*": "./src/*.ts"
   },
   "exports": {
     ".": "./src/index.ts",
@@ -15,7 +15,7 @@
     "generate": "NODE_ENV=development vpx auth@latest generate --config ./generated/config.ts --output ./generated/auth-schema.ts --yes"
   },
   "devDependencies": {
-    "@better-auth/drizzle-adapter": "1.7.10",
+    "@better-auth/drizzle-adapter": "1.7.14",
     "@reactlith-template/config": "workspace:*",
     "@reactlith-template/db": "workspace:*",
     "@reactlith-template/typescript-config": "workspace:*",

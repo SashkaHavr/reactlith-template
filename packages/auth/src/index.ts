@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { admin, genericOAuth } from "better-auth/plugins";
 import { Context, Effect, Layer, Redacted } from "effect";
 
-import { ac, roles } from "#permissions";
+import { ac, roles } from "#/permissions";
 import { AuthConfig } from "@reactlith-template/config/auth";
 import { DrizzlePostgres, schema } from "@reactlith-template/db";
 

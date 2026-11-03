@@ -3,8 +3,8 @@ import { Context, Effect, Layer, Option } from "effect";
 import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect, vi } from "vite-plus/test";
 
-import { GlobalMiddlewareLive } from "#middleware/global/layer";
-import { ClientDependenciesLayerTest } from "#test-utils";
+import { GlobalMiddlewareLive } from "#/middleware/global/layer";
+import { ClientDependenciesLayerTest } from "#/test-utils";
 import { ConfigApi, NotReady } from "@reactlith-template/api-contract/features/config";
 import { AuthConfig } from "@reactlith-template/config/auth";
 

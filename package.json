@@ -12,9 +12,9 @@
     "prepare": "vp hooks enable && if [ -f packages/intl/index.html ] && [ -d packages/intl/node_modules ]; then vpr intl#build; fi"
   },
   "devDependencies": {
-    "@effect/tsgo": "0.53.3",
-    "@effect/vitest": "4.0.5",
-    "turbo": "2.11.9",
+    "@effect/tsgo": "0.63.0",
+    "@effect/vitest": "4.1.1",
+    "turbo": "2.11.10",
     "typescript": "7.0.2",
     "vite-plus": "catalog:",
     "vitest": "catalog:"
@@ -22,11 +22,11 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "12.11.2",
+      "version": "12.17.0",
       "onFail": "download"
     }
   },
   "engines": {
-    "node": "26.12.0"
+    "node": "26.13.0"
   }
 }

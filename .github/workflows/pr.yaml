@@ -20,15 +20,19 @@ jobs:
     if: ${{ github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository && vars.RAILWAY_PROJECT_ID != '' }}
     runs-on: ubuntu-latest
     env:
+      PREVIEW: "true"
       RAILWAY_ENVIRONMENT: pr-${{ github.event.pull_request.number }}
       RAILWAY_DEFAULT_ENVIRONMENT: ${{ vars.RAILWAY_DEFAULT_ENVIRONMENT || 'production' }}
       RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+      PREVIEW_WEB_GOOGLE_CLIENT_ID: ${{ secrets.PREVIEW_WEB_GOOGLE_CLIENT_ID }}
+      PREVIEW_WEB_GOOGLE_CLIENT_SECRET: ${{ secrets.PREVIEW_WEB_GOOGLE_CLIENT_SECRET }}
+      PREVIEW_WEB_GOOGLE_EMULATE_URL: ${{ secrets.PREVIEW_WEB_GOOGLE_EMULATE_URL }}
     outputs:
       domains-web: ${{ steps.deploy.outputs.domains-web }}
     steps:
       - uses: actions/checkout@v7
-      - uses: voidzero-dev/setup-vp@v1.21.2
+      - uses: voidzero-dev/setup-vp@v1.22.0
         with:
           run-install: false
       - run: vp install --frozen-lockfile --filter db --filter railway
@@ -37,14 +41,11 @@ jobs:
       - name: Ensure preview environment exists
         run: |
           if [[ "$(railway environment list --json | jq -r --arg name "$RAILWAY_ENVIRONMENT" 'any(.environments[]; .name == $name)')" == "false" ]]; then
-            railway environment new "$RAILWAY_ENVIRONMENT" --duplicate "$RAILWAY_DEFAULT_ENVIRONMENT"
+            railway environment new "$RAILWAY_ENVIRONMENT"
           fi
       - run: railway link --project "$RAILWAY_PROJECT_ID" --environment "$RAILWAY_ENVIRONMENT"
-      - uses: ./.github/actions/deploy
+      - run: vpx ./.railway/deploy.ts
         id: deploy
-        with:
-          domains: true
-          force: true
 
   comment:
     needs: deploy
@@ -67,7 +68,7 @@ jobs:
       RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
       RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
     steps:
-      - uses: voidzero-dev/setup-vp@v1.21.2
+      - uses: voidzero-dev/setup-vp@v1.22.0
         with:
           run-install: false
       - run: vp add -g @railway/cli@5

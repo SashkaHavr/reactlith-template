@@ -1,7 +1,7 @@
 import type { Brand } from "effect";
 import { Schema } from "effect";
 
-import type { schema } from "#relations";
+import type { schema } from "#/relations";
 
 type IdBrandOfTable<T> = T extends { $inferSelect: { id: Brand.Brand<infer B> } } ? B : never;
 

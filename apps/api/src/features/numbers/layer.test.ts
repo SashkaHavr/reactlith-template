@@ -1,10 +1,10 @@
 import { layer } from "@effect/vitest";
-import { Context, Effect, Layer, Struct } from "effect";
+import { Context, Effect, Layer } from "effect";
 import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect, vi } from "vite-plus/test";
 
-import { AuthenticationMiddlewareLive } from "#middleware/authentication/layer";
-import { ClientDependenciesLayerTest, layerAuth, testId } from "#test-utils";
+import { AuthenticationMiddlewareLive } from "#/middleware/authentication/layer";
+import { ClientDependenciesLayerTest, layerAuth, testId } from "#/test-utils";
 import {
   MaxCountReached,
   NumberNotFound,
@@ -84,7 +84,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
 
         const result = yield* client.numbers.getAll();
 
-        expect(result).toEqual({ numbers: [Struct.pick(number, ["id", "number"])] });
+        expect(result).toEqual({ numbers: [number] });
         expect(NumberRepoMock.getAll).toHaveBeenCalledOnce();
       }),
     );

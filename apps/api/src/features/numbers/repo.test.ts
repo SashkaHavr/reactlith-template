@@ -1,8 +1,9 @@
 import { layer } from "@effect/vitest";
-import { Effect, Layer } from "effect";
+import { getColumns } from "drizzle-orm";
+import { Effect, Layer, Struct } from "effect";
 import { expect } from "vite-plus/test";
 
-import { layerCurrentUser, seedUsers, testId } from "#test-utils";
+import { layerCurrentUser, seedUsers, testId } from "#/test-utils";
 import { CurrentUser } from "@reactlith-template/api-contract/context";
 import { NumberNotFound } from "@reactlith-template/api-contract/features/numbers";
 import { Database, schema } from "@reactlith-template/db";
@@ -16,7 +17,7 @@ const insertNumber = Effect.fn(function* (number: number, createdAt?: Date) {
   const [row] = yield* db
     .insert(schema.number)
     .values({ userId: user.userId, number, createdAt })
-    .returning({ id: schema.number.id, number: schema.number.number });
+    .returning(Struct.pick(getColumns(schema.number), ["id", "number", "createdAt", "updatedAt"]));
   if (!row) return yield* Effect.die("Failed to seed number");
   return row;
 });
