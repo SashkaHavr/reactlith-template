@@ -38,6 +38,10 @@ export default defineRailway(async () => {
   db.networking = { tcpProxies: { "5432": {} } };
 
   const web = service("web", {
+    source: {
+      type: "github",
+      checkSuites: true,
+    },
     replicas: { [region]: 1 },
     deploy: {
       limitOverride: { containers: { cpu: 2, memoryBytes: 2 * RAM_GB } },
