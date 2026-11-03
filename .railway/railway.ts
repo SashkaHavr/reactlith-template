@@ -146,7 +146,7 @@ export default defineRailway(async () =>
       },
     });
 
-    return project("reactlith-iac-test", {
+    return project("reactlith-template", {
       resources: [db, web, drizzleGateway, drizzleGatewayVolume],
     });
   }).pipe(Effect.provide(NodeServices.layer), Effect.scoped, Effect.runPromise),
