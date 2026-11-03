@@ -1,11 +1,11 @@
 ---
 name: react
-description: Use when creating or updating React components, creating forms or routes, or using TanStack Router, Start, Query, or Form
+description: Use when creating or updating React components, creating forms or routes, or using TanStack Router, Start, DB, Query, or Form
 ---
 
 ## Client-side React code
 
-- Use `cn(...)` from `~/lib/utils` to compose class names in React components. Use it only for conditional class names, not to split long strings.
+- Use `cn(...)` from `cn` to compose class names in React components. Use it only for conditional class names, not to split long strings.
 - Always check `src/components/ui/*` for an applicable component before creating one.
 - Base components are created with Base UI primitives and do not have an `asChild` prop. Use the `render` prop instead. Example: `<DialogTrigger render={<Button />}>Click me!</Button>`.
 - Use the components and hooks from `src/components/form.tsx` when building forms.
@@ -42,13 +42,28 @@ const form = useAppForm({
 - When creating subroutes, always create a `src/routes/<route>/` folder. Use `src/routes/<route>/index.tsx` for the index route and `src/routes/<route>/route.tsx` for the layout.
 - Perform access checks and redirects in a route's `beforeLoad`, not in component effects.
 - Use TanStack Router's `Link`, `useNavigate`, or the shared `LinkButton` for internal navigation instead of raw anchors or `window.location`.
-- Put all API query options and mutation hooks in `/src/queries`.
+
+## Data access
+
+- Keep API query options, collection options, query builders, and mutation hooks together in `src/queries`.
+- Use `ApiInput`, `ApiOutput`, and `ApiErrors` for types.
+- Match typed domain errors from `ApiErrors` by their `_tag`.
+- Use TanStack DB for reactive entity collections. Keep standalone queries such as server-computed aggregates in TanStack Query.
+
+### TanStack DB
+
+- Export reusable `collectionOptions` and resolve instances through `dbClient.collection(options)` rather than creating module-level collection singletons.
+- Share query builders taking a `DbClient` between loaders and components. Use `queryOnce({ query })` for loader reads and `useLiveSuspenseQuery({ query })` for reactive reads.
+- Persist optimistic `collection.update`/`collection.delete` operations in `onUpdate`/`onDelete`. Reconcile server results with `collection.utils.writeUpsert`/`writeDelete` rather than manually editing the underlying Query cache.
+- After server-only writes, await `collection.utils.refetch()` so live queries observe the result.
+- Use `createOptimisticAction` for custom optimistic writes.
+
+### TanStack Query
+
 - Define API queries with TanStack Query's `queryOptions`. Use a stable query key, get the Effect HTTP API client with `getApiClient()`, and call the endpoint in `queryFn`.
 - Always pass the `queryFn` abort signal to `Effect.runPromise`: `queryFn: async ({ signal }) => Effect.runPromise((await getApiClient()).<group>.<endpoint>(input), { signal })`.
 - Preload queries in route loaders with `await context.queryClient.query({ ...someQueryOptions, staleTime: "static" })`.
 - Use `useSuspenseQuery(someQueryOptions)` for unconditional queries and `useQuery({ ...someQueryOptions, enabled })` for conditional queries.
-- Implement API mutations with `useMutation`; get the client with `getApiClient()` and run the endpoint Effect with `Effect.runPromise`.
-- Use `ApiInput`, `ApiOutput`, and `ApiErrors` for types.
+- Implement non-collection API mutations with `useMutation`; get the client with `getApiClient()` and run the endpoint Effect with `Effect.runPromise`. For collection writes, use the TanStack DB patterns above.
 - Reuse exported query options' `.queryKey` for cache updates and invalidation.
 - Export query-key factory objects beside their query options when cache operations need both exact and prefix keys. Prefer named methods, for example `someQueryKey.all()` and `someQueryKey.byId(id)`.
-- Match typed domain errors from `ApiErrors` by their `_tag`.
