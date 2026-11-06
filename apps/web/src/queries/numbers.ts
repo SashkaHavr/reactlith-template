@@ -1,28 +1,22 @@
-import { queryCollectionOptions } from "@tanstack/query-db-collection";
-import type { DbClient } from "@tanstack/react-db";
-import {
-  collectionOptions,
-  createOptimisticAction,
-  eq,
-  parseLoadSubsetOptions,
-  Query,
-  useDbClient,
-} from "@tanstack/react-db";
-import type { QueryClient } from "@tanstack/react-query";
-import { queryOptions } from "@tanstack/react-query";
-import type { Types } from "effect";
-import { Effect, Schema, Option } from "effect";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Effect } from "effect";
 
-import type { ApiInput, ApiOutput } from "@reactlith-template/api-contract";
-import { NumberOutput } from "@reactlith-template/api-contract/features/numbers";
-import { IdBranded } from "@reactlith-template/db/id-branded";
+import type { ApiErrors, ApiInput, ApiOutput } from "@reactlith-template/api-contract";
+import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { toastManager } from "~/components/ui/toast";
 import { getApiClient } from "~/lib/api";
 
-const NumberId = IdBranded("number");
 type Input = ApiInput["numbers"];
 type Output = ApiOutput["numbers"];
+type Errors = ApiErrors["numbers"];
+
+export const allNumbersQueryOptions = queryOptions({
+  queryKey: ["numbers", "getAll"],
+  queryFn: async ({ signal }) => {
+    return await Effect.runPromise(getApiClient().numbers.getAll(), { signal });
+  },
+});
 
 export const numbersAbove50QueryOptions = queryOptions({
   queryKey: ["numbers", "getCountAbove50"],
@@ -31,103 +25,174 @@ export const numbersAbove50QueryOptions = queryOptions({
   },
 });
 
-export const numbersCollectionOptions = collectionOptions("numbers", (client) =>
-  queryCollectionOptions({
-    id: "numbers",
-    queryKey: ["numbers"],
-    queryClient: client.requireDependency<QueryClient>("queryClient"),
-    schema: NumberOutput.pipe(Schema.toType, Schema.toStandardSchemaV1),
-    getKey: (item) => item.id,
-    syncMode: "on-demand",
-    queryFn: async (ctx) => {
-      const opts = parseLoadSubsetOptions(ctx.meta?.loadSubsetOptions);
-      const idFilter = opts.filters[0];
-      if (idFilter && idFilter.field.join(".") === "id" && idFilter.operator === "eq") {
-        const value = Schema.decodeOption(NumberId)(idFilter.value);
-        if (value._tag === "Some") {
-          return await Effect.runPromise(
-            getApiClient()
-              .numbers.get({ params: { id: value.value } })
-              .pipe(
-                Effect.asSome,
-                Effect.catchTag("NumberNotFound", () => Effect.succeedNone),
-                Effect.map(Option.toArray),
-              ),
-            {
-              signal: ctx.signal,
-            },
-          );
-        }
-      }
-      return (await Effect.runPromise(getApiClient().numbers.getAll(), { signal: ctx.signal }))
-        .numbers as Types.Mutable<Output["getAll"]["numbers"]>;
-    },
-    onUpdate: async ({ transaction, collection }) => {
-      const mutation = transaction.mutations[0];
-      const response = await Effect.runPromise(
-        getApiClient().numbers.update({ params: { id: mutation.key }, payload: mutation.changes }),
-      );
-      await collection.utils.writeUpsert(response);
-    },
-    onDelete: async ({ transaction, collection }) => {
-      const mutation = transaction.mutations[0];
-      const response = await Effect.runPromise(
-        getApiClient().numbers.delete({ params: { id: mutation.key } }),
-      );
-      await collection.utils.writeDelete(response.id);
-    },
-  }),
-);
+export const numberQueryKey = {
+  all: () => ["numbers", "get"] as const,
+  byId: (id: IdBranded<"number">) => ["numbers", "get", id] as const,
+};
 
-export function getNumberQuery(dbClient: DbClient, numberId: IdBranded<"number">) {
-  const numbersCollection = dbClient.collection(numbersCollectionOptions);
-  return new Query()
-    .from({ number: numbersCollection })
-    .where(({ number }) => eq(number.id, numberId))
-    .findOne();
-}
-
-export function getAllNumbersQuery(dbClient: DbClient) {
-  const numbersCollection = dbClient.collection(numbersCollectionOptions);
-  return new Query().from({ number: numbersCollection }).orderBy(({ number }) => number.createdAt);
+export function getNumberQueryOptions(input: Input["get"]["params"]) {
+  return queryOptions({
+    queryKey: numberQueryKey.byId(input.id),
+    queryFn: async ({ signal }) => {
+      return await Effect.runPromise(getApiClient().numbers.get({ params: input }), { signal });
+    },
+  });
 }
 
 export function useAddNumber() {
-  const numbersCollection = useDbClient().collection(numbersCollectionOptions);
+  const queryClient = useQueryClient();
 
-  return async (input: Input["create"]["payload"]) => {
-    await Effect.runPromise(
-      getApiClient()
-        .numbers.create({ payload: input })
-        .pipe(
-          Effect.catchTag("MaxCountReached", (error) =>
-            Effect.sync(() => {
-              toastManager.add({
-                title: m.example_maxNumberCountReached(),
-                description: m.example_maxNumberCountReachedDescription({
-                  maxCount: error.maxCount,
-                }),
-                type: "error",
-              });
-            }),
-          ),
-        ),
-    );
-    await numbersCollection.utils.refetch();
-  };
+  return useMutation({
+    mutationFn: async (input: Input["create"]["payload"]) => {
+      return await Effect.runPromise(getApiClient().numbers.create({ payload: input }));
+    },
+    onError: async (error: Errors["create"]) => {
+      if (error._tag === "MaxCountReached") {
+        toastManager.add({
+          title: m.example_maxNumberCountReached(),
+          description: m.example_maxNumberCountReachedDescription({
+            maxCount: error.maxCount,
+          }),
+          type: "error",
+        });
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: allNumbersQueryOptions.queryKey,
+        refetchType: "all",
+      });
+    },
+  });
+}
+
+export function useUpdateNumber() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      input: Input["update"]["params"] & {
+        payload: Input["update"]["payload"];
+      },
+    ) => {
+      return await Effect.runPromise(
+        getApiClient().numbers.update({ params: { id: input.id }, payload: input.payload }),
+      );
+    },
+    onMutate: async (input) => {
+      const detailQueryKey = getNumberQueryOptions({ id: input.id }).queryKey;
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: allNumbersQueryOptions.queryKey }),
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+      ]);
+
+      const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
+      const previousNumber = queryClient.getQueryData(detailQueryKey);
+
+      queryClient.setQueryData(detailQueryKey, (number) =>
+        number ? { ...number, ...input.payload } : number,
+      );
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
+        data
+          ? {
+              numbers: data.numbers.map((number) =>
+                number.id === input.id ? { ...number, ...input.payload } : number,
+              ),
+            }
+          : data,
+      );
+
+      return { detailQueryKey, previousAllNumbers, previousNumber };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, context.previousAllNumbers);
+      queryClient.setQueryData(context.detailQueryKey, context.previousNumber);
+    },
+    onSuccess: async (number) => {
+      queryClient.setQueryData(getNumberQueryOptions({ id: number.id }).queryKey, number);
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
+        data
+          ? {
+              numbers: data.numbers.map((current) => (current.id === number.id ? number : current)),
+            }
+          : data,
+      );
+    },
+  });
+}
+
+export function useDeleteNumber() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: Input["delete"]["params"]) => {
+      return await Effect.runPromise(getApiClient().numbers.delete({ params: input }));
+    },
+    onMutate: async ({ id }) => {
+      const detailQueryKey = getNumberQueryOptions({ id }).queryKey;
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: allNumbersQueryOptions.queryKey }),
+        queryClient.cancelQueries({ queryKey: detailQueryKey }),
+      ]);
+
+      const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
+      const previousNumber = queryClient.getQueryData(detailQueryKey);
+
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
+        data ? { numbers: data.numbers.filter((number) => number.id !== id) } : data,
+      );
+      queryClient.removeQueries({ queryKey: detailQueryKey });
+
+      return { detailQueryKey, previousAllNumbers, previousNumber };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, context.previousAllNumbers);
+      if (context.previousNumber) {
+        queryClient.setQueryData(context.detailQueryKey, context.previousNumber);
+      }
+    },
+    onSuccess: async ({ id }) => {
+      queryClient.removeQueries({ queryKey: getNumberQueryOptions({ id }).queryKey });
+    },
+  });
 }
 
 export function useDeleteAllNumbers() {
-  const numbersCollection = useDbClient().collection(numbersCollectionOptions);
-  return createOptimisticAction<void>({
-    onMutate: () => {
-      const keys = [...numbersCollection.keys()];
-      if (keys.length === 0) return;
-      numbersCollection.delete(keys);
-    },
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: async () => {
-      await Effect.runPromise(getApiClient().numbers.deleteAll());
-      await numbersCollection.utils.refetch();
+      return await Effect.runPromise(getApiClient().numbers.deleteAll());
+    },
+    onMutate: async () => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: allNumbersQueryOptions.queryKey }),
+        queryClient.cancelQueries({ queryKey: numberQueryKey.all() }),
+      ]);
+
+      const previousAllNumbers = queryClient.getQueryData(allNumbersQueryOptions.queryKey);
+      const previousNumbers = queryClient.getQueriesData<Output["get"]>({
+        queryKey: numberQueryKey.all(),
+      });
+
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, (data) =>
+        data ? { numbers: [] } : data,
+      );
+      queryClient.removeQueries({ queryKey: numberQueryKey.all() });
+
+      return { previousAllNumbers, previousNumbers };
+    },
+    onError: (_error, _input, context) => {
+      if (!context) return;
+      queryClient.setQueryData(allNumbersQueryOptions.queryKey, context.previousAllNumbers);
+      for (const [queryKey, number] of context.previousNumbers) {
+        queryClient.setQueryData(queryKey, number);
+      }
+    },
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: numberQueryKey.all() });
     },
   });
 }

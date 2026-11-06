@@ -61,6 +61,21 @@ layer(
   );
 
   it.effect(
+    "gets numbers ordered by creation time ascending",
+    Effect.fn(function* () {
+      yield* seedUsers;
+      const newest = yield* insertNumber(3, new Date("2026-01-03T00:00:00.000Z"));
+      const oldest = yield* insertNumber(1, new Date("2026-01-01T00:00:00.000Z"));
+      const middle = yield* insertNumber(2, new Date("2026-01-02T00:00:00.000Z"));
+      const repo = yield* NumberRepo;
+
+      const result = yield* repo.getAll();
+
+      expect(result).toEqual([oldest, middle, newest]);
+    }),
+  );
+
+  it.effect(
     "counts owned numbers",
     Effect.fn(function* () {
       yield* seedUsers;

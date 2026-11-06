@@ -1,4 +1,4 @@
-import { useDbClient, useLiveSuspenseQuery } from "@tanstack/react-db";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
@@ -28,13 +28,17 @@ import {
 } from "~/components/ui/dialog";
 import { useSession, useSignout } from "~/lib/auth";
 import {
-  getAllNumbersQuery,
-  numbersCollectionOptions,
+  allNumbersQueryOptions,
   useAddNumber,
   useDeleteAllNumbers,
+  useDeleteNumber,
+  useUpdateNumber,
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/")({
+  loader: async ({ context: { queryClient } }) => {
+    await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
+  },
   component: RouteComponent,
 });
 
@@ -50,17 +54,17 @@ const CustomNumberFormSchema = Schema.toStandardSchemaV1(
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
   const session = useSession();
-  const dbClient = useDbClient();
-  const numbersCollection = dbClient.collection(numbersCollectionOptions);
-  const numbers = useLiveSuspenseQuery({ query: getAllNumbersQuery(dbClient) });
+  const numbers = useSuspenseQuery(allNumbersQueryOptions);
   const addNumber = useAddNumber();
+  const updateNumber = useUpdateNumber();
+  const deleteNumber = useDeleteNumber();
   const deleteAllNumbers = useDeleteAllNumbers();
   const signout = useSignout();
   const customNumberForm = useAppForm({
     defaultValues: { number: "" },
     validators: { onSubmit: CustomNumberFormSchema },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber(Schema.decodeSync(CustomNumberFormSchema)(value));
+      await addNumber.mutateAsync(Schema.decodeSync(CustomNumberFormSchema)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },
@@ -79,7 +83,7 @@ function RouteComponent() {
       <div className="flex flex-wrap justify-center gap-3">
         <Button
           variant="outline"
-          onClick={() => void addNumber({ number: Math.floor(Math.random() * 100) })}
+          onClick={() => addNumber.mutate({ number: Math.floor(Math.random() * 100) })}
         >
           {m.example_addNumber()}
         </Button>
@@ -120,7 +124,7 @@ function RouteComponent() {
             </customNumberForm.AppForm>
           </DialogPopup>
         </Dialog>
-        <Button variant="outline" onClick={() => deleteAllNumbers()}>
+        <Button variant="outline" onClick={() => deleteAllNumbers.mutate()}>
           {m.example_deleteAllNumbers()}
         </Button>
         <Button
@@ -133,17 +137,17 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {numbers.data.map((number) => (
+        {numbers.data.numbers.map((number) => (
           <div key={number.id} className="flex items-center gap-2">
             <p className="min-w-8 flex-1 text-xl font-bold">{number.number}</p>
             <Button
               size="icon"
               variant="outline"
               onClick={() =>
-                numbersCollection.update(
-                  number.id,
-                  (draft) => (draft.number = Math.floor(Math.random() * 100)),
-                )
+                updateNumber.mutate({
+                  id: number.id,
+                  payload: { number: Math.floor(Math.random() * 100) },
+                })
               }
             >
               <PencilIcon />
@@ -151,7 +155,7 @@ function RouteComponent() {
             <Button
               size="icon"
               variant="destructive-outline"
-              onClick={() => numbersCollection.delete(number.id)}
+              onClick={() => deleteNumber.mutate({ id: number.id })}
             >
               <Trash2Icon />
             </Button>

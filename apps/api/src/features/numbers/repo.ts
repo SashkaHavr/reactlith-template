@@ -26,6 +26,7 @@ export class NumberRepo extends Context.Service<NumberRepo>()("api/NumberRepo", 
           .findMany({
             columns: { id: true, number: true, createdAt: true, updatedAt: true },
             where: { userId: { eq: userId } },
+            orderBy: { createdAt: "asc", id: "asc" },
           })
           .pipe(Effect.orDie);
       }),

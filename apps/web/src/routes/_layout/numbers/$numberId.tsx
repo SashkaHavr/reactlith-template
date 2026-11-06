@@ -1,22 +1,29 @@
-import { queryOnce, useDbClient, useLiveSuspenseQuery } from "@tanstack/react-db";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/react-router";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
+import type { ApiErrors } from "@reactlith-template/api-contract";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { Button, LinkButton } from "~/components/ui/button";
 import { useSession, useSignout } from "~/lib/auth";
-import { getNumberQuery, numbersCollectionOptions } from "~/queries/numbers";
+import { getNumberQueryOptions, useDeleteNumber, useUpdateNumber } from "~/queries/numbers";
 
 const NumberId = IdBranded("number");
 
 export const Route = createFileRoute("/_layout/numbers/$numberId")({
-  loader: async ({ context: { dbClient }, params }) => {
+  loader: async ({ context: { queryClient }, params }) => {
     const numberId = NumberId.make(params.numberId);
-    const number = await queryOnce({ query: getNumberQuery(dbClient, numberId) });
-    if (number === undefined) {
-      throw notFound();
+
+    try {
+      await queryClient.query({ ...getNumberQueryOptions({ id: numberId }), staleTime: "static" });
+    } catch (err) {
+      const error = err as ApiErrors["numbers"]["get"];
+      if (error._tag === "NumberNotFound") {
+        throw notFound();
+      }
+      throw error;
     }
     return { numberId };
   },
@@ -28,12 +35,9 @@ function RouteComponent() {
   const navigate = useNavigate();
   const session = useSession();
   const hydrated = useHydrated();
-  const dbClient = useDbClient();
-  const numbersCollection = dbClient.collection(numbersCollectionOptions);
-  const { data: number } = useLiveSuspenseQuery({ query: getNumberQuery(dbClient, numberId) });
-  if (number === undefined) {
-    throw notFound();
-  }
+  const number = useSuspenseQuery(getNumberQueryOptions({ id: numberId }));
+  const updateNumber = useUpdateNumber();
+  const deleteNumber = useDeleteNumber();
   const signout = useSignout();
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
     dateStyle: "long",
@@ -58,10 +62,10 @@ function RouteComponent() {
         <Button
           variant="outline"
           onClick={() =>
-            numbersCollection.update(
-              numberId,
-              (draft) => (draft.number = Math.floor(Math.random() * 100)),
-            )
+            updateNumber.mutate({
+              id: numberId,
+              payload: { number: Math.floor(Math.random() * 100) },
+            })
           }
         >
           <PencilIcon />
@@ -70,7 +74,7 @@ function RouteComponent() {
         <Button
           variant="destructive-outline"
           onClick={() =>
-            void navigate({ to: "/numbers" }).then(() => numbersCollection.delete(numberId))
+            void navigate({ to: "/numbers" }).then(() => deleteNumber.mutate({ id: numberId }))
           }
         >
           <Trash2Icon />
@@ -78,13 +82,15 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex w-full flex-col items-center gap-6">
-        <p className="text-4xl font-bold">{number.number}</p>
+        <p className="text-4xl font-bold">{number.data.number}</p>
         <div className="grid grid-cols-[minmax(auto,_360px)] grid-rows-2 gap-2 text-left">
           <p>
-            {m.example_createdAt()}: {hydrated && dateFormatter.format(new Date(number.createdAt))}
+            {m.example_createdAt()}:{" "}
+            {hydrated && dateFormatter.format(new Date(number.data.createdAt))}
           </p>
           <p>
-            {m.example_updatedAt()}: {hydrated && dateFormatter.format(new Date(number.updatedAt))}
+            {m.example_updatedAt()}:{" "}
+            {hydrated && dateFormatter.format(new Date(number.data.updatedAt))}
           </p>
         </div>
       </div>
