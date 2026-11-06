@@ -1,8 +1,12 @@
-import { Effect, Schema } from "effect";
+import { Effect } from "effect";
 import { AsyncResult, Atom } from "effect/reactivity";
 
 import type { ApiInput } from "@reactlith-template/api-contract";
-import { NumberOutput } from "@reactlith-template/api-contract/features/numbers";
+import {
+  NumbersGetAllOutput,
+  NumbersGetOutput,
+  NumbersGetCountAbove50Output,
+} from "@reactlith-template/api-contract/features/numbers";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { toastManager } from "~/components/ui/toast";
@@ -13,9 +17,7 @@ type Input = ApiInput["numbers"];
 export const allNumbersAtom = Atom.make(() => getApiClient().numbers.getAll()).pipe(
   Atom.serializable({
     key: "numbers/getAll",
-    schema: AsyncResult.Schema({
-      success: Schema.Struct({ numbers: Schema.Array(NumberOutput) }),
-    }),
+    schema: AsyncResult.Schema({ success: NumbersGetAllOutput }),
     skipInitialRun: true,
   }),
   Atom.swr({
@@ -28,9 +30,7 @@ export const allNumbersAtom = Atom.make(() => getApiClient().numbers.getAll()).p
 export const numbersAbove50Atom = Atom.make(() => getApiClient().numbers.getCountAbove50()).pipe(
   Atom.serializable({
     key: "numbers/getCountAbove50",
-    schema: AsyncResult.Schema({
-      success: Schema.Struct({ count: Schema.Natural }),
-    }),
+    schema: AsyncResult.Schema({ success: NumbersGetCountAbove50Output }),
     skipInitialRun: true,
   }),
   Atom.swr({
@@ -44,7 +44,7 @@ export const numberAtom = Atom.family((id: IdBranded<"number">) =>
   Atom.make(() => getApiClient().numbers.get({ params: { id } })).pipe(
     Atom.serializable({
       key: `numbers/get/${id}`,
-      schema: AsyncResult.Schema({ success: NumberOutput }),
+      schema: AsyncResult.Schema({ success: NumbersGetOutput }),
       skipInitialRun: true,
     }),
     Atom.swr({

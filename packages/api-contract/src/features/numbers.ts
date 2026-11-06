@@ -17,28 +17,29 @@ export class MaxCountReached extends Schema.TaggedError<MaxCountReached>()(
 ) {}
 
 export const NumberValue = Schema.Int.check(Schema.isBetween({ minimum: 0, maximum: 100 }));
-export const NumberOutput = Schema.Struct({
+export const NumbersGetOutput = Schema.Struct({
   id: IdBranded("number"),
   number: NumberValue,
   createdAt: Schema.DateFromString,
   updatedAt: Schema.DateFromString,
 });
 
+export const NumbersGetAllOutput = Schema.Struct({ numbers: Schema.Array(NumbersGetOutput) });
+export const NumbersGetCountAbove50Output = Schema.Struct({ count: Schema.Natural });
+
 export class NumbersApi extends HttpApiGroup.make("numbers")
   .add(
     HttpApiEndpoint.get("getAll", "/", {
-      success: Schema.Struct({
-        numbers: Schema.Array(NumberOutput),
-      }),
+      success: NumbersGetAllOutput,
     }),
     HttpApiEndpoint.get("get", "/:id", {
       params: Schema.Struct({ id: IdBranded("number") }),
-      success: NumberOutput,
+      success: NumbersGetOutput,
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.post("create", "/", {
       payload: Schema.Struct({ number: NumberValue }),
-      success: NumberOutput,
+      success: NumbersGetOutput,
       error: [MaxCountReached],
     }),
     HttpApiEndpoint.patch("update", "/:id", {
@@ -46,7 +47,7 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
       payload: Schema.Struct({ number: Schema.optionalKey(NumberValue) }).check(
         Schema.isMinProperties(1),
       ),
-      success: NumberOutput,
+      success: NumbersGetOutput,
       error: [NumberNotFound],
     }),
     HttpApiEndpoint.delete("delete", "/:id", {
@@ -61,7 +62,7 @@ export class NumbersApi extends HttpApiGroup.make("numbers")
   .middleware(AuthenticationMiddleware)
   .add(
     HttpApiEndpoint.get("getCountAbove50", "/count-above-50", {
-      success: Schema.Struct({ count: Schema.Natural }),
+      success: NumbersGetCountAbove50Output,
     }),
   )
   .prefix("/numbers") {}

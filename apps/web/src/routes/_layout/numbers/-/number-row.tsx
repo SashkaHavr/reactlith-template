@@ -1,11 +1,11 @@
 import { useAtomSet } from "@effect/atom-react";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
-import type { NumberOutput } from "@reactlith-template/api-contract/features/numbers";
+import type { NumbersGetOutput } from "@reactlith-template/api-contract/features/numbers";
 import { Button, LinkButton } from "~/components/ui/button";
 import { deleteNumberAtom, updateNumberAtom } from "~/queries/numbers";
 
-export function NumberRow({ number }: { number: typeof NumberOutput.Type }) {
+export function NumberRow({ number }: { number: typeof NumbersGetOutput.Type }) {
   const updateNumber = useAtomSet(updateNumberAtom(number.id));
   const deleteNumber = useAtomSet(deleteNumberAtom(number.id));
 
