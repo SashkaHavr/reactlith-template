@@ -1,13 +1,13 @@
 import { useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/react-router";
+import { Effect } from "effect";
+import { AtomRegistry } from "effect/reactivity";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
-import type { ApiErrors } from "@reactlith-template/api-contract";
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { Button, LinkButton } from "~/components/ui/button";
-import { readAtom } from "~/lib/atom";
 import { useSession, useSignout } from "~/lib/auth";
 import { numberAtom, deleteNumberAtom, updateNumberAtom } from "~/queries/numbers";
 
@@ -17,15 +17,12 @@ export const Route = createFileRoute("/_layout/numbers/$numberId")({
   loader: async ({ context: { registry }, params, abortController }) => {
     const numberId = NumberId.make(params.numberId);
 
-    try {
-      await readAtom(registry, numberAtom(numberId), abortController.signal);
-    } catch (err) {
-      const error = err as ApiErrors["numbers"]["get"];
-      if (error._tag === "NumberNotFound") {
-        throw notFound();
-      }
-      throw error;
-    }
+    await Effect.runPromise(
+      AtomRegistry.getResult(registry, numberAtom(numberId)).pipe(
+        Effect.catchTag("NumberNotFound", () => Effect.fail(notFound())),
+      ),
+      { signal: abortController.signal },
+    );
     return { numberId };
   },
   component: RouteComponent,
@@ -37,8 +34,8 @@ function RouteComponent() {
   const session = useSession();
   const hydrated = useHydrated();
   const number = useAtomSuspense(numberAtom(numberId)).value;
-  const updateNumber = useAtomSet(updateNumberAtom);
-  const deleteNumber = useAtomSet(deleteNumberAtom);
+  const updateNumber = useAtomSet(updateNumberAtom(numberId));
+  const deleteNumber = useAtomSet(deleteNumberAtom(numberId));
   const signout = useSignout();
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
     dateStyle: "long",
@@ -51,7 +48,7 @@ function RouteComponent() {
         <p>
           {m.example_user()}: {session.user.email}
         </p>
-        <Button variant="outline" onClick={signout}>
+        <Button variant="outline" onClick={() => void signout()}>
           {m.example_logout()}
         </Button>
       </div>
@@ -62,21 +59,14 @@ function RouteComponent() {
         </LinkButton>
         <Button
           variant="outline"
-          onClick={() =>
-            updateNumber({
-              id: numberId,
-              payload: { number: Math.floor(Math.random() * 100) },
-            })
-          }
+          onClick={() => updateNumber({ number: Math.floor(Math.random() * 100) })}
         >
           <PencilIcon />
           {m.example_updateNumber()}
         </Button>
         <Button
           variant="destructive-outline"
-          onClick={() =>
-            void navigate({ to: "/numbers" }).then(() => deleteNumber({ id: numberId }))
-          }
+          onClick={() => void navigate({ to: "/numbers" }).then(() => deleteNumber())}
         >
           <Trash2Icon />
           {m.example_deleteNumber()}

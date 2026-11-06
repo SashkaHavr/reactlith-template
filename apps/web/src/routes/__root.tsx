@@ -1,6 +1,8 @@
 /// <reference types="vite/client" />
 
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { Effect } from "effect";
+import { AtomRegistry } from "effect/reactivity";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
@@ -8,8 +10,7 @@ import type { ReactNode } from "react";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { getTheme, syncMetaThemeColor, ThemeScript, useSyncTheme } from "~/components/theme";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
-import { readAtom } from "~/lib/atom";
-import { loadSession } from "~/lib/auth";
+import { sessionAtom } from "~/lib/auth";
 import type { RouterContext } from "~/lib/context";
 import { authConfigAtom } from "~/queries/config";
 import { getServerLog } from "~/utils/log";
@@ -18,10 +19,16 @@ import indexCss from "../index.css?url";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context: { registry }, abortController }) => {
-    const [authConfig, session] = await Promise.all([
-      readAtom(registry, authConfigAtom, abortController.signal),
-      loadSession(registry),
-    ]);
+    const [authConfig, session] = await Effect.runPromise(
+      Effect.all(
+        [
+          AtomRegistry.getResult(registry, authConfigAtom),
+          AtomRegistry.getResult(registry, sessionAtom),
+        ],
+        { concurrency: "unbounded" },
+      ),
+      { signal: abortController.signal },
+    );
 
     if (session.loggedIn) {
       getServerLog()?.set({ user: { id: session.user.id, role: session.user.role } });

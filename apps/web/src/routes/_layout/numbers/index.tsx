@@ -1,7 +1,7 @@
-import { useAtomSet, useAtomSuspense, useAtomValue } from "@effect/atom-react";
+import { useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Schema } from "effect";
-import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { Effect, Schema } from "effect";
+import { AtomRegistry } from "effect/reactivity";
 import { useState } from "react";
 
 import { NumberValue } from "@reactlith-template/api-contract/features/numbers";
@@ -15,7 +15,7 @@ import {
   FormSubmitButton,
   useAppForm,
 } from "~/components/form";
-import { Button, LinkButton } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -26,19 +26,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
-import { readAtom } from "~/lib/atom";
 import { useSession, useSignout } from "~/lib/auth";
-import {
-  allNumbersAtom,
-  addNumberAtom,
-  deleteAllNumbersAtom,
-  deleteNumberAtom,
-  updateNumberAtom,
-} from "~/queries/numbers";
+import { allNumbersAtom, addNumberAtom, deleteAllNumbersAtom } from "~/queries/numbers";
+
+import { NumberRow } from "./-/number-row";
 
 export const Route = createFileRoute("/_layout/numbers/")({
   loader: async ({ context: { registry }, abortController }) => {
-    await readAtom(registry, allNumbersAtom, abortController.signal);
+    await Effect.runPromise(AtomRegistry.getResult(registry, allNumbersAtom), {
+      signal: abortController.signal,
+    });
   },
   component: RouteComponent,
 });
@@ -58,9 +55,6 @@ function RouteComponent() {
   const numbers = useAtomSuspense(allNumbersAtom).value;
   const addNumber = useAtomSet(addNumberAtom);
   const addNumberAsync = useAtomSet(addNumberAtom, { mode: "promise" });
-  const addingNumber = useAtomValue(addNumberAtom).waiting;
-  const updateNumber = useAtomSet(updateNumberAtom);
-  const deleteNumber = useAtomSet(deleteNumberAtom);
   const deleteAllNumbers = useAtomSet(deleteAllNumbersAtom);
   const signout = useSignout();
   const customNumberForm = useAppForm({
@@ -79,14 +73,13 @@ function RouteComponent() {
         <p>
           {m.example_user()}: {session.user.email}
         </p>
-        <Button variant="outline" onClick={signout}>
+        <Button variant="outline" onClick={() => void signout()}>
           {m.example_logout()}
         </Button>
       </div>
       <div className="flex flex-wrap justify-center gap-3">
         <Button
           variant="outline"
-          disabled={addingNumber}
           onClick={() => addNumber({ number: Math.floor(Math.random() * 100) })}
         >
           {m.example_addNumber()}
@@ -122,7 +115,7 @@ function RouteComponent() {
                 </DialogPanel>
                 <DialogFooter>
                   <DialogClose render={<Button variant="ghost" />}>Cancel</DialogClose>
-                  <fieldset disabled={addingNumber} className="contents">
+                  <fieldset className="contents">
                     <FormSubmitButton>{m.example_submit()}</FormSubmitButton>
                   </fieldset>
                 </DialogFooter>
@@ -144,36 +137,7 @@ function RouteComponent() {
       </div>
       <div className="flex flex-col gap-2">
         {numbers.numbers.map((number) => (
-          <div key={number.id} className="flex items-center gap-2">
-            <p className="min-w-8 flex-1 text-xl font-bold">{number.number}</p>
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={() =>
-                updateNumber({
-                  id: number.id,
-                  payload: { number: Math.floor(Math.random() * 100) },
-                })
-              }
-            >
-              <PencilIcon />
-            </Button>
-            <Button
-              size="icon"
-              variant="destructive-outline"
-              onClick={() => deleteNumber({ id: number.id })}
-            >
-              <Trash2Icon />
-            </Button>
-            <LinkButton
-              params={{ numberId: number.id }}
-              size="icon"
-              to="/numbers/$numberId"
-              variant="outline"
-            >
-              <ArrowRightIcon />
-            </LinkButton>
-          </div>
+          <NumberRow key={number.id} number={number} />
         ))}
       </div>
     </div>

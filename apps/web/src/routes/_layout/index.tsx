@@ -1,12 +1,11 @@
 import { useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Effect } from "effect";
-import { Atom } from "effect/reactivity";
+import { Atom, AtomRegistry } from "effect/reactivity";
 
 import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
-import { readAtom } from "~/lib/atom";
 import { getAuthClient } from "~/lib/auth";
 import { authConfigAtom } from "~/queries/config";
 import { numbersAbove50Atom } from "~/queries/numbers";
@@ -27,7 +26,9 @@ export const Route = createFileRoute("/_layout/")({
     }
   },
   loader: async ({ context: { registry }, abortController }) => {
-    await readAtom(registry, numbersAbove50Atom, abortController.signal);
+    await Effect.runPromise(AtomRegistry.getResult(registry, numbersAbove50Atom), {
+      signal: abortController.signal,
+    });
   },
   component: RouteComponent,
 });

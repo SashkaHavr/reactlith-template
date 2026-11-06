@@ -1,13 +1,12 @@
-import { RegistryContext, useAtomSet, useAtomValue } from "@effect/atom-react";
+import { RegistryContext, useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { useRouter } from "@tanstack/react-router";
 import {
   createClientOnlyFn,
   createIsomorphicFn,
   getGlobalStartContext,
 } from "@tanstack/react-start";
-import { Effect } from "effect";
-import { Atom } from "effect/reactivity";
-import type { AtomRegistry } from "effect/reactivity";
+import { Effect, Schema } from "effect";
+import { AsyncResult, Atom } from "effect/reactivity";
 import { useContext } from "react";
 
 import { createAuthClient as createAuthClientBase } from "@reactlith-template/auth/client";
@@ -20,7 +19,9 @@ export const getAuthClient = createIsomorphicFn()
   .server(() => getGlobalStartContext()!.authClient)
   .client(() => (authClient ??= createAuthClient()));
 
-function resolveSession<T>(session: T) {
+function resolveSession(
+  session: Awaited<ReturnType<ReturnType<typeof getAuthClient>["getSession"]>>,
+) {
   if (session === null || session === undefined) {
     return {
       loggedIn: false as const,
@@ -28,29 +29,45 @@ function resolveSession<T>(session: T) {
   }
   return {
     loggedIn: true as const,
-    ...session,
+    user: {
+      id: session.user.id,
+      email: session.user.email,
+      role: session.user.role,
+    },
   };
 }
 
-type Session = ReturnType<
-  typeof resolveSession<Awaited<ReturnType<ReturnType<typeof getAuthClient>["getSession"]>>>
->;
-
-export const sessionAtom = Atom.make<
-  { readonly value: Session; readonly updatedAt: number } | undefined
->(undefined).pipe(Atom.keepAlive);
-
-export async function loadSession(registry: AtomRegistry.AtomRegistry) {
-  const cached = registry.get(sessionAtom);
-  if (cached !== undefined && Date.now() - cached.updatedAt < 5 * 60 * 1000) return cached.value;
-  const session = resolveSession(await getAuthClient().getSession());
-  registry.set(sessionAtom, { value: session, updatedAt: Date.now() });
-  return session;
-}
+export const sessionAtom = Atom.make(() =>
+  Effect.tryPromise(async () => resolveSession(await getAuthClient().getSession())),
+).pipe(
+  Atom.serializable({
+    key: "auth/session",
+    schema: AsyncResult.Schema({
+      success: Schema.Union([
+        Schema.Struct({ loggedIn: Schema.Literal(false) }),
+        Schema.Struct({
+          loggedIn: Schema.Literal(true),
+          user: Schema.Struct({
+            id: Schema.String,
+            email: Schema.String,
+            role: Schema.String.pipe(Schema.NullishOr),
+          }),
+        }),
+      ]),
+    }),
+    skipInitialRun: true,
+  }),
+  Atom.keepAlive,
+  Atom.swr({
+    staleTime: "5 minutes",
+    revalidateOnFocus: true,
+    focusSignal: Atom.windowFocusSignal,
+  }),
+);
 
 export function useSession() {
-  const session = useAtomValue(sessionAtom)?.value;
-  if (!session?.loggedIn) {
+  const session = useAtomSuspense(sessionAtom).value;
+  if (!session.loggedIn) {
     throw new Error("User is not logged in");
   }
   return session;
@@ -68,13 +85,10 @@ export function useSignout() {
   const signout = useAtomSet(signoutAtom, { mode: "promise" });
   const router = useRouter();
 
-  return () => {
-    void signout()
-      .then(async () => {
-        registry.reset();
-        registry.preloadedSerializable.clear();
-        await router.invalidate();
-      })
-      .catch(() => undefined);
+  return async () => {
+    await signout();
+    registry.reset();
+    registry.preloadedSerializable.clear();
+    await router.invalidate();
   };
 }

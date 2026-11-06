@@ -1,6 +1,8 @@
 import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, Outlet, useHydrated, useRouter } from "@tanstack/react-router";
 import { cn } from "cn";
+import { Effect } from "effect";
+import { AtomRegistry } from "effect/reactivity";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -10,12 +12,13 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useSetTheme, useTheme } from "~/components/theme";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { readAtom } from "~/lib/atom";
 import { healthReadyAtom } from "~/queries/config";
 
 export const Route = createFileRoute("/_layout")({
   loader: async ({ context: { registry }, abortController }) => {
-    await readAtom(registry, healthReadyAtom, abortController.signal);
+    await Effect.runPromise(AtomRegistry.getResult(registry, healthReadyAtom), {
+      signal: abortController.signal,
+    });
   },
   component: RouteComponent,
 });
