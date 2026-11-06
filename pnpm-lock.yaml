@@ -164,6 +164,9 @@ settings:
 
 catalogs:
   default:
+    '@effect/atom-react':
+      specifier: 4.1.1
+      version: 4.1.1
     '@effect/opentelemetry':
       specifier: 4.1.1
       version: 4.1.1
@@ -200,15 +203,9 @@ catalogs:
     '@tanstack/react-form':
       specifier: 1.33.5
       version: 1.33.5
-    '@tanstack/react-query':
-      specifier: 5.105.0
-      version: 5.105.0
     '@tanstack/react-router':
       specifier: 1.170.46
       version: 1.170.46
-    '@tanstack/react-router-ssr-query':
-      specifier: 1.167.3
-      version: 1.167.3
     '@tanstack/react-start':
       specifier: 1.169.4
       version: 1.169.4
@@ -383,6 +380,9 @@ importers:
       '@base-ui/react':
         specifier: 1.9.0
         version: 1.9.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@effect/atom-react':
+        specifier: 'catalog:'
+        version: 4.1.1(effect@4.1.1)(react@19.3.1)(scheduler@0.28.0)
       '@fontsource-variable/geist':
         specifier: 5.3.0
         version: 5.3.0
@@ -419,15 +419,9 @@ importers:
       '@tanstack/react-form':
         specifier: 'catalog:'
         version: 1.33.5(@tanstack/react-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(jiti@2.7.0)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@tanstack/react-query':
-        specifier: 'catalog:'
-        version: 5.105.0(@types/react@19.3.0)(react@19.3.1)
       '@tanstack/react-router':
         specifier: 'catalog:'
         version: 1.170.46(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@tanstack/react-router-ssr-query':
-        specifier: 'catalog:'
-        version: 1.167.3(@tanstack/query-core@5.105.0)(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.1))(@tanstack/react-router@1.170.46(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@tanstack/router-core@1.171.39)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@tanstack/react-start':
         specifier: 'catalog:'
         version: 1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(jiti@2.7.0)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -860,6 +854,13 @@ packages:
 
   '@bytecodealliance/preview3-shim@0.6.1':
     resolution: {integrity: sha512-61mEfjfgGmZhEMA0H3waawPKvYd3za9y0vJ7pmQz/9yvm4FR6Ef+cmqhnxDE7ezsM07MY1btP92ymmgsgFwxmg==}
+
+  '@effect/atom-react@4.1.1':
+    resolution: {integrity: sha512-62YWG+Wg93SMYAbYx1zc74VE0u+MHWl5EthFXk0WUP7Kv1qb2Mvfg2C75jnp2oce7vN5WA9uiQZrgXjdqMYChw==}
+    peerDependencies:
+      effect: ^4.1.1
+      react: '>=19.0.0 <20.0.0'
+      scheduler: '>=0.25.0 <0.29.0'
 
   '@effect/opentelemetry@4.1.1':
     resolution: {integrity: sha512-JmygxQy2BLHekSZk81gtFIUJOw7X9c8OoUslnFLH5Q7XghkoEU1MB9Lt2M/aKvOruzAWwf7OvPv7fGI7AJokiQ==}
@@ -1866,9 +1867,6 @@ packages:
     resolution: {integrity: sha512-y/xtNPNt/YeyoVxE/JCx+T7yjEzpezmbb+toK8DDD1P4m7Kzs5YR956+7OKexG3f8aXgC3rLZl7b1V+yNUSy5w==}
     engines: {node: '>=18'}
 
-  '@tanstack/query-core@5.105.0':
-    resolution: {integrity: sha512-7p56vRmT/z4UJ6sctGIdl5WRUQyUv53IUpUwEKi2g97zMbO7zh8ZsCLffGAvCPBR4xD72e3VXsDyLwXHhoNTMQ==}
-
   '@tanstack/react-form@1.33.5':
     resolution: {integrity: sha512-LlRB28qJwO/QCGaHvWnbdh4haBgTFiZVmzA2uzxSBS3YA7/IqrQ6HOBK70CkFQ+DbflZ7NawsmSln13h5iIdTA==}
     peerDependencies:
@@ -1877,25 +1875,6 @@ packages:
     peerDependenciesMeta:
       '@tanstack/react-start':
         optional: true
-
-  '@tanstack/react-query@5.105.0':
-    resolution: {integrity: sha512-y+hMuDERvgg6ay1da0V1a6ZC0ZONt7dELxSFkqRZuwm7p1TTZs0MoXrPlBRflIpRoYjvzQVYxycnLImpFLhWrw==}
-    peerDependencies:
-      '@types/react': ^18 || ^19
-      react: ^18 || ^19
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-
-  '@tanstack/react-router-ssr-query@1.167.3':
-    resolution: {integrity: sha512-HA0pxuPuhU+rwoe+z1Xcbytuoo6ZbcROpgNgNSm38s3/hGLmgzOBLzDg+Vyx6ex26QilnPbZ+5Ypet5mImm9bQ==}
-    engines: {node: '>=20.19'}
-    peerDependencies:
-      '@tanstack/query-core': '>=5.102.0'
-      '@tanstack/react-query': '>=5.102.0'
-      '@tanstack/react-router': '>=1.170.33'
-      react: '>=18.0.0 || >=19.0.0'
-      react-dom: '>=18.0.0 || >=19.0.0'
 
   '@tanstack/react-router@1.170.46':
     resolution: {integrity: sha512-ez1iNIhsPjGlaDHg3BXWs67EWVIYzB2tbopEHYDESdkO7owgkGb5de52+5Kv2v1fxdkggcNzo35bdk4arTVGQw==}
@@ -1986,13 +1965,6 @@ packages:
         optional: true
       webpack:
         optional: true
-
-  '@tanstack/router-ssr-query-core@1.169.3':
-    resolution: {integrity: sha512-0EE3mFa753mExMJEfWhZMi+EKViSLmZHoiYADZJzr5+2S/T4T12soHg8fMn67jCvDwL2dpd1mE7aL/XXzDPfhA==}
-    engines: {node: '>=20.19'}
-    peerDependencies:
-      '@tanstack/query-core': '>=5.102.0'
-      '@tanstack/router-core': '>=1.171.28'
 
   '@tanstack/router-utils@1.162.4':
     resolution: {integrity: sha512-3TSH3rwAQTqQOtTBF8IXMFXmGNJWnjwIm+l87uguyC/of0pSRKcU9GJrozaf0fY9it8dLQvUZJA2MOlfqbW1sA==}
@@ -3889,6 +3861,12 @@ snapshots:
       '@bytecodealliance/jco-node-fs': 0.3.2
       '@bytecodealliance/preview2-shim': 0.25.0
 
+  '@effect/atom-react@4.1.1(effect@4.1.1)(react@19.3.1)(scheduler@0.28.0)':
+    dependencies:
+      effect: 4.1.1
+      react: 19.3.1
+      scheduler: 0.28.0
+
   '@effect/opentelemetry@4.1.1(@opentelemetry/api-logs@0.223.0)(@opentelemetry/api@1.10.0)(@opentelemetry/sdk-trace-base@2.12.0(@opentelemetry/api@1.10.0))(@opentelemetry/sdk-trace-node@2.12.0(@opentelemetry/api@1.10.0))(@opentelemetry/semantic-conventions@1.44.0)(effect@4.1.1)':
     dependencies:
       '@opentelemetry/semantic-conventions': 1.44.0
@@ -4555,8 +4533,6 @@ snapshots:
 
   '@tanstack/pacer-lite@0.1.1': {}
 
-  '@tanstack/query-core@5.105.0': {}
-
   '@tanstack/react-form@1.33.5(@tanstack/react-start@1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(jiti@2.7.0)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@tanstack/form-core': 1.33.5
@@ -4566,24 +4542,6 @@ snapshots:
       '@tanstack/react-start': 1.169.4(@voidzero-dev/vite-plus-core@1.4.0(@types/node@26.6.6)(jiti@2.7.0)(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     transitivePeerDependencies:
       - react-dom
-
-  '@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.1)':
-    dependencies:
-      '@tanstack/query-core': 5.105.0
-      react: 19.3.1
-    optionalDependencies:
-      '@types/react': 19.3.0
-
-  '@tanstack/react-router-ssr-query@1.167.3(@tanstack/query-core@5.105.0)(@tanstack/react-query@5.105.0(@types/react@19.3.0)(react@19.3.1))(@tanstack/react-router@1.170.46(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@tanstack/router-core@1.171.39)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
-    dependencies:
-      '@tanstack/query-core': 5.105.0
-      '@tanstack/react-query': 5.105.0(@types/react@19.3.0)(react@19.3.1)
-      '@tanstack/react-router': 1.170.46(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@tanstack/router-ssr-query-core': 1.169.3(@tanstack/query-core@5.105.0)(@tanstack/router-core@1.171.39)
-      react: 19.3.1
-      react-dom: 19.3.1(react@19.3.1)
-    transitivePeerDependencies:
-      - '@tanstack/router-core'
 
   '@tanstack/react-router@1.170.46(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
@@ -4713,11 +4671,6 @@ snapshots:
       - rollup
       - supports-color
       - unloader
-
-  '@tanstack/router-ssr-query-core@1.169.3(@tanstack/query-core@5.105.0)(@tanstack/router-core@1.171.39)':
-    dependencies:
-      '@tanstack/query-core': 5.105.0
-      '@tanstack/router-core': 1.171.39
 
   '@tanstack/router-utils@1.162.4':
     dependencies:

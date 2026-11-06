@@ -1,126 +1,109 @@
-import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Effect } from "effect";
+import { Effect, Schema } from "effect";
+import { Atom } from "effect/reactivity";
 
-import type { ApiErrors, ApiInput } from "@reactlith-template/api-contract";
+import type { ApiInput } from "@reactlith-template/api-contract";
+import { NumberOutput } from "@reactlith-template/api-contract/features/numbers";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { toastManager } from "~/components/ui/toast";
 import { getApiClient } from "~/lib/api";
+import { makeQueryAtom } from "~/lib/atom";
 
 type Input = ApiInput["numbers"];
-type Errors = ApiErrors["numbers"];
 
-export const numberQueryKey = {
-  base: () => ["numbers"] as const,
-  getAll: () => ["numbers", "getAll"] as const,
-  allById: () => ["numbers", "get"] as const,
-  byId: (id: IdBranded<"number">) => ["numbers", "get", id] as const,
-  countAbove50: () => ["numbers", "getAll", "getCountAbove50"] as const,
-} satisfies Record<string, (...args: any[]) => ["numbers", ...rest: any[]]>;
+export const allNumbersAtom = makeQueryAtom(
+  "numbers/getAll",
+  () => getApiClient().numbers.getAll(),
+  Schema.Struct({ numbers: Schema.Array(NumberOutput) }),
+);
 
-export const allNumbersQueryOptions = queryOptions({
-  queryKey: numberQueryKey.getAll(),
-  queryFn: async ({ signal }) => {
-    return await Effect.runPromise(getApiClient().numbers.getAll(), { signal });
-  },
-});
+export const numbersAbove50Atom = makeQueryAtom(
+  "numbers/getCountAbove50",
+  () => getApiClient().numbers.getCountAbove50(),
+  Schema.Struct({ count: Schema.Natural }),
+);
 
-export const numbersAbove50QueryOptions = queryOptions({
-  queryKey: numberQueryKey.countAbove50(),
-  queryFn: async ({ signal }) => {
-    return await Effect.runPromise(getApiClient().numbers.getCountAbove50(), { signal });
-  },
-});
+export const numberAtom = Atom.family((id: IdBranded<"number">) =>
+  makeQueryAtom(
+    `numbers/get/${id}`,
+    () => getApiClient().numbers.get({ params: { id } }),
+    NumberOutput,
+  ),
+);
 
-export function getNumberQueryOptions(input: Input["get"]["params"]) {
-  return queryOptions({
-    queryKey: numberQueryKey.byId(input.id),
-    queryFn: async ({ signal }) => {
-      return await Effect.runPromise(getApiClient().numbers.get({ params: input }), { signal });
-    },
-  });
+function refreshNumbers(get: Atom.FnContext) {
+  get.refresh(allNumbersAtom);
+  get.refresh(numbersAbove50Atom);
 }
 
-export function useAddNumber() {
-  const queryClient = useQueryClient();
+export const addNumberAtom = Atom.fn<Input["create"]["payload"]>()((input, get) =>
+  getApiClient()
+    .numbers.create({ payload: input })
+    .pipe(
+      Effect.tapError((error) =>
+        Effect.sync(() => {
+          if (error._tag === "MaxCountReached") {
+            toastManager.add({
+              title: m.example_maxNumberCountReached(),
+              description: m.example_maxNumberCountReachedDescription({ maxCount: error.maxCount }),
+              type: "error",
+            });
+          }
+        }),
+      ),
+      Effect.tap(() => Effect.sync(() => refreshNumbers(get))),
+      Effect.tap(() => get.result(allNumbersAtom, { suspendOnWaiting: true })),
+    ),
+);
 
-  return useMutation({
-    mutationFn: async (input: Input["create"]["payload"]) => {
-      return await Effect.runPromise(getApiClient().numbers.create({ payload: input }));
-    },
-    onError: async (error: Errors["create"]) => {
-      if (error._tag === "MaxCountReached") {
-        toastManager.add({
-          title: m.example_maxNumberCountReached(),
-          description: m.example_maxNumberCountReachedDescription({
-            maxCount: error.maxCount,
+export const updateNumberAtom = Atom.fn<
+  Input["update"]["params"] & { payload: Input["update"]["payload"] }
+>()(
+  (input, get) =>
+    getApiClient()
+      .numbers.update({ params: { id: input.id }, payload: input.payload })
+      .pipe(
+        Effect.tap((number) =>
+          Effect.sync(() => {
+            refreshNumbers(get);
+            get.refresh(numberAtom(number.id));
           }),
-          type: "error",
-        });
-      }
-    },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: numberQueryKey.getAll(),
-        refetchType: "all",
-      });
-    },
-  });
-}
+        ),
+      ),
+  { concurrent: true },
+);
 
-export function useUpdateNumber() {
-  const queryClient = useQueryClient();
+export const deleteNumberAtom = Atom.fn<Input["delete"]["params"]>()(
+  (input, get) =>
+    getApiClient()
+      .numbers.delete({ params: input })
+      .pipe(
+        Effect.tap(({ id }) =>
+          Effect.sync(() => {
+            refreshNumbers(get);
+            get.refresh(numberAtom(id));
+          }),
+        ),
+      ),
+  { concurrent: true },
+);
 
-  return useMutation({
-    mutationFn: async (
-      input: Input["update"]["params"] & {
-        payload: Input["update"]["payload"];
-      },
-    ) => {
-      return await Effect.runPromise(
-        getApiClient().numbers.update({ params: { id: input.id }, payload: input.payload }),
-      );
-    },
-    onSuccess: async (number) => {
-      void queryClient.invalidateQueries({
-        queryKey: numberQueryKey.getAll(),
-        refetchType: "all",
-      });
-      void queryClient.invalidateQueries({
-        queryKey: numberQueryKey.byId(number.id),
-        refetchType: "all",
-      });
-    },
-  });
-}
-
-export function useDeleteNumber() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (input: Input["delete"]["params"]) => {
-      return await Effect.runPromise(getApiClient().numbers.delete({ params: input }));
-    },
-    onSuccess: async ({ id }) => {
-      queryClient.removeQueries({ queryKey: numberQueryKey.byId(id) });
-      void queryClient.invalidateQueries({
-        queryKey: numberQueryKey.getAll(),
-        refetchType: "all",
-      });
-    },
-  });
-}
-
-export function useDeleteAllNumbers() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      return await Effect.runPromise(getApiClient().numbers.deleteAll());
-    },
-    onSuccess: () => {
-      queryClient.removeQueries({ queryKey: numberQueryKey.allById() });
-      void queryClient.invalidateQueries({ queryKey: numberQueryKey.getAll(), refetchType: "all" });
-    },
-  });
-}
+export const deleteAllNumbersAtom = Atom.fn((_: void, get) =>
+  getApiClient()
+    .numbers.deleteAll()
+    .pipe(
+      Effect.tap(() =>
+        Effect.sync(() => {
+          refreshNumbers(get);
+          for (const node of get.registry.getNodes().values()) {
+            if (
+              Atom.isSerializable(node.atom) &&
+              node.atom[Atom.SerializableTypeId].key.startsWith("numbers/get/")
+            ) {
+              get.refresh(node.atom);
+            }
+          }
+        }),
+      ),
+    ),
+);

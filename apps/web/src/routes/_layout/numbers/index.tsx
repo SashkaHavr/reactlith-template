@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useAtomSet, useAtomSuspense, useAtomValue } from "@effect/atom-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Schema } from "effect";
 import { ArrowRightIcon, PencilIcon, Trash2Icon } from "lucide-react";
@@ -26,18 +26,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+import { readAtom } from "~/lib/atom";
 import { useSession, useSignout } from "~/lib/auth";
 import {
-  allNumbersQueryOptions,
-  useAddNumber,
-  useDeleteAllNumbers,
-  useDeleteNumber,
-  useUpdateNumber,
+  allNumbersAtom,
+  addNumberAtom,
+  deleteAllNumbersAtom,
+  deleteNumberAtom,
+  updateNumberAtom,
 } from "~/queries/numbers";
 
 export const Route = createFileRoute("/_layout/numbers/")({
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.query({ ...allNumbersQueryOptions, staleTime: "static" });
+  loader: async ({ context: { registry }, abortController }) => {
+    await readAtom(registry, allNumbersAtom, abortController.signal);
   },
   component: RouteComponent,
 });
@@ -54,17 +55,19 @@ const CustomNumberFormSchema = Schema.toStandardSchemaV1(
 function RouteComponent() {
   const [customNumberDialogOpen, setCustomNumberDialogOpen] = useState(false);
   const session = useSession();
-  const numbers = useSuspenseQuery(allNumbersQueryOptions);
-  const addNumber = useAddNumber();
-  const updateNumber = useUpdateNumber();
-  const deleteNumber = useDeleteNumber();
-  const deleteAllNumbers = useDeleteAllNumbers();
+  const numbers = useAtomSuspense(allNumbersAtom).value;
+  const addNumber = useAtomSet(addNumberAtom);
+  const addNumberAsync = useAtomSet(addNumberAtom, { mode: "promise" });
+  const addingNumber = useAtomValue(addNumberAtom).waiting;
+  const updateNumber = useAtomSet(updateNumberAtom);
+  const deleteNumber = useAtomSet(deleteNumberAtom);
+  const deleteAllNumbers = useAtomSet(deleteAllNumbersAtom);
   const signout = useSignout();
   const customNumberForm = useAppForm({
     defaultValues: { number: "" },
     validators: { onSubmit: CustomNumberFormSchema },
     onSubmit: async ({ value, formApi }) => {
-      await addNumber.mutateAsync(Schema.decodeSync(CustomNumberFormSchema)(value));
+      await addNumberAsync(Schema.decodeSync(CustomNumberFormSchema)(value));
       setCustomNumberDialogOpen(false);
       formApi.reset();
     },
@@ -76,14 +79,15 @@ function RouteComponent() {
         <p>
           {m.example_user()}: {session.user.email}
         </p>
-        <Button variant="outline" onClick={() => signout.mutate()}>
+        <Button variant="outline" onClick={signout}>
           {m.example_logout()}
         </Button>
       </div>
       <div className="flex flex-wrap justify-center gap-3">
         <Button
           variant="outline"
-          onClick={() => addNumber.mutate({ number: Math.floor(Math.random() * 100) })}
+          disabled={addingNumber}
+          onClick={() => addNumber({ number: Math.floor(Math.random() * 100) })}
         >
           {m.example_addNumber()}
         </Button>
@@ -118,13 +122,15 @@ function RouteComponent() {
                 </DialogPanel>
                 <DialogFooter>
                   <DialogClose render={<Button variant="ghost" />}>Cancel</DialogClose>
-                  <FormSubmitButton>{m.example_submit()}</FormSubmitButton>
+                  <fieldset disabled={addingNumber} className="contents">
+                    <FormSubmitButton>{m.example_submit()}</FormSubmitButton>
+                  </fieldset>
                 </DialogFooter>
               </FormForm>
             </customNumberForm.AppForm>
           </DialogPopup>
         </Dialog>
-        <Button variant="outline" onClick={() => deleteAllNumbers.mutate()}>
+        <Button variant="outline" onClick={() => deleteAllNumbers()}>
           {m.example_deleteAllNumbers()}
         </Button>
         <Button
@@ -137,14 +143,14 @@ function RouteComponent() {
         </Button>
       </div>
       <div className="flex flex-col gap-2">
-        {numbers.data.numbers.map((number) => (
+        {numbers.numbers.map((number) => (
           <div key={number.id} className="flex items-center gap-2">
             <p className="min-w-8 flex-1 text-xl font-bold">{number.number}</p>
             <Button
               size="icon"
               variant="outline"
               onClick={() =>
-                updateNumber.mutate({
+                updateNumber({
                   id: number.id,
                   payload: { number: Math.floor(Math.random() * 100) },
                 })
@@ -155,7 +161,7 @@ function RouteComponent() {
             <Button
               size="icon"
               variant="destructive-outline"
-              onClick={() => deleteNumber.mutate({ id: number.id })}
+              onClick={() => deleteNumber({ id: number.id })}
             >
               <Trash2Icon />
             </Button>

@@ -1,12 +1,24 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { Effect } from "effect";
+import { Atom } from "effect/reactivity";
 
 import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
+import { readAtom } from "~/lib/atom";
 import { getAuthClient } from "~/lib/auth";
-import { authConfigQueryOptions } from "~/queries/config";
-import { numbersAbove50QueryOptions } from "~/queries/numbers";
+import { authConfigAtom } from "~/queries/config";
+import { numbersAbove50Atom } from "~/queries/numbers";
+
+const signInWithGoogleAtom = Atom.fn((googleEmulate: boolean) =>
+  Effect.tryPromise(async () => {
+    await getAuthClient().signIn.social({
+      provider: googleEmulate ? "google-emulate" : "google",
+      callbackURL: window.location.href,
+    });
+  }),
+);
 
 export const Route = createFileRoute("/_layout/")({
   beforeLoad: ({ context: { session } }) => {
@@ -14,35 +26,24 @@ export const Route = createFileRoute("/_layout/")({
       throw redirect({ to: "/numbers" });
     }
   },
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.query({ ...numbersAbove50QueryOptions, staleTime: "static" });
+  loader: async ({ context: { registry }, abortController }) => {
+    await readAtom(registry, numbersAbove50Atom, abortController.signal);
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const authConfig = useSuspenseQuery(authConfigQueryOptions).data;
-  const numbersAbove50 = useSuspenseQuery(numbersAbove50QueryOptions).data;
-
-  const signInWithGoogle = useMutation({
-    mutationFn: async () => {
-      if (authConfig.googleEmulate) {
-        await getAuthClient().signIn.social({
-          provider: "google-emulate",
-          callbackURL: window.location.href,
-        });
-      } else {
-        await getAuthClient().signIn.social({
-          provider: "google",
-          callbackURL: window.location.href,
-        });
-      }
-    },
-  });
+  const authConfig = useAtomSuspense(authConfigAtom).value;
+  const numbersAbove50 = useAtomSuspense(numbersAbove50Atom).value;
+  const signInWithGoogle = useAtomSet(signInWithGoogleAtom);
 
   return (
     <div className="flex max-w-80 flex-col gap-3">
-      <Button variant="outline" className="w-full" onClick={() => signInWithGoogle.mutate()}>
+      <Button
+        variant="outline"
+        className="w-full"
+        onClick={() => signInWithGoogle(authConfig.googleEmulate)}
+      >
         <GoogleIcon />
         <span>{m.example_signInWithGoogle()}</span>
       </Button>

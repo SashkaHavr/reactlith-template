@@ -1,7 +1,6 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, Outlet, useHydrated, useRouter } from "@tanstack/react-router";
 import { cn } from "cn";
-import { Effect } from "effect";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -11,16 +10,12 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useSetTheme, useTheme } from "~/components/theme";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { getApiClient } from "~/lib/api";
-
-const healthReadyQueryOptions = queryOptions({
-  queryKey: ["health"],
-  queryFn: async () => await Effect.runPromise(getApiClient().config.healthReady()),
-});
+import { readAtom } from "~/lib/atom";
+import { healthReadyAtom } from "~/queries/config";
 
 export const Route = createFileRoute("/_layout")({
-  loader: async ({ context: { queryClient } }) => {
-    await queryClient.query({ ...healthReadyQueryOptions, staleTime: "static" });
+  loader: async ({ context: { registry }, abortController }) => {
+    await readAtom(registry, healthReadyAtom, abortController.signal);
   },
   component: RouteComponent,
 });
@@ -93,7 +88,7 @@ function LocaleSwitcher() {
 const initialNow = Date.now();
 
 function RouteComponent() {
-  const health = useSuspenseQuery(healthReadyQueryOptions);
+  const health = useAtomSuspense(healthReadyAtom);
   const hydrated = useHydrated();
   const [now, setNow] = useState(initialNow);
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
@@ -114,7 +109,12 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p className={cn(health.isSuccess ? "text-green-500" : "text-red-500", "font-mono")}>
+          <p
+            className={cn(
+              health._tag === "Success" ? "text-green-500" : "text-red-500",
+              "font-mono",
+            )}
+          >
             {m.example_apiHealthResponse()}
           </p>
           <p>

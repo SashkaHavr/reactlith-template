@@ -1,4 +1,3 @@
-import { environmentManager } from "@tanstack/react-query";
 import { ScriptOnce, useHydrated, useRouteContext, useRouter } from "@tanstack/react-router";
 import { useEffect, useEffectEvent } from "react";
 
@@ -48,7 +47,7 @@ function getSavedTheme(): Theme | undefined {
 }
 
 export function getTheme(): Theme | undefined {
-  if (environmentManager.isServer()) return undefined;
+  if (import.meta.env.SSR) return undefined;
   return getSavedTheme() ?? getSystemTheme();
 }
 

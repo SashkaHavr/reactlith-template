@@ -1,11 +1,13 @@
+import { RegistryContext } from "@effect/atom-react";
 import { createRouter } from "@tanstack/react-router";
-import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
+import { Hydration } from "effect/reactivity";
 
 import { deLocalizeUrl, localizeUrl } from "@reactlith-template/intl/runtime";
 import { setupClientLog } from "~/utils/log";
 
 import { ErrorComponent } from "./components/router-default/error-component";
 import { NotFoundComponent } from "./components/router-default/not-found-component";
+import { sessionAtom } from "./lib/auth";
 import { createRouterContext } from "./lib/context";
 import { routeTree } from "./routeTree.gen";
 
@@ -22,16 +24,30 @@ export function getRouter() {
     defaultPreload: "intent",
     defaultNotFoundComponent: NotFoundComponent,
     defaultErrorComponent: ErrorComponent,
+    dehydrate: () => ({
+      atoms: Hydration.dehydrate(routerContext.registry),
+      session: routerContext.registry.get(sessionAtom),
+    }),
+    hydrate: (state) => {
+      Hydration.hydrate(routerContext.registry, state.atoms);
+      routerContext.registry.set(sessionAtom, state.session);
+    },
+    Wrap: ({ children }) => (
+      <RegistryContext.Provider value={routerContext.registry}>{children}</RegistryContext.Provider>
+    ),
     rewrite: {
       input: ({ url }) => deLocalizeUrl(url),
       output: ({ url }) => localizeUrl(url),
     },
   });
 
-  setupRouterSsrQueryIntegration({
-    router: router,
-    queryClient: routerContext.queryClient,
-  });
+  if (import.meta.env.SSR) {
+    router.serverSsrLifecycle = {
+      onServerSsrAttach: [
+        (serverSsr) => serverSsr.onCleanup(() => routerContext.registry.dispose()),
+      ],
+    };
+  }
 
   return router;
 }

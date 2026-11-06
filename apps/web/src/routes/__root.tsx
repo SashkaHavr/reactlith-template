@@ -1,6 +1,5 @@
 /// <reference types="vite/client" />
 
-import { environmentManager } from "@tanstack/react-query";
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { setIdentity, clearIdentity } from "evlog/client";
 import { useEffect } from "react";
@@ -9,18 +8,19 @@ import type { ReactNode } from "react";
 import { getLocale } from "@reactlith-template/intl/runtime";
 import { getTheme, syncMetaThemeColor, ThemeScript, useSyncTheme } from "~/components/theme";
 import { AnchoredToastProvider, ToastProvider } from "~/components/ui/toast";
-import { getSessionQueryOptions } from "~/lib/auth";
+import { readAtom } from "~/lib/atom";
+import { loadSession } from "~/lib/auth";
 import type { RouterContext } from "~/lib/context";
-import { authConfigQueryOptions } from "~/queries/config";
+import { authConfigAtom } from "~/queries/config";
 import { getServerLog } from "~/utils/log";
 
 import indexCss from "../index.css?url";
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  beforeLoad: async ({ context: { queryClient } }) => {
+  beforeLoad: async ({ context: { registry }, abortController }) => {
     const [authConfig, session] = await Promise.all([
-      queryClient.query({ ...authConfigQueryOptions, staleTime: "static" }),
-      queryClient.query({ ...getSessionQueryOptions, staleTime: "static" }),
+      readAtom(registry, authConfigAtom, abortController.signal),
+      loadSession(registry),
     ]);
 
     if (session.loggedIn) {
@@ -30,7 +30,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     return {
       session,
       authConfig,
-      theme: environmentManager.isServer() ? undefined : getTheme(),
+      theme: getTheme(),
     };
   },
   head: () => ({
