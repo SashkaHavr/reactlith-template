@@ -75,18 +75,18 @@ export const numberAtom = Atom.family((id: IdBranded<"number">) =>
 export const addNumberAtom = apiRuntime.fn<Input["create"]["payload"]>()(
   (payload, get) =>
     ApiClient.use((client) => client.numbers.create({ payload })).pipe(
-      Effect.tapError((error) =>
+      Effect.tapErrorTag("MaxCountReached", (error) =>
         Effect.sync(() => {
-          if (error._tag === "MaxCountReached") {
-            toastManager.add({
-              title: m.example_maxNumberCountReached(),
-              description: m.example_maxNumberCountReachedDescription({ maxCount: error.maxCount }),
-              type: "error",
-            });
-          }
+          toastManager.add({
+            title: m.example_maxNumberCountReached(),
+            description: m.example_maxNumberCountReachedDescription({
+              maxCount: error.maxCount,
+            }),
+            type: "error",
+          });
         }),
       ),
-      Effect.tap(() => {
+      Effect.onExit(() => {
         get.refresh(allNumbersAtom);
         return get.result(allNumbersAtom, { suspendOnWaiting: true });
       }),
@@ -97,6 +97,12 @@ export const addNumberAtom = apiRuntime.fn<Input["create"]["payload"]>()(
 export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
   apiRuntime.fn<Input["update"]["payload"]>()((payload, get) =>
     ApiClient.use((client) => client.numbers.update({ params: { id }, payload })).pipe(
+      Effect.tapError(() =>
+        Effect.sync(() => {
+          get.refresh(allNumbersAtom);
+          get.refresh(numberAtom(id));
+        }),
+      ),
       Effect.tap((number) =>
         Effect.sync(() => {
           get.set(
@@ -113,26 +119,43 @@ export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
 );
 
 export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
-  apiRuntime.fn((_: void, get) =>
-    ApiClient.use((client) => client.numbers.delete({ params: { id } })).pipe(
-      Effect.tap(({ id }) =>
-        Effect.sync(() => {
-          get.set(
-            allNumbersAtom,
-            AsyncResult.map(get(allNumbersAtom), ({ numbers }) => ({
-              numbers: numbers.filter((number) => number.id !== id),
-            })),
-          );
-          get.set(numberAtom(id), AsyncResult.fail(NumberNotFound.make({ numberId: id })));
-        }),
+  apiRuntime
+    .fn((_: void, get) =>
+      ApiClient.use((client) => client.numbers.delete({ params: { id } })).pipe(
+        Effect.tapError(() =>
+          Effect.sync(() => {
+            get.refresh(allNumbersAtom);
+            get.refresh(numberAtom(id));
+          }),
+        ),
+        Effect.tap(({ id }) =>
+          Effect.sync(() => {
+            get.set(
+              allNumbersAtom,
+              AsyncResult.map(get(allNumbersAtom), ({ numbers }) => ({
+                numbers: numbers.filter((number) => number.id !== id),
+              })),
+            );
+            get.set(numberAtom(id), AsyncResult.fail(NumberNotFound.make({ numberId: id })));
+          }),
+        ),
+      ),
+    )
+    .pipe((atom) =>
+      Atom.writable(
+        (get) => get(atom),
+        (ctx, value: void | Atom.Reset | Atom.Interrupt) => {
+          if (value === Atom.Reset || value === Atom.Interrupt || !ctx.get(atom).waiting) {
+            ctx.set(atom, value);
+          }
+        },
       ),
     ),
-  ),
 );
 
 export const deleteAllNumbersAtom = apiRuntime.fn((_: void, get) =>
   ApiClient.use((client) => client.numbers.deleteAll()).pipe(
-    Effect.tap(() => {
+    Effect.onExit(() => {
       get.refresh(allNumbersAtom);
       return get.result(allNumbersAtom, { suspendOnWaiting: true });
     }),

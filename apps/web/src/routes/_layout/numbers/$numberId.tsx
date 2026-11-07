@@ -1,6 +1,6 @@
 import { useAtom, useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/react-router";
-import { Cause, Effect, Exit } from "effect";
+import { Cause, Effect, Exit, Result } from "effect";
 import { AsyncResult, AtomRegistry } from "effect/reactivity";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
@@ -50,7 +50,11 @@ function RouteComponent() {
   };
 
   if (AsyncResult.isFailure(numberResult)) {
-    if (deleteResult.waiting || AsyncResult.isSuccess(deleteResult)) return null;
+    const error = Cause.findError(numberResult.cause);
+    if (Result.isSuccess(error) && error.success._tag === "NumberNotFound") {
+      if (deleteResult.waiting || AsyncResult.isSuccess(deleteResult)) return null;
+      throw notFound();
+    }
     throw Cause.squash(numberResult.cause);
   }
   const number = numberResult.value;
