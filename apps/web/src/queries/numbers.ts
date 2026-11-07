@@ -72,24 +72,26 @@ export const numberAtom = Atom.family((id: IdBranded<"number">) =>
   ),
 );
 
-export const addNumberAtom = apiRuntime.fn<Input["create"]["payload"]>()((payload, get) =>
-  ApiClient.use((client) => client.numbers.create({ payload })).pipe(
-    Effect.tapError((error) =>
-      Effect.sync(() => {
-        if (error._tag === "MaxCountReached") {
-          toastManager.add({
-            title: m.example_maxNumberCountReached(),
-            description: m.example_maxNumberCountReachedDescription({ maxCount: error.maxCount }),
-            type: "error",
-          });
-        }
+export const addNumberAtom = apiRuntime.fn<Input["create"]["payload"]>()(
+  (payload, get) =>
+    ApiClient.use((client) => client.numbers.create({ payload })).pipe(
+      Effect.tapError((error) =>
+        Effect.sync(() => {
+          if (error._tag === "MaxCountReached") {
+            toastManager.add({
+              title: m.example_maxNumberCountReached(),
+              description: m.example_maxNumberCountReachedDescription({ maxCount: error.maxCount }),
+              type: "error",
+            });
+          }
+        }),
+      ),
+      Effect.tap(() => {
+        get.refresh(allNumbersAtom);
+        return get.result(allNumbersAtom, { suspendOnWaiting: true });
       }),
     ),
-    Effect.tap(() => {
-      get.refresh(allNumbersAtom);
-      return get.result(allNumbersAtom, { suspendOnWaiting: true });
-    }),
-  ),
+  { concurrent: true },
 );
 
 export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
