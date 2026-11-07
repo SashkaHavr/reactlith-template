@@ -1,4 +1,5 @@
 import { Effect, Layer } from "effect";
+import { HttpServerRequest } from "effect/http";
 
 import { CurrentUser } from "@reactlith-template/api-contract/context";
 import {
@@ -17,9 +18,10 @@ export const AuthenticationMiddlewareLive = Layer.effect(
     const auth = yield* Auth;
     const log = yield* StructuredLogger;
 
-    return AuthenticationMiddleware.of((effect, { headers }) =>
+    return AuthenticationMiddleware.of((effect) =>
       Effect.gen(function* () {
-        const session = yield* auth.getSession(headers);
+        const request = yield* HttpServerRequest.HttpServerRequest;
+        const session = yield* auth.getSession(request.headers);
         if (!session) {
           return yield* NotAuthenticated.make();
         }

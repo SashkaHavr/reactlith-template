@@ -1,36 +1,33 @@
 ---
 name: api
-description: Use when working with Effect RPC groups or their related schemas, repositories, services, domain errors, layers, and tests.
+description: Use when working with Effect HTTP API groups or their related schemas, repositories, services, domain errors, layers, and tests.
 ---
 
 ## Files
 
 Keep each feature's implementation in `apps/api/src/features/<feature>/`:
 
-- `packages/api-contract/src/features/<feature>.ts`: Shared Effect schemas, tagged domain errors, procedures, and one `<Feature>Api` RPC group.
+- `packages/api-contract/src/features/<feature>.ts`: Shared Effect schemas, tagged domain errors, endpoints, and one `<Feature>Api` group.
 - `repo.ts`: Database methods. Export one `<Feature>Repo` `Context.Service` containing all methods.
 - `repo.test.ts`: Repository integration tests.
 - `service.ts`: OPTIONAL file for complex domain logic. Export one `<Feature>Service` `Context.Service` containing all methods.
 - `service.test.ts`: Service unit tests, when a service exists.
-- `layer.ts`: Effect RPC handlers. Export one `<Feature>ApiLive` layer and, when useful, one layer with its services provided.
+- `layer.ts`: Effect HTTP API handlers. Export one `<Feature>ApiLive` layer and, when useful, one layer with its services provided.
 - `layer.test.ts`: API group unit tests.
 
 Register the API group in `packages/api-contract/src/client.ts` and its live layer in `apps/api/src/app.ts`.
 
 ## API and Schema
 
-- Define each feature with `RpcGroup.make` and each procedure with `Rpc.make` from `effect/rpc`. Prefix procedure tags with `<feature>.`.
-- Always define procedure handlers with `Effect.fnUntraced`.
-- Define every procedure success schema explicitly, including `Schema.Null` for void methods.
-- Declare every expected error in the procedure's `error` option, using `Schema.Union` for multiple errors.
-- Define inputs in the procedure's `payload` schema rather than HTTP params, query, or body wrappers.
+- Define each feature as an `HttpApiGroup` and each endpoint as an `HttpApiEndpoint` with the appropriate HTTP method and path.
+- Always define endpoint handler with `Effect.fnUntraced`.
+- Define every endpoint success schema explicitly, including `Schema.Null` for void methods.
+- Declare every expected error in the endpoint's `error` option.
 - Keep business logic out of schema transformations. Use schemas for validation, coercion, and transport serialization.
-- Rely on procedure schemas for input parsing, output encoding, field-level transformations, and removal of undeclared fields. Do not repeat those operations in handlers.
+- Rely on endpoint schemas for input parsing, output encoding, field-level transformations, and removal of undeclared fields. Do not repeat those operations in handlers.
 - Use Effect schemas such as `Schema.DateFromString` for values that require transport encoding.
 - Create reusable unexported schema parts when needed.
-- Implement the group with `<Feature>Api.toLayer(Effect.gen(...))`, returning a handler object keyed by the full procedure tags.
-- Expose the combined group through `RpcServer.layerHttp` at `/api/rpc` with the HTTP protocol and `RpcSerialization.layerJson`. Clients must use the matching protocol and serialization, with a scope lasting for the client lifetime.
-- Define middleware with `RpcMiddleware.Service`; use its `rpc` metadata for tags and annotations, and its `headers` for authentication and authorization.
+- Implement the group with `HttpApiBuilder.group(Api, "<group>", Effect.fn(...))` and `handlers.handleAll(...)`.
 - Handlers may contain straightforward logic and should call repositories directly when a service boundary is not justified.
 - Put race-sensitive checks and writes in the same `Database.transaction`. Repository methods automatically use the transaction supplied through the Effect service context.
 
@@ -48,13 +45,13 @@ Register the API group in `packages/api-contract/src/client.ts` and its live lay
 
 ## Domain errors
 
-- Define `Schema.TaggedError` for every expected domain failure.
-- Add the error class to every procedure that can return it. RPC errors do not use HTTP status annotations.
+- Define `Schema.TaggedError` for every expected domain 4xx response.
+- Set `{ httpApiStatus: <status> }` in the tagged error schema options and add the error class to every endpoint that can return it.
 - Give each `Schema.TaggedError` specific, self-describing tag. Expose structured context fields rather than a `message` or `reason` field.
 
 ## API Tests
 
-- Test an API group through file-local `TestApi` and `TestClient` classes. Compose `TestApi` with `RpcGroup.make().merge(<Feature>Api)`, create the client with `RpcTest.makeClient(TestApi)`, and provide its dependencies in `TestClient.layerTest`. This in-memory transport does not test serialization.
+- Test an API group through file-local `TestApi` and `TestClient` classes. Create the client with `HttpApiTest.groups(TestApi, ["<group>"])` and provide its dependencies in `TestClient.layerTest`.
 - Define dependency mocks once at module scope. Type each mocked method with `vi.fn<typeof Service.Service.method>()`.
 - Configure mocks inside the test that uses them.
 - Never create tests for middleware or for errors included in an API contract by middleware.

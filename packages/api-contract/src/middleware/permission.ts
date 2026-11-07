@@ -1,5 +1,5 @@
 import { Context, Schema } from "effect";
-import { RpcMiddleware } from "effect/rpc";
+import { HttpApiMiddleware } from "effect/http-api";
 
 import type { CurrentUser } from "#/context";
 import type { AuthPermissions } from "@reactlith-template/auth";
@@ -12,9 +12,10 @@ export const RequiredPermissions = Context.Reference<AuthPermissions>(
 export class InsufficientPermissions extends Schema.TaggedError<InsufficientPermissions>()(
   "InsufficientPermissions",
   {},
+  { httpApiStatus: 403 },
 ) {}
 
-export class AuthorizationMiddleware extends RpcMiddleware.Service<
+export class AuthorizationMiddleware extends HttpApiMiddleware.Service<
   AuthorizationMiddleware,
   { requires: CurrentUser }
 >()("api/AuthorizationMiddleware ", {

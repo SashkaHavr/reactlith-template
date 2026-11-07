@@ -1,6 +1,6 @@
 import { layer } from "@effect/vitest";
 import { Context, Effect, Layer } from "effect";
-import { RpcGroup, RpcTest } from "effect/rpc";
+import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect, vi } from "vite-plus/test";
 
 import { AuthenticationMiddlewareLive } from "#/middleware/authentication/layer";
@@ -43,10 +43,10 @@ const DatabaseMock = {
   transaction: vi.fn<(fn: () => Effect.Effect<void>) => Effect.Effect<void>>((f) => f()),
 };
 
-class TestApi extends RpcGroup.make().merge(NumbersApi) {}
+class TestApi extends HttpApi.make("api").add(NumbersApi).prefix("/api") {}
 
 class TestClient extends Context.Service<TestClient>()("api/TestClient", {
-  make: RpcTest.makeClient(TestApi),
+  make: HttpApiTest.groups(TestApi, ["numbers"]),
 }) {
   static readonly layerTest = Layer.effect(this, this.make).pipe(
     Layer.provide(NumbersApiLive),
@@ -65,7 +65,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth())))("NumbersApi public"
       const client = yield* TestClient;
       NumberRepoMock.getCountAbove.mockReturnValue(Effect.succeed(3));
 
-      const result = yield* client["numbers.getCountAbove50"]();
+      const result = yield* client.numbers.getCountAbove50();
 
       expect(result).toEqual({ count: 3 });
       expect(NumberRepoMock.getCountAbove).toHaveBeenCalledOnce();
@@ -82,7 +82,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.getAll.mockReturnValue(Effect.succeed([number]));
 
-        const result = yield* client["numbers.getAll"]();
+        const result = yield* client.numbers.getAll();
 
         expect(result).toEqual({ numbers: [number] });
         expect(NumberRepoMock.getAll).toHaveBeenCalledOnce();
@@ -95,7 +95,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.get.mockReturnValue(Effect.succeed(number));
 
-        const result = yield* client["numbers.get"]({ id: numberId });
+        const result = yield* client.numbers.get({ params: { id: numberId } });
 
         expect(result).toEqual(number);
         expect(NumberRepoMock.get).toHaveBeenCalledOnce();
@@ -108,7 +108,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.get.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
-        const error = yield* client["numbers.get"]({ id: numberId }).pipe(Effect.flip);
+        const error = yield* client.numbers.get({ params: { id: numberId } }).pipe(Effect.flip);
 
         expect(error).toBeInstanceOf(NumberNotFound);
       }),
@@ -122,7 +122,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         NumberRepoMock.create.mockReturnValue(Effect.succeed(number));
         UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
-        const result = yield* client["numbers.create"]({ number: 42 });
+        const result = yield* client.numbers.create({ payload: { number: 42 } });
 
         expect(result).toEqual(number);
         expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
@@ -137,7 +137,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         NumberRepoMock.getCount.mockReturnValue(Effect.succeed(10));
         UserRepoMock.getUserLock.mockReturnValue(Effect.succeed({ id: testId("user", 0) }));
 
-        const error = yield* client["numbers.create"]({ number: 42 }).pipe(Effect.flip);
+        const error = yield* client.numbers.create({ payload: { number: 42 } }).pipe(Effect.flip);
 
         expect(error).toBeInstanceOf(MaxCountReached);
         expect(DatabaseMock.transaction).toHaveBeenCalledOnce();
@@ -150,9 +150,9 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.update.mockReturnValue(Effect.succeed(number));
 
-        const result = yield* client["numbers.update"]({
-          id: numberId,
-          number: 42,
+        const result = yield* client.numbers.update({
+          params: { id: numberId },
+          payload: { number: 42 },
         });
 
         expect(result).toEqual(number);
@@ -166,9 +166,9 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.update.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
-        const error = yield* client["numbers.update"]({ id: numberId, number: 42 }).pipe(
-          Effect.flip,
-        );
+        const error = yield* client.numbers
+          .update({ params: { id: numberId }, payload: { number: 42 } })
+          .pipe(Effect.flip);
 
         expect(error).toBeInstanceOf(NumberNotFound);
       }),
@@ -180,7 +180,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.delete.mockReturnValue(Effect.succeed({ id: numberId }));
 
-        const result = yield* client["numbers.delete"]({ id: numberId });
+        const result = yield* client.numbers.delete({ params: { id: numberId } });
 
         expect(result).toEqual({ id: numberId });
         expect(NumberRepoMock.delete).toHaveBeenCalledOnce();
@@ -193,7 +193,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.delete.mockReturnValue(Effect.fail(NumberNotFound.make({ numberId })));
 
-        const error = yield* client["numbers.delete"]({ id: numberId }).pipe(Effect.flip);
+        const error = yield* client.numbers.delete({ params: { id: numberId } }).pipe(Effect.flip);
 
         expect(error).toBeInstanceOf(NumberNotFound);
       }),
@@ -205,7 +205,7 @@ layer(TestClient.layerTest.pipe(Layer.provide(layerAuth(0))))(
         const client = yield* TestClient;
         NumberRepoMock.deleteAll.mockReturnValue(Effect.void);
 
-        const result = yield* client["numbers.deleteAll"]();
+        const result = yield* client.numbers.deleteAll();
 
         expect(result).toBeNull();
         expect(NumberRepoMock.deleteAll).toHaveBeenCalledOnce();

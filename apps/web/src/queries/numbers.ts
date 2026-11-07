@@ -11,12 +11,12 @@ import {
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { toastManager } from "~/components/ui/toast";
-import { apiRuntime, RpcClient } from "~/lib/api";
+import { apiRuntime, ApiClient } from "~/lib/api";
 
 type Input = ApiInput["numbers"];
 
 export const allNumbersAtom = apiRuntime
-  .atom(RpcClient.use((client) => client["numbers.getAll"]()))
+  .atom(ApiClient.use((client) => client.numbers.getAll()))
   .pipe(
     (atom) =>
       Atom.writable(
@@ -37,7 +37,7 @@ export const allNumbersAtom = apiRuntime
   );
 
 export const numbersAbove50Atom = apiRuntime
-  .atom(RpcClient.use((client) => client["numbers.getCountAbove50"]()))
+  .atom(ApiClient.use((client) => client.numbers.getCountAbove50()))
   .pipe(
     Atom.serializable({
       key: "numbers/getCountAbove50",
@@ -52,7 +52,7 @@ export const numbersAbove50Atom = apiRuntime
   );
 
 export const numberAtom = Atom.family((id: IdBranded<"number">) =>
-  apiRuntime.atom(RpcClient.use((client) => client["numbers.get"]({ id }))).pipe(
+  apiRuntime.atom(ApiClient.use((client) => client.numbers.get({ params: { id } }))).pipe(
     (atom) =>
       Atom.writable(
         atom.read,
@@ -72,8 +72,8 @@ export const numberAtom = Atom.family((id: IdBranded<"number">) =>
   ),
 );
 
-export const addNumberAtom = apiRuntime.fn<Input["create"]>()((input, get) =>
-  RpcClient.use((client) => client["numbers.create"](input)).pipe(
+export const addNumberAtom = apiRuntime.fn<Input["create"]["payload"]>()((payload, get) =>
+  ApiClient.use((client) => client.numbers.create({ payload })).pipe(
     Effect.tapError((error) =>
       Effect.sync(() => {
         if (error._tag === "MaxCountReached") {
@@ -93,8 +93,8 @@ export const addNumberAtom = apiRuntime.fn<Input["create"]>()((input, get) =>
 );
 
 export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
-  apiRuntime.fn<Omit<Input["update"], "id">>()((payload, get) =>
-    RpcClient.use((client) => client["numbers.update"]({ id, ...payload })).pipe(
+  apiRuntime.fn<Input["update"]["payload"]>()((payload, get) =>
+    ApiClient.use((client) => client.numbers.update({ params: { id }, payload })).pipe(
       Effect.tap((number) =>
         Effect.sync(() => {
           get.set(
@@ -112,7 +112,7 @@ export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
 
 export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
   apiRuntime.fn((_: void, get) =>
-    RpcClient.use((client) => client["numbers.delete"]({ id })).pipe(
+    ApiClient.use((client) => client.numbers.delete({ params: { id } })).pipe(
       Effect.tap(({ id }) =>
         Effect.sync(() => {
           get.set(
@@ -129,7 +129,7 @@ export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
 );
 
 export const deleteAllNumbersAtom = apiRuntime.fn((_: void, get) =>
-  RpcClient.use((client) => client["numbers.deleteAll"]()).pipe(
+  ApiClient.use((client) => client.numbers.deleteAll()).pipe(
     Effect.tap(() => {
       get.refresh(allNumbersAtom);
       return get.result(allNumbersAtom, { suspendOnWaiting: true });

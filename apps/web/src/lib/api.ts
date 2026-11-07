@@ -1,22 +1,20 @@
 import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
 import { Context, Layer, ManagedRuntime } from "effect";
 import { FetchHttpClient, HttpClient } from "effect/http";
+import { HttpApiClient } from "effect/http-api";
 import { Atom } from "effect/reactivity";
-import { RpcClient as EffectRpcClient, RpcSerialization } from "effect/rpc";
 
 import { Api } from "@reactlith-template/api-contract";
 
-export class RpcClient extends Context.Service<RpcClient>()("web/RpcClient", {
-  make: EffectRpcClient.make(Api),
+export class ApiClient extends Context.Service<ApiClient>()("web/ApiClient", {
+  make: HttpApiClient.make(Api),
 }) {
   static readonly layer = Layer.effect(this, this.make);
 }
 
 function createClientRuntime() {
   return ManagedRuntime.make(
-    RpcClient.layer.pipe(
-      Layer.provideMerge(EffectRpcClient.layerProtocolHttp({ url: "/api/rpc" })),
-      Layer.provideMerge(RpcSerialization.layerNdjson),
+    ApiClient.layer.pipe(
       Layer.provideMerge(
         FetchHttpClient.layer.pipe(
           Layer.provide(Layer.succeed(HttpClient.TracerPropagationEnabled, false)),

@@ -1,28 +1,32 @@
 import { Effect, Layer } from "effect";
+import { HttpApiBuilder } from "effect/http-api";
 
-import { MaxCountReached, NumbersApi } from "@reactlith-template/api-contract/features/numbers";
+import { Api } from "@reactlith-template/api-contract";
+import { MaxCountReached } from "@reactlith-template/api-contract/features/numbers";
 import { Database } from "@reactlith-template/db";
 
 import { UserRepo } from "../users/repo";
 import { NumberRepo } from "./repo";
 
-export const NumbersApiLive = NumbersApi.toLayer(
-  Effect.gen(function* () {
+export const NumbersApiLive = HttpApiBuilder.group(
+  Api,
+  "numbers",
+  Effect.fn(function* (handlers) {
     const db = yield* Database;
     const numberRepo = yield* NumberRepo;
     const userRepo = yield* UserRepo;
 
-    return {
-      "numbers.getCountAbove50": Effect.fnUntraced(function* () {
+    return handlers.handleAll({
+      getCountAbove50: Effect.fnUntraced(function* () {
         return { count: yield* numberRepo.getCountAbove(50) };
       }),
-      "numbers.getAll": Effect.fnUntraced(function* () {
+      getAll: Effect.fnUntraced(function* () {
         return { numbers: yield* numberRepo.getAll() };
       }),
-      "numbers.get": Effect.fnUntraced(function* ({ id }) {
-        return yield* numberRepo.get(id);
+      get: Effect.fnUntraced(function* ({ params }) {
+        return yield* numberRepo.get(params.id);
       }),
-      "numbers.create": Effect.fnUntraced(function* (payload) {
+      create: Effect.fnUntraced(function* ({ payload }) {
         return yield* db
           .transaction(
             Effect.fn(function* () {
@@ -35,17 +39,17 @@ export const NumbersApiLive = NumbersApi.toLayer(
           )
           .pipe(Effect.catchTag("SqlError", Effect.die));
       }),
-      "numbers.update": Effect.fnUntraced(function* ({ id, ...payload }) {
-        return yield* numberRepo.update(id, payload);
+      update: Effect.fnUntraced(function* ({ params, payload }) {
+        return yield* numberRepo.update(params.id, payload);
       }),
-      "numbers.delete": Effect.fnUntraced(function* ({ id }) {
-        return yield* numberRepo.delete(id);
+      delete: Effect.fnUntraced(function* ({ params }) {
+        return yield* numberRepo.delete(params.id);
       }),
-      "numbers.deleteAll": Effect.fnUntraced(function* () {
+      deleteAll: Effect.fnUntraced(function* () {
         yield* numberRepo.deleteAll();
         return null;
       }),
-    };
+    });
   }),
 );
 

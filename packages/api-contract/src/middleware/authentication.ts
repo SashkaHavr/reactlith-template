@@ -1,14 +1,15 @@
 import { Schema } from "effect";
-import { RpcMiddleware } from "effect/rpc";
+import { HttpApiMiddleware } from "effect/http-api";
 
 import type { CurrentUser } from "#/context";
 
 export class NotAuthenticated extends Schema.TaggedError<NotAuthenticated>()(
   "NotAuthenticated",
   {},
+  { httpApiStatus: 401 },
 ) {}
 
-export class AuthenticationMiddleware extends RpcMiddleware.Service<
+export class AuthenticationMiddleware extends HttpApiMiddleware.Service<
   AuthenticationMiddleware,
   { provides: CurrentUser }
 >()("api/AuthenticationMiddleware", {

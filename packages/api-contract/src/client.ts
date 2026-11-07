@@ -1,26 +1,29 @@
-import type { Rpc, RpcClient, RpcClientError } from "effect/rpc";
-import { RpcGroup } from "effect/rpc";
+import type { HttpApiClient, HttpApiEndpoint } from "effect/http-api";
+import { HttpApi } from "effect/http-api";
 
 import { ConfigApi } from "#/features/config";
 import { NumbersApi } from "#/features/numbers";
 import { GlobalMiddleware } from "#/middleware/global";
 
-export class Api extends RpcGroup.make()
-  .merge(ConfigApi, NumbersApi)
-  .middleware(GlobalMiddleware) {}
+export class Api extends HttpApi.make("api")
+  .add(ConfigApi)
+  .add(NumbersApi)
+  .middleware(GlobalMiddleware)
+  .prefix("/api") {}
 
-type ApiRpc = RpcGroup.Rpcs<typeof Api>;
-export type ApiClient = RpcClient.RpcClient<ApiRpc, RpcClientError.RpcClientError>;
+export type ApiClient = HttpApiClient.ForApi<typeof Api>;
 
-type ApiGroup = ApiRpc["_tag"] extends `${infer Group}.${string}` ? Group : never;
-type ApiGroupRpc<Group extends ApiGroup> = Extract<ApiRpc, { readonly _tag: `${Group}.${string}` }>;
+type ApiGroup = keyof typeof Api.groups;
+type ApiEndpoint<Group extends ApiGroup> = keyof (typeof Api.groups)[Group]["endpoints"];
+type ApiEndpointByIdentifier<
+  Group extends ApiGroup,
+  Endpoint extends ApiEndpoint<Group>,
+> = (typeof Api.groups)[Group]["endpoints"][Endpoint];
 
 export type ApiInput = {
   [Group in ApiGroup]: {
-    [
-      Procedure in ApiGroupRpc<Group> as Procedure["_tag"] extends `${Group}.${infer Method}`
-        ? Method
-        : never
-    ]: Rpc.PayloadConstructor<Procedure>;
+    [Endpoint in ApiEndpoint<Group>]: HttpApiEndpoint.Request<
+      ApiEndpointByIdentifier<Group, Endpoint>
+    >;
   };
 };

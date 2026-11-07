@@ -1,6 +1,6 @@
 import { layer } from "@effect/vitest";
 import { Context, Effect, Layer, Option } from "effect";
-import { RpcGroup, RpcTest } from "effect/rpc";
+import { HttpApi, HttpApiTest } from "effect/http-api";
 import { expect } from "vite-plus/test";
 
 import { GlobalMiddlewareLive } from "#/middleware/global/layer";
@@ -10,10 +10,10 @@ import { AuthConfig } from "@reactlith-template/config/auth";
 
 import { ConfigApiLive } from "./layer";
 
-class TestApi extends RpcGroup.make().merge(ConfigApi) {}
+class TestApi extends HttpApi.make("api").add(ConfigApi).prefix("/api") {}
 
 class TestClient extends Context.Service<TestClient>()("api/TestClient", {
-  make: RpcTest.makeClient(TestApi),
+  make: HttpApiTest.groups(TestApi, ["config"]),
 }) {
   static readonly layerTest = Layer.effect(this, this.make).pipe(
     Layer.provide(ConfigApiLive),
@@ -36,7 +36,7 @@ layer(
     Effect.fn(function* () {
       const client = yield* TestClient;
 
-      const result = yield* client["config.auth"]();
+      const result = yield* client.config.auth();
 
       expect(result).toEqual({ googleEmulate: true });
     }),
@@ -57,7 +57,7 @@ layer(
     Effect.fn(function* () {
       const client = yield* TestClient;
 
-      const result = yield* client["config.auth"]();
+      const result = yield* client.config.auth();
 
       expect(result).toEqual({ googleEmulate: false });
     }),

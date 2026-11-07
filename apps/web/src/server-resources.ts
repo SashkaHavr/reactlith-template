@@ -1,12 +1,13 @@
 import { getRequest } from "@tanstack/react-start/server";
 import { Config, Effect, Layer, ManagedRuntime } from "effect";
 import { FetchHttpClient, HttpClient, HttpRouter } from "effect/http";
-import { RpcClient, RpcSerialization } from "effect/rpc";
+import { HttpApiClient } from "effect/http-api";
 import { serverFetch } from "nitro/app";
 
+import { Api } from "@reactlith-template/api-contract";
 import { App } from "@reactlith-template/api/src/app.ts";
 import { createAuthClient } from "@reactlith-template/auth/client";
-import { RpcClient as ApiRpcClient } from "~/lib/api";
+import { ApiClient } from "~/lib/api";
 
 export const api = HttpRouter.toWebHandler(App, { disableLogger: true });
 
@@ -32,11 +33,7 @@ export const authClient = createAuthClient({
 });
 
 export const runtime = ManagedRuntime.make(
-  ApiRpcClient.layer.pipe(
-    Layer.provideMerge(
-      RpcClient.layerProtocolHttp({ url: new URL("/api/rpc", serverConfig.publicUrl).href }),
-    ),
-    Layer.provideMerge(RpcSerialization.layerNdjson),
+  Layer.effect(ApiClient, HttpApiClient.make(Api, { baseUrl: serverConfig.publicUrl })).pipe(
     Layer.provideMerge(
       FetchHttpClient.layer.pipe(
         Layer.provide(Layer.succeed(FetchHttpClient.Fetch, ssrFetch)),

@@ -1,12 +1,10 @@
 import { Schema } from "effect";
-import { Rpc, RpcGroup } from "effect/rpc";
+import { HttpApiEndpoint, HttpApiGroup } from "effect/http-api";
 
 export const AuthOutput = Schema.Struct({
   googleEmulate: Schema.Boolean,
 });
 
-export class NotReady extends Schema.TaggedError<NotReady>()("NotReady", {}) {}
-
-export class ConfigApi extends RpcGroup.make(Rpc.make("auth", { success: AuthOutput })).prefix(
-  "config.",
-) {}
+export class ConfigApi extends HttpApiGroup.make("config")
+  .add(HttpApiEndpoint.get("auth", "/auth", { success: AuthOutput }))
+  .prefix("/config") {}
