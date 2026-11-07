@@ -1,7 +1,7 @@
-import { useAtomSet, useAtomSuspense } from "@effect/atom-react";
+import { useAtom, useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/react-router";
-import { Effect } from "effect";
-import { AtomRegistry } from "effect/reactivity";
+import { Cause, Effect, Exit } from "effect";
+import { AsyncResult, AtomRegistry } from "effect/reactivity";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
 
 import { IdBranded } from "@reactlith-template/db/id-branded";
@@ -33,14 +33,27 @@ function RouteComponent() {
   const navigate = useNavigate();
   const session = useSession();
   const hydrated = useHydrated();
-  const number = useAtomSuspense(numberAtom(numberId)).value;
+  const numberResult = useAtomSuspense(numberAtom(numberId), { includeFailure: true });
   const updateNumber = useAtomSet(updateNumberAtom(numberId));
-  const deleteNumber = useAtomSet(deleteNumberAtom(numberId));
+  const [deleteResult, deleteNumber] = useAtom(deleteNumberAtom(numberId), { mode: "promiseExit" });
   const signout = useSignout();
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
     dateStyle: "long",
     timeStyle: "medium",
   });
+
+  const handleDelete = async () => {
+    const result = await deleteNumber();
+    if (Exit.isSuccess(result)) {
+      await navigate({ to: "/numbers" });
+    }
+  };
+
+  if (AsyncResult.isFailure(numberResult)) {
+    if (deleteResult.waiting || AsyncResult.isSuccess(deleteResult)) return null;
+    throw Cause.squash(numberResult.cause);
+  }
+  const number = numberResult.value;
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -64,10 +77,7 @@ function RouteComponent() {
           <PencilIcon />
           {m.example_updateNumber()}
         </Button>
-        <Button
-          variant="destructive-outline"
-          onClick={() => void navigate({ to: "/numbers" }).then(() => deleteNumber())}
-        >
+        <Button variant="destructive-outline" onClick={() => void handleDelete()}>
           <Trash2Icon />
           {m.example_deleteNumber()}
         </Button>

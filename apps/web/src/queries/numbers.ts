@@ -3,6 +3,7 @@ import { AsyncResult, Atom } from "effect/reactivity";
 
 import type { ApiInput } from "@reactlith-template/api-contract";
 import {
+  NumberNotFound,
   NumbersGetAllOutput,
   NumbersGetOutput,
   NumbersGetCountAbove50Output,
@@ -15,6 +16,12 @@ import { getApiClient } from "~/lib/api";
 type Input = ApiInput["numbers"];
 
 export const allNumbersAtom = Atom.make(() => getApiClient().numbers.getAll()).pipe(
+  (atom) =>
+    Atom.writable(
+      atom.read,
+      (ctx, value: Atom.Type<typeof atom>) => ctx.setSelf(value),
+      atom.refresh,
+    ),
   Atom.serializable({
     key: "numbers/getAll",
     schema: AsyncResult.Schema({ success: NumbersGetAllOutput }),
@@ -42,9 +49,15 @@ export const numbersAbove50Atom = Atom.make(() => getApiClient().numbers.getCoun
 
 export const numberAtom = Atom.family((id: IdBranded<"number">) =>
   Atom.make(() => getApiClient().numbers.get({ params: { id } })).pipe(
+    (atom) =>
+      Atom.writable(
+        atom.read,
+        (ctx, value: Atom.Type<typeof atom>) => ctx.setSelf(value),
+        atom.refresh,
+      ),
     Atom.serializable({
       key: `numbers/get/${id}`,
-      schema: AsyncResult.Schema({ success: NumbersGetOutput }),
+      schema: AsyncResult.Schema({ success: NumbersGetOutput, error: NumberNotFound }),
       skipInitialRun: true,
     }),
     Atom.swr({
@@ -82,17 +95,17 @@ export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
     getApiClient()
       .numbers.update({ params: { id }, payload })
       .pipe(
-        Effect.tap((number) => {
-          get.refresh(allNumbersAtom);
-          get.refresh(numberAtom(number.id));
-          return Effect.all(
-            [
-              get.result(allNumbersAtom, { suspendOnWaiting: true }),
-              get.result(numberAtom(number.id), { suspendOnWaiting: true }),
-            ],
-            { concurrency: "unbounded", discard: true },
-          );
-        }),
+        Effect.tap((number) =>
+          Effect.sync(() => {
+            get.set(
+              allNumbersAtom,
+              AsyncResult.map(get(allNumbersAtom), ({ numbers }) => ({
+                numbers: numbers.map((current) => (current.id === number.id ? number : current)),
+              })),
+            );
+            get.set(numberAtom(number.id), AsyncResult.success(number));
+          }),
+        ),
       ),
   ),
 );
@@ -102,11 +115,17 @@ export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
     getApiClient()
       .numbers.delete({ params: { id } })
       .pipe(
-        Effect.tap(({ id }) => {
-          get.refresh(allNumbersAtom);
-          get.refresh(numberAtom(id));
-          return get.result(allNumbersAtom, { suspendOnWaiting: true });
-        }),
+        Effect.tap(({ id }) =>
+          Effect.sync(() => {
+            get.set(
+              allNumbersAtom,
+              AsyncResult.map(get(allNumbersAtom), ({ numbers }) => ({
+                numbers: numbers.filter((number) => number.id !== id),
+              })),
+            );
+            get.set(numberAtom(id), AsyncResult.fail(NumberNotFound.make({ numberId: id })));
+          }),
+        ),
       ),
   ),
 );
