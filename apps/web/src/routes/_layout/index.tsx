@@ -1,23 +1,14 @@
 import { useAtomSet, useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Effect } from "effect";
-import { Atom, AtomRegistry } from "effect/reactivity";
+import { AtomRegistry } from "effect/reactivity";
 
 import { m } from "@reactlith-template/intl/messages";
 import { GoogleIcon } from "~/components/icons";
 import { Button } from "~/components/ui/button";
-import { getAuthClient } from "~/lib/auth";
+import { signInWithGoogleAtom } from "~/lib/auth";
 import { authConfigAtom } from "~/queries/config";
 import { numbersAbove50Atom } from "~/queries/numbers";
-
-const signInWithGoogleAtom = Atom.fn((googleEmulate: boolean) =>
-  Effect.tryPromise(async () => {
-    await getAuthClient().signIn.social({
-      provider: googleEmulate ? "google-emulate" : "google",
-      callbackURL: window.location.href,
-    });
-  }),
-);
 
 export const Route = createFileRoute("/_layout/")({
   beforeLoad: ({ context: { session } }) => {

@@ -11,6 +11,8 @@ import { useContext } from "react";
 
 import { createAuthClient as createAuthClientBase } from "@reactlith-template/auth/client";
 
+import { AppAtom } from "./atom";
+
 const createAuthClient = createClientOnlyFn(() => createAuthClientBase());
 
 let authClient: ReturnType<typeof createAuthClient> | undefined = undefined;
@@ -40,7 +42,7 @@ function resolveSession(
 export const sessionAtom = Atom.make(() =>
   Effect.tryPromise(async () => resolveSession(await getAuthClient().getSession())),
 ).pipe(
-  Atom.serializable({
+  AppAtom.serializable({
     key: "auth/session",
     schema: AsyncResult.Schema({
       success: Schema.Union([
@@ -55,7 +57,6 @@ export const sessionAtom = Atom.make(() =>
         }),
       ]),
     }),
-    skipInitialRun: true,
   }),
   Atom.keepAlive,
   Atom.swr({
@@ -92,3 +93,12 @@ export function useSignout() {
     await router.invalidate();
   };
 }
+
+export const signInWithGoogleAtom = Atom.fn((googleEmulate: boolean) =>
+  Effect.tryPromise(async () => {
+    await getAuthClient().signIn.social({
+      provider: googleEmulate ? "google-emulate" : "google",
+      callbackURL: window.location.href,
+    });
+  }),
+);

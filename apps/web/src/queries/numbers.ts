@@ -12,63 +12,39 @@ import type { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
 import { toastManager } from "~/components/ui/toast";
 import { apiRuntime, ApiClient } from "~/lib/api";
+import { AppAtom } from "~/lib/atom";
 
 type Input = ApiInput["numbers"];
 
 export const allNumbersAtom = apiRuntime
   .atom(ApiClient.use((client) => client.numbers.getAll()))
   .pipe(
-    (atom) =>
-      Atom.writable(
-        atom.read,
-        (ctx, value: Atom.Type<typeof atom>) => ctx.setSelf(value),
-        atom.refresh,
-      ),
-    Atom.serializable({
+    AppAtom.writable,
+    AppAtom.serializable({
       key: "numbers/getAll",
       schema: AsyncResult.Schema({ success: NumbersGetAllOutput }),
-      skipInitialRun: true,
     }),
-    Atom.swr({
-      staleTime: 0,
-      revalidateOnFocus: true,
-      focusSignal: Atom.windowFocusSignal,
-    }),
+    AppAtom.swr,
   );
 
 export const numbersAbove50Atom = apiRuntime
   .atom(ApiClient.use((client) => client.numbers.getCountAbove50()))
   .pipe(
-    Atom.serializable({
+    AppAtom.serializable({
       key: "numbers/getCountAbove50",
       schema: AsyncResult.Schema({ success: NumbersGetCountAbove50Output }),
-      skipInitialRun: true,
     }),
-    Atom.swr({
-      staleTime: 0,
-      revalidateOnFocus: true,
-      focusSignal: Atom.windowFocusSignal,
-    }),
+    AppAtom.swr,
   );
 
 export const numberAtom = Atom.family((id: IdBranded<"number">) =>
   apiRuntime.atom(ApiClient.use((client) => client.numbers.get({ params: { id } }))).pipe(
-    (atom) =>
-      Atom.writable(
-        atom.read,
-        (ctx, value: Atom.Type<typeof atom>) => ctx.setSelf(value),
-        atom.refresh,
-      ),
-    Atom.serializable({
+    AppAtom.writable,
+    AppAtom.serializable({
       key: `numbers/get/${id}`,
       schema: AsyncResult.Schema({ success: NumbersGetOutput, error: NumberNotFound }),
-      skipInitialRun: true,
     }),
-    Atom.swr({
-      staleTime: 0,
-      revalidateOnFocus: true,
-      focusSignal: Atom.windowFocusSignal,
-    }),
+    AppAtom.swr,
   ),
 );
 
@@ -141,16 +117,7 @@ export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
         ),
       ),
     )
-    .pipe((atom) =>
-      Atom.writable(
-        (get) => get(atom),
-        (ctx, value: void | Atom.Reset | Atom.Interrupt) => {
-          if (value === Atom.Reset || value === Atom.Interrupt || !ctx.get(atom).waiting) {
-            ctx.set(atom, value);
-          }
-        },
-      ),
-    ),
+    .pipe(AppAtom.nonConcurrent),
 );
 
 export const deleteAllNumbersAtom = apiRuntime.fn((_: void, get) =>
