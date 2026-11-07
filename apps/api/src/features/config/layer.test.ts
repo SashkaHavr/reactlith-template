@@ -1,30 +1,24 @@
 import { layer } from "@effect/vitest";
 import { Context, Effect, Layer, Option } from "effect";
-import { HttpApi, HttpApiTest } from "effect/http-api";
-import { expect, vi } from "vite-plus/test";
+import { RpcGroup, RpcTest } from "effect/rpc";
+import { expect } from "vite-plus/test";
 
 import { GlobalMiddlewareLive } from "#/middleware/global/layer";
 import { ClientDependenciesLayerTest } from "#/test-utils";
-import { ConfigApi, NotReady } from "@reactlith-template/api-contract/features/config";
+import { ConfigApi } from "@reactlith-template/api-contract/features/config";
 import { AuthConfig } from "@reactlith-template/config/auth";
 
 import { ConfigApiLive } from "./layer";
-import { ConfigRepo } from "./repo";
 
-const ConfigRepoMock = {
-  healthcheck: vi.fn<typeof ConfigRepo.Service.healthcheck>(),
-} satisfies ConfigRepo["Service"];
-
-class TestApi extends HttpApi.make("api").add(ConfigApi).prefix("/api") {}
+class TestApi extends RpcGroup.make().merge(ConfigApi) {}
 
 class TestClient extends Context.Service<TestClient>()("api/TestClient", {
-  make: HttpApiTest.groups(TestApi, ["config"]),
+  make: RpcTest.makeClient(TestApi),
 }) {
   static readonly layerTest = Layer.effect(this, this.make).pipe(
     Layer.provide(ConfigApiLive),
     Layer.provide(GlobalMiddlewareLive),
     Layer.provide(ClientDependenciesLayerTest),
-    Layer.provide(Layer.succeed(ConfigRepo)(ConfigRepoMock)),
   );
 }
 
@@ -42,7 +36,7 @@ layer(
     Effect.fn(function* () {
       const client = yield* TestClient;
 
-      const result = yield* client.config.auth();
+      const result = yield* client["config.auth"]();
 
       expect(result).toEqual({ googleEmulate: true });
     }),
@@ -63,45 +57,9 @@ layer(
     Effect.fn(function* () {
       const client = yield* TestClient;
 
-      const result = yield* client.config.auth();
+      const result = yield* client["config.auth"]();
 
       expect(result).toEqual({ googleEmulate: false });
-    }),
-  );
-
-  it.effect(
-    "reports the service is live",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-
-      const result = yield* client.config.healthLive();
-
-      expect(result).toBeNull();
-    }),
-  );
-
-  it.effect(
-    "reports the service is ready when the database probe succeeds",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      ConfigRepoMock.healthcheck.mockReturnValue(Effect.succeed(true));
-
-      const result = yield* client.config.healthReady();
-
-      expect(result).toBeNull();
-      expect(ConfigRepoMock.healthcheck).toHaveBeenCalledOnce();
-    }),
-  );
-
-  it.effect(
-    "reports the service is not ready when the database probe fails",
-    Effect.fn(function* () {
-      const client = yield* TestClient;
-      ConfigRepoMock.healthcheck.mockReturnValue(Effect.succeed(false));
-
-      const error = yield* client.config.healthReady().pipe(Effect.flip);
-
-      expect(error).toBeInstanceOf(NotReady);
     }),
   );
 });

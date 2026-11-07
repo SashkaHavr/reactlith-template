@@ -14,9 +14,9 @@ export const AuthorizationMiddlewareLive = Layer.effect(
     const auth = yield* Auth;
     const log = yield* StructuredLogger;
 
-    return AuthorizationMiddleware.of((effect, { endpoint }) =>
+    return AuthorizationMiddleware.of((effect, { rpc, headers }) =>
       Effect.gen(function* () {
-        const permissions = Context.get(endpoint.annotations, RequiredPermissions);
+        const permissions = Context.get(rpc.annotations, RequiredPermissions);
         const permissionsRequested = Object.entries(permissions).flatMap(
           ([resource, actions]) => actions?.map((action) => `${resource}.${action}`) ?? [],
         );
@@ -27,7 +27,7 @@ export const AuthorizationMiddlewareLive = Layer.effect(
           return yield* Effect.die("No permissions specified for AuthorizationMiddleware ");
         }
 
-        const hasPermission = yield* auth.userHasPermission(permissions);
+        const hasPermission = yield* auth.userHasPermission(permissions, headers);
         if (!hasPermission.success) {
           return yield* InsufficientPermissions.make();
         }

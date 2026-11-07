@@ -1,8 +1,4 @@
-import { useAtomSuspense } from "@effect/atom-react";
 import { createFileRoute, Outlet, useHydrated, useRouter } from "@tanstack/react-router";
-import { cn } from "cn";
-import { Effect } from "effect";
-import { AtomRegistry } from "effect/reactivity";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -12,14 +8,8 @@ import type { Locale } from "@reactlith-template/intl/runtime";
 import { useSetTheme, useTheme } from "~/components/theme";
 import { Button } from "~/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "~/components/ui/select";
-import { healthReadyAtom } from "~/queries/config";
 
 export const Route = createFileRoute("/_layout")({
-  loader: async ({ context: { registry }, abortController }) => {
-    await Effect.runPromise(AtomRegistry.getResult(registry, healthReadyAtom), {
-      signal: abortController.signal,
-    });
-  },
   component: RouteComponent,
 });
 
@@ -91,7 +81,6 @@ function LocaleSwitcher() {
 const initialNow = Date.now();
 
 function RouteComponent() {
-  const health = useAtomSuspense(healthReadyAtom);
   const hydrated = useHydrated();
   const [now, setNow] = useState(initialNow);
   const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
@@ -112,14 +101,6 @@ function RouteComponent() {
             <ThemeSwitcher />
             <LocaleSwitcher />
           </div>
-          <p
-            className={cn(
-              health._tag === "Success" ? "text-green-500" : "text-red-500",
-              "font-mono",
-            )}
-          >
-            {m.example_apiHealthResponse()}
-          </p>
           <p>
             {m.example_timeNow()}: {hydrated && dateFormatter.format(now)}
           </p>

@@ -1,35 +1,21 @@
 import { Effect, Layer, Option } from "effect";
-import { HttpApiBuilder } from "effect/http-api";
 
-import { Api } from "@reactlith-template/api-contract";
-import { NotReady } from "@reactlith-template/api-contract/features/config";
+import { ConfigApi } from "@reactlith-template/api-contract/features/config";
 import { AuthConfig } from "@reactlith-template/config/auth";
 
 import { ConfigRepo } from "./repo";
 
-export const ConfigApiLive = HttpApiBuilder.group(
-  Api,
-  "config",
-  Effect.fn(function* (handlers) {
+export const ConfigApiLive = ConfigApi.toLayer(
+  Effect.gen(function* () {
     const config = yield* AuthConfig;
-    const repo = yield* ConfigRepo;
 
-    return handlers.handleAll({
-      auth: Effect.fnUntraced(function* () {
+    return {
+      "config.auth": Effect.fnUntraced(function* () {
         return yield* Effect.succeed({
           googleEmulate: Option.isSome(config.googleEmulateUrl),
         });
       }),
-      healthLive: Effect.fnUntraced(function* () {
-        return yield* Effect.succeed(null);
-      }),
-      healthReady: Effect.fnUntraced(function* () {
-        if (!(yield* repo.healthcheck())) {
-          return yield* NotReady.make();
-        }
-        return null;
-      }),
-    });
+    };
   }),
 );
 

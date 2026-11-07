@@ -3,18 +3,20 @@ import { NodeHttpServer } from "@effect/platform-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-proto";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { Effect, Layer, Logger } from "effect";
-import { HttpEffect, HttpRouter } from "effect/http";
-import { HttpApiBuilder } from "effect/http-api";
+import { HttpEffect, HttpRouter, HttpServerResponse } from "effect/http";
+import { RpcSerialization, RpcServer } from "effect/rpc";
 import { defineEvlog, definePlugin, toLoggerConfig, toMiddlewareOptions } from "evlog";
 import { initLoggerLayer, loggerLayer, routerLayer } from "evlog/effect";
 
 import { ApiConfig } from "#/config";
 import { ConfigApiLiveWithServices } from "#/features/config/layer";
+import { ConfigRepo } from "#/features/config/repo";
 import { NumbersApiLiveWithServices } from "#/features/numbers/layer";
 import { AuthenticationMiddlewareLive } from "#/middleware/authentication/layer";
 import { GlobalMiddlewareLive } from "#/middleware/global/layer";
 import { AuthorizationMiddlewareLive } from "#/middleware/permission/layer";
 import { Api } from "@reactlith-template/api-contract";
+import { NotReady } from "@reactlith-template/api-contract/features/config";
 import { BetterAuth } from "@reactlith-template/auth";
 import { Auth } from "@reactlith-template/auth/service";
 import { AuthConfig } from "@reactlith-template/config/auth";
@@ -47,6 +49,22 @@ const AuthRoutes = HttpRouter.use(
   }),
 );
 
+const HealthRoutes = HttpRouter.use(
+  Effect.fnUntraced(function* (router) {
+    const repo = yield* ConfigRepo;
+    yield* router.add("GET", "/api/health/live", HttpServerResponse.json(null));
+    yield* router.add(
+      "GET",
+      "/api/health/ready",
+      Effect.gen(function* () {
+        return (yield* repo.healthcheck())
+          ? yield* HttpServerResponse.json(null)
+          : yield* HttpServerResponse.schemaJson(NotReady)(NotReady.make(), { status: 400 });
+      }),
+    );
+  }),
+);
+
 const ApiLive = Layer.mergeAll(ConfigApiLiveWithServices, NumbersApiLiveWithServices).pipe(
   Layer.provideMerge(AuthorizationMiddlewareLive),
   Layer.provideMerge(AuthenticationMiddlewareLive),
@@ -59,9 +77,13 @@ const NodeSdkLive = NodeSdk.layer(() => ({
 }));
 
 export const App = Layer.mergeAll(
-  HttpApiBuilder.layer(Api).pipe(Layer.provide(ApiLive)),
+  RpcServer.layerHttp({ group: Api, path: "/api/rpc", protocol: "http" }).pipe(
+    Layer.provide(RpcSerialization.layerNdjson),
+  ),
+  HealthRoutes,
   AuthRoutes,
 ).pipe(
+  Layer.provide(ApiLive),
   Layer.provideMerge(NodeSdkLive),
   Layer.provide(routerLayer(toMiddlewareOptions(evlogConfig))),
   Layer.provide(Auth.layer),

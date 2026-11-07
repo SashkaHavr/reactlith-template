@@ -17,9 +17,9 @@ export const AuthenticationMiddlewareLive = Layer.effect(
     const auth = yield* Auth;
     const log = yield* StructuredLogger;
 
-    return AuthenticationMiddleware.of((effect) =>
+    return AuthenticationMiddleware.of((effect, { headers }) =>
       Effect.gen(function* () {
-        const session = yield* auth.getSession();
+        const session = yield* auth.getSession(headers);
         if (!session) {
           return yield* NotAuthenticated.make();
         }

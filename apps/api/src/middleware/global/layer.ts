@@ -27,10 +27,10 @@ export const GlobalMiddlewareLive = Layer.effect(
       }
     });
 
-    return GlobalMiddleware.of((effect, { endpoint, group }) =>
+    return GlobalMiddleware.of((effect, { rpc }) =>
       Effect.gen(function* () {
         yield* log?.set({
-          rpc: { method: `${group.identifier}.${endpoint.identifier}` },
+          rpc: { method: rpc._tag },
         });
         return yield* effect.pipe(Effect.tapError(logError), Effect.tapDefect(logError));
       }),

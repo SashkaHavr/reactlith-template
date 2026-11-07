@@ -1,5 +1,5 @@
-import { HttpApiMiddleware } from "effect/http-api";
+import { RpcMiddleware } from "effect/rpc";
 
-export class GlobalMiddleware extends HttpApiMiddleware.Service<GlobalMiddleware>()(
+export class GlobalMiddleware extends RpcMiddleware.Service<GlobalMiddleware>()(
   "api/GlobalMiddleware",
 ) {}

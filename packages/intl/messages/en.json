@@ -18,7 +18,6 @@
   "example_numbersAbove50Count": "Numbers greater than 50 across all users: {count}",
   "example_submit": "Submit",
   "example_throwError": "Throw error",
-  "example_apiHealthResponse": "API /api/health/ready response",
   "example_updateNumber": "Update number",
   "example_updatedAt": "Updated at",
   "example_user": "User",

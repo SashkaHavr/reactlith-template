@@ -3,54 +3,18 @@
 import { Readable } from "node:stream";
 import { constants, createBrotliCompress, createGzip } from "node:zlib";
 
-import { getRequest } from "@tanstack/react-start/server";
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
-import { Config, Effect, Layer, Option } from "effect";
-import { FetchHttpClient, HttpClient, Headers as HttpHeaders, HttpTraceContext } from "effect/http";
-import { HttpApiClient } from "effect/http-api";
+import { Option } from "effect";
+import { Headers as HttpHeaders, HttpTraceContext } from "effect/http";
 import type { AuditableLogger } from "evlog";
-import { serverFetch } from "nitro/app";
 
-import { Api } from "@reactlith-template/api-contract";
-import { createAuthClient } from "@reactlith-template/auth/client";
 import { paraglideMiddleware } from "@reactlith-template/intl/server";
+import { authClient, runtime } from "~/server-resources";
 import { getRequestLog } from "~/utils/log";
-
-const serverConfig = Effect.runSync(
-  Config.all({
-    publicUrl: Config.URL("PUBLIC_URL"),
-  }),
-);
-
-const ssrFetch: typeof fetch = async (input, init) => {
-  const request = new Request(
-    input instanceof Request ? input : new URL(input, serverConfig.publicUrl),
-    init,
-  );
-  const headers = new Headers(getRequest().headers);
-  request.headers.forEach((value, key) => headers.set(key, value));
-  return serverFetch(new Request(request, { headers }));
-};
-
-const authClient = createAuthClient({
-  baseURL: serverConfig.publicUrl.href,
-  customFetchImpl: ssrFetch,
-});
-
-const apiClient = Effect.runSync(
-  HttpApiClient.make(Api, { baseUrl: serverConfig.publicUrl }).pipe(
-    Effect.provide(
-      FetchHttpClient.layer.pipe(
-        Layer.provide(Layer.succeed(FetchHttpClient.Fetch, ssrFetch)),
-        Layer.provide(Layer.succeed(HttpClient.TracerPropagationEnabled, false)),
-      ),
-    ),
-  ),
-);
 
 type RequestContext = {
   log: AuditableLogger | undefined;
-  apiClient: typeof apiClient;
+  runtime: typeof runtime;
   authClient: typeof authClient;
 };
 
@@ -120,7 +84,7 @@ export default createServerEntry({
     log?.set({ requestId, traceId });
     const response = await paraglideMiddleware(request, async () =>
       handler.fetch(request, {
-        context: { apiClient, log, authClient },
+        context: { runtime, log, authClient },
       }),
     );
     return compressStream(request, response);

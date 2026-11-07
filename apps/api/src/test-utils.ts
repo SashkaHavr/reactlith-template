@@ -1,5 +1,4 @@
-import { Effect, FileSystem, Layer, Path, References } from "effect";
-import { Etag, HttpPlatform } from "effect/http";
+import { Effect, Layer, References } from "effect";
 
 import { CurrentUser } from "@reactlith-template/api-contract/context";
 import { GlobalMiddleware } from "@reactlith-template/api-contract/middleware/global";
@@ -40,12 +39,7 @@ export function layerAuth(id?: number) {
   } as unknown as Auth["Service"]);
 }
 
-export const ClientDependenciesLayerTest = Layer.empty.pipe(
-  Layer.provideMerge(Path.layer),
-  Layer.provideMerge(Etag.layerWeak),
-  Layer.provideMerge(HttpPlatform.layer),
-  Layer.provideMerge(FileSystem.layerNoop({})),
-  Layer.provideMerge(Layer.succeed(GlobalMiddleware)(GlobalMiddleware.of((effect) => effect))),
-  Layer.provideMerge(StructuredLogger.layer),
-  Layer.provide(Layer.succeed(References.MinimumLogLevel, "None")),
-);
+export const ClientDependenciesLayerTest = Layer.mergeAll(
+  Layer.succeed(GlobalMiddleware)(GlobalMiddleware.of((effect) => effect)),
+  StructuredLogger.layer,
+).pipe(Layer.provide(Layer.succeed(References.MinimumLogLevel, "None")));
