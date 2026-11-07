@@ -11,7 +11,6 @@
     "./test-db": "./src/test-db.ts"
   },
   "scripts": {
-    "dev": "vpr studio",
     "push": "vp exec drizzle-kit push",
     "studio": "vp exec drizzle-kit studio --host 0.0.0.0"
   },
