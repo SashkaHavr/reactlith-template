@@ -67,15 +67,13 @@ function RouteComponent() {
   useSyncTheme();
 
   return (
-    <>
-      <ToastProvider>
-        <AnchoredToastProvider>
-          <div className="isolate">
-            <Outlet />
-          </div>
-        </AnchoredToastProvider>
-      </ToastProvider>
-    </>
+    <ToastProvider>
+      <AnchoredToastProvider>
+        <div className="isolate">
+          <Outlet />
+        </div>
+      </AnchoredToastProvider>
+    </ToastProvider>
   );
 }
 

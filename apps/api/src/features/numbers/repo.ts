@@ -6,7 +6,10 @@ import { NumberNotFound } from "@reactlith-template/api-contract/features/number
 import { Database, schema } from "@reactlith-template/db";
 import type { IdBranded } from "@reactlith-template/db/id-branded";
 
-export type NumberRow = { readonly id: IdBranded<"number">; readonly number: number };
+export interface NumberRow {
+  readonly id: IdBranded<"number">;
+  readonly number: number;
+}
 export type NumberFullRow = NumberRow & {
   readonly createdAt: Date;
   readonly updatedAt: Date;

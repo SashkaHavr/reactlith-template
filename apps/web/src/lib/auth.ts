@@ -15,7 +15,7 @@ import { AppAtom } from "./atom";
 
 const createAuthClient = createClientOnlyFn(() => createAuthClientBase());
 
-let authClient: ReturnType<typeof createAuthClient> | undefined = undefined;
+let authClient: ReturnType<typeof createAuthClient> | undefined;
 
 export const getAuthClient = createIsomorphicFn()
   .server(() => getGlobalStartContext()!.authClient)

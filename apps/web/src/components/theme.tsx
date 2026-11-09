@@ -1,4 +1,5 @@
 import { ScriptOnce, useHydrated, useRouteContext, useRouter } from "@tanstack/react-router";
+import { createIsomorphicFn } from "@tanstack/react-start";
 import { useEffect, useEffectEvent } from "react";
 
 export function syncMetaThemeColor() {
@@ -46,10 +47,9 @@ function getSavedTheme(): Theme | undefined {
   return undefined;
 }
 
-export function getTheme(): Theme | undefined {
-  if (import.meta.env.SSR) return undefined;
-  return getSavedTheme() ?? getSystemTheme();
-}
+export const getTheme = createIsomorphicFn()
+  .client(() => getSavedTheme() ?? getSystemTheme())
+  .server(() => undefined);
 
 export function useSetTheme() {
   const router = useRouter();

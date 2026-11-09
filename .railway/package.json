@@ -4,6 +4,7 @@
   "type": "module",
   "devDependencies": {
     "@effect/platform-node": "catalog:",
+    "@reactlith-template/typescript-config": "workspace:*",
     "effect": "catalog:",
     "railway": "3.16.0"
   }

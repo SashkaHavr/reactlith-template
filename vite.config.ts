@@ -48,7 +48,6 @@ export default defineConfig({
       "promise",
       "vitest",
       "react",
-      "jsx-a11y",
       "effecttsgo",
     ],
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
@@ -82,6 +81,8 @@ export default defineConfig({
       ],
       "typescript/return-await": ["error", "error-handling-correctness-only"],
       "typescript/consistent-return": "off",
+      "typescript/consistent-type-definitions": "error",
+      "typescript/array-type": "error",
 
       "import/consistent-type-specifier-style": "error",
       "import/no-default-export": "error",
@@ -99,8 +100,7 @@ export default defineConfig({
           ignore: ["^*.gen.ts", "\\$.*tsx$"],
         },
       ],
-
-      "jsx-a11y/prefer-tag-over-role": "off",
+      "unicorn/numeric-separators-style": "error",
 
       ...Object.fromEntries(Object.keys(effectCorrectness.rules).map((k) => [k, "error" as const])),
       ...Object.fromEntries(Object.keys(effectAntipattern.rules).map((k) => [k, "error" as const])),

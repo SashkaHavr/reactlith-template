@@ -1,16 +1,16 @@
 import { createIsomorphicFn, getGlobalStartContext } from "@tanstack/react-start";
-import { Predicate } from "effect";
+import { Array, Predicate, Record, Result } from "effect";
 import type { AuditableLogger } from "evlog";
 import { initLog, log as clientLog } from "evlog/client";
 
 export const logError = createIsomorphicFn()
-  .server((error: any) => {
+  .server((error: unknown) => {
     getServerLog()?.set({ error: getErrorData(error) });
     if (Predicate.isError(error) || Predicate.isString(error)) {
       getServerLog()?.error(error);
     }
   })
-  .client((error: any) => {
+  .client((error: unknown) => {
     clientLog.error({
       error: getErrorDataWithCause(error),
     });
@@ -40,33 +40,25 @@ export function getRequestLog(request: Request) {
     : undefined;
 }
 
-function getErrorData(error: any) {
+function getErrorData(error: Error): Record<string, unknown>;
+function getErrorData(error: unknown): unknown;
+function getErrorData(error: unknown): unknown {
   if (Predicate.isError(error)) {
-    const errorObj: Record<string, unknown> = {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    };
-    for (const k of [
-      "status",
-      "statusText",
-      "statusCode",
-      "statusMessage",
-      "data",
-      "code",
-      "routerCode",
-    ] as const) {
-      if (Predicate.hasProperty(k)(error)) {
-        errorObj[k] = error[k];
-      }
-    }
-
-    return errorObj;
+    const extraData = Record.fromEntries(
+      Array.filterMap(
+        ["status", "statusText", "statusCode", "statusMessage", "data", "code", "routerCode"],
+        (key) =>
+          Predicate.hasProperty(error, key)
+            ? Result.succeed([key, error[key]] as const)
+            : Result.failVoid,
+      ),
+    );
+    return { name: error.name, message: error.message, stack: error.stack, ...extraData };
   }
   return error ?? {};
 }
 
-function getErrorDataWithCause(error: Error | string) {
+function getErrorDataWithCause(error: unknown): unknown {
   if (Predicate.isError(error)) {
     return {
       ...getErrorData(error),

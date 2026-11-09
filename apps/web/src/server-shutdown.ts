@@ -1,5 +1,4 @@
-// oxlint-disable import/no-default-export
-// oxlint-disable no-restricted-imports
+// oxlint-disable import/no-default-export no-restricted-imports
 import { definePlugin } from "nitro";
 
 import { api, runtime } from "~/server-resources";

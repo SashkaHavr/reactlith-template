@@ -38,13 +38,5 @@ export function getRouter() {
     },
   });
 
-  if (import.meta.env.SSR) {
-    router.serverSsrLifecycle = {
-      onServerSsrAttach: [
-        (serverSsr) => serverSsr.onCleanup(() => routerContext.registry.dispose()),
-      ],
-    };
-  }
-
   return router;
 }

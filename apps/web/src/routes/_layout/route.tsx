@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useHydrated, useRouter } from "@tanstack/react-router";
 import { MoonIcon, SunIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { m } from "@reactlith-template/intl/messages";
 import { getLocale, isLocale, localizeUrl, setLocale } from "@reactlith-template/intl/runtime";
@@ -83,10 +83,14 @@ const initialNow = Date.now();
 function RouteComponent() {
   const hydrated = useHydrated();
   const [now, setNow] = useState(initialNow);
-  const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
-    dateStyle: "long",
-    timeStyle: "medium",
-  });
+  const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(getLocale(), {
+        dateStyle: "long",
+        timeStyle: "medium",
+      }),
+    [],
+  );
   useEffect(() => {
     const interval = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(interval);

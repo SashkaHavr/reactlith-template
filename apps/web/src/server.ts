@@ -12,11 +12,11 @@ import { paraglideMiddleware } from "@reactlith-template/intl/server";
 import { authClient, runtime } from "~/server-resources";
 import { getRequestLog } from "~/utils/log";
 
-type RequestContext = {
+interface RequestContext {
   log: AuditableLogger | undefined;
   runtime: typeof runtime;
   authClient: typeof authClient;
-};
+}
 
 declare module "@tanstack/react-start" {
   interface Register {

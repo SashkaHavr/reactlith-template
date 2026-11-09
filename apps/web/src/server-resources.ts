@@ -23,7 +23,9 @@ const ssrFetch: typeof fetch = async (input, init) => {
     init,
   );
   const headers = new Headers(getRequest().headers);
-  request.headers.forEach((value, key) => headers.set(key, value));
+  for (const [key, value] of request.headers.entries()) {
+    headers.set(key, value);
+  }
   return serverFetch(new Request(request, { headers }));
 };
 

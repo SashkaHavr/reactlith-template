@@ -20,7 +20,7 @@ class CommandFailed extends Data.TaggedError("CommandFailed")<{
 
 const run = Effect.fn(function* (
   command: string,
-  args: ReadonlyArray<string>,
+  args: readonly string[],
   options: ChildProcess.CommandOptions = {},
 ) {
   const handle = yield* ChildProcess.make(command, args, {
@@ -39,7 +39,7 @@ const run = Effect.fn(function* (
   return output;
 }, Effect.scoped);
 
-const railway = (args: ReadonlyArray<string>, options: ChildProcess.CommandOptions = {}) =>
+const railway = (args: readonly string[], options: ChildProcess.CommandOptions = {}) =>
   run("railway", args, {
     ...options,
     // railway/iac uses $_ to locate the CLI for its minimum-version check.
@@ -47,7 +47,7 @@ const railway = (args: ReadonlyArray<string>, options: ChildProcess.CommandOptio
     extendEnv: true,
   });
 
-function railwayJson<A, R>(args: ReadonlyArray<string>, schema: Schema.ConstraintDecoder<A, R>) {
+function railwayJson<A, R>(args: readonly string[], schema: Schema.ConstraintDecoder<A, R>) {
   return railway([...args, "--json"], { stdout: "pipe" }).pipe(
     Effect.flatMap(Schema.fromJsonString(schema).pipe(Schema.decodeUnknownEffect)),
   );
@@ -80,7 +80,7 @@ const deploy = Effect.gen(function* () {
   const preview = yield* Config.Boolean("PREVIEW").pipe(Config.withDefault(false));
   const fs = yield* FileSystem.FileSystem;
   let databaseUrl = yield* extractDatabaseUrl("db");
-  const pushDatabase = (args: ReadonlyArray<string> = []) =>
+  const pushDatabase = (args: readonly string[] = []) =>
     run("vpr", ["db#push", ...args], {
       env: { DATABASE_URL: databaseUrl },
       extendEnv: true,
@@ -162,7 +162,6 @@ const deploy = Effect.gen(function* () {
       "DATABASE_URL",
       "GOOGLE_CLIENT_ID",
       "GOOGLE_CLIENT_SECRET",
-      "GOOGLE_EMULATE_URL",
     ],
     "drizzle-gateway": ["MASTERPASS"],
   };

@@ -96,7 +96,7 @@ export const updateNumberAtom = Atom.family((id: IdBranded<"number">) =>
 
 export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
   apiRuntime
-    .fn((_: void, get) =>
+    .fn((_, get) =>
       ApiClient.use((client) => client.numbers.delete({ params: { id } })).pipe(
         Effect.tapError(() =>
           Effect.sync(() => {
@@ -120,7 +120,7 @@ export const deleteNumberAtom = Atom.family((id: IdBranded<"number">) =>
     .pipe(AppAtom.nonConcurrent),
 );
 
-export const deleteAllNumbersAtom = apiRuntime.fn((_: void, get) =>
+export const deleteAllNumbersAtom = apiRuntime.fn((_, get) =>
   ApiClient.use((client) => client.numbers.deleteAll()).pipe(
     Effect.onExit(() => {
       get.refresh(allNumbersAtom);

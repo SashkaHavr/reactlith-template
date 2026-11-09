@@ -1,13 +1,14 @@
 // oxlint-disable import/no-default-export
 import { NodeServices } from "@effect/platform-node";
 import { Config, Effect, Predicate, Redacted, Schema, Stream } from "effect";
+import { SecureRandom } from "effect/crypto";
+import { Hex } from "effect/encoding";
 import { ChildProcess, ChildProcessSpawner } from "effect/process";
 import { defineRailway, image, postgres, preserve, project, service, volume } from "railway/iac";
 
-const RAM_GB = 1000000000 as const;
+const RAM_GB = 1_000_000_000 as const;
 const STORAGE_5GB = 5000 as const;
 const region = "europe-west4-drams3a" as const;
-const randomStringGenerator = "${{secret(32)}}" as const;
 
 const RailwayConfig = Schema.Struct({
   resources: Schema.Array(
@@ -22,15 +23,17 @@ const RailwayConfig = Schema.Struct({
   ),
 });
 
-function preserveOrGenerate(
+const preserveOrGenerate = Effect.fnUntraced(function* (
   config: typeof RailwayConfig.Type,
   { service, variable }: { service: string; variable: string },
 ) {
   const resource = config.resources.find((resource) => resource.address === `service.${service}`);
-  return Predicate.hasProperty(variable)(resource?.variables ?? {})
-    ? preserve()
-    : randomStringGenerator;
-}
+  if (Predicate.hasProperty(variable)(resource?.variables ?? {})) {
+    return preserve();
+  }
+  const random = yield* SecureRandom.SecureRandom;
+  return Hex.encode(yield* random.randomBytes(32));
+});
 
 const preserveOrUsePreviewSecret = Effect.fn(function* (
   config: typeof RailwayConfig.Type,
@@ -99,7 +102,7 @@ export default defineRailway(async () =>
         PORT: "3000",
         BETTER_AUTH_ALLOWED_HOSTS: "https://${{RAILWAY_PUBLIC_DOMAIN}}",
         BETTER_AUTH_IP_ADDRESS_HEADERS: "X-Real-IP",
-        BETTER_AUTH_SECRET: preserveOrGenerate(config, {
+        BETTER_AUTH_SECRET: yield* preserveOrGenerate(config, {
           service: "web",
           variable: "BETTER_AUTH_SECRET",
         }),
@@ -139,7 +142,7 @@ export default defineRailway(async () =>
       env: {
         PORT: "4983",
         DATABASE_URL: db.env.DATABASE_URL,
-        MASTERPASS: preserveOrGenerate(config, {
+        MASTERPASS: yield* preserveOrGenerate(config, {
           service: "drizzle-gateway",
           variable: "MASTERPASS",
         }),
@@ -149,5 +152,9 @@ export default defineRailway(async () =>
     return project("reactlith-template", {
       resources: [db, web, drizzleGateway, drizzleGatewayVolume],
     });
-  }).pipe(Effect.provide(NodeServices.layer), Effect.scoped, Effect.runPromise),
+  }).pipe(
+    Effect.provide([NodeServices.layer, SecureRandom.layerWebCrypto]),
+    Effect.scoped,
+    Effect.runPromise,
+  ),
 );

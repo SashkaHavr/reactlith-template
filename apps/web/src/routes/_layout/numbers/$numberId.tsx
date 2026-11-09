@@ -3,6 +3,7 @@ import { createFileRoute, notFound, useHydrated, useNavigate } from "@tanstack/r
 import { Cause, Effect, Exit, Result } from "effect";
 import { AsyncResult, AtomRegistry } from "effect/reactivity";
 import { ArrowLeftIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { useMemo } from "react";
 
 import { IdBranded } from "@reactlith-template/db/id-branded";
 import { m } from "@reactlith-template/intl/messages";
@@ -37,10 +38,14 @@ function RouteComponent() {
   const updateNumber = useAtomSet(updateNumberAtom(numberId));
   const [deleteResult, deleteNumber] = useAtom(deleteNumberAtom(numberId), { mode: "promiseExit" });
   const signout = useSignout();
-  const dateFormatter = new Intl.DateTimeFormat(getLocale(), {
-    dateStyle: "long",
-    timeStyle: "medium",
-  });
+  const dateFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(getLocale(), {
+        dateStyle: "long",
+        timeStyle: "medium",
+      }),
+    [],
+  );
 
   const handleDelete = async () => {
     const result = await deleteNumber();

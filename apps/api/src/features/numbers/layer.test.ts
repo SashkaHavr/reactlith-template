@@ -20,8 +20,8 @@ const numberId = testId("number", 0);
 const number = {
   id: numberId,
   number: 42,
-  createdAt: new Date(1_000),
-  updatedAt: new Date(2_000),
+  createdAt: new Date(1000),
+  updatedAt: new Date(2000),
 };
 
 const NumberRepoMock = {
