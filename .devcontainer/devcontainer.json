@@ -20,8 +20,8 @@
         "ms-azuretools.vscode-containers",
         "bradlc.vscode-tailwindcss",
         "VoidZero.vite-plus-extension-pack",
-        "inlang.vs-code-extension",
-        "TypeScriptTeam.native-preview"
+        "TypeScriptTeam.native-preview",
+        "antfu.x18n"
       ]
     }
   }

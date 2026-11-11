@@ -2,7 +2,6 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "example_addCustomNumber": "Add custom number",
   "example_addNumber": "Add number",
-  "example_authStatus": "Auth status",
   "example_backToNumbers": "Back to numbers",
   "example_createdAt": "Created at",
   "example_darkMode": "Dark mode",
@@ -25,5 +24,6 @@
   "routeDefault_error": "Something went wrong",
   "routeDefault_notFound": "Not Found",
   "routeDefault_notFoundDescription": "The page you're looking for doesn't exist.",
-  "routeDefault_returnToHomePage": "Return to Home page"
+  "routeDefault_returnToHomePage": "Return to Home page",
+  "example_cancel": "Cancel"
 }

@@ -8,3 +8,5 @@ runs:
       run: vp check
     - shell: bash
       run: vp test
+    - shell: bash
+      run: vp exec x18n check --reporter github --reporter pretty

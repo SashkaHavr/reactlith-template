@@ -114,7 +114,9 @@ function RouteComponent() {
                   </customNumberForm.AppField>
                 </DialogPanel>
                 <DialogFooter>
-                  <DialogClose render={<Button variant="ghost" />}>Cancel</DialogClose>
+                  <DialogClose render={<Button variant="ghost" />}>
+                    {m.example_cancel()}
+                  </DialogClose>
                   <fieldset className="contents">
                     <FormSubmitButton>{m.example_submit()}</FormSubmitButton>
                   </fieldset>

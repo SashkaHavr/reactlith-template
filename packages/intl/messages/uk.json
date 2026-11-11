@@ -2,7 +2,6 @@
   "$schema": "https://inlang.com/schema/inlang-message-format",
   "example_addCustomNumber": "Додати власне число",
   "example_addNumber": "Додати число",
-  "example_authStatus": "Статус сервера автентифікації",
   "example_backToNumbers": "Назад до чисел",
   "example_createdAt": "Створено",
   "example_darkMode": "Темна тема",
@@ -24,6 +23,7 @@
   "example_works": "Працює!",
   "routeDefault_error": "Щось пішло не так",
   "routeDefault_notFound": "Сторінка, яку ви шукаєте, не існує",
-  "routeDefault_notFoundDescription": "The page you're looking for doesn't exist.",
-  "routeDefault_returnToHomePage": "Повернутися на домашню сторінку"
+  "routeDefault_notFoundDescription": "Сторінка, яку ви шукаєте, не існує.",
+  "routeDefault_returnToHomePage": "Повернутися на домашню сторінку",
+  "example_cancel": "Скасувати"
 }
